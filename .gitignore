@@ -1,0 +1,6 @@
+*.log
+*.csv
+*.xlsx
+.ipynb_checkpoints/
+__pycache__/
+output/

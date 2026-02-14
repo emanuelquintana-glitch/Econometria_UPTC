@@ -1,0 +1,1036 @@
+\documentclass[12pt,a4paper,twoside]{article}
+
+% ===========================
+% PAQUETES ESENCIALES
+% ===========================
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% Matemáticas
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm} % Bold math
+\usepackage{mathrsfs} % Script math fonts
+
+% Gráficos y colores
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames,table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+
+% Tablas profesionales
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+% Formato y diseño
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{etoolbox}
+
+% Referencias y enlaces
+\usepackage[colorlinks=true,
+            linkcolor=NavyBlue,
+            citecolor=OliveGreen,
+            urlcolor=RoyalBlue,
+            bookmarks=true,
+            bookmarksnumbered=true]{hyperref}
+\usepackage[spanish]{cleveref}
+
+% Bibliografía
+\usepackage[backend=biber,style=apa,sorting=nyt]{biblatex}
+\addbibresource{referencias.bib}
+
+% Código y algoritmos
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Cajas y teoremas
+\usepackage[most]{tcolorbox}
+\usepackage{mdframed}
+
+% Otros
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{lipsum} % Para texto de prueba
+
+% ===========================
+% CONFIGURACIÓN DE COLORES
+% ===========================
+\definecolor{uptcazul}{RGB}{0,51,102}
+\definecolor{uptcdorado}{RGB}{218,165,32}
+\definecolor{teoremacolor}{RGB}{240,248,255}
+\definecolor{definicioncolor}{RGB}{255,250,240}
+\definecolor{ejemplocolor}{RGB}{240,255,240}
+\definecolor{notacolor}{RGB}{255,245,238}
+\definecolor{advertenciacolor}{RGB}{255,240,245}
+
+% ===========================
+% ESTILO DE PÁGINA
+% ===========================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\slshape\nouppercase{\leftmark}}
+\fancyhead[RO]{\small\slshape\nouppercase{\rightmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ===========================
+% ESTILO DE SECCIONES
+% ===========================
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{uptcazul}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{uptcazul}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{uptcazul}}
+  {\thesubsubsection}{1em}{}
+
+% ===========================
+% CAJAS PERSONALIZADAS
+% ===========================
+\newtcolorbox{teoremabox}[1][]{
+  colback=teoremacolor,
+  colframe=uptcazul,
+  fonttitle=\bfseries,
+  title=Teorema,
+  #1
+}
+
+\newtcolorbox{definicionbox}[1][]{
+  colback=definicioncolor,
+  colframe=uptcdorado,
+  fonttitle=\bfseries,
+  title=Definición,
+  #1
+}
+
+\newtcolorbox{ejemplobox}[1][]{
+  colback=ejemplocolor,
+  colframe=OliveGreen,
+  fonttitle=\bfseries,
+  title=Ejemplo,
+  #1
+}
+
+\newtcolorbox{notabox}[1][]{
+  colback=notacolor,
+  colframe=orange,
+  fonttitle=\bfseries,
+  title=Nota,
+  #1
+}
+
+\newtcolorbox{advertenciabox}[1][]{
+  colback=advertenciacolor,
+  colframe=red,
+  fonttitle=\bfseries,
+  title=⚠ Advertencia,
+  #1
+}
+
+% ===========================
+% COMANDOS MATEMÁTICOS
+% ===========================
+\newcommand{\E}{\mathbb{E}} % Esperanza
+\newcommand{\Var}{\text{Var}} % Varianza
+\newcommand{\Cov}{\text{Cov}} % Covarianza
+\newcommand{\betahat}{\hat{\bm{\beta}}}
+\newcommand{\Xmat}{\bm{X}}
+\newcommand{\Ymat}{\bm{Y}}
+\newcommand{\umat}{\bm{u}}
+\newcommand{\FIV}{\text{FIV}}
+\newcommand{\TOL}{\text{TOL}}
+\newcommand{\Rsq}{R^2}
+
+% ===========================
+% CONFIGURACIÓN DE LISTINGS
+% ===========================
+\lstdefinestyle{Rstyle}{
+  language=R,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  rulecolor=\color{black},
+  tabsize=2,
+  breaklines=true,
+  breakatwhitespace=false,
+}
+
+% ===========================
+% INFORMACIÓN DEL DOCUMENTO
+% ===========================
+\title{%
+  {\Huge\bfseries Teoría de la Multicolinealidad}\\[0.5cm]
+  {\Large Análisis Matricial, Diagnóstico y Remedios}\\[1cm]
+  \includegraphics[width=0.3\textwidth]{uptc_logo.png}\\[1cm]
+  {\large Universidad Pedagógica y Tecnológica de Colombia}\\
+  {\large Facultad de Ciencias Económicas y Administrativas}\\
+  {\large Econometría Avanzada}
+}
+
+\author{%
+  \textbf{Estudiante de Econometría}\\[0.3cm]
+  \texttt{estudiante@uptc.edu.co}
+}
+
+\date{%
+  Viernes, 13 de febrero de 2026\\
+  Tunja, Boyacá - Colombia
+}
+
+% ===========================
+% INICIO DEL DOCUMENTO
+% ===========================
+\begin{document}
+
+% Portada
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% ===========================
+% RESUMEN
+% ===========================
+\begin{abstract}
+\noindent
+La multicolinealidad constituye uno de los problemas fundamentales en el análisis de regresión múltiple, afectando la precisión y estabilidad de los estimadores de mínimos cuadrados ordinarios (MCO). Este documento presenta un análisis riguroso y exhaustivo de la teoría de la multicolinealidad, abarcando desde sus fundamentos teóricos hasta las técnicas avanzadas de detección y remedios disponibles.
+
+Se desarrolla el marco matricial completo del problema, incluyendo la formulación de la matriz de varianza-covarianza, el fenómeno de ``explosión de varianza'', y los diagnósticos formales como el Factor de Inflación de Varianza (FIV), el Test de Farrar-Glauber, y el análisis de valores propios. Adicionalmente, se presentan soluciones prácticas que incluyen transformaciones de variables, regresión Ridge, LASSO, y técnicas de componentes principales.
+
+El tratamiento combina rigor matemático con aplicabilidad práctica, proporcionando ejemplos detallados en modelos económicos relevantes como la función de producción Cobb-Douglas, modelos de inflación monetarista, y especificaciones de demanda de dinero.
+
+\vspace{0.5cm}
+\noindent
+\textbf{Palabras clave:} Multicolinealidad, Matriz de Varianza-Covarianza, Factor de Inflación de Varianza, Test de Farrar-Glauber, Regresión Ridge, Econometría.
+
+\vspace{0.5cm}
+\noindent
+\textbf{Clasificación JEL:} C10, C13, C20, C51, C52
+\end{abstract}
+
+\newpage
+
+% ===========================
+% TABLA DE CONTENIDOS
+% ===========================
+\tableofcontents
+\newpage
+
+\listoffigures
+\listoftables
+\newpage
+
+% ===========================
+% CAPÍTULO 1: FUNDAMENTOS
+% ===========================
+\section{Fundamentos Teóricos de la Multicolinealidad}
+
+\subsection{Introducción y Motivación}
+
+La regresión lineal múltiple constituye la herramienta fundamental del análisis econométrico, permitiendo modelar relaciones complejas entre variables económicas. Sin embargo, cuando las variables explicativas están altamente correlacionadas entre sí, surge el problema de la \textbf{multicolinealidad}, que compromete la capacidad del investigador para aislar el efecto individual de cada regresor.
+
+\begin{definicionbox}[title=Multicolinealidad]
+En el modelo lineal $\Ymat = \Xmat\bm{\beta} + \umat$, existe multicolinealidad cuando las columnas de la matriz $\Xmat$ son linealmente dependientes o casi dependientes, es decir:
+\begin{equation}
+\exists \; \lambda_1, \lambda_2, \ldots, \lambda_k \in \mathbb{R} \quad (\text{no todos cero}) \quad \text{tal que} \quad \sum_{j=1}^{k} \lambda_j \Xmat_j \approx \bm{0}
+\end{equation}
+donde $\Xmat_j$ denota la $j$-ésima columna de $\Xmat$.
+\end{definicionbox}
+
+\subsection{Clasificación de la Multicolinealidad}
+
+\subsubsection{Multicolinealidad Perfecta}
+
+La multicolinealidad perfecta representa el caso límite donde existe una relación lineal \emph{exacta} entre las variables explicativas.
+
+\begin{teoremabox}[title=Consecuencias de la Colinealidad Perfecta]
+Si existe una combinación lineal exacta entre las columnas de $\Xmat$, entonces:
+\begin{enumerate}[label=(\roman*)]
+  \item El determinante $|\Xmat'\Xmat| = 0$
+  \item La matriz $(\Xmat'\Xmat)$ es singular (no inversible)
+  \item Los estimadores MCO no existen o son indeterminados
+  \item Los errores estándar tienden a infinito: $\text{se}(\betahat_j) \to \infty$
+\end{enumerate}
+\end{teoremabox}
+
+\begin{proof}
+Si $\sum_{j=1}^{k} \lambda_j \Xmat_j = \bm{0}$ con $\bm{\lambda} \neq \bm{0}$, entonces $\Xmat\bm{\lambda} = \bm{0}$, lo que implica que $\text{rango}(\Xmat) < k$. Por consiguiente:
+\begin{equation}
+\text{rango}(\Xmat'\Xmat) = \text{rango}(\Xmat) < k
+\end{equation}
+Esto significa que $\Xmat'\Xmat$ no tiene rango completo, por lo tanto $|\Xmat'\Xmat| = 0$ y la inversa $(\Xmat'\Xmat)^{-1}$ no existe.
+\end{proof}
+
+\begin{ejemplobox}[title=La Trampa de la Variable Dummy]
+Consideremos un modelo con intercepto y variables dummy para género:
+\begin{align}
+Y_i &= \beta_1 + \beta_2 D_{1i} + \beta_3 D_{2i} + u_i
+\end{align}
+donde:
+\begin{itemize}
+  \item $D_1 = 1$ si es hombre, 0 en caso contrario
+  \item $D_2 = 1$ si es mujer, 0 en caso contrario
+\end{itemize}
+
+Observamos que $D_1 + D_2 = 1$ (la columna del intercepto), generando \textbf{colinealidad perfecta}.
+
+\textbf{Solución:} Omitir una de las dummies (categoría de referencia).
+\end{ejemplobox}
+
+\subsubsection{Multicolinealidad Aproximada o Imperfecta}
+
+En la práctica econométrica, el caso más frecuente es la multicolinealidad \emph{imperfecta}, donde:
+
+\begin{equation}
+|\Xmat'\Xmat| \approx 0 \quad \text{(cercano a cero, pero no exactamente cero)}
+\end{equation}
+
+\begin{notabox}
+La multicolinealidad imperfecta es un problema de \textbf{grado}, no de existencia. Los estimadores son calculables, pero presentan:
+\begin{itemize}
+  \item Varianzas muy grandes
+  \item Alta sensibilidad a cambios en los datos
+  \item Intervalos de confianza excesivamente amplios
+  \item Inestabilidad numérica en la computación de $(\Xmat'\Xmat)^{-1}$
+\end{itemize}
+\end{notabox}
+
+\subsection{Causas de la Multicolinealidad}
+
+La \Cref{tab:causas_multicol} resume las principales fuentes de multicolinealidad en datos económicos.
+
+\begin{table}[H]
+\centering
+\caption{Causas Principales de la Multicolinealidad}
+\label{tab:causas_multicol}
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Causa} & \textbf{Explicación} & \textbf{Ejemplo} \\
+\midrule
+Series de tiempo & Variables económicas tienden a moverse juntas temporalmente & PIB, Consumo, Inversión \\
+\addlinespace
+Especificación del modelo & Inclusión de variables que miden fenómenos similares & Ingreso y Riqueza \\
+\addlinespace
+Micronumerosidad & Tamaño de muestra pequeño relativo al número de parámetros & $n=30$, $k=25$ \\
+\addlinespace
+Método de recolección & Muestreo en rango limitado de los regresores & Solo familias de alto ingreso \\
+\addlinespace
+Términos polinomiales & $X$, $X^2$, $X^3$ altamente correlacionados & Especialmente si $X$ tiene rango pequeño \\
+\addlinespace
+Tendencias comunes & Variables crecen simultáneamente en el tiempo & Variables macroeconómicas \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ===========================
+% CAPÍTULO 2: NOTACIÓN MATRICIAL
+% ===========================
+\section{Notación Matricial del Modelo de Regresión}
+
+\subsection{Especificación General del Modelo}
+
+Para un modelo de regresión lineal múltiple con $k$ variables explicativas y $n$ observaciones:
+
+\begin{equation}\label{eq:modelo_general}
+\Ymat = \Xmat\bm{\beta} + \umat
+\end{equation}
+
+\noindent donde:
+
+\begin{align*}
+\Ymat &= \begin{bmatrix} Y_1 \\ Y_2 \\ \vdots \\ Y_n \end{bmatrix}_{n \times 1} 
+&\quad \text{Vector de observaciones de la variable dependiente}\\[1em]
+\Xmat &= \begin{bmatrix} 
+  1 & X_{12} & X_{13} & \cdots & X_{1k} \\ 
+  1 & X_{22} & X_{23} & \cdots & X_{2k} \\ 
+  \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+  1 & X_{n2} & X_{n3} & \cdots & X_{nk} 
+\end{bmatrix}_{n \times k} 
+&\quad \text{Matriz de diseño}\\[1em]
+\bm{\beta} &= \begin{bmatrix} \beta_1 \\ \beta_2 \\ \vdots \\ \beta_k \end{bmatrix}_{k \times 1}
+&\quad \text{Vector de parámetros poblacionales}\\[1em]
+\umat &= \begin{bmatrix} u_1 \\ u_2 \\ \vdots \\ u_n \end{bmatrix}_{n \times 1}
+&\quad \text{Vector de perturbaciones estocásticas}
+\end{align*}
+
+\subsection{La Matriz de Información}
+
+La matriz de información o matriz de momentos cruzados juega un papel central en el análisis de multicolinealidad.
+
+\begin{definicionbox}[title=Matriz de Información]
+La matriz de información se define como:
+\begin{equation}\label{eq:matriz_info}
+\Xmat'\Xmat = \begin{bmatrix} 
+n & \sum_{i=1}^{n} X_{i2} & \sum_{i=1}^{n} X_{i3} & \cdots & \sum_{i=1}^{n} X_{ik} \\[0.3em]
+\sum_{i=1}^{n} X_{i2} & \sum_{i=1}^{n} X_{i2}^2 & \sum_{i=1}^{n} X_{i2}X_{i3} & \cdots & \sum_{i=1}^{n} X_{i2}X_{ik} \\[0.3em]
+\sum_{i=1}^{n} X_{i3} & \sum_{i=1}^{n} X_{i2}X_{i3} & \sum_{i=1}^{n} X_{i3}^2 & \cdots & \sum_{i=1}^{n} X_{i3}X_{ik} \\[0.3em]
+\vdots & \vdots & \vdots & \ddots & \vdots \\[0.3em]
+\sum_{i=1}^{n} X_{ik} & \sum_{i=1}^{n} X_{i2}X_{ik} & \sum_{i=1}^{n} X_{i3}X_{ik} & \cdots & \sum_{i=1}^{n} X_{ik}^2
+\end{bmatrix}_{k \times k}
+\end{equation}
+\end{definicionbox}
+
+\begin{teoremabox}[title=Propiedades de $\Xmat'\Xmat$]
+La matriz $\Xmat'\Xmat$ posee las siguientes propiedades:
+\begin{enumerate}[label=(\alph*)]
+  \item \textbf{Simetría:} $(\Xmat'\Xmat)' = \Xmat'\Xmat$
+  \item \textbf{Definida positiva} (bajo ausencia de multicolinealidad perfecta)
+  \item \textbf{Dimensión:} $(k \times k)$
+  \item Su determinante mide el grado de colinealidad:
+  \begin{equation}
+  |\Xmat'\Xmat| = 0 \iff \text{Multicolinealidad perfecta}
+  \end{equation}
+\end{enumerate}
+\end{teoremabox}
+
+\subsection{El Estimador de Mínimos Cuadrados Ordinarios}
+
+\begin{teoremabox}[title=Estimador MCO]
+El estimador de mínimos cuadrados ordinarios se obtiene minimizando la suma de residuales al cuadrado:
+\begin{equation}
+\min_{\bm{\beta}} \; \text{SRC} = \min_{\bm{\beta}} \; (\Ymat - \Xmat\bm{\beta})'(\Ymat - \Xmat\bm{\beta})
+\end{equation}
+
+La solución viene dada por:
+\begin{equation}\label{eq:beta_ols}
+\betahat = (\Xmat'\Xmat)^{-1}\Xmat'\Ymat
+\end{equation}
+
+\textbf{Condición de existencia:} $(\Xmat'\Xmat)^{-1}$ existe $\iff |\Xmat'\Xmat| \neq 0 \iff \text{rango}(\Xmat) = k$
+\end{teoremabox}
+
+\begin{notabox}
+\textbf{Efecto de la multicolinealidad en el estimador MCO:}
+
+Cuando $|\Xmat'\Xmat| \approx 0$:
+\begin{itemize}
+  \item Los elementos de $(\Xmat'\Xmat)^{-1}$ son muy grandes
+  \item $\betahat$ se vuelve altamente volátil
+  \item Pequeños cambios en $\Ymat$ provocan grandes cambios en $\betahat$
+  \item Problemas de precisión numérica en el cálculo computacional
+\end{itemize}
+\end{notabox}
+
+\subsection{Valores Predichos y Residuales}
+
+\begin{definicionbox}[title=Matrices de Proyección]
+Los valores predichos y residuales se expresan mediante matrices de proyección:
+
+\textbf{Valores predichos:}
+\begin{equation}
+\hat{\Ymat} = \Xmat\betahat = \Xmat(\Xmat'\Xmat)^{-1}\Xmat'\Ymat = \bm{P}\Ymat
+\end{equation}
+donde $\bm{P} = \Xmat(\Xmat'\Xmat)^{-1}\Xmat'$ es la \textbf{matriz sombrero} (\emph{hat matrix}).
+
+\textbf{Residuales:}
+\begin{equation}
+\hat{\umat} = \Ymat - \hat{\Ymat} = \Ymat - \bm{P}\Ymat = (\bm{I} - \bm{P})\Ymat = \bm{M}\Ymat
+\end{equation}
+donde $\bm{M} = \bm{I} - \bm{P}$ es la \textbf{matriz aniquiladora} (\emph{annihilator matrix}).
+\end{definicionbox}
+
+\begin{teoremabox}[title=Propiedades de las Matrices de Proyección]
+Las matrices $\bm{P}$ y $\bm{M}$ satisfacen:
+\begin{enumerate}[label=(\roman*)]
+  \item \textbf{Simetría:} $\bm{P}' = \bm{P}$, \quad $\bm{M}' = \bm{M}$
+  \item \textbf{Idempotencia:} $\bm{P}\bm{P} = \bm{P}$, \quad $\bm{M}\bm{M} = \bm{M}$
+  \item \textbf{Ortogonalidad:} $\bm{P}\bm{M} = \bm{M}\bm{P} = \bm{0}$
+  \item \textbf{Complementariedad:} $\bm{P} + \bm{M} = \bm{I}$
+  \item \textbf{Traza:} $\text{tr}(\bm{P}) = k$, \quad $\text{tr}(\bm{M}) = n - k$
+\end{enumerate}
+\end{teoremabox}
+
+% ===========================
+% CAPÍTULO 3: MATRIZ VAR-COV
+% ===========================
+\section{Matriz de Varianza-Covarianza y el Fenómeno de Explosión de Varianza}
+
+\subsection{Definición y Estructura}
+
+La matriz de varianza-covarianza de los estimadores MCO es fundamental para la inferencia estadística.
+
+\begin{definicionbox}[title=Matriz de Varianza-Covarianza de $\betahat$]
+Bajo los supuestos del modelo lineal clásico:
+\begin{equation}\label{eq:var_cov_beta}
+\Var(\betahat) = \sigma^2(\Xmat'\Xmat)^{-1}
+\end{equation}
+donde $\sigma^2 = \E(u_i^2)$ es la varianza homoscedástica del término de error.
+\end{definicionbox}
+
+\subsection{Expansión Explícita para el Modelo Trivariado}
+
+Para el modelo $Y = \beta_1 + \beta_2 X_2 + \beta_3 X_3 + u$:
+
+\begin{equation}\label{eq:var_cov_expandida}
+\sigma^2(\Xmat'\Xmat)^{-1} = \begin{bmatrix} 
+\Var(\hat{\beta}_1) & \Cov(\hat{\beta}_1, \hat{\beta}_2) & \Cov(\hat{\beta}_1, \hat{\beta}_3) \\[0.5em]
+\Cov(\hat{\beta}_2, \hat{\beta}_1) & \Var(\hat{\beta}_2) & \Cov(\hat{\beta}_2, \hat{\beta}_3) \\[0.5em]
+\Cov(\hat{\beta}_3, \hat{\beta}_1) & \Cov(\hat{\beta}_3, \hat{\beta}_2) & \Var(\hat{\beta}_3) 
+\end{bmatrix}
+\end{equation}
+
+\begin{notabox}
+\textbf{Propiedades de la matriz de varianza-covarianza:}
+\begin{itemize}
+  \item \textbf{Simetría:} $\Cov(\hat{\beta}_i, \hat{\beta}_j) = \Cov(\hat{\beta}_j, \hat{\beta}_i)$
+  \item \textbf{Diagonal:} Varianzas individuales
+  \item \textbf{Fuera de la diagonal:} Covarianzas entre pares de estimadores
+  \item \textbf{Definida positiva semidefinida} (bajo supuestos clásicos)
+\end{itemize}
+\end{notabox}
+
+\subsection{El Fenómeno de ``Explosión de Varianza''}
+
+\begin{teoremabox}[title=Fórmula de Varianza con Multicolinealidad]
+La varianza de un coeficiente individual puede descomponerse como:
+\begin{equation}\label{eq:var_explosion}
+\Var(\hat{\beta}_j) = \frac{\sigma^2}{\sum_{i=1}^{n} (X_{ij} - \bar{X}_j)^2} \cdot \frac{1}{1 - R_j^2} = \frac{\sigma^2}{\text{STC}_j} \times \FIV_j
+\end{equation}
+donde:
+\begin{itemize}
+  \item $\text{STC}_j = \sum_{i=1}^{n} (X_{ij} - \bar{X}_j)^2$ es la suma total de cuadrados de $X_j$
+  \item $R_j^2$ es el coeficiente de determinación de la \textbf{regresión auxiliar} de $X_j$ sobre todas las demás variables explicativas
+  \item $\FIV_j = (1 - R_j^2)^{-1}$ es el Factor de Inflación de Varianza
+\end{itemize}
+\end{teoremabox}
+
+\begin{proof}
+Partiendo de la expresión matricial $\Var(\betahat) = \sigma^2(\Xmat'\Xmat)^{-1}$, y utilizando el teorema de Frisch-Waugh-Lovell, la varianza del $j$-ésimo coeficiente puede expresarse como:
+
+\begin{equation}
+\Var(\hat{\beta}_j) = \frac{\sigma^2}{\hat{\umat}_j'\hat{\umat}_j}
+\end{equation}
+
+donde $\hat{\umat}_j$ son los residuales de la regresión de $X_j$ sobre las demás variables. El coeficiente de determinación de esta regresión auxiliar es:
+
+\begin{equation}
+R_j^2 = 1 - \frac{\hat{\umat}_j'\hat{\umat}_j}{(X_j - \bar{X}_j\bm{1})'(X_j - \bar{X}_j\bm{1})}
+\end{equation}
+
+Reorganizando:
+\begin{equation}
+\hat{\umat}_j'\hat{\umat}_j = (1 - R_j^2) \sum_{i=1}^{n}(X_{ij} - \bar{X}_j)^2
+\end{equation}
+
+Sustituyendo en la expresión de la varianza:
+\begin{equation}
+\Var(\hat{\beta}_j) = \frac{\sigma^2}{(1 - R_j^2) \sum_{i=1}^{n}(X_{ij} - \bar{X}_j)^2}
+\end{equation}
+\end{proof}
+
+\subsection{Análisis del Factor de Inflación}
+
+La \Cref{tab:fiv_valores} ilustra el efecto de diferentes niveles de colinealidad sobre la varianza.
+
+\begin{table}[H]
+\centering
+\caption{Relación entre $R_j^2$, FIV y Inflación de Varianza}
+\label{tab:fiv_valores}
+\begin{tabular}{cccl}
+\toprule
+$R_j^2$ & $\FIV_j$ & Factor de Inflación & Interpretación \\
+\midrule
+0.00 & 1.00 & $\times 1$ & Sin correlación (ideal) \\
+0.25 & 1.33 & $\times 1.33$ & Duplica la varianza en 33\% \\
+0.50 & 2.00 & $\times 2$ & Duplica la varianza \\
+0.75 & 4.00 & $\times 4$ & Cuadruplica la varianza \\
+0.80 & 5.00 & $\times 5$ & Quintuplica la varianza \\
+0.90 & 10.00 & $\times 10$ & \textcolor{red}{\textbf{Umbral crítico}} \\
+0.95 & 20.00 & $\times 20$ & Problema severo \\
+0.99 & 100.00 & $\times 100$ & \textcolor{red}{\textbf{Catastrófico}} \\
+1.00 & $\infty$ & $\infty$ & Colinealidad perfecta \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{advertenciabox}
+\textbf{Consecuencia directa del FIV alto:}
+
+Si $R_j^2 \to 1$, entonces:
+\begin{equation}
+\Var(\hat{\beta}_j) \to \infty \quad \implies \quad \text{se}(\hat{\beta}_j) \to \infty
+\end{equation}
+
+Esto invalida las pruebas de hipótesis $t$:
+\begin{equation}
+t = \frac{\hat{\beta}_j}{\text{se}(\hat{\beta}_j)} \to 0 \quad \text{(incluso si } \hat{\beta}_j \neq 0\text{)}
+\end{equation}
+
+Resultado: Se \textbf{acepta incorrectamente} $H_0: \beta_j = 0$ cuando el parámetro es significativo.
+\end{advertenciabox}
+
+\subsection{Estimación Práctica}
+
+En la práctica, $\sigma^2$ es desconocido y se estima mediante:
+
+\begin{equation}
+\hat{\sigma}^2 = s^2 = \frac{\sum_{i=1}^{n} \hat{u}_i^2}{n - k} = \frac{\text{SRC}}{n - k}
+\end{equation}
+
+Por lo tanto, la matriz de varianza-covarianza estimada es:
+
+\begin{equation}
+\widehat{\Var}(\betahat) = s^2(\Xmat'\Xmat)^{-1}
+\end{equation}
+
+Los errores estándar se obtienen de:
+
+\begin{equation}
+\text{se}(\hat{\beta}_j) = \sqrt{s^2 \cdot [(\Xmat'\Xmat)^{-1}]_{jj}}
+\end{equation}
+
+% ===========================
+% FIGURA: ILUSTRACIÓN FIV
+% ===========================
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2]
+% Ejes
+\draw[->] (0,0) -- (11,0) node[right] {$R_j^2$};
+\draw[->] (0,0) -- (0,8) node[above] {$\FIV_j$};
+
+% Curva del FIV
+\draw[thick, uptcazul, domain=0:0.95, samples=100, smooth] 
+  plot (\x*10, {1/(1-\x)});
+
+% Línea crítica FIV = 10
+\draw[dashed, red, thick] (0,{1/(1-0.9)}) -- (9,{1/(1-0.9)}) 
+  node[right] {$\FIV = 10$};
+
+% Zona de peligro
+\fill[red, opacity=0.1] (9,0) rectangle (10,8);
+
+% Etiquetas
+\node[below] at (0,0) {0};
+\node[below] at (5,0) {0.5};
+\node[below] at (9,0) {0.9};
+\node[below] at (10,0) {1.0};
+\node[left] at (0,{1/(1-0.9)}) {10};
+
+% Anotaciones
+\draw[->] (7,6) node[above] {\small Zona crítica} -- (9.5,4);
+\end{tikzpicture}
+\caption{Relación entre $R_j^2$ y el Factor de Inflación de Varianza}
+\label{fig:fiv_curva}
+\end{figure}
+
+% ===========================
+% CAPÍTULO 4: DIAGNÓSTICOS
+% ===========================
+\section{Diagnósticos de Multicolinealidad}
+
+\subsection{Síntomas Observables}
+
+\subsubsection{La Paradoja del $R^2$ Alto con Coeficientes No Significativos}
+
+Este es el síntoma más característico de multicolinealidad severa.
+
+\begin{ejemplobox}[title=Configuración Típica de Multicolinealidad]
+Consideremos el modelo:
+\begin{equation}
+Y = \beta_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 + u
+\end{equation}
+
+\textbf{Resultados contradictorios:}
+\begin{itemize}
+  \item Coeficiente de determinación: $R^2 = 0.95$ (muy alto)
+  \item Prueba $F$ global: $F = 150.3$ con $p < 0.001$ $\implies$ \textcolor{OliveGreen}{El modelo es significativo}
+  \item Pruebas $t$ individuales:
+  \begin{align*}
+  t(\beta_2) &= 1.45 \quad (p = 0.152) \implies \textcolor{red}{\text{No significativo}} \\
+  t(\beta_3) &= 0.87 \quad (p = 0.389) \implies \textcolor{red}{\text{No significativo}} \\
+  t(\beta_4) &= -1.12 \quad (p = 0.268) \implies \textcolor{red}{\text{No significativo}}
+  \end{align*}
+\end{itemize}
+
+\textbf{Diagnóstico:} Multicolinealidad severa entre $X_2$, $X_3$ y $X_4$.
+\end{ejemplobox}
+
+\subsubsection{Explicación Matemática}
+
+El estadístico $F$ prueba la hipótesis conjunta:
+\begin{equation}
+H_0: \beta_2 = \beta_3 = \beta_4 = 0
+\end{equation}
+mediante:
+\begin{equation}
+F = \frac{R^2/(k-1)}{(1-R^2)/(n-k)}
+\end{equation}
+
+Este puede ser grande incluso cuando los estadísticos $t$ individuales son pequeños debido a las \textbf{altas covarianzas} entre los estimadores, consecuencia de la multicolinealidad.
+
+\subsection{Factor de Inflación de Varianza (FIV)}
+
+\subsubsection{Definición y Cálculo}
+
+\begin{definicionbox}[title=Factor de Inflación de Varianza]
+Para cada variable $X_j$ ($j = 2, 3, \ldots, k$), el FIV se define como:
+\begin{equation}
+\FIV_j = \frac{1}{1 - R_j^2}
+\end{equation}
+donde $R_j^2$ se obtiene de la \textbf{regresión auxiliar:}
+\begin{equation}
+X_j = \delta_0 + \sum_{\substack{i=1 \\ i \neq j}}^{k} \delta_i X_i + v_j
+\end{equation}
+\end{definicionbox}
+
+\begin{algorithm}[H]
+\caption{Procedimiento para Calcular el FIV}
+\label{alg:calcular_fiv}
+\begin{algorithmic}[1]
+\Require Matriz de datos $\Xmat$ con $k$ variables explicativas
+\Ensure Vector de FIV para cada variable
+\For{$j = 2$ \textbf{to} $k$}
+  \State Regresar $X_j$ sobre todas las demás variables $X_i$ ($i \neq j$)
+  \State Calcular $R_j^2$ de esta regresión auxiliar
+  \State $\FIV_j \gets \frac{1}{1 - R_j^2}$
+  \If{$\FIV_j > 10$}
+    \State \textcolor{red}{Señalar variable $X_j$ como problemática}
+  \EndIf
+\EndFor
+\State \Return Vector $[\FIV_2, \FIV_3, \ldots, \FIV_k]$
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Criterios de Decisión}
+
+\begin{table}[H]
+\centering
+\caption{Criterios de Interpretación del FIV}
+\label{tab:criterios_fiv}
+\begin{tabular}{ccl}
+\toprule
+\textbf{Valor de $\FIV_j$} & \textbf{Diagnóstico} & \textbf{Acción Recomendada} \\
+\midrule
+$< 5$ & Colinealidad leve & Ninguna acción \\
+$5 - 10$ & Colinealidad moderada & Monitorear \\
+$> 10$ & \textcolor{red}{\textbf{Colinealidad grave}} & \textcolor{red}{\textbf{Acción correctiva urgente}} \\
+$> 100$ & Colinealidad catastrófica & Rediseñar modelo \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{notabox}
+\textbf{Nota sobre umbrales:}
+\begin{itemize}
+  \item Algunos autores usan el umbral de $\FIV > 5$
+  \item En series de tiempo, umbrales de 20-30 pueden ser tolerables
+  \item El contexto del problema debe considerarse
+\end{itemize}
+\end{notabox}
+
+\subsection{Factor de Tolerancia (TOL)}
+
+\begin{definicionbox}[title=Factor de Tolerancia]
+El factor de tolerancia es el inverso del FIV:
+\begin{equation}
+\TOL_j = \frac{1}{\FIV_j} = 1 - R_j^2
+\end{equation}
+\end{definicionbox}
+
+\begin{table}[H]
+\centering
+\caption{Interpretación del Factor de Tolerancia}
+\label{tab:tolerancia}
+\begin{tabular}{cl}
+\toprule
+\textbf{Valor de $\TOL_j$} & \textbf{Interpretación} \\
+\midrule
+$\to 1$ & Independencia total (ortogonalidad) \\
+$> 0.20$ & Aceptable \\
+$0.10 - 0.20$ & Zona de precaución \\
+$< 0.10$ & \textcolor{red}{\textbf{Problema serio}} \\
+$\to 0$ & Colinealidad perfecta \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Test de Farrar-Glauber}
+
+El test de Farrar-Glauber es un procedimiento de tres etapas para detectar, localizar y cuantificar la multicolinealidad.
+
+\subsubsection{Etapa 1: Test Chi-Cuadrado (Detección Global)}
+
+\begin{teoremabox}[title=Estadístico de Bartlett]
+El estadístico global para detectar la presencia de multicolinealidad es:
+\begin{equation}\label{eq:farrar_glauber}
+\chi^2_{\text{calc}} = -\left[ n - 1 - \frac{1}{6}(2k + 5) \right] \ln |R_{XX}|
+\end{equation}
+donde:
+\begin{itemize}
+  \item $n$ = número de observaciones
+  \item $k$ = número de variables explicativas (excluyendo intercepto)
+  \item $|R_{XX}|$ = determinante de la matriz de correlación entre regresores
+\end{itemize}
+
+\textbf{Distribución bajo $H_0$:}
+\begin{equation}
+\chi^2_{\text{calc}} \sim \chi^2_{\left[\frac{k(k-1)}{2}\right]}
+\end{equation}
+
+\textbf{Hipótesis:}
+\begin{align*}
+H_0 &: \text{Las variables explicativas son ortogonales (no hay multicolinealidad)} \\
+H_1 &: \text{Existe multicolinealidad}
+\end{align*}
+
+\textbf{Regla de decisión:}
+\begin{equation}
+\text{Rechazar } H_0 \text{ si } \chi^2_{\text{calc}} > \chi^2_{\alpha, gl}
+\end{equation}
+\end{teoremabox}
+
+\begin{ejemplobox}[title=Ejemplo Numérico Completo del Test de Farrar-Glauber]
+\textbf{Datos:}
+\begin{itemize}
+  \item $n = 50$ observaciones
+  \item $k = 3$ variables explicativas (excluyendo intercepto)
+  \item $|R_{XX}| = 0.10$
+\end{itemize}
+
+\textbf{Paso 1: Calcular el factor de corrección}
+\begin{align}
+\text{Factor} &= n - 1 - \frac{1}{6}(2k + 5) \nonumber \\
+&= 50 - 1 - \frac{1}{6}(2 \times 3 + 5) \nonumber \\
+&= 49 - \frac{11}{6} = 47.167
+\end{align}
+
+\textbf{Paso 2: Calcular el estadístico}
+\begin{align}
+\chi^2_{\text{calc}} &= -47.167 \times \ln(0.10) \nonumber \\
+&= -47.167 \times (-2.303) \nonumber \\
+&= 108.65
+\end{align}
+
+\textbf{Paso 3: Grados de libertad}
+\begin{equation}
+gl = \frac{k(k-1)}{2} = \frac{3(3-1)}{2} = 3
+\end{equation}
+
+\textbf{Paso 4: Valor crítico}
+Para $\alpha = 0.05$ y $gl = 3$:
+\begin{equation}
+\chi^2_{0.05, 3} = 7.815
+\end{equation}
+
+\textbf{Paso 5: Decisión}
+\begin{equation}
+\chi^2_{\text{calc}} = 108.65 > 7.815 = \chi^2_{\text{crítico}}
+\end{equation}
+
+\textbf{Conclusión:} Se rechaza $H_0$ $\implies$ \textcolor{red}{\textbf{Existe multicolinealidad significativa}}
+\end{ejemplobox}
+
+% Continuación del código LaTeX...
+
+\subsubsection{Etapa 2: Test F (Localización de Variables Problemáticas)}
+
+Una vez detectada la presencia de multicolinealidad, el siguiente paso es identificar cuáles variables específicas están involucradas.
+
+\begin{teoremabox}[title=Test F para Regresiones Auxiliares]
+Para cada variable $X_j$, ejecutamos la regresión auxiliar:
+\begin{equation}
+X_j = \delta_0 + \sum_{\substack{i=1 \\ i \neq j}}^{k} \delta_i X_i + v_j
+\end{equation}
+
+El estadístico $F$ para probar si $X_j$ está linealmente relacionada con las demás es:
+\begin{equation}
+F_j = \frac{R_j^2 / (k-2)}{(1 - R_j^2) / (n - k + 1)}
+\end{equation}
+
+\textbf{Distribución bajo $H_0$ (variable no colineal):}
+\begin{equation}
+F_j \sim F_{(k-2, n-k+1)}
+\end{equation}
+
+\textbf{Interpretación:}
+\begin{itemize}
+  \item Si $F_j$ es \textbf{significativo} $\implies$ $X_j$ está altamente correlacionada con otras variables
+  \item Si $F_j$ es \textbf{no significativo} $\implies$ $X_j$ no presenta colinealidad problemática
+\end{itemize}
+\end{teoremabox}
+
+\subsubsection{Etapa 3: Test $t$ (Identificación de Pares Colineales)}
+
+La tercera etapa identifica qué pares específicos de variables están causando el problema.
+
+\begin{definicionbox}[title=Correlación Parcial]
+La correlación parcial entre $X_i$ y $X_j$ controlando por las demás variables se calcula como:
+\begin{equation}
+r_{ij \cdot \text{resto}} = \frac{-c_{ij}}{\sqrt{c_{ii} c_{jj}}}
+\end{equation}
+donde $c_{ij}$ son los elementos de la matriz $(R_{XX})^{-1}$.
+\end{definicionbox}
+
+\begin{teoremabox}[title=Estadístico $t$ para Correlaciones Parciales]
+El estadístico para probar la significancia de la correlación parcial es:
+\begin{equation}
+t_{ij} = r_{ij \cdot \text{resto}} \sqrt{\frac{n - k}{1 - r_{ij \cdot \text{resto}}^2}}
+\end{equation}
+
+\textbf{Distribución:} $t_{ij} \sim t_{(n-k)}$
+
+\textbf{Interpretación:}
+Si $t_{ij}$ es significativo $\implies$ El par $(X_i, X_j)$ está altamente correlacionado
+\end{teoremabox}
+
+\subsection{Análisis de Valores Propios}
+
+El análisis espectral de la matriz $\Xmat'\Xmat$ proporciona información adicional sobre la estructura de la multicolinealidad.
+
+\subsubsection{Descomposición Espectral}
+
+\begin{definicionbox}[title=Descomposición en Valores Propios]
+La matriz $\Xmat'\Xmat$ (o su versión estandarizada) puede descomponerse como:
+\begin{equation}
+\Xmat'\Xmat = \bm{Q}\bm{\Lambda}\bm{Q}'
+\end{equation}
+donde:
+\begin{itemize}
+  \item $\bm{Q}$ es una matriz ortogonal $(k \times k)$ de vectores propios
+  \item $\bm{\Lambda} = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_k)$ con $\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_k \geq 0$
+\end{itemize}
+\end{definicionbox}
+
+\subsubsection{Número de Condición e Índice de Condición}
+
+\begin{definicionbox}[title=Número e Índice de Condición]
+El \textbf{número de condición} se define como:
+\begin{equation}
+\kappa = \frac{\lambda_{\max}}{\lambda_{\min}}
+\end{equation}
+
+El \textbf{índice de condición} es la raíz cuadrada del número de condición:
+\begin{equation}
+\text{CI} = \sqrt{\kappa} = \sqrt{\frac{\lambda_{\max}}{\lambda_{\min}}}
+\end{equation}
+\end{definicionbox}
+
+\begin{table}[H]
+\centering
+\caption{Criterios de Belsley, Kuh y Welsch para el Índice de Condición}
+\label{tab:indice_condicion}
+\begin{tabular}{cl}
+\toprule
+\textbf{Valor de CI} & \textbf{Diagnóstico} \\
+\midrule
+$< 10$ & Sin multicolinealidad \\
+$10 - 30$ & \textcolor{orange}{\textbf{Multicolinealidad moderada a fuerte}} \\
+$\geq 30$ & \textcolor{red}{\textbf{Multicolinealidad severa}} \\
+$> 100$ & Multicolinealidad extrema \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ===========================
+% CONTINUARÁ EN LA SIGUIENTE PARTE...
+% ===========================
+
+\section{Remedios y Soluciones para la Multicolinealidad}
+
+\subsection{Filosofía General: ¿Actuar o No Actuar?}
+
+\begin{notabox}
+La decisión de aplicar remedios depende fundamentalmente del \textbf{objetivo del análisis}:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Objetivo} & \textbf{¿Importa?} & \textbf{Acción} \\
+\midrule
+Predicción & NO & No hacer nada \\
+Inferencia & SÍ & Aplicar remedios \\
+Interpretación económica & SÍ & Aplicar remedios \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{notabox}
+
+\begin{advertenciabox}
+\textbf{Recordatorio fundamental:}
+
+La multicolinealidad \textbf{NO} sesga los estimadores MCO. Los estimadores permanecen:
+\begin{itemize}
+  \item \textcolor{OliveGreen}{\textbf{Insesgados:}} $\E(\betahat) = \bm{\beta}$
+  \item \textcolor{OliveGreen}{\textbf{BLUE:}} Siguen siendo los mejores estimadores lineales insesgados
+  \item \textcolor{red}{\textbf{Pero ineficientes:}} Alta varianza reduce precisión
+\end{itemize}
+\end{advertenciabox}
+
+% Bibliografía
+\newpage
+\printbibliography[heading=bibintoc,title={Referencias Bibliográficas}]
+
+% Apéndices
+\appendix
+\section{Tablas Estadísticas}
+
+\subsection{Distribución Chi-Cuadrado}
+
+\begin{table}[H]
+\centering
+\caption{Valores Críticos de $\chi^2$ para el Test de Farrar-Glauber}
+\begin{tabular}{cccc}
+\toprule
+\textbf{gl} & $\bm{\alpha = 0.10}$ & $\bm{\alpha = 0.05}$ & $\bm{\alpha = 0.01}$ \\
+\midrule
+1 & 2.706 & 3.841 & 6.635 \\
+2 & 4.605 & 5.991 & 9.210 \\
+3 & 6.251 & 7.815 & 11.345 \\
+4 & 7.779 & 9.488 & 13.277 \\
+5 & 9.236 & 11.070 & 15.086 \\
+6 & 10.645 & 12.592 & 16.812 \\
+10 & 15.987 & 18.307 & 23.209 \\
+15 & 22.307 & 24.996 & 30.578 \\
+20 & 28.412 & 31.410 & 37.566 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Código R para Diagnósticos}
+
+\begin{lstlisting}[style=Rstyle, caption={Cálculo de FIV en R}]
+# Cargar librería
+library(car)
+
+# Supongamos que tenemos un modelo
+modelo <- lm(Y ~ X2 + X3 + X4, data = datos)
+
+# Calcular FIV
+vif(modelo)
+
+# Calcular Tolerancia
+1 / vif(modelo)
+
+# Matriz de correlación
+cor(datos[, c("X2", "X3", "X4")])
+
+# Determinante de la matriz de correlación
+det(cor(datos[, c("X2", "X3", "X4")]))
+\end{lstlisting}
+
+\end{document}

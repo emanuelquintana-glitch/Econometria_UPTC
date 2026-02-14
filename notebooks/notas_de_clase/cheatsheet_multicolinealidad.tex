@@ -1,0 +1,783 @@
+\documentclass[6pt, landscape]{extarticle}
+
+% ========================================
+% PAQUETES ESENCIALES
+% ========================================
+\usepackage[landscape, margin=0.3in, top=0.4in, bottom=0.3in]{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{graphicx}
+
+% ========================================
+% TIPOGRAFÍA
+% ========================================
+\usepackage{tgtermes} 
+\usepackage[scaled=0.85]{helvet}
+
+% ========================================
+% COLORES UPTC
+% ========================================
+\definecolor{DeepBlack}{HTML}{1A1A1A}
+\definecolor{GoldLeaf}{HTML}{A68966}
+\definecolor{MITRed}{HTML}{A31F34}
+\definecolor{UPTCAzul}{HTML}{003366}
+\definecolor{BoxBg}{HTML}{F8F9FA}
+\definecolor{FormulaBox}{HTML}{FFF8E7}
+\definecolor{WarningBox}{HTML}{FFF0F0}
+
+% ========================================
+% ESTÉTICA DE SECCIONES
+% ========================================
+\titleformat{\section}
+  {\color{UPTCAzul}\normalfont\small\bfseries\sffamily\centering}
+  {}{0em}{}
+  
+\newcommand{\sectionline}{%
+  \nopagebreak\vspace{-4pt}\noindent\textcolor{GoldLeaf}{\rule{\linewidth}{1pt}}\par\vspace{2pt}%
+}
+
+\titleformat{\subsection}
+  {\color{MITRed}\normalfont\scriptsize\bfseries\sffamily}
+  {$\blacktriangleright$}{0.3em}{}
+
+% ========================================
+% CAJAS PERSONALIZADAS
+% ========================================
+\newtcolorbox{formulabox}{
+  colback=FormulaBox,
+  colframe=GoldLeaf,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=2pt,
+  right=2pt,
+  top=1pt,
+  bottom=1pt
+}
+
+\newtcolorbox{warningbox}{
+  colback=WarningBox,
+  colframe=MITRed,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=2pt,
+  right=2pt,
+  top=1pt,
+  bottom=1pt
+}
+
+% ========================================
+% AJUSTES
+% ========================================
+\setlist[itemize]{leftmargin=*, noitemsep, topsep=0pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=*, noitemsep, topsep=0pt, parsep=0pt}
+\setlength{\columnseprule}{0.3pt}
+\def\columnseprulecolor{\color{black!15}}
+\setlength{\columnsep}{1.2em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+
+% ========================================
+% COMANDOS MATEMÁTICOS
+% ========================================
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\FIV}{\text{FIV}}
+\newcommand{\TOL}{\text{TOL}}
+\newcommand{\Xmat}{\mathbf{X}}
+\newcommand{\Ymat}{\mathbf{Y}}
+\newcommand{\betahat}{\hat{\boldsymbol{\beta}}}
+
+% ========================================
+% INICIO DEL DOCUMENTO
+% ========================================
+\begin{document}
+
+\begin{center}
+    {\sffamily\fontsize{6}{7}\selectfont \color{gray} 
+    DEPARTAMENTO DE ECONOMÍA \textbullet\ UPTC TUNJA \textbullet\ ECONOMETRÍA AVANZADA} \\[0.3em]
+    {\rmfamily\itshape\fontsize{22}{22}\selectfont \color{DeepBlack} 
+    Multicolinealidad: Teoría, Diagnóstico y Remedios} \\[0.2em]
+    {\color{GoldLeaf}\rule{0.5\textwidth}{1.2pt}} \\[0.3em]
+    {\sffamily\bfseries\fontsize{6}{7}\selectfont 
+    VOL. III --- FEBRERO 2026 --- PREPARADO POR EMANUEL}
+\end{center}
+
+\vspace{-8pt}
+
+\begin{multicols*}{4}
+\raggedcolumns
+
+% ========================================
+% COLUMNA 1
+% ========================================
+
+\section{I. FUNDAMENTOS TEÓRICOS}
+\sectionline
+
+\subsection{DEFINICIÓN FORMAL}
+
+La multicolinealidad ocurre cuando:
+\begin{formulabox}
+\vspace{-3pt}
+$$\exists \; \lambda_1, \ldots, \lambda_k \in \mathbb{R} : \sum_{j=1}^{k} \lambda_j \Xmat_j \approx \mathbf{0}$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Consecuencia directa:}
+\begin{itemize}
+    \item $\det(\Xmat'\Xmat) \approx 0$
+    \item $(\Xmat'\Xmat)^{-1}$ tiene elementos grandes
+    \item $\Var(\betahat) \to \infty$
+\end{itemize}
+
+\subsection{TIPOS DE MULTICOLINEALIDAD}
+
+\textbf{1. Perfecta:} $|\Xmat'\Xmat| = 0$
+\begin{itemize}
+    \item Estimadores indeterminados
+    \item $\text{se}(\betahat) = \infty$
+    \item Imposible calcular MCO
+\end{itemize}
+
+\textbf{2. Imperfecta:} $|\Xmat'\Xmat| \approx 0$
+\begin{itemize}
+    \item Estimadores calculables
+    \item Varianzas muy grandes
+    \item Alta inestabilidad
+\end{itemize}
+
+\subsection{CAUSAS COMUNES}
+
+\begin{enumerate}
+    \item \textbf{Series de tiempo}: Variables con tendencias comunes
+    \item \textbf{Micronumerosidad}: $n$ pequeño vs. $k$ grande
+    \item \textbf{Términos polinomiales}: $X, X^2, X^3$ correlacionados
+    \item \textbf{Especificación}: Variables que miden lo mismo
+    \item \textbf{Muestreo}: Rango limitado de regresores
+\end{enumerate}
+
+\subsection{MATRIZ DE INFORMACIÓN}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\Xmat'\Xmat = \begin{bmatrix}
+n & \sum X_2 & \sum X_3 \\
+\sum X_2 & \sum X_2^2 & \sum X_2X_3 \\
+\sum X_3 & \sum X_2X_3 & \sum X_3^2
+\end{bmatrix}$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Propiedades clave:}
+\begin{itemize}
+    \item Simétrica: $(\Xmat'\Xmat)' = \Xmat'\Xmat$
+    \item Dimensión: $(k \times k)$
+    \item Definida positiva si no hay colinealidad
+\end{itemize}
+
+\subsection{ESTIMADOR MCO}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\betahat = (\Xmat'\Xmat)^{-1}\Xmat'\Ymat$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Condición de existencia:}
+$$(\Xmat'\Xmat)^{-1} \text{ existe } \iff \text{rango}(\Xmat) = k$$
+
+% ========================================
+% COLUMNA 2
+% ========================================
+
+\section{II. MATRIZ VAR-COV Y FIV}
+\sectionline
+
+\subsection{VARIANZA DE LOS ESTIMADORES}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\Var(\betahat) = \sigma^2(\Xmat'\Xmat)^{-1}$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Expansión para 3 variables:}
+\begin{formulabox}
+\vspace{-3pt}
+{\scriptsize
+$$
+\begin{aligned}
+&\sigma^2(\Xmat'\Xmat)^{-1} = \\
+&\begin{bmatrix}
+\Var(\hat{\beta}_1) & \Cov(\hat{\beta}_1,\hat{\beta}_2) & \Cov(\hat{\beta}_1,\hat{\beta}_3) \\
+\Cov(\hat{\beta}_2,\hat{\beta}_1) & \Var(\hat{\beta}_2) & \Cov(\hat{\beta}_2,\hat{\beta}_3) \\
+\Cov(\hat{\beta}_3,\hat{\beta}_1) & \Cov(\hat{\beta}_3,\hat{\beta}_2) & \Var(\hat{\beta}_3)
+\end{bmatrix}
+\end{aligned}
+$$
+}
+\vspace{-3pt}
+\end{formulabox}
+
+
+\subsection{EXPLOSIÓN DE VARIANZA}
+
+\begin{warningbox}
+\textbf{Fórmula crítica:}
+\vspace{-3pt}
+$$\Var(\hat{\beta}_j) = \frac{\sigma^2}{\sum x_j^2} \cdot \underbrace{\frac{1}{1-R_j^2}}_{\FIV_j}$$
+\vspace{-3pt}
+\end{warningbox}
+
+Donde:
+\begin{itemize}
+    \item $R_j^2$ = $R^2$ de regresión auxiliar de $X_j$ sobre demás
+    \item $\FIV_j$ = Factor de Inflación de Varianza
+\end{itemize}
+
+\subsection{TABLA FIV vs. $R_j^2$}
+
+\begin{center}
+{\tiny
+\begin{tabular}{@{}ccc@{}}
+\toprule
+$R_j^2$ & $\FIV_j$ & Inflación \\
+\midrule
+0.00 & 1.0 & Ninguna \\
+0.50 & 2.0 & $\times 2$ \\
+0.80 & 5.0 & $\times 5$ \\
+\rowcolor{WarningBox}
+0.90 & 10.0 & \textbf{CRÍTICO} \\
+0.95 & 20.0 & $\times 20$ \\
+\rowcolor{WarningBox}
+0.99 & 100.0 & \textbf{CATASTRÓFICO} \\
+1.00 & $\infty$ & Perfecta \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\subsection{FACTOR DE TOLERANCIA}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\TOL_j = \frac{1}{\FIV_j} = 1 - R_j^2$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Interpretación:}
+\begin{itemize}
+    \item $\TOL \to 1$: Independencia total
+    \item $\TOL < 0.10$: \textcolor{red}{\textbf{Problema serio}}
+    \item $\TOL \to 0$: Colinealidad perfecta
+\end{itemize}
+
+\subsection{EFECTO EN PRUEBAS $t$}
+
+Si $R_j^2 \to 1$:
+\begin{formulabox}
+\vspace{-3pt}
+$$\text{se}(\hat{\beta}_j) \to \infty \implies t = \frac{\hat{\beta}_j}{\text{se}(\hat{\beta}_j)} \to 0$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Resultado:} Se acepta $H_0: \beta_j = 0$ incorrectamente.
+
+% ========================================
+% COLUMNA 3
+% ========================================
+
+\section{III. DIAGNÓSTICO COMPLETO}
+\sectionline
+
+\subsection{SÍNTOMAS OBSERVABLES}
+
+\textbf{1. Paradoja $R^2$ alto - $t$ bajos}
+\begin{itemize}
+    \item $R^2 > 0.90$ (modelo global significativo)
+    \item $F$ significativo
+    \item $t$ individuales NO significativos
+\end{itemize}
+
+\textbf{2. Sensibilidad extrema}
+\begin{itemize}
+    \item Coeficientes cambian drásticamente
+    \item Signos incorrectos económicamente
+    \item Inestabilidad al agregar/quitar datos
+\end{itemize}
+
+\textbf{3. Intervalos amplios}
+\begin{itemize}
+    \item IC muy anchos
+    \item Errores estándar grandes
+\end{itemize}
+
+\subsection{CÁLCULO DEL FIV}
+
+\textbf{Procedimiento paso a paso:}
+
+\textbf{Paso 1:} Para cada $X_j$, regresar:
+\begin{formulabox}
+\vspace{-3pt}
+$$X_j = \delta_0 + \sum_{i \neq j} \delta_i X_i + v_j$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Paso 2:} Obtener $R_j^2$ de esta regresión
+
+\textbf{Paso 3:} Calcular:
+$$\FIV_j = \frac{1}{1-R_j^2}$$
+
+\textbf{Paso 4:} Interpretar según criterios
+
+\subsection{CRITERIOS DE DECISIÓN FIV}
+
+\begin{center}
+{\scriptsize
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Valor} & \textbf{Acción} \\
+\midrule
+$\FIV < 5$ & Ninguna acción \\
+$5 \leq \FIV < 10$ & Monitorear \\
+\rowcolor{WarningBox}
+$\FIV \geq 10$ & \textbf{ACCIÓN URGENTE} \\
+$\FIV > 100$ & Rediseñar modelo \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\subsection{TEST DE FARRAR-GLAUBER}
+
+\textbf{Etapa 1: Test $\chi^2$ (Global)}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\chi^2_{calc} = -\left[n - 1 - \frac{1}{6}(2k+5)\right] \ln|R_{XX}|$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Distribución:} $\chi^2_{calc} \sim \chi^2_{[k(k-1)/2]}$
+
+\textbf{Decisión:} Rechazar $H_0$ si $\chi^2_{calc} > \chi^2_{\alpha,gl}$
+
+\textbf{Etapa 2: Test $F$ (Localización)}
+
+Para cada variable:
+$$F_j = \frac{R_j^2/(k-2)}{(1-R_j^2)/(n-k+1)} \sim F_{(k-2,n-k+1)}$$
+
+\textbf{Etapa 3: Test $t$ (Pares)}
+
+$$t_{ij} = r_{ij \cdot resto} \sqrt{\frac{n-k}{1-r_{ij \cdot resto}^2}}$$
+
+% ========================================
+% COLUMNA 4
+% ========================================
+
+\subsection{ÍNDICE DE CONDICIÓN}
+
+\textbf{Número de condición:}
+\begin{formulabox}
+\vspace{-3pt}
+$$\kappa = \frac{\lambda_{max}}{\lambda_{min}}$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Índice de condición:}
+\begin{formulabox}
+\vspace{-3pt}
+$$CI = \sqrt{\kappa} = \sqrt{\frac{\lambda_{max}}{\lambda_{min}}}$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Criterios (Belsley, Kuh, Welsch):}
+\begin{itemize}
+    \item $CI < 10$: Sin problema
+    \item $10 \leq CI < 30$: Moderada a fuerte
+    \item $CI \geq 30$: \textcolor{red}{\textbf{Severa}}
+\end{itemize}
+
+\subsection{REGLA DE KLEIN}
+
+Multicolinealidad problemática si:
+\begin{formulabox}
+\vspace{-3pt}
+$$R_j^2 > R^2_{modelo}$$
+\vspace{-3pt}
+\end{formulabox}
+
+\subsection{CORRELACIONES SIMPLES}
+
+\textbf{Regla práctica:}
+$$|r_{ij}| > 0.80 \implies \text{Bandera roja}$$
+
+\begin{warningbox}
+\textbf{ADVERTENCIA:} Correlaciones bajas NO garantizan ausencia de multicolinealidad múltiple.
+\end{warningbox}
+
+\section{IV. REMEDIOS Y SOLUCIONES}
+\sectionline
+
+\subsection{FILOSOFÍA: ¿ACTUAR?}
+
+\begin{center}
+{\scriptsize
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Objetivo} & \textbf{¿Importa?} & \textbf{Acción} \\
+\midrule
+Predicción & NO & No hacer nada \\
+Inferencia & SÍ & Remedios \\
+Interpretación & SÍ & Remedios \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\begin{warningbox}
+\textbf{RECORDAR:} Multicolinealidad NO sesga, solo aumenta varianza.
+\end{warningbox}
+
+\subsection{1. INFORMACIÓN A PRIORI}
+
+\textbf{Ejemplo: Cobb-Douglas}
+
+Si teoría dice $\beta_2 + \beta_3 = 1$:
+\begin{formulabox}
+\vspace{-3pt}
+$$\ln(Q/L) = \beta_1 + \beta_2 \ln(K/L) + u$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Ventaja:} Elimina completamente el problema.
+
+\subsection{2. PRIMERAS DIFERENCIAS}
+
+Para series de tiempo:
+\begin{formulabox}
+\vspace{-3pt}
+$$\Delta Y_t = \beta_2 \Delta X_{2t} + \beta_3 \Delta X_{3t} + \Delta u_t$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Elimina:} Tendencias comunes
+
+\textbf{Costo:} Pérdida de info de niveles
+
+\subsection{3. RAZONES/COCIENTES}
+
+En lugar de $Q = \beta_2 K + \beta_3 L$:
+$$\frac{Q}{L} = \beta_2 \frac{K}{L} + \beta_3$$
+
+\subsection{4. ELIMINAR VARIABLES}
+
+\textbf{Criterio:} Identificar variable con $\FIV_{max}$ y eliminar
+
+\begin{warningbox}
+\textbf{RIESGO:} Sesgo de especificación si variable es relevante
+\end{warningbox}
+
+\subsection{5. MÁS DATOS}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\Var(\hat{\beta}_j) \propto \frac{1}{n}$$
+\vspace{-3pt}
+\end{formulabox}
+
+Para reducir $\text{se}$ a la mitad: $n_{nuevo} = 4n_{original}$
+
+\subsection{6. REGRESIÓN RIDGE}
+
+\textbf{Estimador Ridge:}
+\begin{formulabox}
+\vspace{-3pt}
+$$\betahat_R = (\Xmat'\Xmat + \lambda I)^{-1}\Xmat'\Ymat$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Trade-off:}
+\begin{itemize}
+    \item \textcolor{red}{Introduce sesgo}
+    \item \textcolor{OliveGreen}{Reduce varianza}
+    \item $\lambda > 0$ controla balance
+\end{itemize}
+
+\subsection{7. LASSO}
+
+Minimiza:
+$$\sum (Y_i - \Xmat_i'\boldsymbol{\beta})^2 + \lambda \sum |\beta_j|$$
+
+\textbf{Ventaja:} Selección automática de variables (coefs = 0)
+
+\subsection{8. PCA}
+
+\textbf{Componentes principales:}
+$$PC_j = \sum_{i=1}^k a_{ij} X_i$$
+
+\textbf{Ventaja:} Ortogonalidad perfecta
+
+\textbf{Desventaja:} \textcolor{red}{Pérdida de interpretabilidad}
+
+\section{V. APLICACIONES}
+\sectionline
+
+\subsection{MODELO INFLACIÓN MONETARISTA}
+
+\begin{formulabox}
+\vspace{-3pt}
+$$\dot{P}_t = \alpha + \sum_{i=0}^n m_i \dot{M}_{t-i} + u_t$$
+\vspace{-3pt}
+\end{formulabox}
+
+\textbf{Problema:} $\text{Corr}(\dot{M}_t, \dot{M}_{t-1}) \approx 0.85$
+
+\textbf{Solución:} Rezagos de Almon
+$$m_i = \gamma_0 + \gamma_1 i + \gamma_2 i^2$$
+
+\textbf{Resultado empírico:} $\sum m_i \approx 1.03$ (neutralidad)
+
+\subsection{FUNCIÓN COBB-DOUGLAS}
+
+\textbf{Original:}
+$$\ln Q = \beta_1 + \beta_2 \ln K + \beta_3 \ln L + u$$
+
+\textbf{Problema:} $\text{Corr}(\ln K, \ln L) > 0.90$
+
+\textbf{Remedios:}
+\begin{enumerate}
+    \item Restricción: $\ln(Q/L) = \beta_1 + \beta_2 \ln(K/L) + u$
+    \item Diferencias: $\Delta \ln Q_t = \beta_2 \Delta \ln K_t + \beta_3 \Delta \ln L_t$
+\end{enumerate}
+
+\section{VI. CÓDIGO PRÁCTICO}
+\sectionline
+
+\subsection{R (TIDYVERSE)}
+
+{\scriptsize\ttfamily
+\textbf{Calcular FIV:}\\
+library(car)\\
+vif(modelo)\\[3pt]
+\textbf{Tolerancia:}\\
+1/vif(modelo)\\[3pt]
+\textbf{Ridge:}\\
+library(glmnet)\\
+ridge <- glmnet(x, y, alpha=0)\\[3pt]
+\textbf{LASSO:}\\
+lasso <- glmnet(x, y, alpha=1)
+}
+
+\subsection{PYTHON (STATSMODELS)}
+
+{\scriptsize\ttfamily
+\textbf{FIV:}\\
+from statsmodels.stats\\
+.outliers\_influence import\\
+variance\_inflation\_factor\\[3pt]
+vif = [variance\_inflation\_factor\\
+(X.values, i) for i in range(X.shape[1])]\\[3pt]
+\textbf{Ridge/LASSO:}\\
+from sklearn.linear\_model\\
+import Ridge, Lasso
+}
+
+\subsection{STATA}
+
+{\scriptsize\ttfamily
+\textbf{VIF:}\\
+estat vif\\[3pt]
+\textbf{Restricciones:}\\
+constraint define 1 beta2+beta3=1\\
+cnsreg y x1 x2, constraints(1)
+}
+
+\section{VII. REFERENCIA RÁPIDA}
+\sectionline
+
+\subsection{FÓRMULAS ESENCIALES}
+
+\begin{center}
+{\tiny
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Concepto} & \textbf{Fórmula} \\
+\midrule
+MCO & $\betahat = (\Xmat'\Xmat)^{-1}\Xmat'\Ymat$ \\
+Var-Cov & $\Var(\betahat) = \sigma^2(\Xmat'\Xmat)^{-1}$ \\
+FIV & $\FIV_j = 1/(1-R_j^2)$ \\
+TOL & $\TOL_j = 1-R_j^2$ \\
+F-G & $\chi^2 = -[n-1-\frac{1}{6}(2k+5)]\ln|R_{XX}|$ \\
+CI & $CI = \sqrt{\lambda_{max}/\lambda_{min}}$ \\
+Ridge & $\betahat_R = (\Xmat'\Xmat + \lambda I)^{-1}\Xmat'\Ymat$ \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\subsection{CHECKLIST DIAGNÓSTICO}
+
+\begin{enumerate}
+    \item[$\square$] Calcular matriz correlación
+    \item[$\square$] Verificar $|r_{ij}| > 0.80$
+    \item[$\square$] Calcular FIV para cada variable
+    \item[$\square$] Identificar $\FIV > 10$
+    \item[$\square$] Test Farrar-Glauber (si necesario)
+    \item[$\square$] Análisis de valores propios (CI)
+    \item[$\square$] Regresiones auxiliares
+    \item[$\square$] Decidir remedio apropiado
+\end{enumerate}
+
+\subsection{DECISIONES CLAVE}
+
+\textbf{Si $\FIV > 10$:}
+\begin{enumerate}
+    \item ¿Objetivo predicción? → No hacer nada
+    \item ¿Teoría sugiere restricción? → Info a priori
+    \item ¿Series de tiempo? → Diferenciación
+    \item ¿Variable redundante? → Eliminar
+    \item ¿Ninguno aplica? → Ridge/LASSO
+\end{enumerate}
+
+
+\section{VIII. CASOS ESPECIALES}
+\sectionline
+
+\subsection{TRAMPA VARIABLE DUMMY}
+
+\textbf{Error común:}
+$$Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + u$$
+donde $D_1 + D_2 = 1$ (intercepto)
+
+\textbf{Solución:} Omitir una categoría
+
+\subsection{TÉRMINOS POLINOMIALES}
+
+Para $Y = \beta_1 + \beta_2 X + \beta_3 X^2 + u$:
+
+\textbf{Centrar:} $x^* = X - \bar{X}$
+$$Y = \beta_1^* + \beta_2^* x^* + \beta_3^* (x^*)^2 + u$$
+
+\subsection{VARIABLES DE ESCALA}
+
+Si $X_2 = c \cdot X_3$ (ej: kg vs. libras):
+
+\textbf{Colinealidad perfecta} → Usar solo una
+
+\section{IX. INTERPRETACIÓN}
+\sectionline
+
+\subsection{NATURALEZA DEL PROBLEMA}
+
+\begin{warningbox}
+La multicolinealidad es problema de:
+\begin{itemize}
+    \item \textbf{GRADO} (no existencia)
+    \item \textbf{MUESTRA} (no población)
+    \item \textbf{PRECISIÓN} (no sesgo)
+\end{itemize}
+\end{warningbox}
+
+\subsection{NO AFECTA}
+
+\begin{itemize}
+    \item Insesgadez: $\E(\betahat) = \boldsymbol{\beta}$
+    \item Consistencia
+    \item Propiedad BLUE
+    \item Predicción (si estructura persiste)
+    \item $R^2$ global
+\end{itemize}
+
+\subsection{SÍ AFECTA}
+
+\begin{itemize}
+    \item Varianzas individuales ↑
+    \item Errores estándar ↑
+    \item Intervalos de confianza ↑
+    \item Poder de pruebas $t$ ↓
+    \item Estabilidad numérica ↓
+\end{itemize}
+
+\subsection{CONTEXTO ECONÓMICO}
+
+\textbf{Pregunta clave:} ¿Qué necesito?
+
+\begin{center}
+{\scriptsize
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Si necesito...} & \textbf{Entonces...} \\
+\midrule
+Predicción $\hat{Y}$ & Tolerar colinealidad \\
+Inferencia sobre $\beta_j$ & Aplicar remedios \\
+Interpretación causal & Remedios + teoría \\
+Elasticidades precisas & Remedios esenciales \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\section{X. NOTAS FINALES}
+\sectionline
+
+\subsection{MITOS COMUNES}
+
+\begin{enumerate}
+    \item \textcolor{red}{FALSO:} ``Alta correlación simple = multicolinealidad''
+    
+    \textcolor{OliveGreen}{VERDAD:} Puede haber multicolinealidad con $r_{ij}$ bajos
+    
+    \item \textcolor{red}{FALSO:} ``Multicolinealidad sesga estimadores''
+    
+    \textcolor{OliveGreen}{VERDAD:} Solo aumenta varianza, no sesgo
+    
+    \item \textcolor{red}{FALSO:} ``Siempre hay que corregirla''
+    
+    \textcolor{OliveGreen}{VERDAD:} Depende del objetivo
+\end{enumerate}
+
+\subsection{BIBLIOGRAFÍA ESENCIAL}
+
+\begin{itemize}
+    \item \textbf{Gujarati \& Porter} (2009): Cap. 10
+    \item \textbf{Wooldridge} (2015): Cap. 3-4
+    \item \textbf{Greene} (2018): Sec. 4.6
+    \item \textbf{Belsley et al.} (1980): Texto completo
+\end{itemize}
+
+\subsection{VALORES CRÍTICOS}
+
+\textbf{$\chi^2$ (Farrar-Glauber, $\alpha=0.05$):}
+
+{\tiny
+\begin{tabular}{@{}cc@{}}
+gl=3: 7.815 & gl=6: 12.592 \\
+gl=10: 18.307 & gl=15: 24.996 \\
+\end{tabular}
+}
+
+\vspace{6pt}
+
+\begin{center}
+{\scriptsize\sffamily
+\textcolor{gray}{---}\\
+\textbf{UPTC Tunja} | Econometría Avanzada\\
+Emanuel | Febrero 2026\\
+\texttt{github.com/uptc-econometrics}
+}
+\end{center}
+
+\end{multicols*}
+
+\end{document}
