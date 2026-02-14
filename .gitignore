@@ -1,6 +1,31 @@
+# LaTeX - Archivos temporales de compilación
+*.aux
 *.log
-*.csv
-*.xlsx
-.ipynb_checkpoints/
+*.toc
+*.out
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bcf
+*.run.xml
+*.lof
+*.lot
+missfont.log
+
+# Python & Jupyter
 __pycache__/
-output/
+*.py[cod]
+.ipynb_checkpoints/
+.env
+.venv/
+env/
+
+# R
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Sistema y Otros
+.DS_Store
+Thumbs.db
