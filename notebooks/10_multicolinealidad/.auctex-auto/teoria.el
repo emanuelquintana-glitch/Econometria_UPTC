@@ -1,12 +1,12 @@
 ;; -*- lexical-binding: t; -*-
 
 (TeX-add-style-hook
- "ejercicios_soluciones"
+ "teoria"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-class-options
                      '(("article" "12pt" "a4paper")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("inputenc" "utf8") ("fontenc" "T1") ("babel" "") ("amsmath" "") ("amsfonts" "") ("amssymb" "") ("amsthm" "") ("mathtools" "") ("bm" "") ("geometry" "") ("booktabs" "") ("array" "") ("colortbl" "") ("xcolor" "") ("fancyhdr" "") ("titlesec" "") ("tcolorbox" "") ("enumitem" "") ("hyperref" "")))
+                     '(("inputenc" "utf8") ("fontenc" "T1") ("babel" "spanish" "") ("amsmath" "") ("amsfonts" "") ("amssymb" "") ("amsthm" "") ("mathtools" "") ("bm" "") ("geometry" "") ("booktabs" "") ("array" "") ("colortbl" "") ("xcolor" "") ("fancyhdr" "") ("titlesec" "") ("tcolorbox" "") ("enumitem" "") ("hyperref" "")))
    (TeX-run-style-hooks
     "latex2e"
     "article"

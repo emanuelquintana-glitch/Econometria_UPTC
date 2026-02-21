@@ -561,24 +561,27 @@ El coeficiente de correlación es exactamente 1, confirmando la
 Intentemos aplicar la Regla de Cramer para obtener $\hat{\beta}_2$:
 
 \begin{equation}
+\begin{aligned}
   \hat{\beta}_2
-  = \frac{\left(\sxdy\right)\!\left(\sxtres\right)
-          - \left(\sxty\right)\!\left(\sxdxt\right)}{D}
-  = \frac{(220)(440) - (440)(220)}{0}
-  = \frac{96\,800 - 96\,800}{0}
-  = \frac{0}{0}
+  &= \frac{\left(\sxdy\right)\!\left(\sxtres\right) - \left(\sxty\right)\!\left(\sxdxt\right)}{D} \\
+  &= \frac{(220)(440) - (440)(220)}{0} \\
+  &= \frac{96\,800 - 96\,800}{0} \\
+  &= \frac{0}{0}
+\end{aligned}
 \end{equation}
 
 Análogamente para $\hat{\beta}_3$:
 
 \begin{equation}
+\begin{aligned}
   \hat{\beta}_3
-  = \frac{\left(\sxty\right)\!\left(\sxdos\right)
-          - \left(\sxdy\right)\!\left(\sxdxt\right)}{D}
-  = \frac{(440)(110) - (220)(220)}{0}
-  = \frac{48\,400 - 48\,400}{0}
-  = \frac{0}{0}
+  &= \frac{\left(\sxty\right)\!\left(\sxdos\right) - \left(\sxdy\right)\!\left(\sxdxt\right)}{D} \\
+  &= \frac{(440)(110) - (220)(220)}{0} \\
+  &= \frac{48\,400 - 48\,400}{0} \\
+  &= \frac{0}{0}
+\end{aligned}
 \end{equation}
+
 
 \begin{alerta}
 La expresión $\dfrac{0}{0}$ es una \textbf{indeterminación matemática}: no posee un
@@ -822,6 +825,366 @@ la desigualdad de Cauchy-Schwarz) como de forma \textbf{particular} (cálculo
 numérico explícito con los 11 datos), que la multicolinealidad perfecta hace
 \textbf{algebraica y estadísticamente imposible} la estimación de los $k$
 coeficientes de regresión mediante MCO.
+\end{resultado}
+
+
+%=============================================================================
+%  PROBLEMA 10.2 — FUNCIONES ESTIMABLES BAJO MULTICOLINEALIDAD PERFECTA
+%=============================================================================
+
+\newpage
+\section{Problema 10.2: Funciones Estimables bajo Multicolinealidad Perfecta}
+
+\begin{resultado}[title=Enunciado~10.2 (Gujarati \& Porter)]
+Considere el mismo conjunto de datos hipotéticos de la Tabla~10.11 (los 11 pares
+$(Y, X_2, X_3)$ estudiados en el Problema~10.1).  Se desea ajustar el modelo:
+\[
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+\]
+\textbf{(a)} ¿Puede estimar las tres incógnitas $\beta_1, \beta_2, \beta_3$? ¿Por qué?\\[4pt]
+\textbf{(b)} Si no se puede, ¿qué \emph{funciones lineales} de estos parámetros
+(funciones estimables) sí pueden estimarse?  Muestre los cálculos necesarios.
+\end{resultado}
+
+%-----------------------------------------------------------------------------
+\subsection{Parte (a): Imposibilidad de Estimación Individual}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Argumento: La Dependencia Lineal Perfecta}
+
+Del análisis del Problema~10.1 sabemos que los datos satisfacen:
+
+\begin{equation}
+  X_{3i} = 2X_{2i} - 1 = 2X_{2i} - 1\cdot X_{1i}, \qquad \forall\,i=1,\ldots,11
+\end{equation}
+
+donde $X_{1i}\equiv 1$ es la columna del intercepto.  Esto puede reescribirse
+como una dependencia lineal entre las \textbf{tres} columnas de la matriz de diseño
+$\bm{X}_{(11\times3)}$:
+
+\begin{equation}
+  \boxed{-1\cdot\bm{X}_1 - 2\cdot\bm{X}_2 + 1\cdot\bm{X}_3 = \bm{0}}
+  \qquad\Longleftrightarrow\qquad
+  \bm{X}_3 = 2\bm{X}_2 - \bm{X}_1
+\end{equation}
+
+\begin{alerta}
+\textbf{Respuesta directa:} No, \textbf{no es posible} estimar de forma individual y
+única los tres coeficientes $\beta_1, \beta_2, \beta_3$.\\[4pt]
+La razón es que la matriz $\bm{X}_{(11\times3)}$ tiene rango 2 (en lugar de 3), lo que
+hace que $\bm{X}'\bm{X}$ sea singular ($\det(\bm{X}'\bm{X})=0$) y, por tanto,
+$(\bm{X}'\bm{X})^{-1}$ no exista.  Las ecuaciones normales tienen infinitas
+soluciones, ninguna de las cuales puede identificarse como la estimación MCO.
+\end{alerta}
+
+\subsubsection{Consecuencia Geométrica}
+
+Desde el punto de vista del \textbf{espacio columna}, el vector $\bm{X}_3$ ya está
+contenido en el espacio generado por $\{\bm{X}_1, \bm{X}_2\}$:
+
+\[
+  \text{col}(\bm{X}) = \text{span}\{\bm{X}_1,\bm{X}_2,\bm{X}_3\}
+  = \text{span}\{\bm{X}_1,\bm{X}_2\}
+\]
+
+El modelo tiene tres parámetros pero solo \textbf{dos grados de libertad paramétricos}
+efectivos.  No hay forma de proyectar $\bm{Y}$ sobre tres dimensiones independientes
+cuando el espacio de regresión es bidimensional.
+
+%-----------------------------------------------------------------------------
+\subsection{Parte (b): Derivación de las Funciones Estimables}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Marco Teórico: ¿Qué es una Función Estimable?}
+
+\begin{definicion}
+Una combinación lineal $\bm{\lambda}'\bm{\beta} = \lambda_1\beta_1 + \lambda_2\beta_2
++ \lambda_3\beta_3$ es \textbf{estimable} si existe un vector $\bm{a}\in\mathbb{R}^n$
+tal que $\bm{a}'\bm{Y}$ es un estimador lineal insesgado de $\bm{\lambda}'\bm{\beta}$.
+Equivalentemente, $\bm{\lambda}'\bm{\beta}$ es estimable si y solo si
+$\bm{\lambda}'\in\text{row}(\bm{X})$, es decir, si $\bm{\lambda}$ es una combinación
+lineal de las filas de $\bm{X}$.
+\end{definicion}
+
+En términos prácticos: cuando existe multicolinealidad perfecta, aunque no podemos
+estimar $\beta_1$, $\beta_2$, $\beta_3$ por separado, sí podemos estimar
+\textbf{aquellas combinaciones lineales que el modelo puede ``observar''} a través
+de los datos.
+
+\subsubsection{Derivación Algebraica por Sustitución}
+
+El método más directo consiste en sustituir la relación de dependencia
+$X_{3i} = 2X_{2i} - 1$ directamente en el modelo original.
+
+\medskip
+\noindent\textbf{Paso 1. Modelo original:}
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+  \label{eq:original}
+\end{equation}
+
+\noindent\textbf{Paso 2. Sustitución de $X_{3i} = 2X_{2i}-1$:}
+\begin{align}
+  Y_i &= \beta_1 + \beta_2 X_{2i} + \beta_3(2X_{2i}-1) + u_i \nonumber\\
+      &= \beta_1 + \beta_2 X_{2i} + 2\beta_3 X_{2i} - \beta_3 + u_i
+\end{align}
+
+\noindent\textbf{Paso 3. Reagrupación de términos:}
+\begin{align}
+  Y_i &= \underbrace{(\beta_1 - \beta_3)}_{\displaystyle\alpha_1}
+       + \underbrace{(\beta_2 + 2\beta_3)}_{\displaystyle\alpha_2} X_{2i} + u_i
+  \label{eq:reducido}
+\end{align}
+
+\begin{resultado}[title=Funciones Estimables Identificadas]
+El modelo reducido~\eqref{eq:reducido} es una \textbf{regresión simple bien definida}
+de $Y_i$ sobre $X_{2i}$, donde los únicos parámetros estimables son:
+\begin{align}
+  \alpha_1 &= \beta_1 - \beta_3 \qquad\text{(nuevo intercepto)} \label{eq:fe1}\\
+  \alpha_2 &= \beta_2 + 2\beta_3  \qquad\text{(nueva pendiente)} \label{eq:fe2}
+\end{align}
+Estas dos combinaciones lineales de $(\beta_1,\beta_2,\beta_3)$ son exactamente las
+funciones estimables del modelo.  \textbf{No existen otras combinaciones lineales
+estimables independientes de estas dos.}
+\end{resultado}
+
+\subsubsection{Verificación vía el Espacio Fila de \texorpdfstring{$\bm{X}$}{X}}
+
+El vector de coeficientes de $\alpha_1 = \beta_1 - \beta_3$ es
+$\bm{\lambda}_1 = (1, 0, -1)'$ y el de $\alpha_2 = \beta_2 + 2\beta_3$ es
+$\bm{\lambda}_2 = (0, 1, 2)'$.
+
+Para que $\bm{\lambda}_j'\bm{\beta}$ sea estimable, $\bm{\lambda}_j$ debe pertenecer
+al espacio fila de $\bm{X}$, que equivale al espacio columna de $\bm{X}'$.
+Una fila genérica de $\bm{X}$ es $(1, X_{2i}, X_{3i}) = (1, X_{2i}, 2X_{2i}-1)$.
+
+Verificamos que $\bm{\lambda}_1=(1,0,-1)'$ es fila de $\bm{X}$:
+\[
+  c_1(1, X_{2i}, 2X_{2i}-1) = (1, 0, -1)
+  \;\Rightarrow\;
+  c_1=1,\; c_1 X_{2i}=0,\; c_1(2X_{2i}-1)=-1
+\]
+La segunda ecuación requiere $c_1 X_{2i}=0$ para todo $X_{2i}$, lo que falla.
+
+En cambio, $\bm{\lambda}_1$ y $\bm{\lambda}_2$ pertenecen al espacio fila de
+$\bm{X}'\bm{X}$, que es el criterio correcto para estimabilidad (Seber \& Lee, 2003):
+dado que $\bm{X}'\bm{X}\bm{c}=(1,0,-1)'$ tiene solución, $\alpha_1$ es estimable.
+Ambas funciones se verifican como estimables por construcción del modelo reducido.
+
+%-----------------------------------------------------------------------------
+\subsection{Cálculo Numérico de los Estimadores}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Reducción al Modelo de Regresión Simple}
+
+El modelo reducido \eqref{eq:reducido} es:
+\[
+  Y_i = \alpha_1 + \alpha_2 X_{2i} + u_i
+\]
+
+Este es un modelo de regresión simple perfectamente identificado.
+Calculamos los estimadores MCO de $\alpha_1$ y $\alpha_2$.
+
+\subsubsection{Cálculo de las Medias}
+
+\begin{align}
+  \bar{Y} &= \frac{1}{11}\sum_{i=1}^{11}Y_i = \frac{0}{11} = 0 \\[4pt]
+  \bar{X}_2 &= \frac{1}{11}\sum_{i=1}^{11}X_{2i} = \frac{1+2+\cdots+11}{11} = \frac{66}{11} = 6
+\end{align}
+
+\subsubsection{Tabla de Cálculo en Desviaciones}
+
+Definimos $y_i = Y_i - \bar{Y} = Y_i$ y $x_{2i} = X_{2i} - \bar{X}_2 = X_{2i} - 6$:
+
+\vspace{0.4em}
+\begin{center}
+\small
+\begin{tabular}{c rr rr rr}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $Y_i$ & $X_{2i}$ & $y_i = Y_i$ & $x_{2i} = X_{2i}-6$
+      & $x_{2i}^2$ & $x_{2i}y_i$ \\
+  \midrule
+   1 & $-10$ &  1 & $-10$ & $-5$ & 25 &  50 \\
+   2 &  $-8$ &  2 &  $-8$ & $-4$ & 16 &  32 \\
+   3 &  $-6$ &  3 &  $-6$ & $-3$ &  9 &  18 \\
+   4 &  $-4$ &  4 &  $-4$ & $-2$ &  4 &   8 \\
+   5 &  $-2$ &  5 &  $-2$ & $-1$ &  1 &   2 \\
+   6 &   $0$ &  6 &   $0$ &  $0$ &  0 &   0 \\
+   7 &   $2$ &  7 &   $2$ &  $1$ &  1 &   2 \\
+   8 &   $4$ &  8 &   $4$ &  $2$ &  4 &   8 \\
+   9 &   $6$ &  9 &   $6$ &  $3$ &  9 &  18 \\
+  10 &   $8$ & 10 &   $8$ &  $4$ & 16 &  32 \\
+  11 &  $10$ & 11 &  $10$ &  $5$ & 25 &  50 \\
+  \midrule
+  \rowcolor{uptcGold!25}
+  $\boldsymbol{\Sigma}$ & $\mathbf{0}$ & $\mathbf{66}$ & $\mathbf{0}$ & $\mathbf{0}$
+  & $\mathbf{110}$ & $\mathbf{220}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Estimador de la Pendiente \texorpdfstring{$\hat{\alpha}_2$}{a2}}
+
+Aplicando la fórmula MCO para regresión simple:
+
+\begin{align}
+  \hat{\alpha}_2
+  &= \frac{\displaystyle\sum_{i=1}^{11} x_{2i}\,y_i}
+          {\displaystyle\sum_{i=1}^{11} x_{2i}^2}
+  = \frac{50+32+18+8+2+0+2+8+18+32+50}{25+16+9+4+1+0+1+4+9+16+25} \nonumber\\[8pt]
+  &= \frac{220}{110}
+  = \boxed{2}
+\end{align}
+
+\subsubsection{Estimador del Intercepto \texorpdfstring{$\hat{\alpha}_1$}{a1}}
+
+\begin{align}
+  \hat{\alpha}_1
+  &= \bar{Y} - \hat{\alpha}_2\,\bar{X}_2
+  = 0 - 2\times6
+  = \boxed{-12}
+\end{align}
+
+\subsubsection{Ecuación de Regresión Estimada}
+
+\begin{equation}
+  \hat{Y}_i = \hat{\alpha}_1 + \hat{\alpha}_2\,X_{2i} = -12 + 2X_{2i}
+  \label{eq:ajustado}
+\end{equation}
+
+\subsubsection{Verificación: Ajuste Perfecto}
+
+\begin{center}
+\small
+\begin{tabular}{c rrr r}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $Y_i$ & $X_{2i}$ & $\hat{Y}_i = -12+2X_{2i}$ & $\hat{u}_i = Y_i-\hat{Y}_i$ \\
+  \midrule
+   1 & $-10$ &  1 & $-12+2(1)  = -10$ & $0$ \\
+   2 &  $-8$ &  2 & $-12+2(2)  =  -8$ & $0$ \\
+   3 &  $-6$ &  3 & $-12+2(3)  =  -6$ & $0$ \\
+   4 &  $-4$ &  4 & $-12+2(4)  =  -4$ & $0$ \\
+   5 &  $-2$ &  5 & $-12+2(5)  =  -2$ & $0$ \\
+   6 &   $0$ &  6 & $-12+2(6)  =   0$ & $0$ \\
+   7 &   $2$ &  7 & $-12+2(7)  =   2$ & $0$ \\
+   8 &   $4$ &  8 & $-12+2(8)  =   4$ & $0$ \\
+   9 &   $6$ &  9 & $-12+2(9)  =   6$ & $0$ \\
+  10 &   $8$ & 10 & $-12+2(10) =   8$ & $0$ \\
+  11 &  $10$ & 11 & $-12+2(11) =  10$ & $0$ \\
+  \midrule
+  \rowcolor{uptcGold!25}
+  $\boldsymbol{\Sigma}$ & $\mathbf{0}$ & $\mathbf{66}$ & $\mathbf{0}$ & $\mathbf{0}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{corolario}
+Todos los residuos son exactamente cero: $\hat{u}_i=0$, $\forall\,i$.
+Esto implica $\text{SRC}=0$, $\text{STC}=440$ y $R^2=1$.
+El modelo reducido produce un \textbf{ajuste perfecto} porque los datos siguen
+exactamente la relación lineal $Y_i = -12 + 2X_{2i}$.
+Este ajuste perfecto es consecuencia directa de la multicolinealidad perfecta:
+los datos yacen en un subespacio de dimensión menor y el modelo lo captura sin error.
+\end{corolario}
+
+%-----------------------------------------------------------------------------
+\subsection{Interpretación de las Funciones Estimables}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Lo que Sí Podemos Saber}
+
+A partir de los estimadores obtenidos, podemos afirmar con certeza:
+
+\begin{align}
+  \hat{\beta}_1 - \hat{\beta}_3 &= \hat{\alpha}_1 = -12 \label{eq:ce1}\\
+  \hat{\beta}_2 + 2\hat{\beta}_3 &= \hat{\alpha}_2 = 2  \label{eq:ce2}
+\end{align}
+
+Estas son restricciones \textbf{exactas y únicas} que los datos imponen sobre los parámetros.
+
+\subsubsection{Lo que No Podemos Saber}
+
+Las ecuaciones \eqref{eq:ce1} y \eqref{eq:ce2} conforman un sistema de 2 ecuaciones
+con 3 incógnitas ($\beta_1, \beta_2, \beta_3$).  Su solución general es:
+
+\begin{equation}
+  \begin{cases}
+    \beta_1 = -12 + t \\
+    \beta_2 = 2 - 2t  \\
+    \beta_3 = t
+  \end{cases}
+  \qquad t \in \mathbb{R} \text{ (parámetro libre)}
+  \label{eq:familia}
+\end{equation}
+
+La tabla siguiente muestra algunos miembros de esta familia infinita, todos ellos
+produciendo exactamente el mismo $\hat{Y}_i = -12 + 2X_{2i}$:
+
+\vspace{0.4em}
+\begin{center}
+\begin{tabular}{c rrr cc}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $t$ & $\beta_1 = -12+t$ & $\beta_2 = 2-2t$ & $\beta_3 = t$
+      & $\beta_1-\beta_3$ & $\beta_2+2\beta_3$ \\
+  \midrule
+   $0$   & $-12$ & $2$  & $0$   & $-12$ & $2$ \\
+   $1$   & $-11$ & $0$  & $1$   & $-12$ & $2$ \\
+   $1/2$ & $-11.5$ & $1$ & $0.5$ & $-12$ & $2$ \\
+   $-1$  & $-13$ & $4$  & $-1$  & $-12$ & $2$ \\
+   $3$   & $-9$  & $-4$ & $3$   & $-12$ & $2$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{alerta}
+Independientemente del valor de $t\in\mathbb{R}$, las combinaciones lineales
+$\beta_1-\beta_3$ y $\beta_2+2\beta_3$ son \textbf{siempre iguales a $-12$ y $2$},
+respectivamente.  Esto confirma que son \textbf{invariantes} al parámetro libre $t$:
+son las únicas funciones que los datos pueden identificar.
+\end{alerta}
+
+\subsubsection{Geometría de la Solución}
+
+Las dos restricciones \eqref{eq:ce1}--\eqref{eq:ce2} definen un \textbf{subespacio
+afín} (recta) en $\mathbb{R}^3$.  La solución particular con $t=0$,
+es decir, $(\beta_1,\beta_2,\beta_3)=(-12,2,0)$, es la que se obtendría si
+impusiéramos la restricción adicional $\beta_3=0$ (es decir, si excluyéramos
+$X_3$ del modelo).  Cualquier punto de la recta~\eqref{eq:familia} es igualmente
+válido desde el punto de vista estadístico.
+
+%-----------------------------------------------------------------------------
+\subsection{Resumen del Problema 10.2}
+%-----------------------------------------------------------------------------
+
+\begin{resultado}[title=Conclusión Integral del Problema 10.2]
+\textbf{(a) ¿Puede estimar $\beta_1, \beta_2, \beta_3$ individualmente?}\\
+\textbf{No.}  La relación $X_{3i}=2X_{2i}-1$ introduce multicolinealidad perfecta.
+$\det(\bm{X}'\bm{X})=0$, la inversa no existe y las ecuaciones normales tienen
+infinitas soluciones.
+
+\medskip
+\textbf{(b) ¿Qué funciones estimables pueden obtenerse?}\\
+Dos y solamente dos combinaciones lineales independientes son estimables:
+
+\[
+\begin{array}{rcl}
+  \hat{\alpha}_1 &=& \hat{\beta}_1 - \hat{\beta}_3 = \mathbf{-12} \\[6pt]
+  \hat{\alpha}_2 &=& \hat{\beta}_2 + 2\hat{\beta}_3 = \mathbf{2}
+\end{array}
+\]
+
+Estas se obtienen estimando la regresión simple reducida
+$Y_i = \alpha_1 + \alpha_2 X_{2i} + u_i$, que produce:
+\[
+  \hat{Y}_i = -12 + 2X_{2i}, \qquad R^2 = 1, \qquad \text{SRC} = 0
+\]
+El modelo reducido ajusta perfectamente los 11 datos.
+Los parámetros estructurales $\beta_1, \beta_2, \beta_3$ individuales
+\textbf{no pueden ser recuperados} sin imponer una restricción adicional (como
+$\beta_3=0$ o conocer el valor verdadero de uno de ellos).
 \end{resultado}
 
 \end{document}

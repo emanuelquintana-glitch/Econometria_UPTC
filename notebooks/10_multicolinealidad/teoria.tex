@@ -1,0 +1,1187 @@
+\documentclass[12pt,a4paper]{article}
+
+%=============================================================================
+%  PAQUETES
+%=============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\selectlanguage{spanish}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\geometry{
+  a4paper,
+  top=2.5cm, bottom=2.5cm,
+  left=2.8cm, right=2.8cm,
+  headheight=15pt
+}
+
+%=============================================================================
+%  COLORES INSTITUCIONALES UPTC
+%=============================================================================
+\definecolor{uptcBlue}{RGB}{0,56,116}
+\definecolor{uptcGold}{RGB}{182,145,3}
+\definecolor{lightBlue}{RGB}{230,240,255}
+\definecolor{lightGold}{RGB}{255,250,220}
+\definecolor{alertRed}{RGB}{180,0,0}
+\definecolor{darkGray}{RGB}{60,60,60}
+
+%=============================================================================
+%  ENCABEZADO Y PIE DE PÁGINA
+%=============================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{uptcBlue}\textbf{Econometría --- UPTC}}
+\fancyhead[R]{\small\color{uptcBlue}Problema 10.1: Multicolinealidad Perfecta}
+\fancyfoot[C]{\small\color{darkGray}\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+%=============================================================================
+%  TÍTULOS DE SECCIÓN
+%=============================================================================
+\titleformat{\section}{\large\bfseries\color{uptcBlue}}{{\thesection.}}{0.5em}{}[\color{uptcGold}\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{uptcBlue}}{{\thesubsection.}}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{darkGray}}{{\thesubsubsection.}}{0.5em}{}
+
+%=============================================================================
+%  CAJAS DESTACADAS
+%=============================================================================
+\tcbuselibrary{breakable, skins, theorems}
+
+\newtcolorbox{definicion}[1][]{
+  colback=lightBlue, colframe=uptcBlue,
+  fonttitle=\bfseries\small, title=Definición,
+  breakable, #1
+}
+\newtcolorbox{teorema}[1][]{
+  colback=lightGold, colframe=uptcGold,
+  fonttitle=\bfseries\small, title=Teorema,
+  breakable, #1
+}
+\newtcolorbox{resultado}[1][]{
+  colback=lightBlue!60, colframe=uptcBlue!80,
+  fonttitle=\bfseries\small,
+  breakable, #1
+}
+\newtcolorbox{alerta}[1][]{
+  colback=red!8, colframe=alertRed,
+  fonttitle=\bfseries\small, title=¡Resultado Crítico!,
+  breakable, #1
+}
+\newtcolorbox{corolario}[1][]{
+  colback=green!7, colframe=green!50!black,
+  fonttitle=\bfseries\small, title=Corolario,
+  breakable, #1
+}
+
+%=============================================================================
+%  AMBIENTES MATEMÁTICOS
+%=============================================================================
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{lema}[prop]{Lema}
+\newtheorem*{dem}{Demostración}
+
+%=============================================================================
+%  OPERADORES
+%=============================================================================
+\DeclareMathOperator{\rg}{rg}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\E}{\operatorname{E}}
+
+%=============================================================================
+%  NOTACIÓN COMPACTA PARA SUMATORIAS FRECUENTES
+%=============================================================================
+\newcommand{\sxdos}{\displaystyle\sum_{i=1}^{n} x_{2i}^{2}}
+\newcommand{\sxtres}{\displaystyle\sum_{i=1}^{n} x_{3i}^{2}}
+\newcommand{\sxdxt}{\displaystyle\sum_{i=1}^{n} x_{2i}x_{3i}}
+\newcommand{\sxdy}{\displaystyle\sum_{i=1}^{n} x_{2i}y_{i}}
+\newcommand{\sxty}{\displaystyle\sum_{i=1}^{n} x_{3i}y_{i}}
+
+%=============================================================================
+%  DOCUMENTO
+%=============================================================================
+\begin{document}
+
+%-----------------------------------------------------------------------------
+%  PORTADA
+%-----------------------------------------------------------------------------
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1cm}
+    {\color{uptcBlue}\rule{\linewidth}{2pt}}\\[0.4cm]
+    {\color{uptcBlue}\rule{\linewidth}{0.8pt}}\\[1.2cm]
+
+    {\Huge\bfseries\color{uptcBlue}
+      Problema 10.1\\[0.3cm]
+      Multicolinealidad Perfecta\\[0.3cm]
+      en el Modelo de Regresión\\[0.2cm]
+      Lineal Múltiple}\\[1.4cm]
+
+    {\color{uptcGold}\rule{8cm}{1.5pt}}\\[0.8cm]
+
+    {\large\bfseries\color{darkGray}
+      Demostración de la Imposibilidad de Estimación\\[0.2cm]
+      de los Coeficientes MCO bajo Dependencia Lineal Perfecta}\\[1.8cm]
+
+    \begin{minipage}{0.65\textwidth}
+      \centering
+      \begin{tabular}{rl}
+        \textcolor{uptcBlue}{\textbf{Estudiante:}} & Emanuel Quintana Silva \\[4pt]
+        \textcolor{uptcBlue}{\textbf{Asignatura:}} & Econometría \\[4pt]
+        \textcolor{uptcBlue}{\textbf{Universidad:}} & Universidad Pedagógica y \\
+                                                    & Tecnológica de Colombia (UPTC) \\[4pt]
+        \textcolor{uptcBlue}{\textbf{Referencia:}} & Gujarati \& Porter, Cap.~10 \\[4pt]
+        \textcolor{uptcBlue}{\textbf{Fecha:}} & \today
+      \end{tabular}
+    \end{minipage}\\[2cm]
+
+    {\color{uptcBlue}\rule{\linewidth}{0.8pt}}\\[0.2cm]
+    {\color{uptcBlue}\rule{\linewidth}{2pt}}
+  \end{center}
+\end{titlepage}
+
+%-----------------------------------------------------------------------------
+%  TABLA DE CONTENIDO
+%-----------------------------------------------------------------------------
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section{Enunciado Formal del Problema}
+%=============================================================================
+
+\begin{resultado}[title=Enunciado~10.1 (Gujarati \& Porter)]
+En el modelo de regresión lineal de $k$ variables, hay $k$ ecuaciones normales para
+estimar las $k$ incógnitas.  Suponga que $X_k$ es una combinación lineal perfecta de
+las variables $X$ restantes.  ¿Cómo se demostraría que en este caso es \textbf{imposible}
+estimar los $k$ coeficientes de regresión?\\[4pt]
+Se dispone del siguiente conjunto de datos ($n=11$ observaciones):
+\end{resultado}
+
+\vspace{0.5em}
+\begin{center}
+\begin{tabular}{c >{\columncolor{lightBlue!60}}r rr}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $Y_i$ & $X_{2i}$ & $X_{3i}$ \\
+  \midrule
+   1 & $-10$ &  1 &  1 \\
+   2 &  $-8$ &  2 &  3 \\
+   3 &  $-6$ &  3 &  5 \\
+   4 &  $-4$ &  4 &  7 \\
+   5 &  $-2$ &  5 &  9 \\
+   6 &   $0$ &  6 & 11 \\
+   7 &   $2$ &  7 & 13 \\
+   8 &   $4$ &  8 & 15 \\
+   9 &   $6$ &  9 & 17 \\
+  10 &   $8$ & 10 & 19 \\
+  11 &  $10$ & 11 & 21 \\
+  \midrule
+  \rowcolor{uptcGold!20}
+  $\boldsymbol{\Sigma}$ & $\mathbf{0}$ & $\mathbf{66}$ & $\mathbf{121}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+%=============================================================================
+\section{Marco Teórico: El Estimador MCO en Forma Matricial}
+%=============================================================================
+
+\subsection{El Modelo de Regresión Lineal Múltiple}
+
+El modelo poblacional de regresión lineal con $k-1$ regresores (incluyendo el
+intercepto $X_1 \equiv 1$) es:
+
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + \cdots + \beta_k X_{ki} + u_i,
+  \qquad i = 1, 2, \ldots, n
+\end{equation}
+
+En notación matricial compacta:
+
+\begin{equation}
+  \bm{Y} = \bm{X\beta} + \bm{u}
+\end{equation}
+
+donde $\bm{Y}$ es el vector $(n\times1)$ de observaciones,
+$\bm{X}$ es la \textbf{matriz de diseño} $(n\times k)$,
+$\bm{\beta}$ es el vector $(k\times1)$ de parámetros desconocidos, y
+$\bm{u}$ es el vector $(n\times1)$ de perturbaciones estocásticas.
+
+\begin{definicion}
+  Bajo los \textbf{supuestos de Gauss-Markov} ($\E[\bm{u}|\bm{X}]=\bm{0}$,
+  $\Var[\bm{u}|\bm{X}]=\sigma^2\bm{I}_n$, $\rg(\bm{X})=k$), el estimador MCO se obtiene
+  minimizando la Suma de Residuos al Cuadrado:
+  \[
+    \text{SRC}(\bm{\beta}) \;=\; \bm{u}'\bm{u}
+    \;=\; (\bm{Y}-\bm{X\beta})'(\bm{Y}-\bm{X\beta})
+  \]
+  cuya solución única es el \textbf{Estimador de Mínimos Cuadrados Ordinarios}:
+  \begin{equation}
+    \hat{\bm{\beta}} \;=\; (\bm{X}'\bm{X})^{-1}\bm{X}'\bm{Y}
+    \label{eq:mco}
+  \end{equation}
+\end{definicion}
+
+El supuesto $\rg(\bm{X})=k$ (rango completo de columnas) es \emph{indispensable}
+para que la inversa $(\bm{X}'\bm{X})^{-1}$ exista.
+
+\subsection{Las \texorpdfstring{$k$}{k} Ecuaciones Normales}
+
+La condición de primer orden $\partial\,\text{SRC}/\partial\bm{\beta}=\bm{0}$
+produce el sistema de $k$ \textbf{ecuaciones normales}:
+
+\begin{equation}
+  \bm{X}'\bm{X}\,\hat{\bm{\beta}} \;=\; \bm{X}'\bm{Y}
+  \label{eq:normales}
+\end{equation}
+
+Para el modelo en \textbf{desviaciones respecto a la media}
+($x_{ji} = X_{ji}-\bar{X}_j$, $y_i = Y_i - \bar{Y}$), el intercepto se elimina y el
+sistema \eqref{eq:normales} se reduce a las $k-1$ ecuaciones:
+
+\begin{equation}
+  \begin{pmatrix}
+    \displaystyle\sum x_{2i}^2 & \displaystyle\sum x_{2i}x_{3i} \\[8pt]
+    \displaystyle\sum x_{2i}x_{3i} & \displaystyle\sum x_{3i}^2
+  \end{pmatrix}
+  \begin{pmatrix} \hat{\beta}_2 \\[8pt] \hat{\beta}_3 \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \displaystyle\sum x_{2i}y_i \\[8pt]
+    \displaystyle\sum x_{3i}y_i
+  \end{pmatrix}
+  \label{eq:sistema2}
+\end{equation}
+
+%=============================================================================
+\section{Identificación de la Combinación Lineal Perfecta}
+%=============================================================================
+
+\subsection{Detección Empírica}
+
+Examinando columna a columna el conjunto de datos:
+
+\begin{center}
+\begin{tabular}{crrr}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $X_{2i}$ & $2X_{2i}-1$ & $X_{3i}$ \\
+  \midrule
+  1  &  1 &  1 &  1 \\
+  2  &  2 &  3 &  3 \\
+  3  &  3 &  5 &  5 \\
+  4  &  4 &  7 &  7 \\
+  5  &  5 &  9 &  9 \\
+  6  &  6 & 11 & 11 \\
+  7  &  7 & 13 & 13 \\
+  8  &  8 & 15 & 15 \\
+  9  &  9 & 17 & 17 \\
+  10 & 10 & 19 & 19 \\
+  11 & 11 & 21 & 21 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.4em}
+\begin{alerta}
+La tabla anterior demuestra que, \textbf{sin excepción en ninguna de las 11 observaciones}:
+\[
+  X_{3i} \;=\; 2X_{2i} - 1, \qquad \forall\, i = 1,\ldots,11
+\]
+Puesto que la columna de intercepto es $X_1 \equiv 1$, la relación puede escribirse
+como combinación lineal de las columnas de $\bm{X}$:
+\[
+  \boxed{-1\cdot X_{1i} \;-\; 2\cdot X_{2i} \;+\; 1\cdot X_{3i} \;=\; 0,
+  \qquad \forall\,i}
+\]
+Los coeficientes $(\lambda_1,\lambda_2,\lambda_3)=(-1,-2,1)$, no todos nulos, son los
+que atestiguan la dependencia lineal perfecta.
+\end{alerta}
+
+\subsection{Reformulación en Forma de Desviaciones}
+
+Calculamos las medias:
+\[
+  \bar{Y} = \frac{0}{11} = 0, \qquad
+  \bar{X}_2 = \frac{66}{11} = 6, \qquad
+  \bar{X}_3 = \frac{121}{11} = 11
+\]
+
+Las variables en desviaciones son:
+$x_{2i} = X_{2i}-6$ y $x_{3i} = X_{3i}-11$.
+
+Como $X_{3i} = 2X_{2i}-1$, restando la media de $X_3$:
+\[
+  x_{3i} = X_{3i}-11 = (2X_{2i}-1)-11 = 2X_{2i}-12 = 2(X_{2i}-6) = 2x_{2i}
+\]
+
+\begin{resultado}[title=Relación de dependencia en desviaciones]
+\[
+  x_{3i} \;=\; 2\,x_{2i}, \qquad \forall\,i=1,\ldots,11
+\]
+La constante de proporcionalidad es $\lambda = 2$.  En el espacio de desviaciones,
+la multicolinealidad perfecta se manifiesta como \textbf{proporcionalidad exacta}.
+\end{resultado}
+
+\subsection{Cálculo Explícito de los Momentos Muestrales}
+
+La tabla siguiente compila los productos cruzados que conforman la matriz $\bm{X}'\bm{X}$
+y el vector $\bm{X}'\bm{Y}$ en desviaciones:
+
+\vspace{0.4em}
+\begin{center}
+\small
+\begin{tabular}{c rrrr rrr rrr}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $y_i$ & $x_{2i}$ & $x_{3i}$
+      & $x_{2i}^2$ & $x_{3i}^2$ & $x_{2i}x_{3i}$
+      & $x_{2i}y_i$ & $x_{3i}y_i$ \\
+  \midrule
+   1 & $-10$ & $-5$ & $-10$ & 25  & 100 &  50 &  50 & 100 \\
+   2 &  $-8$ & $-4$ &  $-8$ & 16  &  64 &  32 &  32 &  64 \\
+   3 &  $-6$ & $-3$ &  $-6$ &  9  &  36 &  18 &  18 &  36 \\
+   4 &  $-4$ & $-2$ &  $-4$ &  4  &  16 &   8 &   8 &  16 \\
+   5 &  $-2$ & $-1$ &  $-2$ &  1  &   4 &   2 &   2 &   4 \\
+   6 &   $0$ &  $0$ &   $0$ &  0  &   0 &   0 &   0 &   0 \\
+   7 &   $2$ &  $1$ &   $2$ &  1  &   4 &   2 &   2 &   4 \\
+   8 &   $4$ &  $2$ &   $4$ &  4  &  16 &   8 &   8 &  16 \\
+   9 &   $6$ &  $3$ &   $6$ &  9  &  36 &  18 &  18 &  36 \\
+  10 &   $8$ &  $4$ &   $8$ & 16  &  64 &  32 &  32 &  64 \\
+  11 &  $10$ &  $5$ &  $10$ & 25  & 100 &  50 &  50 & 100 \\
+  \midrule
+  \rowcolor{uptcGold!25}
+  $\Sigma$ & $0$ & $0$ & $0$
+           & $\mathbf{110}$ & $\mathbf{440}$ & $\mathbf{220}$
+           & $\mathbf{220}$ & $\mathbf{440}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.4em}
+\noindent En consecuencia, la matriz de momentos y el vector de productos cruzados son:
+
+\begin{equation}
+  \bm{M} \;=\; \bm{X}'\bm{X}
+  \;=\;
+  \begin{pmatrix} 110 & 220 \\ 220 & 440 \end{pmatrix},
+  \qquad
+  \bm{X}'\bm{Y}
+  \;=\;
+  \begin{pmatrix} 220 \\ 440 \end{pmatrix}
+  \label{eq:momentos}
+\end{equation}
+
+%=============================================================================
+\section{Demostración General: Imposibilidad de Estimación}
+%=============================================================================
+
+\subsection{Proposición Central}
+
+\begin{prop}[Indeterminación bajo Multicolinealidad Perfecta]
+  Sea $\bm{X}$ la matriz de diseño $(n\times k)$.  Si existe un vector no nulo
+  $\bm{c}\in\mathbb{R}^k$ tal que $\bm{X}\bm{c}=\bm{0}$, entonces el sistema de
+  ecuaciones normales \eqref{eq:normales} \textbf{no tiene solución única} y el
+  estimador MCO $\hat{\bm{\beta}}=(\bm{X}'\bm{X})^{-1}\bm{X}'\bm{Y}$ \textbf{no existe}.
+\end{prop}
+
+\begin{dem}
+Procederemos demostrando que $\bm{X}'\bm{X}$ es singular, lo que impide su inversión.
+
+\medskip
+\noindent\textbf{Paso 1. De la dependencia en $\bm{X}$ a la singularidad de
+$\bm{X}'\bm{X}$.}
+
+Si $\bm{Xc}=\bm{0}$ con $\bm{c}\neq\bm{0}$, premultiplicando por $\bm{X}'$:
+\[
+  \bm{X}'(\bm{Xc}) = \bm{X}'\bm{0} = \bm{0}
+  \;\Longrightarrow\;
+  (\bm{X}'\bm{X})\bm{c} = \bm{0}
+\]
+Por definición, $\bm{c}\neq\bm{0}$ es un \textbf{vector en el núcleo} de
+$\bm{X}'\bm{X}$.  Una matriz tiene núcleo no trivial si y solo si es
+\textbf{singular}, es decir:
+\[
+  \det(\bm{X}'\bm{X}) = 0
+\]
+
+\medskip
+\noindent\textbf{Paso 2. La inversa no existe.}
+
+La inversa de una matriz cuadrada existe si y solo si su determinante es
+distinto de cero.  Como $\det(\bm{X}'\bm{X})=0$, la expresión
+$(\bm{X}'\bm{X})^{-1}$ \textbf{no está definida} y, por tanto,
+$\hat{\bm{\beta}}=(\bm{X}'\bm{X})^{-1}\bm{X}'\bm{Y}$ tampoco.
+
+\medskip
+\noindent\textbf{Paso 3. El sistema tiene infinitas soluciones.}
+
+Sea $\hat{\bm{\beta}}^*$ cualquier solución particular del sistema
+$\bm{X}'\bm{X}\hat{\bm{\beta}}=\bm{X}'\bm{Y}$.  Para todo escalar
+$\alpha\in\mathbb{R}$, el vector:
+\[
+  \hat{\bm{\beta}}^* + \alpha\bm{c}
+\]
+también es solución, pues:
+\[
+  \bm{X}'\bm{X}(\hat{\bm{\beta}}^* + \alpha\bm{c})
+  = \bm{X}'\bm{X}\hat{\bm{\beta}}^* + \alpha\underbrace{(\bm{X}'\bm{X})\bm{c}}_{=\bm{0}}
+  = \bm{X}'\bm{Y}
+\]
+Existe una \textbf{familia de infinitas soluciones} parametrizada por $\alpha$.
+No hay forma algebraica de elegir una solución única: la minimización de la
+SRC no identifica un único $\hat{\bm{\beta}}$.
+\hfill$\square$
+\end{dem}
+
+\subsection{Demostración Alternativa: Rango y el Teorema de la Dimensión}
+
+\begin{teorema}[title={Rango de $\bm{X}'\bm{X}$}]
+  Para toda matriz $\bm{X}$, se cumple $\rg(\bm{X}'\bm{X}) = \rg(\bm{X})$.
+\end{teorema}
+
+Si las columnas de $\bm{X}$ son linealmente dependientes,
+$\rg(\bm{X}) < k$.  Entonces:
+\[
+  \rg(\bm{X}'\bm{X}) = \rg(\bm{X}) < k
+\]
+Una matriz cuadrada $k\times k$ con rango menor que $k$ tiene determinante nulo
+y no es invertible.
+
+\subsection{Demostración vía el Determinante: Desigualdad de Cauchy-Schwarz}
+
+El determinante de la matriz $2\times2$ de momentos en desviaciones es:
+
+\begin{equation}
+  D \;=\; \det(\bm{M})
+  \;=\; \left(\sum x_{2i}^2\right)\!\left(\sum x_{3i}^2\right)
+        - \left(\sum x_{2i}x_{3i}\right)^2
+\end{equation}
+
+La \textbf{desigualdad de Cauchy-Schwarz} para sumas finitas establece:
+\[
+  \left(\sum x_{2i}x_{3i}\right)^2
+  \;\leq\;
+  \left(\sum x_{2i}^2\right)\!\left(\sum x_{3i}^2\right)
+\]
+con igualdad \textbf{si y solo si} existe $\lambda\in\mathbb{R}$ tal que
+$x_{3i}=\lambda\,x_{2i}$ para todo $i$, es decir, si y solo si hay
+\emph{proporcionalidad exacta} (multicolinealidad perfecta en desviaciones).
+
+\begin{alerta}
+Cuando la igualdad de Cauchy-Schwarz se alcanza:
+\[
+  D = \left(\sum x_{2i}^2\right)\!\left(\sum x_{3i}^2\right)
+      - \left(\sum x_{2i}x_{3i}\right)^2 = 0
+\]
+La matriz $\bm{M}$ es singular: \textbf{el sistema de ecuaciones normales no tiene
+solución única y los estimadores MCO son indeterminados.}
+\end{alerta}
+
+%=============================================================================
+\section{Verificación Numérica con los Datos del Problema 10.1}
+%=============================================================================
+
+\subsection{La Relación de Dependencia Lineal: Verificación Algebraica}
+
+La relación $X_{3i}=2X_{2i}-1$ implica, en desviaciones:
+
+\begin{align}
+  x_{3i} &= X_{3i} - \bar{X}_3
+           = (2X_{2i}-1) - (2\bar{X}_2-1)
+           = 2(X_{2i}-\bar{X}_2)
+           = 2x_{2i}
+\end{align}
+
+Por tanto, $\lambda=2$, y el vector de dependencia sobre $\bm{X}$
+(incluyendo el intercepto) es:
+\[
+  \bm{Xc} = -1\cdot\bm{1} - 2\cdot\bm{X}_2 + 1\cdot\bm{X}_3 = \bm{0}
+\]
+
+\subsection{Cálculo Explícito del Determinante}
+
+Sustituyendo los valores de la Tabla~1 en la expresión del determinante:
+
+\begin{align}
+  D &= \left(\sxdos\right)\!\left(\sxtres\right) - \left(\sxdxt\right)^2 \\[6pt]
+    &= (110)(440) - (220)^2 \\[4pt]
+    &= 48\,400 - 48\,400 \\[4pt]
+    &= \boxed{0}
+\end{align}
+
+\noindent\textbf{Verificación directa con $\lambda = 2$:}
+
+Dado que $x_{3i}=2x_{2i}$, las sumas satisfacen:
+\[
+  \sum x_{3i}^2 = \sum(2x_{2i})^2 = 4\sum x_{2i}^2 = 4\times110 = 440 \checkmark
+\]
+\[
+  \sum x_{2i}x_{3i} = \sum x_{2i}(2x_{2i}) = 2\sum x_{2i}^2 = 2\times110 = 220 \checkmark
+\]
+
+Entonces:
+\[
+  D = \lambda^2\!\left(\sum x_{2i}^2\right)^2 - \lambda^2\!\left(\sum x_{2i}^2\right)^2
+    = \lambda^2\!\left(\sum x_{2i}^2\right)^2\!(1-1) = 0 \checkmark
+\]
+
+\subsection{Coeficiente de Correlación \texorpdfstring{$r_{23}$}{r23}}
+
+\begin{equation}
+  r_{23} = \frac{\displaystyle\sum x_{2i}x_{3i}}{\displaystyle\sqrt{\sum x_{2i}^2\cdot\sum x_{3i}^2}}
+  = \frac{220}{\sqrt{110\times440}}
+  = \frac{220}{\sqrt{48\,400}}
+  = \frac{220}{220}
+  = 1
+\end{equation}
+
+El coeficiente de correlación es exactamente 1, confirmando la
+\textbf{dependencia lineal perfecta positiva} entre $X_2$ y $X_3$.
+
+\subsection{Aplicación de la Regla de Cramer: La Forma \texorpdfstring{$0/0$}{0/0}}
+
+Intentemos aplicar la Regla de Cramer para obtener $\hat{\beta}_2$:
+
+\begin{equation}
+  \hat{\beta}_2
+  = \frac{\left(\sxdy\right)\!\left(\sxtres\right)
+          - \left(\sxty\right)\!\left(\sxdxt\right)}{D}
+  = \frac{(220)(440) - (440)(220)}{0}
+  = \frac{96\,800 - 96\,800}{0}
+  = \frac{0}{0}
+\end{equation}
+
+Análogamente para $\hat{\beta}_3$:
+
+\begin{equation}
+  \hat{\beta}_3
+  = \frac{\left(\sxty\right)\!\left(\sxdos\right)
+          - \left(\sxdy\right)\!\left(\sxdxt\right)}{D}
+  = \frac{(440)(110) - (220)(220)}{0}
+  = \frac{48\,400 - 48\,400}{0}
+  = \frac{0}{0}
+\end{equation}
+
+\begin{alerta}
+La expresión $\dfrac{0}{0}$ es una \textbf{indeterminación matemática}: no posee un
+valor definido.  No existe ningún método aritmético que permita resolver esta
+operación.  El estimador MCO es, por tanto, \textbf{algebraicamente imposible de obtener}
+con estos datos.
+\end{alerta}
+
+\subsection{Infinitas Soluciones: La Familia de Estimadores Equivalentes}
+
+Para ilustrar que existen infinitas soluciones, observemos que cualquier par
+$(\hat{\beta}_2,\hat{\beta}_3)$ que satisfaga la primera ecuación normal también
+satisface la segunda (por ser la segunda múltiplo de la primera).
+
+La Ecuación~A del sistema \eqref{eq:sistema2} es:
+\[
+  110\,\hat{\beta}_2 + 220\,\hat{\beta}_3 = 220
+  \;\Longrightarrow\;
+  \hat{\beta}_2 + 2\hat{\beta}_3 = 2
+\]
+
+Esta es una sola ecuación con dos incógnitas; su solución general es:
+
+\begin{equation}
+  \hat{\beta}_2 = 2 - 2\alpha, \qquad \hat{\beta}_3 = \alpha, \qquad \alpha\in\mathbb{R}
+\end{equation}
+
+Ejemplos particulares:
+
+\vspace{0.4em}
+\begin{center}
+\begin{tabular}{ccc}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $\alpha$ & $\hat{\beta}_2 = 2-2\alpha$ & $\hat{\beta}_3 = \alpha$ \\
+  \midrule
+  $0$   & $2$ & $0$ \\
+  $1$   & $0$ & $1$ \\
+  $1/2$ & $1$ & $1/2$ \\
+  $-1$  & $4$ & $-1$ \\
+  $5$   & $-8$ & $5$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.4em}
+\begin{corolario}
+Todos los pares $(\hat{\beta}_2, \hat{\beta}_3) = (2-2\alpha,\,\alpha)$ con
+$\alpha\in\mathbb{R}$ producen \textbf{exactamente el mismo valor ajustado}:
+\[
+  \hat{y}_i = (2-2\alpha)x_{2i} + \alpha x_{3i}
+            = (2-2\alpha)x_{2i} + \alpha(2x_{2i})
+            = 2x_{2i}
+\]
+La función de regresión estimada es única ($\hat{y}_i=2x_{2i}$), pero los
+\textbf{coeficientes individuales son completamente indeterminados}: no hay base
+estadística para elegir un par $({\hat{\beta}_2},{\hat{\beta}_3})$ sobre otro.
+\end{corolario}
+
+%=============================================================================
+\section{Consecuencias Estadísticas Formales}
+%=============================================================================
+
+\subsection{Varianzas de los Estimadores y el Caso Límite}
+
+Bajo el modelo clásico, la varianza del estimador $\hat{\beta}_2$ en el modelo
+bivariado en desviaciones es:
+
+\begin{equation}
+  \Var(\hat{\beta}_2)
+  = \frac{\sigma^2\displaystyle\sum x_{3i}^2}{D}
+  = \frac{\sigma^2\displaystyle\sum x_{3i}^2}
+         {\displaystyle\sum x_{2i}^2\cdot\sum x_{3i}^2 - \left(\sum x_{2i}x_{3i}\right)^2}
+\end{equation}
+
+Expresando el denominador en función del coeficiente de correlación
+$r_{23}$ (usando la identidad
+$D = \sum x_{2i}^2\cdot\sum x_{3i}^2\cdot(1-r_{23}^2)$):
+
+\begin{equation}
+  \Var(\hat{\beta}_2) = \frac{\sigma^2}{\displaystyle\sum x_{2i}^2\,(1 - r_{23}^2)}
+\end{equation}
+
+Cuando $r_{23}\to1$:
+\[
+  1 - r_{23}^2 \;\to\; 0
+  \;\Longrightarrow\;
+  \Var(\hat{\beta}_2) \;=\; \frac{\sigma^2}{\displaystyle\sum x_{2i}^2\cdot 0}
+  \;\longrightarrow\; +\infty
+\]
+
+Para $r_{23}=1$ exactamente (nuestro caso):
+
+\begin{equation}
+  \Var(\hat{\beta}_2) = \frac{\sigma^2}{110\times(1-1)} = \frac{\sigma^2}{0} \to +\infty
+\end{equation}
+
+\begin{alerta}
+\textbf{Con los datos del Problema~10.1:} $r_{23}=1$, $D=0$, luego
+$\Var(\hat{\beta}_2)\to+\infty$ y $\Var(\hat{\beta}_3)\to+\infty$.
+Los errores estándar son infinitos, los estadísticos $t$ colapsan a $0/\infty$,
+y las pruebas de hipótesis carecen de todo sentido estadístico.
+\end{alerta}
+
+\subsection{Análisis Espectral de la Matriz \texorpdfstring{$\bm{M}$}{M}}
+
+Los valores propios (eigenvalores) de $\bm{M}=\bm{X}'\bm{X}$ determinan su
+invertibilidad.  Para nuestra matriz:
+\[
+  \bm{M}=\begin{pmatrix}110&220\\220&440\end{pmatrix}
+\]
+
+La ecuación característica $\det(\bm{M}-\mu\bm{I})=0$:
+\begin{align}
+  (110-\mu)(440-\mu) - 220^2 &= 0 \\
+  \mu^2 - 550\mu + (48\,400 - 48\,400) &= 0 \\
+  \mu^2 - 550\mu &= 0 \\
+  \mu(\mu-550) &= 0
+\end{align}
+
+Los eigenvalores son $\mu_1 = 0$ y $\mu_2 = 550$.
+
+\begin{resultado}[title=Interpretación espectral]
+La presencia del eigenvalor $\mu_1=0$ confirma que $\bm{M}$ es
+\textbf{semidefinida positiva y singular}: su determinante es
+$\det(\bm{M})=\mu_1\cdot\mu_2=0\times550=0$, y su rango es
+$\rg(\bm{M})=1 < 2 = k-1$.
+El \textbf{número de condición} $\kappa = \mu_{\max}/\mu_{\min} = 550/0 = +\infty$
+es la señal numérica definitiva de la singularidad.
+\end{resultado}
+
+\subsection{Resumen de las Tres Consecuencias Formales}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*]
+
+  \item \textbf{Indeterminación de los estimadores.}
+    La operación $(\bm{X}'\bm{X})^{-1}$ no está definida.
+    La Regla de Cramer conduce a la forma indeterminada $0/0$.
+    Existen infinitas soluciones al sistema normal, todas produciendo el
+    mismo $\hat{\bm{Y}}$ pero coeficientes arbitrariamente distintos.
+
+  \item \textbf{Varianzas infinitas.}
+    $\Var(\hat{\beta}_j) \to +\infty$ para $j=2,3$ cuando $r_{23}=1$.
+    Los errores estándar no están definidos y los intervalos de confianza
+    son $(-\infty,+\infty)$: ningún dato puede descartar ningún valor para
+    $\beta_j$.
+
+  \item \textbf{Fallo de identificación.}
+    El modelo \emph{no está identificado}: la distribución conjunta de los
+    datos es consistente con infinitos vectores $\bm{\beta}$,
+    lo que hace imposible determinar cuánto de la variación de $Y$ se
+    atribuye a $X_2$ y cuánto a $X_3$ de forma separada.
+
+\end{enumerate}
+
+%=============================================================================
+\section{Generalización al Modelo de \texorpdfstring{$k$}{k} Variables}
+%=============================================================================
+
+\subsection{El Argumento General}
+
+El resultado demostrado con $k=3$ variables se generaliza de forma directa a
+cualquier modelo con $k$ variables explicativas.
+
+\begin{prop}[Caso General]
+  En el modelo $\bm{Y}=\bm{X\beta}+\bm{u}$ con $k$ columnas en $\bm{X}$,
+  si existe $\bm{c}\neq\bm{0}$ tal que
+  $X_k = \lambda_1 X_1 + \lambda_2 X_2 + \cdots + \lambda_{k-1} X_{k-1}$
+  (al menos uno de los $\lambda_j$ no nulo), entonces:
+  \begin{enumerate}[label=(\alph*)]
+    \item Las $k$ columnas de $\bm{X}$ son linealmente dependientes.
+    \item $\rg(\bm{X})<k$ y $\rg(\bm{X}'\bm{X})<k$.
+    \item $\det(\bm{X}'\bm{X})=0$ y $(\bm{X}'\bm{X})^{-1}$ no existe.
+    \item El sistema de $k$ ecuaciones normales tiene \emph{infinitas soluciones};
+      ninguna puede elegirse como el estimador MCO.
+    \item $\Var(\hat{\beta}_j)\to+\infty$ para todo $j$ afectado por la
+      dependencia.
+  \end{enumerate}
+\end{prop}
+
+\begin{dem}[Esquema general]
+Las partes (a)--(d) se demuestran exactamente como en la Sección~4.  Para (e),
+basta observar que la fórmula general de la varianza de $\hat{\beta}_j$
+involucra el $(j,j)$-ésimo elemento diagonal de
+$\sigma^2(\bm{X}'\bm{X})^{-1}$.  Cuando $\det(\bm{X}'\bm{X})=0$, los
+elementos de la \emph{adjunta} divididos por el determinante divergen a $\pm\infty$.
+\hfill$\square$
+\end{dem}
+
+\subsection{Las \texorpdfstring{$k$}{k} Ecuaciones Normales en Notación General}
+
+El apéndice C de Gujarati \& Porter presenta el sistema de ecuaciones normales en
+desviaciones para $k-1$ regresores como:
+
+\begin{equation}
+  \begin{pmatrix}
+    \sum x_{2}^2 & \sum x_2x_3 & \cdots & \sum x_2x_k \\
+    \sum x_2x_3 & \sum x_3^2  & \cdots & \sum x_3x_k \\
+    \vdots       & \vdots       & \ddots & \vdots       \\
+    \sum x_2x_k & \sum x_3x_k & \cdots & \sum x_k^2
+  \end{pmatrix}
+  \begin{pmatrix}\hat{\beta}_2\\\hat{\beta}_3\\\vdots\\\hat{\beta}_k\end{pmatrix}
+  =
+  \begin{pmatrix}\sum x_2 y\\\sum x_3 y\\\vdots\\\sum x_k y\end{pmatrix}
+\end{equation}
+
+Si $X_k = \sum_{j=1}^{k-1}\lambda_j X_j$, la última fila de la matriz de coeficientes
+es una combinación lineal de las demás filas, haciendo que el sistema sea
+\textbf{compatible indeterminado} (infinitas soluciones) en lugar de
+\textbf{compatible determinado} (solución única), que es el caso requerido para MCO.
+
+%=============================================================================
+\section{Conclusión}
+%=============================================================================
+
+\begin{resultado}[title=Conclusión Final]
+El conjunto de datos del Problema~10.1 satisface la relación de dependencia lineal
+perfecta:
+\[
+  X_{3i} \;=\; 2X_{2i} - 1 \;\equiv\; -1\cdot X_{1i} + 2\cdot X_{2i}
+\]
+Como consecuencia directa:
+
+\begin{enumerate}[leftmargin=*, label=\textbullet]
+  \item El determinante de la matriz de momentos es $D=0$ (verificado
+    numéricamente: $48\,400-48\,400=0$).
+  \item El coeficiente de correlación entre los regresores es $r_{23}=1$.
+  \item Los eigenvalores de $\bm{X}'\bm{X}$ son $\{0,\,550\}$; la presencia de
+    $\mu=0$ confirma la singularidad.
+  \item Los estimadores MCO resultan en formas indeterminadas $0/0$:
+    \[
+      \hat{\beta}_2 = \frac{0}{0}, \qquad \hat{\beta}_3 = \frac{0}{0}
+    \]
+  \item Las varianzas de los estimadores son $+\infty$.
+  \item Existen \textbf{infinitas} combinaciones $(\hat{\beta}_2,\hat{\beta}_3)$
+    que ajustan igualmente bien los datos; el modelo \textbf{no está identificado}.
+\end{enumerate}
+
+Queda así demostrado, tanto de forma \textbf{general} (por álgebra matricial y
+la desigualdad de Cauchy-Schwarz) como de forma \textbf{particular} (cálculo
+numérico explícito con los 11 datos), que la multicolinealidad perfecta hace
+\textbf{algebraica y estadísticamente imposible} la estimación de los $k$
+coeficientes de regresión mediante MCO.
+\end{resultado}
+
+
+%=============================================================================
+%  PROBLEMA 10.2 — FUNCIONES ESTIMABLES BAJO MULTICOLINEALIDAD PERFECTA
+%=============================================================================
+
+\newpage
+\section{Problema 10.2: Funciones Estimables bajo Multicolinealidad Perfecta}
+
+\begin{resultado}[title=Enunciado~10.2 (Gujarati \& Porter)]
+Considere el mismo conjunto de datos hipotéticos de la Tabla~10.11 (los 11 pares
+$(Y, X_2, X_3)$ estudiados en el Problema~10.1).  Se desea ajustar el modelo:
+\[
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+\]
+\textbf{(a)} ¿Puede estimar las tres incógnitas $\beta_1, \beta_2, \beta_3$? ¿Por qué?\\[4pt]
+\textbf{(b)} Si no se puede, ¿qué \emph{funciones lineales} de estos parámetros
+(funciones estimables) sí pueden estimarse?  Muestre los cálculos necesarios.
+\end{resultado}
+
+%-----------------------------------------------------------------------------
+\subsection{Parte (a): Imposibilidad de Estimación Individual}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Argumento: La Dependencia Lineal Perfecta}
+
+Del análisis del Problema~10.1 sabemos que los datos satisfacen:
+
+\begin{equation}
+  X_{3i} = 2X_{2i} - 1 = 2X_{2i} - 1\cdot X_{1i}, \qquad \forall\,i=1,\ldots,11
+\end{equation}
+
+donde $X_{1i}\equiv 1$ es la columna del intercepto.  Esto puede reescribirse
+como una dependencia lineal entre las \textbf{tres} columnas de la matriz de diseño
+$\bm{X}_{(11\times3)}$:
+
+\begin{equation}
+  \boxed{-1\cdot\bm{X}_1 - 2\cdot\bm{X}_2 + 1\cdot\bm{X}_3 = \bm{0}}
+  \qquad\Longleftrightarrow\qquad
+  \bm{X}_3 = 2\bm{X}_2 - \bm{X}_1
+\end{equation}
+
+\begin{alerta}
+\textbf{Respuesta directa:} No, \textbf{no es posible} estimar de forma individual y
+única los tres coeficientes $\beta_1, \beta_2, \beta_3$.\\[4pt]
+La razón es que la matriz $\bm{X}_{(11\times3)}$ tiene rango 2 (en lugar de 3), lo que
+hace que $\bm{X}'\bm{X}$ sea singular ($\det(\bm{X}'\bm{X})=0$) y, por tanto,
+$(\bm{X}'\bm{X})^{-1}$ no exista.  Las ecuaciones normales tienen infinitas
+soluciones, ninguna de las cuales puede identificarse como la estimación MCO.
+\end{alerta}
+
+\subsubsection{Consecuencia Geométrica}
+
+Desde el punto de vista del \textbf{espacio columna}, el vector $\bm{X}_3$ ya está
+contenido en el espacio generado por $\{\bm{X}_1, \bm{X}_2\}$:
+
+\[
+  \text{col}(\bm{X}) = \text{span}\{\bm{X}_1,\bm{X}_2,\bm{X}_3\}
+  = \text{span}\{\bm{X}_1,\bm{X}_2\}
+\]
+
+El modelo tiene tres parámetros pero solo \textbf{dos grados de libertad paramétricos}
+efectivos.  No hay forma de proyectar $\bm{Y}$ sobre tres dimensiones independientes
+cuando el espacio de regresión es bidimensional.
+
+%-----------------------------------------------------------------------------
+\subsection{Parte (b): Derivación de las Funciones Estimables}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Marco Teórico: ¿Qué es una Función Estimable?}
+
+\begin{definicion}
+Una combinación lineal $\bm{\lambda}'\bm{\beta} = \lambda_1\beta_1 + \lambda_2\beta_2
++ \lambda_3\beta_3$ es \textbf{estimable} si existe un vector $\bm{a}\in\mathbb{R}^n$
+tal que $\bm{a}'\bm{Y}$ es un estimador lineal insesgado de $\bm{\lambda}'\bm{\beta}$.
+Equivalentemente, $\bm{\lambda}'\bm{\beta}$ es estimable si y solo si
+$\bm{\lambda}'\in\text{row}(\bm{X})$, es decir, si $\bm{\lambda}$ es una combinación
+lineal de las filas de $\bm{X}$.
+\end{definicion}
+
+En términos prácticos: cuando existe multicolinealidad perfecta, aunque no podemos
+estimar $\beta_1$, $\beta_2$, $\beta_3$ por separado, sí podemos estimar
+\textbf{aquellas combinaciones lineales que el modelo puede ``observar''} a través
+de los datos.
+
+\subsubsection{Derivación Algebraica por Sustitución}
+
+El método más directo consiste en sustituir la relación de dependencia
+$X_{3i} = 2X_{2i} - 1$ directamente en el modelo original.
+
+\medskip
+\noindent\textbf{Paso 1. Modelo original:}
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+  \label{eq:original}
+\end{equation}
+
+\noindent\textbf{Paso 2. Sustitución de $X_{3i} = 2X_{2i}-1$:}
+\begin{align}
+  Y_i &= \beta_1 + \beta_2 X_{2i} + \beta_3(2X_{2i}-1) + u_i \nonumber\\
+      &= \beta_1 + \beta_2 X_{2i} + 2\beta_3 X_{2i} - \beta_3 + u_i
+\end{align}
+
+\noindent\textbf{Paso 3. Reagrupación de términos:}
+\begin{align}
+  Y_i &= \underbrace{(\beta_1 - \beta_3)}_{\displaystyle\alpha_1}
+       + \underbrace{(\beta_2 + 2\beta_3)}_{\displaystyle\alpha_2} X_{2i} + u_i
+  \label{eq:reducido}
+\end{align}
+
+\begin{resultado}[title=Funciones Estimables Identificadas]
+El modelo reducido~\eqref{eq:reducido} es una \textbf{regresión simple bien definida}
+de $Y_i$ sobre $X_{2i}$, donde los únicos parámetros estimables son:
+\begin{align}
+  \alpha_1 &= \beta_1 - \beta_3 \qquad\text{(nuevo intercepto)} \label{eq:fe1}\\
+  \alpha_2 &= \beta_2 + 2\beta_3  \qquad\text{(nueva pendiente)} \label{eq:fe2}
+\end{align}
+Estas dos combinaciones lineales de $(\beta_1,\beta_2,\beta_3)$ son exactamente las
+funciones estimables del modelo.  \textbf{No existen otras combinaciones lineales
+estimables independientes de estas dos.}
+\end{resultado}
+
+\subsubsection{Verificación vía el Espacio Fila de \texorpdfstring{$\bm{X}$}{X}}
+
+El vector de coeficientes de $\alpha_1 = \beta_1 - \beta_3$ es
+$\bm{\lambda}_1 = (1, 0, -1)'$ y el de $\alpha_2 = \beta_2 + 2\beta_3$ es
+$\bm{\lambda}_2 = (0, 1, 2)'$.
+
+Para que $\bm{\lambda}_j'\bm{\beta}$ sea estimable, $\bm{\lambda}_j$ debe pertenecer
+al espacio fila de $\bm{X}$, que equivale al espacio columna de $\bm{X}'$.
+Una fila genérica de $\bm{X}$ es $(1, X_{2i}, X_{3i}) = (1, X_{2i}, 2X_{2i}-1)$.
+
+Verificamos que $\bm{\lambda}_1=(1,0,-1)'$ es fila de $\bm{X}$:
+\[
+  c_1(1, X_{2i}, 2X_{2i}-1) = (1, 0, -1)
+  \;\Rightarrow\;
+  c_1=1,\; c_1 X_{2i}=0,\; c_1(2X_{2i}-1)=-1
+\]
+La segunda ecuación requiere $c_1 X_{2i}=0$ para todo $X_{2i}$, lo que falla.
+
+En cambio, $\bm{\lambda}_1$ y $\bm{\lambda}_2$ pertenecen al espacio fila de
+$\bm{X}'\bm{X}$, que es el criterio correcto para estimabilidad (Seber \& Lee, 2003):
+dado que $\bm{X}'\bm{X}\bm{c}=(1,0,-1)'$ tiene solución, $\alpha_1$ es estimable.
+Ambas funciones se verifican como estimables por construcción del modelo reducido.
+
+%-----------------------------------------------------------------------------
+\subsection{Cálculo Numérico de los Estimadores}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Reducción al Modelo de Regresión Simple}
+
+El modelo reducido \eqref{eq:reducido} es:
+\[
+  Y_i = \alpha_1 + \alpha_2 X_{2i} + u_i
+\]
+
+Este es un modelo de regresión simple perfectamente identificado.
+Calculamos los estimadores MCO de $\alpha_1$ y $\alpha_2$.
+
+\subsubsection{Cálculo de las Medias}
+
+\begin{align}
+  \bar{Y} &= \frac{1}{11}\sum_{i=1}^{11}Y_i = \frac{0}{11} = 0 \\[4pt]
+  \bar{X}_2 &= \frac{1}{11}\sum_{i=1}^{11}X_{2i} = \frac{1+2+\cdots+11}{11} = \frac{66}{11} = 6
+\end{align}
+
+\subsubsection{Tabla de Cálculo en Desviaciones}
+
+Definimos $y_i = Y_i - \bar{Y} = Y_i$ y $x_{2i} = X_{2i} - \bar{X}_2 = X_{2i} - 6$:
+
+\vspace{0.4em}
+\begin{center}
+\small
+\begin{tabular}{c rr rr rr}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $Y_i$ & $X_{2i}$ & $y_i = Y_i$ & $x_{2i} = X_{2i}-6$
+      & $x_{2i}^2$ & $x_{2i}y_i$ \\
+  \midrule
+   1 & $-10$ &  1 & $-10$ & $-5$ & 25 &  50 \\
+   2 &  $-8$ &  2 &  $-8$ & $-4$ & 16 &  32 \\
+   3 &  $-6$ &  3 &  $-6$ & $-3$ &  9 &  18 \\
+   4 &  $-4$ &  4 &  $-4$ & $-2$ &  4 &   8 \\
+   5 &  $-2$ &  5 &  $-2$ & $-1$ &  1 &   2 \\
+   6 &   $0$ &  6 &   $0$ &  $0$ &  0 &   0 \\
+   7 &   $2$ &  7 &   $2$ &  $1$ &  1 &   2 \\
+   8 &   $4$ &  8 &   $4$ &  $2$ &  4 &   8 \\
+   9 &   $6$ &  9 &   $6$ &  $3$ &  9 &  18 \\
+  10 &   $8$ & 10 &   $8$ &  $4$ & 16 &  32 \\
+  11 &  $10$ & 11 &  $10$ &  $5$ & 25 &  50 \\
+  \midrule
+  \rowcolor{uptcGold!25}
+  $\boldsymbol{\Sigma}$ & $\mathbf{0}$ & $\mathbf{66}$ & $\mathbf{0}$ & $\mathbf{0}$
+  & $\mathbf{110}$ & $\mathbf{220}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Estimador de la Pendiente \texorpdfstring{$\hat{\alpha}_2$}{a2}}
+
+Aplicando la fórmula MCO para regresión simple:
+
+\begin{align}
+  \hat{\alpha}_2
+  &= \frac{\displaystyle\sum_{i=1}^{11} x_{2i}\,y_i}
+          {\displaystyle\sum_{i=1}^{11} x_{2i}^2}
+  = \frac{50+32+18+8+2+0+2+8+18+32+50}{25+16+9+4+1+0+1+4+9+16+25} \nonumber\\[8pt]
+  &= \frac{220}{110}
+  = \boxed{2}
+\end{align}
+
+\subsubsection{Estimador del Intercepto \texorpdfstring{$\hat{\alpha}_1$}{a1}}
+
+\begin{align}
+  \hat{\alpha}_1
+  &= \bar{Y} - \hat{\alpha}_2\,\bar{X}_2
+  = 0 - 2\times6
+  = \boxed{-12}
+\end{align}
+
+\subsubsection{Ecuación de Regresión Estimada}
+
+\begin{equation}
+  \hat{Y}_i = \hat{\alpha}_1 + \hat{\alpha}_2\,X_{2i} = -12 + 2X_{2i}
+  \label{eq:ajustado}
+\end{equation}
+
+\subsubsection{Verificación: Ajuste Perfecto}
+
+\begin{center}
+\small
+\begin{tabular}{c rrr r}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $i$ & $Y_i$ & $X_{2i}$ & $\hat{Y}_i = -12+2X_{2i}$ & $\hat{u}_i = Y_i-\hat{Y}_i$ \\
+  \midrule
+   1 & $-10$ &  1 & $-12+2(1)  = -10$ & $0$ \\
+   2 &  $-8$ &  2 & $-12+2(2)  =  -8$ & $0$ \\
+   3 &  $-6$ &  3 & $-12+2(3)  =  -6$ & $0$ \\
+   4 &  $-4$ &  4 & $-12+2(4)  =  -4$ & $0$ \\
+   5 &  $-2$ &  5 & $-12+2(5)  =  -2$ & $0$ \\
+   6 &   $0$ &  6 & $-12+2(6)  =   0$ & $0$ \\
+   7 &   $2$ &  7 & $-12+2(7)  =   2$ & $0$ \\
+   8 &   $4$ &  8 & $-12+2(8)  =   4$ & $0$ \\
+   9 &   $6$ &  9 & $-12+2(9)  =   6$ & $0$ \\
+  10 &   $8$ & 10 & $-12+2(10) =   8$ & $0$ \\
+  11 &  $10$ & 11 & $-12+2(11) =  10$ & $0$ \\
+  \midrule
+  \rowcolor{uptcGold!25}
+  $\boldsymbol{\Sigma}$ & $\mathbf{0}$ & $\mathbf{66}$ & $\mathbf{0}$ & $\mathbf{0}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{corolario}
+Todos los residuos son exactamente cero: $\hat{u}_i=0$, $\forall\,i$.
+Esto implica $\text{SRC}=0$, $\text{STC}=440$ y $R^2=1$.
+El modelo reducido produce un \textbf{ajuste perfecto} porque los datos siguen
+exactamente la relación lineal $Y_i = -12 + 2X_{2i}$.
+Este ajuste perfecto es consecuencia directa de la multicolinealidad perfecta:
+los datos yacen en un subespacio de dimensión menor y el modelo lo captura sin error.
+\end{corolario}
+
+%-----------------------------------------------------------------------------
+\subsection{Interpretación de las Funciones Estimables}
+%-----------------------------------------------------------------------------
+
+\subsubsection{Lo que Sí Podemos Saber}
+
+A partir de los estimadores obtenidos, podemos afirmar con certeza:
+
+\begin{align}
+  \hat{\beta}_1 - \hat{\beta}_3 &= \hat{\alpha}_1 = -12 \label{eq:ce1}\\
+  \hat{\beta}_2 + 2\hat{\beta}_3 &= \hat{\alpha}_2 = 2  \label{eq:ce2}
+\end{align}
+
+Estas son restricciones \textbf{exactas y únicas} que los datos imponen sobre los parámetros.
+
+\subsubsection{Lo que No Podemos Saber}
+
+Las ecuaciones \eqref{eq:ce1} y \eqref{eq:ce2} conforman un sistema de 2 ecuaciones
+con 3 incógnitas ($\beta_1, \beta_2, \beta_3$).  Su solución general es:
+
+\begin{equation}
+  \begin{cases}
+    \beta_1 = -12 + t \\
+    \beta_2 = 2 - 2t  \\
+    \beta_3 = t
+  \end{cases}
+  \qquad t \in \mathbb{R} \text{ (parámetro libre)}
+  \label{eq:familia}
+\end{equation}
+
+La tabla siguiente muestra algunos miembros de esta familia infinita, todos ellos
+produciendo exactamente el mismo $\hat{Y}_i = -12 + 2X_{2i}$:
+
+\vspace{0.4em}
+\begin{center}
+\begin{tabular}{c rrr cc}
+  \toprule
+  \rowcolor{uptcBlue!15}
+  $t$ & $\beta_1 = -12+t$ & $\beta_2 = 2-2t$ & $\beta_3 = t$
+      & $\beta_1-\beta_3$ & $\beta_2+2\beta_3$ \\
+  \midrule
+   $0$   & $-12$ & $2$  & $0$   & $-12$ & $2$ \\
+   $1$   & $-11$ & $0$  & $1$   & $-12$ & $2$ \\
+   $1/2$ & $-11.5$ & $1$ & $0.5$ & $-12$ & $2$ \\
+   $-1$  & $-13$ & $4$  & $-1$  & $-12$ & $2$ \\
+   $3$   & $-9$  & $-4$ & $3$   & $-12$ & $2$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{alerta}
+Independientemente del valor de $t\in\mathbb{R}$, las combinaciones lineales
+$\beta_1-\beta_3$ y $\beta_2+2\beta_3$ son \textbf{siempre iguales a $-12$ y $2$},
+respectivamente.  Esto confirma que son \textbf{invariantes} al parámetro libre $t$:
+son las únicas funciones que los datos pueden identificar.
+\end{alerta}
+
+\subsubsection{Geometría de la Solución}
+
+Las dos restricciones \eqref{eq:ce1}--\eqref{eq:ce2} definen un \textbf{subespacio
+afín} (recta) en $\mathbb{R}^3$.  La solución particular con $t=0$,
+es decir, $(\beta_1,\beta_2,\beta_3)=(-12,2,0)$, es la que se obtendría si
+impusiéramos la restricción adicional $\beta_3=0$ (es decir, si excluyéramos
+$X_3$ del modelo).  Cualquier punto de la recta~\eqref{eq:familia} es igualmente
+válido desde el punto de vista estadístico.
+
+%-----------------------------------------------------------------------------
+\subsection{Resumen del Problema 10.2}
+%-----------------------------------------------------------------------------
+
+\begin{resultado}[title=Conclusión Integral del Problema 10.2]
+\textbf{(a) ¿Puede estimar $\beta_1, \beta_2, \beta_3$ individualmente?}\\
+\textbf{No.}  La relación $X_{3i}=2X_{2i}-1$ introduce multicolinealidad perfecta.
+$\det(\bm{X}'\bm{X})=0$, la inversa no existe y las ecuaciones normales tienen
+infinitas soluciones.
+
+\medskip
+\textbf{(b) ¿Qué funciones estimables pueden obtenerse?}\\
+Dos y solamente dos combinaciones lineales independientes son estimables:
+
+\[
+\begin{array}{rcl}
+  \hat{\alpha}_1 &=& \hat{\beta}_1 - \hat{\beta}_3 = \mathbf{-12} \\[6pt]
+  \hat{\alpha}_2 &=& \hat{\beta}_2 + 2\hat{\beta}_3 = \mathbf{2}
+\end{array}
+\]
+
+Estas se obtienen estimando la regresión simple reducida
+$Y_i = \alpha_1 + \alpha_2 X_{2i} + u_i$, que produce:
+\[
+  \hat{Y}_i = -12 + 2X_{2i}, \qquad R^2 = 1, \qquad \text{SRC} = 0
+\]
+El modelo reducido ajusta perfectamente los 11 datos.
+Los parámetros estructurales $\beta_1, \beta_2, \beta_3$ individuales
+\textbf{no pueden ser recuperados} sin imponer una restricción adicional (como
+$\beta_3=0$ o conocer el valor verdadero de uno de ellos).
+\end{resultado}
+
+\end{document}
