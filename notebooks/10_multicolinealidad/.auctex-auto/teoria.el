@@ -6,7 +6,7 @@
    (TeX-add-to-alist 'LaTeX-provided-class-options
                      '(("article" "12pt" "a4paper" "11pt" "letterpaper" "10pt" "twocolumn")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("libertine" "") ("newtxmath" "libertine") ("tgtermes" "") ("tgheros" "") ("mathdesign" "expert") ("newspaper" "") ("fontspec" "") ("charter" "") ("fourier" "") ("microtype" "") ("inputenc" "utf8") ("fontenc" "T1") ("babel" "spanish" "" "es-tabla") ("geometry" "") ("xcolor" "") ("titlesec" "") ("fancyhdr" "") ("titling" "") ("lettrine" "") ("caption" "") ("booktabs" "") ("array" "") ("colortbl" "") ("amsmath" "") ("amsfonts" "") ("amssymb" "") ("amsthm" "") ("mathtools" "") ("bm" "") ("tcolorbox" "") ("enumitem" "") ("hyperref" "") ("multicol" "") ("mdframed" "") ("ragged2e" "")))
+                     '(("libertine" "") ("newtxmath" "libertine") ("tgtermes" "") ("tgheros" "") ("mathdesign" "expert") ("newspaper" "") ("fontspec" "") ("charter" "") ("fourier" "") ("microtype" "") ("hyperref" "") ("inputenc" "utf8") ("fontenc" "T1") ("babel" "spanish" "" "es-tabla") ("geometry" "") ("xcolor" "") ("titlesec" "") ("fancyhdr" "") ("titling" "") ("lettrine" "") ("caption" "") ("booktabs" "") ("array" "") ("colortbl" "") ("amsmath" "") ("amsfonts" "") ("amssymb" "") ("amsthm" "") ("mathtools" "") ("bm" "") ("tcolorbox" "") ("enumitem" "") ("multicol" "") ("mdframed" "") ("ragged2e" "")))
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
@@ -39,7 +39,6 @@
     "bm"
     "tcolorbox"
     "enumitem"
-    "hyperref"
     "multicol"
     "mdframed"
     "ragged2e")
@@ -52,24 +51,43 @@
     "E"
     "RSS"
     "ESS"
-    "TSS")
+    "TSS"
+    "sxdos"
+    "sxtres"
+    "sxdxt"
+    "sxdy"
+    "sxty")
+   (LaTeX-add-labels
+    "eq:sistema2"
+    "eq:momentos"
+    "eq:reducido"
+    "eq:familia")
+   (LaTeX-add-amsthm-newtheorems
+    "prop"
+    "lema"
+    "dem")
    (LaTeX-add-xcolor-definecolors
     "nytblack"
     "harvard"
     "voguegold"
+    "vgdark"
     "lightgray"
     "midgray"
     "accentblue"
     "softblue"
     "softgold"
-    "alertred")
+    "alertred"
+    "softred"
+    "softgreen"
+    "darkgreen")
    (LaTeX-add-tcolorbox-newtcolorboxes
     '("definicion" "1" "[" "")
+    '("teorema" "1" "[" "")
     '("resultado" "1" "[" "")
     '("alerta" "1" "[" "")
     '("corolario" "1" "[" "")
     '("enunciado" "1" "[" ""))
    (LaTeX-add-tcolorbox-tcbuselibraries
-    "breakable, skins, theorems"))
+    "breakable,skins,theorems"))
  :latex)
 

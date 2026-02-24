@@ -1,14 +1,15 @@
 \documentclass[10pt, letterpaper, twocolumn]{article}
 
 %=============================================================================
-%  PAQUETES ESENCIALES
+%  PAQUETES
 %=============================================================================
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{babel}
 \selectlanguage{spanish}
 \usepackage{geometry}
-\geometry{left=1.5cm, right=1.5cm, top=2.5cm, bottom=2.8cm, columnsep=1cm, headheight=15pt}
+\geometry{left=1.5cm, right=1.5cm, top=2.5cm, bottom=2.8cm,
+          columnsep=1cm, headheight=15pt}
 
 \usepackage{xcolor}
 \usepackage{titlesec}
@@ -16,78 +17,97 @@
 \usepackage{titling}
 \usepackage{lettrine}
 \usepackage{caption}
-
-
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{colortbl}
-\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
 \usepackage{mathtools}
 \usepackage{bm}
 \usepackage{tcolorbox}
 \usepackage{enumitem}
-\usepackage{hyperref}
+%\usepackage{hyperref}
 \usepackage{multicol}
 \usepackage{mdframed}
-
 \usepackage{ragged2e}
 
-\tcbuselibrary{breakable, skins, theorems}
+\tcbuselibrary{breakable,skins,theorems}
 
 %=============================================================================
-%  PALETA DE COLORES  (NYT · Harvard · Vogue)
+%  PALETA (NYT / Harvard / Vogue)
 %=============================================================================
 \definecolor{nytblack}{HTML}{1A1A1A}
 \definecolor{harvard}{HTML}{A51C30}
 \definecolor{voguegold}{HTML}{8E735B}
+\definecolor{vgdark}{HTML}{6B563F}
 \definecolor{lightgray}{HTML}{F5F5F0}
-\definecolor{midgray}{HTML}{CCCCCC}
+\definecolor{midgray}{HTML}{AAAAAA}
 \definecolor{accentblue}{HTML}{1D3557}
 \definecolor{softblue}{HTML}{E8EEF6}
 \definecolor{softgold}{HTML}{FDF6E3}
 \definecolor{alertred}{HTML}{7B0D1E}
+\definecolor{softred}{HTML}{FAE8EB}
+\definecolor{softgreen}{HTML}{EBF5EB}
+\definecolor{darkgreen}{HTML}{1E5631}
 
 %=============================================================================
-%  CAJAS ACADÉMICAS
+%  CAJAS TCOLORBOX
 %=============================================================================
 \newtcolorbox{definicion}[1][]{
   colback=softblue, colframe=accentblue,
-  fonttitle=\bfseries\small\scshape, title=Definición,
-  left=6pt, right=6pt, top=4pt, bottom=4pt,
-  breakable, #1
-}
-\newtcolorbox{resultado}[1][]{
+  fonttitle=\bfseries\small\scshape\color{white},
+  title=Definici\'on, coltitle=white,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,
+  arc=2pt, breakable, #1}
+
+\newtcolorbox{teorema}[1][]{
   colback=softgold, colframe=voguegold,
-  fonttitle=\bfseries\small\scshape,
-  left=6pt, right=6pt, top=4pt, bottom=4pt,
-  breakable, #1
-}
+  fonttitle=\bfseries\small\scshape\color{white},
+  title=Teorema, coltitle=white,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,
+  arc=2pt, breakable, #1}
+
+\newtcolorbox{resultado}[1][]{
+  colback=softgold!70, colframe=vgdark,
+  fonttitle=\bfseries\small\scshape\color{white},
+  coltitle=white,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,
+  arc=2pt, breakable, #1}
+
 \newtcolorbox{alerta}[1][]{
-  colback=red!6, colframe=alertred,
-  fonttitle=\bfseries\small\scshape, title=Resultado Crítico,
-  left=6pt, right=6pt, top=4pt, bottom=4pt,
-  breakable, #1
-}
+  colback=softred, colframe=alertred,
+  fonttitle=\bfseries\small\scshape\color{white},
+  title=Resultado Cr\'itico, coltitle=white,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,
+  arc=2pt, breakable, #1}
+
 \newtcolorbox{corolario}[1][]{
-  colback=green!5, colframe=green!45!black,
-  fonttitle=\bfseries\small\scshape, title=Corolario,
-  left=6pt, right=6pt, top=4pt, bottom=4pt,
-  breakable, #1
-}
+  colback=softgreen, colframe=darkgreen,
+  fonttitle=\bfseries\small\scshape\color{white},
+  title=Corolario, coltitle=white,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,
+  arc=2pt, breakable, #1}
+
 \newtcolorbox{enunciado}[1][]{
   colback=lightgray, colframe=nytblack,
-  fonttitle=\bfseries\small\scshape,
-  left=6pt, right=6pt, top=4pt, bottom=4pt,
-  breakable, #1
-}
+  fonttitle=\bfseries\small\scshape\color{white},
+  coltitle=white,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,
+  arc=2pt, breakable, #1}
 
 %=============================================================================
-%  CONFIGURACIÓN DE TÍTULOS
+%  TEOREMAS
+%=============================================================================
+\newtheorem{prop}{Proposici\'on}[section]
+\newtheorem{lema}[prop]{Lema}
+\newtheorem*{dem}{Demostraci\'on}
+
+%=============================================================================
+%  FORMATOS DE SECCIÓN
 %=============================================================================
 \titleformat{\section}
   {\normalfont\normalsize\bfseries\scshape\color{nytblack}}
-  {}{0em}{\uppercase}[\vspace{-0.05cm}\textcolor{voguegold}{\rule{\linewidth}{0.5pt}}]
-\titlespacing*{\section}{0pt}{8pt}{4pt}
+  {}{0em}{\uppercase}[{\color{voguegold}\vspace{1pt}\hrule height 0.6pt}]
+\titlespacing*{\section}{0pt}{9pt}{5pt}
 
 \titleformat{\subsection}
   {\normalfont\small\bfseries\itshape\color{accentblue}}
@@ -104,12 +124,14 @@
 %=============================================================================
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[C]{\footnotesize\textsc{The Econometric Review} \textbar\ \textit{Gujarati \& Porter, Cap.\ 10} \textbar\ \thepage}
-\renewcommand{\headrulewidth}{0.3pt}
-\renewcommand{\footrulewidth}{0pt}
+\fancyhead[L]{\footnotesize\textsc{\color{accentblue}Econometr\'ia --- UPTC}}
+\fancyhead[R]{\footnotesize\textsc{\color{accentblue}Gujarati \& Porter, Cap.\ 10}}
+\fancyfoot[C]{\small\color{midgray}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.2pt}
 
 %=============================================================================
-%  OPERADORES MATEMÁTICOS
+%  OPERADORES
 %=============================================================================
 \DeclareMathOperator{\rg}{rg}
 \DeclareMathOperator{\tr}{tr}
@@ -117,540 +139,1039 @@
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\Cov}{\operatorname{Cov}}
 \newcommand{\E}{\operatorname{E}}
-\newcommand{\RSS}{\text{RSS}}
-\newcommand{\ESS}{\text{ESS}}
-\newcommand{\TSS}{\text{TSS}}
+\newcommand{\RSS}{\text{SRC}}
+\newcommand{\ESS}{\text{SEC}}
+\newcommand{\TSS}{\text{STC}}
+\newcommand{\sxdos}{\textstyle\sum_{i=1}^{n} x_{2i}^{2}}
+\newcommand{\sxtres}{\textstyle\sum_{i=1}^{n} x_{3i}^{2}}
+\newcommand{\sxdxt}{\textstyle\sum_{i=1}^{n} x_{2i}x_{3i}}
+\newcommand{\sxdy}{\textstyle\sum_{i=1}^{n} x_{2i}y_{i}}
+\newcommand{\sxty}{\textstyle\sum_{i=1}^{n} x_{3i}y_{i}}
 
 %=============================================================================
 %  METADATOS
 %=============================================================================
 \pretitle{%
   \begin{center}
-  \vspace*{-0.3cm}
-  \textcolor{midgray}{\rule{2cm}{0.4pt}}\\[0.3cm]
-  \fontsize{26pt}{30pt}\selectfont\bfseries\color{nytblack}%
-}
-\posttitle{\end{center}\vspace{0.1cm}}
-\preauthor{\begin{center}\small\textsc}
-\postauthor{\\[0.1cm]\footnotesize\textit{Econometría --- UPTC, Tunja}\end{center}}
+  \vspace*{-0.2cm}
+  {\color{midgray}\rule{3cm}{0.4pt}}\\[0.25cm]
+  \fontsize{22pt}{26pt}\selectfont\bfseries\color{nytblack}}
+\posttitle{\end{center}\vspace{0.05cm}}
+\preauthor{\begin{center}\normalsize\textsc}
+\postauthor{\\[0.05cm]\footnotesize\textit{Econometr\'ia --- Universidad Pedag\'ogica y Tecnol\'ogica de Colombia, UPTC}\end{center}}
 \predate{}\date{}\postdate{}
 
-\title{Problema 10.3\\[-0.2cm]Mortalidad Infantil,\\[-0.2cm]Colinealidad y Variable\\[-0.2cm]Omitida}
+\title{Multicolinealidad en el\\[-0.15cm]Modelo de Regresi\'on Lineal\\[-0.15cm]M\'ultiple\\[0.1cm]{\normalsize\itshape\color{voguegold}Problemas 10.1, 10.2 y 10.3 --- Gujarati \& Porter}}
 \author{Emanuel Quintana Silva}
 
 %=============================================================================
-%  DOCUMENTO
-%=============================================================================
 \begin{document}
+%=============================================================================
 
-%--- CABECERA EN UNA SOLA COLUMNA ---
 \twocolumn[
   \maketitle
+  \vspace{-0.2cm}
   \begin{center}
-  \begin{minipage}{0.82\textwidth}
-    \begin{center}\textcolor{midgray}{\rule{\linewidth}{0.4pt}}\end{center}
-    \vspace{0.1cm}
+  \begin{minipage}{0.84\textwidth}
+    \begin{center}{\color{midgray}\rule{\linewidth}{0.4pt}}\end{center}
+    \vspace{0.15cm}
     \small\textsc{Resumen.}\;
-    \textit{Se analiza el modelo de Mortalidad Infantil (MI) ampliado con la Tasa de
-      Fecundidad Total (TFT), a partir del ejemplo~8.1 de Gujarati \& Porter.
-      Se demuestra que la inclusi\'{o}n de la TFT mejora el ajuste global, corrige
-      el sesgo por omisi\'{o}n de variable relevante que afectaba al coeficiente de la
-      Tasa de Alfabetizaci\'{o}n de las Mujeres (TAM), y se discute por qu\'{e} la
-      significancia individual de todos los coeficientes no descarta la existencia
-      de colinealidad imperfecta.}
-    \vspace{0.1cm}
-    \begin{center}\textcolor{midgray}{\rule{\linewidth}{0.4pt}}\end{center}
+    \textit{Se demuestra, con rigor algebraico y verificaci\'on num\'erica
+    expl\'icita, que la multicolinealidad perfecta hace imposible la estimaci\'on
+    MCO de los coeficientes individuales (Prob.~10.1); se identifican las
+    funciones estimables que s\'i pueden recuperarse y se calculan
+    expl\'icitamente (Prob.~10.2); finalmente, se analiza el modelo de
+    Mortalidad Infantil ampliado con la Tasa de Fecundidad Total, estudiando
+    el sesgo por omisi\'on de variable, la pertinencia de la nueva variable
+    y la relaci\'on entre significancia individual y colinealidad imperfecta
+    (Prob.~10.3).}
+    \vspace{0.15cm}
+    \begin{center}{\color{midgray}\rule{\linewidth}{0.4pt}}\end{center}
   \end{minipage}
   \end{center}
-  \vspace{0.9cm}
+  \vspace{0.8cm}
 ]
 
-%=============================================================================
-\section{Enunciado del Problema}
-%=============================================================================
+% ============================================================
+%  PROBLEMA 10.1
+% ============================================================
+\begin{center}
+{\large\bfseries\scshape\color{harvard} Problema 10.1}\\[1pt]
+{\small\itshape\color{voguegold} Multicolinealidad Perfecta}
+\end{center}
+\vspace{4pt}
 
-\begin{enunciado}[title=Ejercicio 10.3 --- Gujarati \& Porter]
-  Consulte el ejemplo de la mortalidad infantil analizado en el Cap.~8 (Ec.~8.1.4).
-  Dicho ejemplo implicó hacer la regresión de MI sobre el PIBPC y la TAM.
-  Ahora, suponga que se añade la variable TFT.  Los resultados de la regresión
-  ampliada son los que se presentan en la Tabla~1.\\[4pt]
-  \textbf{(a)} Compare estos resultados con los de la Ec.~(8.1.4). ¿Qué cambios
-  observa? ¿Cómo los explica?\\[4pt]
-  \textbf{(b)} ¿Vale la pena añadir la variable TFT al modelo? ¿Por qué?\\[4pt]
-  \textbf{(c)} Como todos los coeficientes $t$ individuales son estadísticamente
-  significativos, ¿podemos decir que no existe un problema de colinealidad en
-  el presente caso?
+\section{Enunciado del Problema 10.1}
+
+\begin{enunciado}[title=Enunciado 10.1 --- Gujarati \& Porter]
+En el modelo de regresi\'on lineal de $k$ variables, hay $k$ ecuaciones
+normales para estimar las $k$ inc\'ognitas.  Suponga que $X_k$ es una
+combinaci\'on lineal perfecta de las variables $X$ restantes.
+\textbf{?`C\'omo se demostrar\'ia que en este caso es imposible estimar
+los $k$ coeficientes de regresi\'on?}\\[3pt]
+Se dispone de los siguientes datos ($n=11$ observaciones):
 \end{enunciado}
 
-\vspace{0.5em}
+\vspace{4pt}
 \begin{center}
 \small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lcrr}
+\begin{tabular}{c>{\columncolor{softblue}}rrr}
   \toprule
-  \rowcolor{softblue}
-  \textbf{Variable} & \textbf{Coef.} & \textbf{EE} & \textbf{$t$} \\
+  \rowcolor{accentblue!15}
+  $i$ & $Y_i$ & $X_{2i}$ & $X_{3i}$ \\
   \midrule
-  $C$     & $168.307$  & $32.892$ & $5.117$  \\
-  PIBPC   & $-0.00551$ & $0.00188$ & $-2.934$ \\
-  TAM     & $-1.768$   & $0.248$  & $-7.129$ \\
-  TFT     & $12.869$   & $4.191$  & $3.071$  \\
+   1 & $-10$ &  1 &  1 \\
+   2 &  $-8$ &  2 &  3 \\
+   3 &  $-6$ &  3 &  5 \\
+   4 &  $-4$ &  4 &  7 \\
+   5 &  $-2$ &  5 &  9 \\
+   6 &   $0$ &  6 & 11 \\
+   7 &   $2$ &  7 & 13 \\
+   8 &   $4$ &  8 & 15 \\
+   9 &   $6$ &  9 & 17 \\
+  10 &   $8$ & 10 & 19 \\
+  11 &  $10$ & 11 & 21 \\
   \midrule
-  \multicolumn{4}{l}{\footnotesize $R^2=0.7474$;\; $\bar{R}^2=0.7347$;\; $F=59.17$;\; $n \approx 64$} \\
-  \multicolumn{4}{l}{\footnotesize $\text{SRC}=91{,}875$;\; $\hat{\sigma}=39.13$;\; $\text{AIC}=10.23$} \\
+  \rowcolor{softgold}
+  $\boldsymbol{\Sigma}$ & $\mathbf{0}$ & $\mathbf{66}$ & $\mathbf{121}$ \\
   \bottomrule
 \end{tabular}
-\captionof{table}{\textit{Regresión ampliada: MI sobre PIBPC, TAM y TFT}}
+\captionof{table}{\textit{Datos del Problema 10.1}}
 \end{center}
 
-%=============================================================================
-\section{Marco Teórico}
-%=============================================================================
+\section{Marco Te\'orico}
 
-\subsection{Especificación del Modelo Ampliado}
+\subsection{Estimador MCO Matricial}
 
-El modelo poblacional para la observación $i$ es:
-\begin{equation}
-  MI_i = \beta_1 + \beta_2\,\text{PIBPC}_i + \beta_3\,\text{TAM}_i
-        + \beta_4\,\text{TFT}_i + u_i
-\end{equation}
-
-En notación matricial compacta, $\bm{y} = \bm{X\beta} + \bm{u}$, donde la
-\textbf{matriz de diseño} es:
-\begin{equation}
-  \bm{X}_{n\times4} =
-  \begin{bmatrix}
-    1 & \text{PIBPC}_1 & \text{TAM}_1 & \text{TFT}_1 \\
-    \vdots & \vdots & \vdots & \vdots \\
-    1 & \text{PIBPC}_n & \text{TAM}_n & \text{TFT}_n
-  \end{bmatrix}
-\end{equation}
+El modelo $\bm{Y}=\bm{X\beta}+\bm{u}$ admite estimaci\'on MCO \'unica si y
+solo si $\rg(\bm{X})=k$.
 
 \begin{definicion}
-  El \textbf{Estimador MCO} minimiza la Suma de Residuos al Cuadrado:
+  Bajo los supuestos de Gauss-Markov ($\E[\bm{u}|\bm{X}]=\bm{0}$,
+  $\Var[\bm{u}|\bm{X}]=\sigma^2\bm{I}_n$, $\rg(\bm{X})=k$), el estimador
+  MCO es:
   \[
-    \hat{\bm{\beta}} = (\bm{X}'\bm{X})^{-1}\bm{X}'\bm{y}
+    \hat{\bm{\beta}} = (\bm{X}'\bm{X})^{-1}\bm{X}'\bm{Y}
   \]
-  cuya existencia requiere $\rg(\bm{X})=k=4$ (no colinealidad perfecta).
+  El supuesto $\rg(\bm{X})=k$ es \emph{indispensable} para que
+  $(\bm{X}'\bm{X})^{-1}$ exista.
 \end{definicion}
 
-La \textbf{matriz de varianza--covarianza} de los estimadores es:
-\begin{equation}
-  \Var(\hat{\bm{\beta}}) = \hat{\sigma}^2(\bm{X}'\bm{X})^{-1},
-  \qquad \hat{\sigma}^2 = \frac{\RSS}{n-k}
-\end{equation}
+\subsection{Las $k$ Ecuaciones Normales}
 
-%=============================================================================
-\section{Parte (a): Comparación con la Ecuación~8.1.4}
-%=============================================================================
-
-\lettrine[lines=2]{\color{harvard}\textbf{E}}{l} modelo original (Ec.~8.1.4)
-regresaba MI únicamente sobre PIBPC y TAM.  Al incorporar la TFT, se producen
-tres tipos de cambios observables.
-
-\subsection{Cambios en la Bondad de Ajuste}
-
-El coeficiente de determinación aumentó de $R^2_{\text{orig}}=0.7077$ a
-$R^2_{\text{amp}}=0.7474$:
+La condici\'on de primer orden $\partial\,\text{SRC}/\partial\bm{\beta}=\bm{0}$
+produce $\bm{X}'\bm{X}\hat{\bm{\beta}}=\bm{X}'\bm{Y}$.  En desviaciones
+respecto a la media, con dos regresores:
 
 \begin{equation}
-  \Delta R^2 = 0.7474 - 0.7077 = 0.0397
+  \begin{pmatrix} \sxdos & \sxdxt \\ \sxdxt & \sxtres \end{pmatrix}
+  \begin{pmatrix}\hat{\beta}_2\\\hat{\beta}_3\end{pmatrix}
+  =\begin{pmatrix}\sxdy\\\sxty\end{pmatrix}
+  \label{eq:sistema2}
 \end{equation}
 
-Lo que equivale a una ganancia explicativa del $3.97\%$ adicional de la
-varianza de MI.  El $\bar{R}^2$ ajustado por grados de libertad también
-aumenta (de $0.6981$ a $0.7347$), confirmando que la mejora no es un
-artefacto del número de parámetros.
+\section{Identificaci\'on de la Dependencia Lineal}
+
+\subsection{Detecci\'on Emp\'irica}
+
+\begin{center}
+\small
+\begin{tabular}{crrr}
+  \toprule
+  \rowcolor{accentblue!15}
+  $i$ & $X_{2i}$ & $2X_{2i}-1$ & $X_{3i}$ \\
+  \midrule
+  1  &  1 &  1 &  1 \\
+  6  &  6 & 11 & 11 \\
+  11 & 11 & 21 & 21 \\
+  \midrule
+  \rowcolor{softgold}
+  \multicolumn{4}{c}{\footnotesize Patr\'on id\'entico en \textbf{todas} las 11 obs.} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{alerta}
+Sin excepci\'on en ninguna observaci\'on:
+\[
+  X_{3i} = 2X_{2i}-1, \qquad \forall\,i=1,\ldots,11
+\]
+Equivalentemente, sobre las columnas de $\bm{X}$:
+\[
+  \boxed{-1\cdot X_{1i} - 2\cdot X_{2i} + 1\cdot X_{3i} = 0}
+\]
+con $(\lambda_1,\lambda_2,\lambda_3)=(-1,-2,1)\neq\bm{0}$.
+\end{alerta}
+
+\subsection{Reformulaci\'on en Desviaciones}
+
+Las medias son $\bar{Y}=0$, $\bar{X}_2=6$, $\bar{X}_3=11$.
+En desviaciones: $x_{2i}=X_{2i}-6$, $x_{3i}=X_{3i}-11$.  Dado que
+$X_{3i}=2X_{2i}-1$:
+\[
+  x_{3i}=(2X_{2i}-1)-11=2(X_{2i}-6)=2x_{2i}
+\]
+
+\begin{resultado}[title=Relaci\'on en desviaciones]
+\[
+  x_{3i}=2x_{2i}, \quad \forall\,i \qquad (\lambda=2)
+\]
+\end{resultado}
+
+\subsection{C\'alculo de Momentos Muestrales}
+
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{crrrrrr}
+  \toprule
+  \rowcolor{accentblue!15}
+  $i$ & $y_i$ & $x_{2i}$ & $x_{3i}$ & $x_{2i}^2$ & $x_{3i}^2$ & $x_{2i}x_{3i}$ \\
+  \midrule
+   1 & $-10$ & $-5$ & $-10$ & 25 & 100 & 50 \\
+   2 &  $-8$ & $-4$ &  $-8$ & 16 &  64 & 32 \\
+   3 &  $-6$ & $-3$ &  $-6$ &  9 &  36 & 18 \\
+   4 &  $-4$ & $-2$ &  $-4$ &  4 &  16 &  8 \\
+   5 &  $-2$ & $-1$ &  $-2$ &  1 &   4 &  2 \\
+   6 &   $0$ &  $0$ &   $0$ &  0 &   0 &  0 \\
+   7 &   $2$ &  $1$ &   $2$ &  1 &   4 &  2 \\
+   8 &   $4$ &  $2$ &   $4$ &  4 &  16 &  8 \\
+   9 &   $6$ &  $3$ &   $6$ &  9 &  36 & 18 \\
+  10 &   $8$ &  $4$ &   $8$ & 16 &  64 & 32 \\
+  11 &  $10$ &  $5$ &  $10$ & 25 & 100 & 50 \\
+  \midrule
+  \rowcolor{softgold}
+  $\Sigma$ & 0 & 0 & 0 & \textbf{110} & \textbf{440} & \textbf{220} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{2pt}
+La matriz de momentos y el vector de productos cruzados son:
+\begin{equation}
+  \bm{M}=\bm{X}'\bm{X}
+  =\begin{pmatrix}110&220\\220&440\end{pmatrix},\quad
+  \bm{X}'\bm{Y}=\begin{pmatrix}220\\440\end{pmatrix}
+  \label{eq:momentos}
+\end{equation}
+
+\section{Demostraci\'on: Imposibilidad de Estimaci\'on}
+
+\subsection{Proposici\'on Central}
+
+\begin{prop}[Indeterminaci\'on bajo Multicolinealidad Perfecta]
+Si existe $\bm{c}\neq\bm{0}$ tal que $\bm{Xc}=\bm{0}$, entonces
+$\hat{\bm{\beta}}=(\bm{X}'\bm{X})^{-1}\bm{X}'\bm{Y}$ \textbf{no existe}.
+\end{prop}
+
+\begin{dem}
+\textbf{Paso 1. Singularidad de $\bm{X}'\bm{X}$.}
+Si $\bm{Xc}=\bm{0}$, premultiplicando por $\bm{X}'$:
+\[
+  (\bm{X}'\bm{X})\bm{c}=\bm{0},\quad \bm{c}\neq\bm{0}
+  \;\Longrightarrow\; \det(\bm{X}'\bm{X})=0
+\]
+
+\textbf{Paso 2. Inversa indefinida.}
+$\det(\bm{X}'\bm{X})=0 \Rightarrow (\bm{X}'\bm{X})^{-1}$ no existe.
+
+\textbf{Paso 3. Infinitas soluciones.}
+Sea $\hat{\bm{\beta}}^*$ una soluci\'on particular.  Para todo $\alpha\in\mathbb{R}$:
+\[
+  \bm{X}'\bm{X}(\hat{\bm{\beta}}^*+\alpha\bm{c})
+  =\bm{X}'\bm{Y}+\alpha\underbrace{(\bm{X}'\bm{X})\bm{c}}_{=\bm{0}}
+  =\bm{X}'\bm{Y}
+\]
+Existe una \textbf{familia infinita} de soluciones: los coeficientes
+individuales son inidentificables.\hfill$\square$
+\end{dem}
+
+\subsection{V\'ia Rango y el Teorema de la Dimensi\'on}
+
+\begin{teorema}[title=Rango de $\bm{X}'\bm{X}$]
+Para toda matriz $\bm{X}$: $\rg(\bm{X}'\bm{X})=\rg(\bm{X})$.
+\end{teorema}
+
+Columnas linealmente dependientes $\Rightarrow \rg(\bm{X})<k \Rightarrow
+\rg(\bm{X}'\bm{X})<k \Rightarrow \det(\bm{X}'\bm{X})=0$.
+
+\subsection{V\'ia Desigualdad de Cauchy-Schwarz}
+
+\begin{equation}
+  D=\det(\bm{M})=\left(\sxdos\right)\!\left(\sxtres\right)-\left(\sxdxt\right)^2
+\end{equation}
+
+La igualdad de Cauchy-Schwarz se alcanza $\Leftrightarrow$ $x_{3i}=\lambda x_{2i}$
+(proporcionalidad exacta):
+
+\begin{alerta}
+Cuando $x_{3i}=\lambda x_{2i}$:
+\[
+  D=\lambda^2\!\left(\sxdos\right)^2-\lambda^2\!\left(\sxdos\right)^2=0
+\]
+$\bm{M}$ es singular: \textbf{estimadores MCO indeterminados.}
+\end{alerta}
+
+\section{Verificaci\'on Num\'erica}
+
+\subsection{C\'alculo del Determinante}
+
+\begin{align}
+  D &= (110)(440)-(220)^2 \nonumber\\
+    &= 48{,}400-48{,}400 = \boxed{0}
+\end{align}
+
+Directamente con $\lambda=2$:
+\[
+  \sum x_{3i}^2=4\times110=440\;\checkmark,\quad
+  \sum x_{2i}x_{3i}=2\times110=220\;\checkmark
+\]
+
+\subsection{Coeficiente de Correlaci\'on $r_{23}$}
+
+\begin{equation}
+  r_{23}=\frac{220}{\sqrt{110\times440}}=\frac{220}{220}=\mathbf{1}
+\end{equation}
+
+\subsection{Regla de Cramer: Forma $0/0$}
+
+Aplicando la Regla de Cramer:
+\begin{align}
+  \hat{\beta}_2
+  &=\frac{(220)(440)-(440)(220)}{0}
+  =\frac{0}{0} \\[4pt]
+  \hat{\beta}_3
+  &=\frac{(440)(110)-(220)(220)}{0}
+  =\frac{0}{0}
+\end{align}
+
+\begin{alerta}
+$0/0$ es una \textbf{indeterminaci\'on matem\'atica}: no existe ning\'un
+m\'etodo aritm\'etico que la resuelva.  El estimador MCO es
+\textbf{algebraicamente imposible}.
+\end{alerta}
+
+\subsection{Infinitas Soluciones}
+
+La primera ecuaci\'on normal se reduce a:
+\[
+  110\hat{\beta}_2+220\hat{\beta}_3=220
+  \;\Leftrightarrow\;
+  \hat{\beta}_2+2\hat{\beta}_3=2
+\]
+Su soluci\'on general, parametrizada por $\alpha\in\mathbb{R}$:
+\begin{equation}
+  \hat{\beta}_2=2-2\alpha,\quad \hat{\beta}_3=\alpha
+\end{equation}
+
+\begin{center}
+\small
+\begin{tabular}{ccc}
+  \toprule
+  \rowcolor{accentblue!15}
+  $\alpha$ & $\hat{\beta}_2$ & $\hat{\beta}_3$ \\
+  \midrule
+  $0$   & $2$  & $0$ \\
+  $1$   & $0$  & $1$ \\
+  $1/2$ & $1$  & $1/2$ \\
+  $-1$  & $4$  & $-1$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{corolario}
+Todos los pares $(2-2\alpha,\,\alpha)$ producen el \textbf{mismo ajuste}:
+\[
+  \hat{y}_i=(2-2\alpha)x_{2i}+\alpha(2x_{2i})=2x_{2i}
+\]
+La funci\'on ajustada es \'unica; los coeficientes individuales, no.
+\end{corolario}
+
+\section{Consecuencias Estad\'isticas}
+
+\subsection{Varianzas Infinitas}
+
+\begin{equation}
+  \Var(\hat{\beta}_2)
+  =\frac{\sigma^2}{\sxdos\,(1-r_{23}^2)}
+  =\frac{\sigma^2}{110\times0}
+  \longrightarrow+\infty
+\end{equation}
+
+\subsection{An\'alisis Espectral de la Matriz M}
+
+Ecuaci\'on caracter\'istica: $\mu(\mu-550)=0$.
+Eigenvalores: $\mu_1=0$, $\mu_2=550$.
+
+\begin{resultado}[title=Interpretaci\'on Espectral]
+$\mu_1=0$ confirma singularidad: $\det(\bm{M})=0\times550=0$,
+$\rg(\bm{M})=1<2$.  N\'umero de condici\'on:
+$\kappa=550/0=+\infty$ (se\~nal definitiva).
+\end{resultado}
+
+\subsection{Las Tres Consecuencias Formales}
+
+\begin{enumerate}[leftmargin=*,itemsep=1pt,label=\textbf{\arabic*.}]
+  \item \textbf{Indeterminaci\'on:} $(\bm{X}'\bm{X})^{-1}$ indefinida; infinitas soluciones.
+  \item \textbf{Varianzas infinitas:} $\Var(\hat{\beta}_j)\to+\infty$; intervalos $(-\infty,+\infty)$.
+  \item \textbf{Fallo de identificaci\'on:} imposible separar efecto de $X_2$ y $X_3$.
+\end{enumerate}
+
+\section{Generalizaci\'on al Modelo de $k$ Variables}
+
+\begin{prop}[Caso General]
+Si $X_k=\sum_{j=1}^{k-1}\lambda_j X_j$ con alg\'un $\lambda_j\neq0$, entonces:
+(a) columnas de $\bm{X}$ son linealmente dependientes;
+(b) $\rg(\bm{X})<k$ y $\rg(\bm{X}'\bm{X})<k$;
+(c) $\det(\bm{X}'\bm{X})=0$ e $(\bm{X}'\bm{X})^{-1}$ no existe;
+(d) infinitas soluciones a las $k$ ecuaciones normales;
+(e) $\Var(\hat{\beta}_j)\to+\infty$ para todo $j$ afectado.
+\end{prop}
+
+Si $X_k$ es combinaci\'on lineal de las dem\'as, la \'ultima fila de la
+matriz de coeficientes normales es combinaci\'on lineal de las otras filas,
+haciendo el sistema \textbf{compatible indeterminado} en vez de
+\textbf{compatible determinado} (requerido para MCO).
+
+\begin{resultado}[title=Conclusi\'on Problema 10.1]
+La multicolinealidad perfecta $X_{3i}=2X_{2i}-1$ implica
+$D=48{,}400-48{,}400=0$, $r_{23}=1$, eigenvalores $\{0,550\}$,
+y formas $0/0$ para $\hat{\beta}_2$ y $\hat{\beta}_3$.
+La estimaci\'on MCO individual es
+\textbf{algebraica y estad\'isticamente imposible.}
+\end{resultado}
+
+% ============================================================
+%  PROBLEMA 10.2
+% ============================================================
+\newpage
+\begin{center}
+{\large\bfseries\scshape\color{harvard} Problema 10.2}\\[1pt]
+{\small\itshape\color{voguegold} Funciones Estimables bajo Multicolinealidad}
+\end{center}
+\vspace{4pt}
+
+\section{Enunciado del Problema 10.2}
+
+\begin{enunciado}[title=Enunciado 10.2 --- Gujarati \& Porter]
+Considere el mismo conjunto de datos del Problema~10.1.  Se desea ajustar:
+\[
+  Y_i=\beta_1+\beta_2 X_{2i}+\beta_3 X_{3i}+u_i
+\]
+\textbf{(a)} ?`Puede estimar las tres inc\'ognitas $\beta_1,\beta_2,\beta_3$?
+?`Por qu\'e?\\[3pt]
+\textbf{(b)} Si no se puede, ?`qu\'e \emph{funciones lineales} de estos
+par\'ametros (funciones estimables) s\'i pueden estimarse?
+Muestre los c\'alculos necesarios.
+\end{enunciado}
+
+\section{Parte (a): Imposibilidad de Estimaci\'on Individual}
+
+\lettrine[lines=2]{\color{harvard}\textbf{D}}{el} an\'alisis del Problema~10.1
+sabemos que los datos satisfacen la relaci\'on de dependencia perfecta:
+\[
+  \bm{X}_3=2\bm{X}_2-\bm{X}_1
+  \;\Longleftrightarrow\;
+  -\bm{X}_1-2\bm{X}_2+\bm{X}_3=\bm{0}
+\]
+
+\begin{alerta}
+\textbf{No}, no es posible estimar individualmente $\beta_1,\beta_2,\beta_3$.
+La matriz $\bm{X}_{11\times3}$ tiene rango 2 (en vez de 3),
+$\det(\bm{X}'\bm{X})=0$, $(\bm{X}'\bm{X})^{-1}$ no existe y las ecuaciones
+normales tienen infinitas soluciones.
+\end{alerta}
+
+\subsection{Consecuencia Geom\'etrica}
+
+El espacio columna de $\bm{X}$ es bidimensional:
+\[
+  \text{col}(\bm{X})=\text{span}\{\bm{X}_1,\bm{X}_2,\bm{X}_3\}
+  =\text{span}\{\bm{X}_1,\bm{X}_2\}
+\]
+El modelo tiene tres par\'ametros pero solo \textbf{dos grados de libertad
+param\'etricos} efectivos.
+
+\section{Parte (b): Funciones Estimables}
+
+\subsection{Marco Te\'orico}
+
+\begin{definicion}
+Una combinaci\'on lineal $\bm{\lambda}'\bm{\beta}$ es \textbf{estimable}
+si existe $\bm{a}$ tal que $\bm{a}'\bm{Y}$ es un estimador lineal insesgado
+de $\bm{\lambda}'\bm{\beta}$.  Equivalentemente, $\bm{\lambda}\in\text{row}(\bm{X})$.
+\end{definicion}
+
+\subsection{Derivaci\'on Algebraica por Sustituci\'on}
+
+\textbf{Paso 1.} Modelo original:
+\[
+  Y_i=\beta_1+\beta_2 X_{2i}+\beta_3 X_{3i}+u_i
+\]
+
+\textbf{Paso 2.} Sustituci\'on de $X_{3i}=2X_{2i}-1$:
+\begin{align}
+  Y_i &=\beta_1+\beta_2 X_{2i}+\beta_3(2X_{2i}-1)+u_i \nonumber\\
+      &=(\beta_1-\beta_3)+(\beta_2+2\beta_3)X_{2i}+u_i
+\end{align}
+
+\textbf{Paso 3.} Modelo reducido:
+\begin{equation}
+  Y_i=\underbrace{(\beta_1-\beta_3)}_{\alpha_1}
+     +\underbrace{(\beta_2+2\beta_3)}_{\alpha_2}\,X_{2i}+u_i
+  \label{eq:reducido}
+\end{equation}
+
+\begin{resultado}[title=Funciones Estimables Identificadas]
+Las dos \'unicas combinaciones lineales independientes estimables son:
+\begin{align}
+  \alpha_1 &= \beta_1-\beta_3 \quad\text{(intercepto reducido)} \\
+  \alpha_2 &= \beta_2+2\beta_3 \quad\text{(pendiente reducida)}
+\end{align}
+\end{resultado}
+
+\section{C\'alculo Num\'erico}
+
+\subsection{Estimadores MCO del Modelo Reducido}
+
+Datos de c\'alculo en desviaciones ($\bar{Y}=0$, $\bar{X}_2=6$):
+
+\begin{center}
+\scriptsize
+\begin{tabular}{crrr}
+  \toprule
+  \rowcolor{accentblue!15}
+  $i$ & $y_i$ & $x_{2i}$ & $x_{2i}y_i$ \\
+  \midrule
+   1 & $-10$ & $-5$ & $50$ \\
+   2 &  $-8$ & $-4$ & $32$ \\
+   3 &  $-6$ & $-3$ & $18$ \\
+   4 &  $-4$ & $-2$ &  $8$ \\
+   5 &  $-2$ & $-1$ &  $2$ \\
+   6 &   $0$ &  $0$ &  $0$ \\
+   7 &   $2$ &  $1$ &  $2$ \\
+   8 &   $4$ &  $2$ &  $8$ \\
+   9 &   $6$ &  $3$ & $18$ \\
+  10 &   $8$ &  $4$ & $32$ \\
+  11 &  $10$ &  $5$ & $50$ \\
+  \midrule
+  \rowcolor{softgold}
+  $\Sigma$ & $0$ & $0$ & $\mathbf{220}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Pendiente:}
+\begin{equation}
+  \hat{\alpha}_2=\frac{\sum x_{2i}y_i}{\sum x_{2i}^2}
+  =\frac{220}{110}=\boxed{2}
+\end{equation}
+
+\textbf{Intercepto:}
+\begin{equation}
+  \hat{\alpha}_1=\bar{Y}-\hat{\alpha}_2\bar{X}_2=0-2\times6=\boxed{-12}
+\end{equation}
+
+\subsection{Ecuaci\'on de Regresi\'on Estimada}
+
+\begin{equation}
+  \hat{Y}_i=-12+2X_{2i}
+\end{equation}
+
+\subsection{Verificaci\'on: Ajuste Perfecto}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{crr}
+  \toprule
+  \rowcolor{accentblue!15}
+  $i$ & $Y_i$ & $\hat{Y}_i=-12+2X_{2i}$ \\
+  \midrule
+   1 & $-10$ & $-12+2(1) =-10$ \\
+   6 &   $0$ & $-12+2(6) =\phantom{-}0$ \\
+  11 &  $10$ & $-12+2(11)=\phantom{-}10$ \\
+  \midrule
+  \rowcolor{softgold}
+  Todos & & $\hat{u}_i=0\;\forall\,i$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{corolario}
+Todos los residuos son exactamente cero: $\text{SRC}=0$, $R^2=1$.
+El ajuste perfecto es consecuencia directa de la multicolinealidad:
+los datos yacen en un subespacio de dimensi\'on inferior.
+\end{corolario}
+
+\section{Interpretaci\'on de las Funciones Estimables}
+
+\subsection{Lo que S\'i Podemos Saber}
+
+\begin{align}
+  \hat{\beta}_1-\hat{\beta}_3 &= -12 \\
+  \hat{\beta}_2+2\hat{\beta}_3 &= 2
+\end{align}
+
+\subsection{Lo que No Podemos Saber}
+
+Dos ecuaciones con tres inc\'ognitas; soluci\'on general con $t\in\mathbb{R}$:
+\begin{equation}
+  \beta_1=-12+t,\quad \beta_2=2-2t,\quad \beta_3=t
+  \label{eq:familia}
+\end{equation}
+
+\begin{center}
+\small
+\begin{tabular}{crrrccc}
+  \toprule
+  \rowcolor{accentblue!15}
+  $t$ & $\beta_1$ & $\beta_2$ & $\beta_3$ & $\beta_1{-}\beta_3$ & $\beta_2{+}2\beta_3$ \\
+  \midrule
+   $0$   & $-12$ &  $2$ &  $0$ & $-12$ & $2$ \\
+   $1$   & $-11$ &  $0$ &  $1$ & $-12$ & $2$ \\
+   $-1$  & $-13$ &  $4$ & $-1$ & $-12$ & $2$ \\
+   $3$   &  $-9$ & $-4$ &  $3$ & $-12$ & $2$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{alerta}
+Las funciones $\beta_1-\beta_3$ y $\beta_2+2\beta_3$ son
+\textbf{invariantes} al par\'ametro libre $t$: son las \'unicas
+invariantes que los datos pueden identificar.
+\end{alerta}
+
+\begin{resultado}[title=Conclusi\'on Problema 10.2]
+\textbf{(a)} No es posible estimar $\beta_1,\beta_2,\beta_3$ individualmente.\\[3pt]
+\textbf{(b)} Las dos funciones estimables independientes son:
+\[
+  \hat{\alpha}_1=\hat{\beta}_1-\hat{\beta}_3=\mathbf{-12}
+\]
+\[
+  \hat{\alpha}_2=\hat{\beta}_2+2\hat{\beta}_3=\mathbf{2}
+\]
+produciendo $\hat{Y}_i=-12+2X_{2i}$ con $R^2=1$ y $\text{SRC}=0$.
+\end{resultado}
+
+% ============================================================
+%  PROBLEMA 10.3
+% ============================================================
+\newpage
+\begin{center}
+{\large\bfseries\scshape\color{harvard} Problema 10.3}\\[1pt]
+{\small\itshape\color{voguegold} Mortalidad Infantil, Fecundidad y Colinealidad Imperfecta}
+\end{center}
+\vspace{4pt}
+
+\section{Enunciado del Problema 10.3}
+
+\begin{enunciado}[title=Enunciado 10.3 --- Gujarati \& Porter]
+Consulte el ejemplo de la mortalidad infantil del Cap.~8 (Ec.~8.1.4), que
+regresaba MI sobre PIBPC y TAM.  Ahora se a\~nade la TFT.  Los resultados
+son los de la Tabla~2.\\[3pt]
+\textbf{(a)} Compare con la Ec.~(8.1.4). ?`Qu\'e cambios observa? ?`C\'omo
+los explica?\\[3pt]
+\textbf{(b)} ?`Vale la pena a\~nadir TFT al modelo? ?`Por qu\'e?\\[3pt]
+\textbf{(c)} Como todos los coeficientes $t$ son significativos, ?`podemos
+decir que no existe colinealidad?
+\end{enunciado}
+
+\vspace{4pt}
+\begin{center}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcrr}
+  \toprule
+  \rowcolor{accentblue!15}
+  \textbf{Variable} & \textbf{Coef.} & \textbf{EE} & \textbf{$t$} \\
+  \midrule
+  $C$   & $168.307$   & $32.892$ & $5.117$ \\
+  PIBPC & $-0.00551$  & $0.00188$ & $-2.934$ \\
+  TAM   & $-1.768$    & $0.248$  & $-7.129$ \\
+  TFT   & $12.869$    & $4.191$  & $3.071$  \\
+  \midrule
+  \multicolumn{4}{l}{\scriptsize $R^2=0.7474$;\; $\bar{R}^2=0.7347$;\; $F=59.17$ $(p<0.0001)$} \\
+  \multicolumn{4}{l}{\scriptsize $\text{SRC}=91{,}875$;\; $\hat{\sigma}=39.13$;\; $n\approx64$} \\
+  \bottomrule
+\end{tabular}
+\captionof{table}{\textit{Regresi\'on ampliada: MI sobre PIBPC, TAM y TFT}}
+\end{center}
+
+\section{Marco Te\'orico: Modelo Ampliado}
+
+\subsection{Especificaci\'on}
+
+\begin{equation}
+  MI_i=\beta_1+\beta_2\,\text{PIBPC}_i+\beta_3\,\text{TAM}_i+\beta_4\,\text{TFT}_i+u_i
+\end{equation}
+
+En matricial: $\bm{y}=\bm{X}_{n\times4}\bm{\beta}+\bm{u}$.  El estimador MCO,
+la varianza residual y los errores est\'andar son:
+\begin{align}
+  \hat{\bm{\beta}} &= (\bm{X}'\bm{X})^{-1}\bm{X}'\bm{y} \\
+  \hat{\sigma}^2   &= \frac{\text{SRC}}{n-k}=\frac{91{,}875}{60}\approx1{,}531 \\
+  \Var(\hat{\bm{\beta}}) &= \hat{\sigma}^2(\bm{X}'\bm{X})^{-1}
+\end{align}
+
+\section{Parte (a): Comparaci\'on con Ec.~8.1.4}
+
+\lettrine[lines=2]{\color{harvard}\textbf{E}}{l} modelo original regresaba
+MI solo sobre PIBPC y TAM.  Al incorporar la TFT se producen tres cambios
+observables.
+
+\subsection{Mejora en la Bondad de Ajuste}
+
+\begin{equation}
+  \Delta R^2=0.7474-0.7077=0.0397
+\end{equation}
+
+Una ganancia del $3.97\%$ adicional de varianza explicada.  El $\bar{R}^2$
+tambi\'en aumenta (de $0.6981$ a $0.7347$), confirmando que la mejora no
+es un artefacto del n\'umero de par\'ametros.
 
 \subsection{Cambio en el Coeficiente de TAM}
 
-El coeficiente de la Tasa de Alfabetización de las Mujeres (TAM) se desplazó
-de $\hat{\beta}_{\text{TAM}}^{\text{orig}} = -2.2316$ a
-$\hat{\beta}_{\text{TAM}}^{\text{amp}} = -1.7680$:
-
 \begin{equation}
-  \Delta\hat{\beta}_{\text{TAM}} = -1.7680 - (-2.2316) = +0.4636
+  \Delta\hat{\beta}_{\text{TAM}}=-1.7680-(-2.2316)=+0.4636
 \end{equation}
 
-Este cambio, en valor absoluto, representa una \emph{atenuación} del $20.8\%$
-en el efecto estimado de la educación femenina.
+Una \emph{atenuaci\'on} del $20.8\%$ en valor absoluto.  El coeficiente
+del PIBPC permane\-ci\'o relativamente estable ($-0.00560\to-0.00551$).
 
-\subsection{Explicación: Sesgo por Omisión de Variable Relevante}
+\subsection{Explicaci\'on: Sesgo por Omisi\'on (OVB)}
 
-El principio central es la fórmula del \textbf{sesgo por omisión} (omitted
-variable bias).  Cuando se omite la TFT del modelo original, el estimador
-de $\beta_{\text{TAM}}$ absorbe parte del efecto de la fecundidad:
+\begin{definicion}
+Cuando se omite la variable $X_2$ (TFT) del modelo verdadero
+$\bm{y}=\bm{X}_1\bm{\beta}_1+\bm{X}_2\bm{\beta}_2+\bm{u}$, el estimador
+del par\'ametro de $\bm{X}_1$ (TAM) satisface:
+\[
+  \plim\,\hat{\bm{\beta}}_1^{\text{corto}}
+  =\bm{\beta}_1+(\bm{X}_1'\bm{X}_1)^{-1}\bm{X}_1'\bm{X}_2\,\bm{\beta}_2
+\]
+El sesgo es $(\bm{X}_1'\bm{X}_1)^{-1}\bm{X}_1'\bm{X}_2\,\bm{\beta}_2\neq\bm{0}$
+cuando TFT y TAM est\'an correlacionadas \textbf{y} TFT es relevante ($\beta_4\neq0$).
+\end{definicion}
 
-\begin{equation}
-  \plim\,\hat{\beta}_{\text{TAM}}^{\text{orig}} = \beta_{\text{TAM}}
-  + \beta_{\text{TFT}} \cdot \delta_{\text{TFT|TAM}}
-\end{equation}
-
-donde $\delta_{\text{TFT|TAM}}$ es el coeficiente de TAM en la regresión
-auxiliar de TFT sobre los regresores incluidos.  Dado que:
-\begin{itemize}[leftmargin=*, itemsep=0pt]
-  \item $\hat{\beta}_{\text{TFT}} = +12.87 > 0$
-    (mayor fecundidad $\Rightarrow$ mayor MI)
-  \item $\delta_{\text{TFT|TAM}} < 0$
-    (mayor alfabetización $\Rightarrow$ menor fecundidad)
-\end{itemize}
-
-el producto $\beta_{\text{TFT}} \cdot \delta < 0$ hacía que el coeficiente
-de TAM apareciera \emph{más negativo de lo que realmente es} en el modelo
-sin TFT.  La incorporación de la TFT corrige este sesgo.
+Dado que $\hat{\beta}_{\text{TFT}}=+12.87>0$ (mayor fecundidad $\Rightarrow$
+mayor MI) y la correlaci\'on TAM-TFT es negativa (mayor alfabetizaci\'on
+$\Rightarrow$ menor fecundidad), el producto del sesgo era negativo, haciendo
+que el coeficiente de TAM apareciera \textbf{m\'as negativo} de lo real.
+La incorporaci\'on de TFT corrige este sesgo.
 
 \begin{resultado}[title=Resumen de Cambios (a)]
-  \begin{tabular}{lcc}
-    \toprule
-    & Ec.~8.1.4 & Ec.~10.3 \\
-    \midrule
-    $R^2$ & $0.7077$ & $0.7474$ \\
-    $\hat{\beta}_{\text{PIBPC}}$ & $-0.00560$ & $-0.00551$ \\
-    $\hat{\beta}_{\text{TAM}}$ & $-2.2316$ & $-1.7680$ \\
-    TFT incluida & No & Sí \\
-    \bottomrule
-  \end{tabular}
-\end{resultado}
-
-%=============================================================================
-\section{Parte (b): ¿Vale la Pena Incluir TFT?}
-%=============================================================================
-
-\subsection{Criterio del Estadístico $t$}
-
-La significancia individual de la TFT se evalúa mediante:
-\begin{equation}
-  t_{\hat{\beta}_4} = \frac{\hat{\beta}_4}{\text{ee}(\hat{\beta}_4)}
-  = \frac{12.869}{4.191} = 3.071
-\end{equation}
-
-Con $\nu = n - k = 64 - 4 = 60$ grados de libertad, el valor crítico al
-$5\%$ es $t_{0.025,60} \approx 2.00$.  Como $|3.071| > 2.00$, se
-\textbf{rechaza $H_0: \beta_4=0$}.  La TFT es estadísticamente
-significativa.
-
-\subsection{Criterio del $\bar{R}^2$ y la Regla Práctica}
-
-\begin{definicion}
-  El $R^2$ ajustado es:
-  \[
-    \bar{R}^2 = 1 - \frac{(1-R^2)(n-1)}{n-k}
-  \]
-  Aumenta al añadir una variable si y solo si $|t_j| > 1$.
-\end{definicion}
-
-Dado que $|t_{\text{TFT}}|=3.071 > 1$, queda garantizado que $\bar{R}^2$
-aumenta al incluir la TFT.
-
-\subsection{Criterios de Información}
-
-El AIC (Criterio de Akaike) y el BIC (Criterio de Schwarz) penalizan la
-complejidad del modelo:
-\begin{align}
-  \text{AIC} &= \ln\!\left(\frac{\RSS}{n}\right) + \frac{2k}{n} \\[4pt]
-  \text{BIC} &= \ln\!\left(\frac{\RSS}{n}\right) + \frac{k\ln n}{n}
-\end{align}
-
-Los valores reportados ($\text{AIC}=10.23$, $\text{BIC}=10.37$) deben
-compararse con los del modelo restringido; si son menores en el modelo
-ampliado, la TFT mejora el ajuste neto de penalización.
-
-\subsection{Justificación Teórica}
-
-La \textbf{teoría económica demográfica} (Becker, 1960; Schultz, 1997)
-establece que la fecundidad y la supervivencia infantil están vinculadas
-a través de la hipótesis de \emph{cantidad-calidad}: familias con mayor
-número de hijos disponen de menos recursos per cápita para cada uno,
-elevando la mortalidad infantil.  La TFT captura directamente este canal.
-
-\begin{corolario}
-  Sí vale la pena añadir la TFT.  Los cuatro criterios ---$t$, $\bar{R}^2$,
-  información y teoría económica--- convergen en favorecer su inclusión.
-\end{corolario}
-
-%=============================================================================
-\section{Parte (c): Significancia Individual y Colinealidad}
-%=============================================================================
-
-\subsection{El Error Conceptual de Identificar Significancia con Ausencia de Colinealidad}
-
-\lettrine[lines=2]{\color{harvard}\textbf{N}}{o}, \textbf{no} es correcto
-afirmar que la ausencia de coeficientes no significativos implica ausencia de
-colinealidad.  La razonabilidad de este argumento se deshace al considerar
-la estructura del Factor de Inflación de la Varianza.
-
-\begin{definicion}
-  El \textbf{Factor de Inflación de la Varianza} (FIV) de $\hat{\beta}_j$ es:
-  \[
-    \text{FIV}_j = \frac{1}{1 - R_j^2}
-  \]
-  donde $R_j^2$ es el $R^2$ de la regresión de $X_j$ sobre todos los demás
-  regresores.  Se tiene:
-  \[
-    \Var(\hat{\beta}_j) = \frac{\hat{\sigma}^2}{\sum x_{ji}^2} \cdot \text{FIV}_j
-  \]
-\end{definicion}
-
-La colinealidad, incluso imperfecta, infla el denominador del estadístico $t$:
-\begin{equation}
-  t_j = \frac{\hat{\beta}_j}{\text{ee}(\hat{\beta}_j)}
-  = \frac{\hat{\beta}_j}{\sqrt{\hat{\sigma}^2 \cdot c_{jj}}}
-\end{equation}
-donde $c_{jj}$ es el $j$-ésimo elemento diagonal de $(\bm{X}'\bm{X})^{-1}$.
-La colinealidad aumenta $c_{jj}$, lo que reduce el estadístico $t$.  El que
-los $t$ sean significativos solo indica que la colinealidad presente
-\textbf{no es lo suficientemente severa} como para anularlos.
-
-\subsection{Evidencia Indirecta de Colinealidad}
-
-La prueba más evidente es el cambio drástico en $\hat{\beta}_{\text{TAM}}$:
-
-\begin{equation}
-  \frac{|\Delta\hat{\beta}_{\text{TAM}}|}{|\hat{\beta}_{\text{TAM}}^{\text{orig}}|}
-  = \frac{0.4636}{2.2316} \approx 20.8\%
-\end{equation}
-
-Un cambio de esta magnitud al incorporar un regresor indica \textbf{alta
-correlación entre TAM y TFT}.  En términos formales, si $r_{\text{TAM,TFT}}$
-es elevada, entonces $R_{\text{TAM}}^2$ en la regresión auxiliar es alto
-y $\text{FIV}_{\text{TAM}} \gg 1$.
-
-\begin{alerta}
-  \textbf{Regla de Thumb de Klein (1962):} si $R_j^2$ (regresión auxiliar)
-  supera $R^2$ del modelo principal, la colinealidad es problemática.
-  En este caso, la correlación entre los regresores existe y es
-  econométricamente relevante, aunque no impide la estimación.
-\end{alerta}
-
-\subsection{La Colinealidad es una Cuestión de Grado}
-
-La multicolinealidad perfecta es un caso extremo ($\det(\bm{X}'\bm{X})=0$)
-que hace inviable la estimación.  La multicolinealidad imperfecta ($0 < |\det| < \infty$)
-no la impide, pero:
-
-\begin{enumerate}[leftmargin=*, itemsep=1pt, label=\textit{\arabic*.}]
-  \item Infla los errores estándar, reduciendo la potencia de los tests.
-  \item Hace que los estimadores sean muy sensibles a pequeñas variaciones
-    en la muestra o en la especificación.
-  \item Dificulta la atribución del efecto marginal a una sola variable.
-\end{enumerate}
-
-\begin{resultado}[title=Respuesta a la Parte (c)]
-  No es posible concluir ausencia de colinealidad por el mero hecho de que
-  todos los coeficientes sean significativos.  El cambio en $\hat{\beta}_{\text{TAM}}$
-  al incluir TFT es evidencia empírica de correlación entre regresores.
-  La colinealidad existe ---aunque imperfecta--- y afecta la magnitud de
-  las estimaciones, sin llegar a hacerlas inviables.
-\end{resultado}
-
-%=============================================================================
-\section{Síntesis Final}
-%=============================================================================
-
 \begin{center}
-\small
-\begin{tabular}{p{2.1cm}p{4.2cm}}
+\scriptsize
+\begin{tabular}{lcc}
   \toprule
-  \rowcolor{softblue}
-  \textbf{Pregunta} & \textbf{Conclusión} \\
+  \rowcolor{accentblue!15}
+  & Ec.~8.1.4 & Ec.~10.3 \\
   \midrule
-  (a) Cambios & $R^2\uparrow$; $\hat{\beta}_{\text{TAM}}$ menos negativo por corrección del sesgo de omisión \\
-  \addlinespace
-  (b) ¿Añadir TFT? & Sí. $t=3.07$ significativa, $\bar{R}^2\uparrow$, sustento teórico \\
-  \addlinespace
-  (c) ¿Hay colinealidad? & Sí, imperfecta. La significancia individual no la descarta \\
+  $R^2$                    & $0.7077$ & $0.7474$ \\
+  $\hat{\beta}_{\text{PIBPC}}$ & $-0.00560$ & $-0.00551$ \\
+  $\hat{\beta}_{\text{TAM}}$   & $-2.2316$ & $-1.7680$ \\
+  TFT incluida             & No & S\'i \\
   \bottomrule
 \end{tabular}
 \end{center}
+\end{resultado}
 
-%=============================================================================
-%  ANEXO TÉCNICO
-%=============================================================================
+\section{Parte (b): ?`Vale la Pena Incluir TFT?}
+
+\subsection{Criterio del Estad\'istico $t$}
+
+\begin{equation}
+  t_{\hat{\beta}_4}=\frac{12.869}{4.191}=3.071,\quad p=0.0032<0.05
+\end{equation}
+
+Con $\nu=n-k=60$ g.l., $t_{0.025,60}\approx2.00$.  Como $|3.071|>2.00$,
+se \textbf{rechaza $H_0:\beta_4=0$}.
+
+\subsection{Criterio del $\bar{R}^2$}
+
+\begin{definicion}
+  $\bar{R}^2=1-\dfrac{(1-R^2)(n-1)}{n-k}$ aumenta al a\~nadir $X_j$
+  si y solo si $|t_j|>1$.
+\end{definicion}
+
+Como $|t_{\text{TFT}}|=3.071>1$, el $\bar{R}^2$ aument\'o de $0.6981$
+a $0.7347$.\,\checkmark
+
+\subsection{Criterios de Informaci\'on}
+
+\begin{align}
+  \text{AIC}&=\ln\!\left(\frac{\text{SRC}}{n}\right)+\frac{2k}{n} \\[3pt]
+  \text{BIC}&=\ln\!\left(\frac{\text{SRC}}{n}\right)+\frac{k\ln n}{n}
+\end{align}
+
+Los valores reportados ($\text{AIC}=10.23$, $\text{BIC}=10.37$) deben
+ser menores al del modelo restringido para confirmar la mejora neta.
+
+\subsection{Justificaci\'on Te\'orica}
+
+La hip\'otesis \emph{cantidad-calidad} de Becker (1960) establece que
+familias con mayor fecundidad disponen de menos recursos per c\'apita por
+hijo, elevando la mortalidad infantil.  La TFT captura directamente este
+canal causal.
+
+\begin{corolario}
+S\'i vale la pena a\~nadir la TFT.  Los cuatro criterios ---estad\'istico
+$t$, $\bar{R}^2$, criterios de informaci\'on y teor\'ia econ\'omica---
+convergen en favorecer su inclusi\'on.
+\end{corolario}
+
+\section{Parte (c): Significancia Individual y Colinealidad}
+
+\lettrine[lines=2]{\color{harvard}\textbf{N}}{o.} La afirmaci\'on de que
+``todos los coeficientes son significativos, luego no hay colinealidad'' es
+un \textbf{error conceptual cl\'asico}.
+
+\subsection{El Factor de Inflaci\'on de la Varianza}
+
+\begin{definicion}
+El \textbf{FIV} del estimador $\hat{\beta}_j$ es:
+\[
+  \text{FIV}_j=\frac{1}{1-R_j^2},\quad
+  \Var(\hat{\beta}_j)=\frac{\hat{\sigma}^2}{\sum x_{ji}^2}\cdot\text{FIV}_j
+\]
+donde $R_j^2$ es el $R^2$ de la regresi\'on auxiliar de $X_j$ sobre
+los dem\'as regresores.
+\end{definicion}
+
+La colinealidad infla el denominador del estad\'istico $t$:
+\[
+  t_j=\frac{\hat{\beta}_j}{\sqrt{\hat{\sigma}^2\cdot[(\bm{X}'\bm{X})^{-1}]_{jj}}}
+\]
+Si los $t$ siguen siendo significativos pese a ello, simplemente indica
+que la colinealidad \textbf{no es lo suficientemente severa} para anularlos.
+
+\subsection{Evidencia Indirecta de Colinealidad}
+
+El cambio en $\hat{\beta}_{\text{TAM}}$ al incluir TFT:
+\begin{equation}
+  \frac{|\Delta\hat{\beta}_{\text{TAM}}|}{|\hat{\beta}_{\text{TAM}}^{\text{orig}}|}
+  =\frac{0.4636}{2.2316}\approx20.8\%
+\end{equation}
+
+Un cambio de esta magnitud indica alta correlaci\'on entre TAM y TFT.
+Formalmente, si $r_{\text{TAM,TFT}}$ es elevada, entonces $R_{\text{TAM}}^2$
+en la regresi\'on auxiliar es alto y $\text{FIV}_{\text{TAM}}\gg1$.
+
+\begin{alerta}
+\textbf{Regla de Klein (1962):} si $R_j^2$ (regresi\'on auxiliar) supera
+$R^2$ del modelo principal, la colinealidad es problem\'atica.
+La colinealidad existe y es econom\'etricamente relevante,
+aunque no impide la estimaci\'on.
+\end{alerta}
+
+\subsection{La Colinealidad es una Cuesti\'on de Grado}
+
+La multicolinealidad perfecta ($\det=0$) hace inviable la estimaci\'on.
+La imperfecta ($0<|\det|<\infty$) no la impide, pero:
+
+\begin{enumerate}[leftmargin=*,itemsep=1pt,label=\textit{\arabic*.}]
+  \item Infla errores est\'andar, reduciendo la potencia de los tests.
+  \item Hace los estimadores sensibles a cambios muestrales o de especificaci\'on.
+  \item Dificulta atribuir el efecto marginal a una sola variable.
+\end{enumerate}
+
+\begin{resultado}[title=Conclusi\'on Problema 10.3]
+\textbf{(a)} $R^2\uparrow$ (+3.97\%); $\hat{\beta}_{\text{TAM}}$ menos
+negativo por correcci\'on del sesgo OVB.\\[3pt]
+\textbf{(b)} S\'i, la TFT debe incluirse: $t=3.07$ ($p=0.003$),
+$\bar{R}^2\uparrow$, sustento te\'orico s\'olido.\\[3pt]
+\textbf{(c)} No es posible concluir ausencia de colinealidad.
+El cambio en $\hat{\beta}_{\text{TAM}}$ es evidencia directa de
+correlaci\'on entre regresores.  La colinealidad imperfecta existe y
+afecta las estimaciones sin hacerlas inviables.
+\end{resultado}
+
+% ============================================================
+%  ANEXO TÉCNICO — una columna
+% ============================================================
 \newpage
 \onecolumn
+
 \begin{center}
-  \textcolor{midgray}{\rule{4cm}{0.4pt}}\\[0.3cm]
-  {\Large\bfseries\scshape\color{nytblack} Anexo Técnico}\\[0.1cm]
-  {\small\itshape Formulario Matemático, Definiciones Econométricas y Fundamentos Teóricos}\\[0.2cm]
-  \textcolor{midgray}{\rule{4cm}{0.4pt}}
+{\color{midgray}\rule{5cm}{0.4pt}}\\[0.3cm]
+{\Large\bfseries\scshape\color{nytblack} Anexo T\'ecnico}\\[0.05cm]
+{\small\itshape\color{voguegold}%
+  Formulario Matem\'atico, Definiciones Econom\'etricas y Fundamentos Te\'oricos}\\[0.2cm]
+{\color{midgray}\rule{5cm}{0.4pt}}
 \end{center}
+\vspace{0.3cm}
 
 \begin{multicols}{2}
 
-%---------------------------------------------------------------------
-\subsection*{A.1\ \ Modelo de Regresión Lineal Múltiple}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.1\ \ Modelo de Regresi\'on Lineal M\'ultiple}
+%----------------------------------------------------------
 
-El modelo poblacional con $k-1$ regresores e intercepto es:
+El modelo poblacional con $k-1$ regresores e intercepto:
 \[
-  Y_i = \beta_1 + \sum_{j=2}^{k} \beta_j X_{ji} + u_i, \qquad i=1,\ldots,n
+  Y_i=\beta_1+\sum_{j=2}^{k}\beta_j X_{ji}+u_i,\quad i=1,\ldots,n
 \]
-En notación vectorial--matricial:
-\[
-  \bm{y}_{n\times1} = \bm{X}_{n\times k}\,\bm{\beta}_{k\times1}
-  + \bm{u}_{n\times1}
-\]
+En matricial: $\bm{y}_{n\times1}=\bm{X}_{n\times k}\bm{\beta}_{k\times1}+\bm{u}_{n\times1}$.
 
 \textbf{Supuestos de Gauss-Markov:}
-\begin{enumerate}[leftmargin=*, itemsep=1pt, label=\textit{\Roman*}.]
+\begin{enumerate}[leftmargin=*,itemsep=1pt,label=\textit{\Roman*.}]
   \item $\E[\bm{u}|\bm{X}]=\bm{0}$ (media condicional nula)
-  \item $\Var[\bm{u}|\bm{X}]=\sigma^2\bm{I}_n$ (homocedasticidad y no autocorrelación)
+  \item $\Var[\bm{u}|\bm{X}]=\sigma^2\bm{I}_n$ (homocedasticidad)
   \item $\rg(\bm{X})=k$ (no multicolinealidad perfecta)
 \end{enumerate}
 
-\textit{Interpretación económica:} cada $\beta_j$ mide el \emph{efecto parcial}
-de $X_j$ sobre $Y$, manteniendo fijos los demás regresores.  Para MI, $\hat{\beta}_{\text{PIBPC}}=-0.00551$ significa que un dólar adicional de ingreso
-per cápita reduce la mortalidad infantil en $0.006$ muertes por $1\,000$ nacidos
-vivos, \emph{ceteris paribus}.
+\textit{Interpretaci\'on econ\'omica:} cada $\beta_j$ mide el efecto
+parcial de $X_j$ sobre $Y$ manteniendo fijos los dem\'as regresores
+(principio \emph{ceteris paribus}).
 
-%---------------------------------------------------------------------
+%----------------------------------------------------------
 \subsection*{A.2\ \ Estimador MCO y sus Propiedades}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
 
 \[
-  \hat{\bm{\beta}} = (\bm{X}'\bm{X})^{-1}\bm{X}'\bm{y}
+  \hat{\bm{\beta}}=(\bm{X}'\bm{X})^{-1}\bm{X}'\bm{y}
 \]
 
-\textbf{Propiedades bajo Gauss-Markov:}
-\begin{itemize}[leftmargin=*, itemsep=1pt]
-  \item \emph{Linealidad:} $\hat{\bm{\beta}} = \bm{A}\bm{y}$, con $\bm{A}=(\bm{X}'\bm{X})^{-1}\bm{X}'$
-  \item \emph{Insesgadez:} $\E[\hat{\bm{\beta}}|\bm{X}]=\bm{\beta}$
-  \item \emph{Eficiencia (Teorema de Gauss-Markov):} entre todos los estimadores lineales insesgados, MCO minimiza la varianza
+\textbf{Propiedades:}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+  \item \textit{Linealidad:} $\hat{\bm{\beta}}=\bm{Ay}$, $\bm{A}=(\bm{X}'\bm{X})^{-1}\bm{X}'$
+  \item \textit{Insesgadez:} $\E[\hat{\bm{\beta}}|\bm{X}]=\bm{\beta}$
+  \item \textit{Eficiencia (BLUE):} m\'inima varianza entre estimadores
+    lineales insesgados (Gauss-Markov)
 \end{itemize}
 
-\textit{Interpretación:} la fórmula $(\bm{X}'\bm{X})^{-1}\bm{X}'\bm{y}$ tiene una geometría clara: $\bm{X}'\bm{y}$ proyecta $\bm{y}$ sobre el espacio columna de $\bm{X}$, y $(\bm{X}'\bm{X})^{-1}$ normaliza por la ``dispersión'' de los regresores.
+\textit{Geometr\'ia:} $\bm{X}'\bm{y}$ proyecta $\bm{y}$ sobre el espacio
+columna de $\bm{X}$; $(\bm{X}'\bm{X})^{-1}$ normaliza por la dispersi\'on
+de los regresores.
 
-%---------------------------------------------------------------------
-\subsection*{A.3\ \ Varianza Residual y Errores Estándar}
-%---------------------------------------------------------------------
-
-\begin{align*}
-  \hat{\sigma}^2 &= \frac{\hat{\bm{u}}'\hat{\bm{u}}}{n-k}
-  = \frac{\RSS}{n-k} \\[4pt]
-  \Var(\hat{\bm{\beta}}) &= \hat{\sigma}^2(\bm{X}'\bm{X})^{-1} \\[4pt]
-  \text{ee}(\hat{\beta}_j) &= \sqrt{\hat{\sigma}^2 \cdot [(\bm{X}'\bm{X})^{-1}]_{jj}}
-\end{align*}
-
-El denominador $n-k$ es la corrección por \textbf{grados de libertad}: con más
-parámetros, quedamos con menos observaciones ``libres'' para estimar el ruido.
-
-\textit{Interpretación económica:} $\hat{\sigma}=39.13$ indica que el modelo
-comete, en promedio, un error de 39 muertes por $1\,000$ nacidos vivos al predecir MI.
-
-%---------------------------------------------------------------------
-\subsection*{A.4\ \ Descomposición de la Varianza}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.3\ \ Descomposici\'on de la Varianza}
+%----------------------------------------------------------
 
 \[
-  \underbrace{\bm{y}'\bm{y} - n\bar{y}^2}_{\TSS}
-  = \underbrace{\hat{\bm{\beta}}'\bm{X}'\bm{y} - n\bar{y}^2}_{\ESS}
-  + \underbrace{\hat{\bm{u}}'\hat{\bm{u}}}_{\RSS}
+  \underbrace{\bm{y}'\bm{y}-n\bar{y}^2}_{\text{STC}}
+  =\underbrace{\hat{\bm{\beta}}'\bm{X}'\bm{y}-n\bar{y}^2}_{\text{SEC}}
+  +\underbrace{\hat{\bm{u}}'\hat{\bm{u}}}_{\text{SRC}}
 \]
 
 \begin{center}
 \small
 \begin{tabular}{lll}
   \toprule
+  \rowcolor{softblue}
   Sigla & Nombre & Significado \\
   \midrule
-  TSS & Total & Variabilidad total de $Y$ \\
-  ESS & Explicada & Variabilidad explicada por $\bm{X}$ \\
-  RSS & Residual & Variabilidad no explicada \\
+  STC & Total & Variabilidad total de $Y$ \\
+  SEC & Explicada & Explicada por $\bm{X}$ \\
+  SRC & Residual & No explicada \\
   \bottomrule
 \end{tabular}
 \end{center}
 
-%---------------------------------------------------------------------
-\subsection*{A.5\ \ Coeficiente de Determinación $R^2$}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.4\ \ Varianza Residual y Errores Est\'andar}
+%----------------------------------------------------------
 
 \[
-  R^2 = \frac{\ESS}{\TSS} = 1 - \frac{\RSS}{\TSS}
-  = \frac{\hat{\bm{\beta}}'\bm{X}'\bm{y} - n\bar{y}^2}{\bm{y}'\bm{y} - n\bar{y}^2}
+  \hat{\sigma}^2=\frac{\hat{\bm{u}}'\hat{\bm{u}}}{n-k}=\frac{\text{SRC}}{n-k}
+\]
+\[
+  \Var(\hat{\bm{\beta}})=\hat{\sigma}^2(\bm{X}'\bm{X})^{-1}
+\]
+\[
+  \text{ee}(\hat{\beta}_j)=\sqrt{\hat{\sigma}^2\cdot[(\bm{X}'\bm{X})^{-1}]_{jj}}
+\]
+
+El denominador $n-k$ corrige los grados de libertad consumidos en estimar
+$k$ par\'ametros.
+
+\textit{Interpretaci\'on:} $\hat{\sigma}=39.13$ (Prob.~10.3) implica un
+error promedio de 39 muertes por $1{,}000$ nacidos vivos al predecir MI.
+
+%----------------------------------------------------------
+\subsection*{A.5\ \ Coeficiente de Determinaci\'on $R^2$}
+%----------------------------------------------------------
+
+\[
+  R^2=\frac{\text{SEC}}{\text{STC}}=1-\frac{\text{SRC}}{\text{STC}}
+  =\frac{\hat{\bm{\beta}}'\bm{X}'\bm{y}-n\bar{y}^2}{\bm{y}'\bm{y}-n\bar{y}^2}
 \]
 
 \[
-  \bar{R}^2 = 1 - \frac{\RSS/(n-k)}{\TSS/(n-1)}
-  = 1 - (1-R^2)\frac{n-1}{n-k}
+  \bar{R}^2=1-\frac{\text{SRC}/(n-k)}{\text{STC}/(n-1)}
+  =1-(1-R^2)\frac{n-1}{n-k}
 \]
 
-\textbf{Regla de inclusión de variable:} agregar $X_j$ aumenta $\bar{R}^2$
-si y solo si $|t_j|>1$.
+\textbf{Regla de inclusi\'on:} a\~nadir $X_j$ aumenta $\bar{R}^2$
+$\Leftrightarrow$ $|t_j|>1$.
 
-\textit{Interpretación:} $R^2=0.7474$ indica que el modelo con PIBPC, TAM y TFT
-explica el $74.74\%$ de la variabilidad de la Mortalidad Infantil en la muestra.
+\textit{Interpretaci\'on:} $R^2=0.7474$ (Prob.~10.3) implica que el
+modelo explica el $74.74\%$ de la variabilidad de MI.
 
-%---------------------------------------------------------------------
-\subsection*{A.6\ \ Estadístico $t$ y Test Individual}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.6\ \ Estad\'istico $t$ y Test Individual}
+%----------------------------------------------------------
 
-Para la hipótesis $H_0:\beta_j=0$ vs $H_1:\beta_j\neq0$:
+Para $H_0:\beta_j=0$ vs $H_1:\beta_j\neq0$:
 \[
-  t_j = \frac{\hat{\beta}_j}{\text{ee}(\hat{\beta}_j)}
-  \;\sim\; t_{n-k} \quad \text{bajo } H_0
+  t_j=\frac{\hat{\beta}_j}{\text{ee}(\hat{\beta}_j)}\;\sim\;t_{n-k}\quad
+  \text{bajo }H_0
 \]
 
-\textbf{Regla de decisión al nivel $\alpha$:} rechazar $H_0$ si
-$|t_j| > t_{\alpha/2,\,n-k}$.
+Se rechaza $H_0$ si $|t_j|>t_{\alpha/2,\,n-k}$.
 
-Para TFT: $t=12.869/4.191=3.071$, $p=0.0032 < 0.05$.
+Para TFT: $t=12.869/4.191=3.071$, $p=0.0032<0.05$.
 
-\textit{Interpretación económica:} si el coeficiente de TFT fuera cero
-en la población, la probabilidad de observar un estadístico $t$ tan extremo
-como $3.07$ es solo $0.32\%$: evidencia muy fuerte de efecto real.
+\textit{Interpretaci\'on:} si $\beta_4=0$ en la poblaci\'on, la
+probabilidad de observar $|t|\geq3.07$ es solo $0.32\%$: evidencia
+muy fuerte de efecto real.
 
-%---------------------------------------------------------------------
-\subsection*{A.7\ \ Estadístico $F$ y Test Global}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.7\ \ Estad\'istico $F$ y Test Global}
+%----------------------------------------------------------
 
-Para $H_0:\beta_2=\beta_3=\beta_4=0$ (todos los pendientes nulas):
+Para $H_0:\beta_2=\cdots=\beta_k=0$:
 \[
-  F = \frac{\ESS/(k-1)}{\RSS/(n-k)}
-  = \frac{R^2/(k-1)}{(1-R^2)/(n-k)}
-  \;\sim\; F_{k-1,\,n-k}
+  F=\frac{\text{SEC}/(k-1)}{\text{SRC}/(n-k)}
+  =\frac{R^2/(k-1)}{(1-R^2)/(n-k)}\;\sim\;F_{k-1,\,n-k}
 \]
 
-En este modelo: $F=59.17$ con $p < 0.0001$.
+En Prob.~10.3: $F=59.17$ con $p<0.0001$.
 
-\textit{Interpretación:} el conjunto de regresores (PIBPC, TAM, TFT) explica
-conjuntamente la MI de forma altamente significativa.
+\textit{Interpretaci\'on:} PIBPC, TAM y TFT explican conjuntamente MI
+de forma altamente significativa.
 
-%---------------------------------------------------------------------
-\subsection*{A.8\ \ Sesgo por Omisión de Variable (OVB)}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.8\ \ Sesgo por Omisi\'on de Variable (OVB)}
+%----------------------------------------------------------
 
-Si el modelo verdadero es $\bm{y}=\bm{X}_1\bm{\beta}_1+\bm{X}_2\bm{\beta}_2+\bm{u}$
-pero estimamos sin $\bm{X}_2$:
-
+Modelo verdadero: $\bm{y}=\bm{X}_1\bm{\beta}_1+\bm{X}_2\bm{\beta}_2+\bm{u}$.
+Si se estima omitiendo $\bm{X}_2$:
 \[
-  \plim\,\hat{\bm{\beta}}_1^{\text{corto}} = \bm{\beta}_1
-  + \underbrace{(\bm{X}_1'\bm{X}_1)^{-1}\bm{X}_1'\bm{X}_2}_{\text{sesgo}}\,\bm{\beta}_2
+  \plim\,\hat{\bm{\beta}}_1^{\text{corto}}
+  =\bm{\beta}_1+(\bm{X}_1'\bm{X}_1)^{-1}\bm{X}_1'\bm{X}_2\,\bm{\beta}_2
 \]
 
-El sesgo es cero solo si: (i)~$\bm{\beta}_2=0$ (variable irrelevante) o
-(ii)~$\bm{X}_1'\bm{X}_2=\bm{0}$ (ortogonalidad perfecta).
+El sesgo es nulo solo si $\bm{\beta}_2=\bm{0}$ o $\bm{X}_1\perp\bm{X}_2$.
 
-\textit{Interpretación económica:} en el modelo sin TFT, el coeficiente de TAM
-capturaba también el efecto indirecto de la educación femenina sobre MI a través
-de la fecundidad, sobreestimando (en valor absoluto) el efecto directo.
+\textit{Aplicaci\'on (Prob.~10.3):} al omitir TFT, el coeficiente de TAM
+capturaba su efecto indirecto sobre MI a trav\'es de la fecundidad,
+sobreestimando su magnitud en valor absoluto.
 
-%---------------------------------------------------------------------
-\subsection*{A.9\ \ Factor de Inflación de la Varianza (FIV)}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.9\ \ Factor de Inflaci\'on de la Varianza (FIV)}
+%----------------------------------------------------------
 
 \[
-  \text{FIV}_j = \frac{1}{1 - R_j^2},\qquad
-  \Var(\hat{\beta}_j) = \frac{\hat{\sigma}^2}{\sum x_{ji}^2}\cdot\text{FIV}_j
+  \text{FIV}_j=\frac{1}{1-R_j^2},\quad
+  \Var(\hat{\beta}_j)=\frac{\hat{\sigma}^2}{\sum x_{ji}^2}\cdot\text{FIV}_j
 \]
-
-donde $R_j^2$ es el $R^2$ de la regresión auxiliar de $X_j$ sobre todos
-los demás regresores.
 
 \begin{center}
 \small
 \begin{tabular}{cc}
   \toprule
-  FIV & Diagnóstico \\
+  \rowcolor{softblue}
+  FIV & Diagn\'ostico \\
   \midrule
   $1$ & Sin colinealidad \\
   $1$--$5$ & Moderada \\
@@ -660,77 +1181,113 @@ los demás regresores.
 \end{tabular}
 \end{center}
 
-\textit{Interpretación:} si $\text{FIV}_{\text{TAM}}=5$, significa que la
-varianza de $\hat{\beta}_{\text{TAM}}$ es 5 veces la que tendría si TAM fuera
-ortogonal a los demás regresores.
+\textit{Interpretaci\'on:} $\text{FIV}_j=5$ significa que la varianza
+de $\hat{\beta}_j$ es 5 veces la que tendr\'ia en ausencia de colinealidad.
 
-%---------------------------------------------------------------------
-\subsection*{A.10\ \ Criterios de Información de Akaike y Schwarz}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
+\subsection*{A.10\ \ Criterios AIC y BIC}
+%----------------------------------------------------------
 
-\begin{align*}
-  \text{AIC} &= \ln\!\left(\frac{\RSS}{n}\right) + \frac{2k}{n} \\[4pt]
-  \text{BIC} &= \ln\!\left(\frac{\RSS}{n}\right) + \frac{k\ln n}{n}
-\end{align*}
+\[
+  \text{AIC}=\ln\!\left(\frac{\text{SRC}}{n}\right)+\frac{2k}{n}
+\]
+\[
+  \text{BIC}=\ln\!\left(\frac{\text{SRC}}{n}\right)+\frac{k\ln n}{n}
+\]
 
-Ambos penalizan la sobre-parametrización.  El BIC penaliza más duramente
-con muestras grandes ($\ln n > 2$).  Se prefiere el modelo con \emph{menor}
-valor de AIC o BIC.
+BIC penaliza m\'as duramente con muestras grandes ($\ln n>2$).
+Se prefiere el modelo con \emph{menor} AIC o BIC.
 
-\textit{Interpretación:} permiten comparar modelos no anidados de forma rigurosa,
-algo que $R^2$ no puede hacer al aumentar siempre con más regresores.
+\textit{Ventaja:} permiten comparar modelos no anidados, algo que $R^2$
+no puede hacer al aumentar siempre con m\'as regresores.
 
-%---------------------------------------------------------------------
+%----------------------------------------------------------
 \subsection*{A.11\ \ Multicolinealidad: Tipos y Consecuencias}
-%---------------------------------------------------------------------
+%----------------------------------------------------------
 
-\textbf{Perfecta:} existe $\bm{c}\neq\bm{0}$ tal que $\bm{Xc}=\bm{0}$.
-Implica $\det(\bm{X}'\bm{X})=0$: estimación imposible.
+\textbf{Perfecta:} $\exists\,\bm{c}\neq\bm{0}$: $\bm{Xc}=\bm{0}$.
+$\det(\bm{X}'\bm{X})=0$; estimaci\'on imposible.
 
-\textbf{Imperfecta:} correlación alta pero no exacta entre regresores.
-Implica:
-\begin{enumerate}[leftmargin=*, itemsep=1pt, label=\textit{\arabic*.}]
-  \item $\Var(\hat{\beta}_j)\uparrow$ (estimadores imprecisos)
-  \item Coeficientes sensibles a cambios muestrales
-  \item Signos incorrectos o magnitudes irrazonables posibles
-  \item Estadísticos $t$ bajos (pero \emph{no necesariamente} por debajo del nivel crítico)
+\textbf{Imperfecta:} correlaci\'on alta pero no exacta.  No viola
+supuestos de Gauss-Markov; MCO sigue siendo BLUE.  Consecuencias:
+\begin{enumerate}[leftmargin=*,itemsep=0pt,label=\textit{\arabic*.}]
+  \item $\Var(\hat{\beta}_j)\uparrow$; estimadores imprecisos
+  \item Coeficientes muy sensibles a cambios muestrales
+  \item Signos o magnitudes potencialmente inconsistentes con la teor\'ia
+  \item Tests $t$ con baja potencia (pero no necesariamente no significativos)
 \end{enumerate}
 
-\textbf{Importante:} la multicolinealidad no viola los supuestos de
-Gauss-Markov.  MCO sigue siendo BLUE, pero los intervalos de confianza
-son anchos y los tests tienen baja potencia.
+%----------------------------------------------------------
+\subsection*{A.12\ \ Determinante e Invertibilidad de $\bm{X}'\bm{X}$}
+%----------------------------------------------------------
 
-%---------------------------------------------------------------------
-\subsection*{A.12\ \ Glosario de Variables del Problema}
-%---------------------------------------------------------------------
+Para la matriz $2\times2$ de momentos en desviaciones:
+\[
+  D=\left(\sum x_{2i}^2\right)\!\left(\sum x_{3i}^2\right)-\left(\sum x_{2i}x_{3i}\right)^2
+\]
+
+Por Cauchy-Schwarz: $D\geq0$, con igualdad $\Leftrightarrow$ $x_{3i}=\lambda x_{2i}$.
+
+N\'umero de condici\'on: $\kappa=\mu_{\max}/\mu_{\min}$.  Si $\mu_{\min}=0$,
+$\kappa=+\infty$ y la matriz es singular.
+
+\textit{Verificaci\'on (Prob.~10.1):}
+$D=(110)(440)-(220)^2=48{,}400-48{,}400=0$, $\kappa=550/0=+\infty$.
+
+%----------------------------------------------------------
+\subsection*{A.13\ \ Glosario de Variables (Probs.~10.1--10.3)}
+%----------------------------------------------------------
 
 \begin{center}
 \small
-\begin{tabular}{p{1cm}p{5.5cm}}
+\begin{tabular}{p{1.1cm}p{5.5cm}}
   \toprule
-  \textbf{Var.} & \textbf{Definición y unidad de medida} \\
+  \rowcolor{softblue}
+  \textbf{Var.} & \textbf{Definici\'on y unidad} \\
   \midrule
-  MI   & Mortalidad Infantil: número de muertes de menores de 1 año por $1{,}000$ nacidos vivos \\[2pt]
-  PIBPC & Producto Interno Bruto per cápita en USD constantes \\[2pt]
-  TAM  & Tasa de Alfabetización de las Mujeres adultas, en \% \\[2pt]
-  TFT  & Tasa de Fecundidad Total: número promedio de hijos por mujer en edad fértil \\
+  $Y$    & Variable dependiente gen\'erica \\
+  $X_j$  & Regresor $j$-\'esimo (incluye intercepto $X_1\equiv1$) \\
+  MI     & Mortalidad Infantil: muertes $<1$~a\~no por $1{,}000$ nacidos vivos \\
+  PIBPC  & PIB per c\'apita en USD constantes \\
+  TAM    & Tasa de Alfabetizaci\'on de Mujeres adultas (\%) \\
+  TFT    & Tasa de Fecundidad Total: hijos promedio por mujer fértil \\
   \bottomrule
 \end{tabular}
 \end{center}
 
-\textit{Justificación económica de signos esperados:}
-$\hat{\beta}_{\text{PIBPC}}<0$ (riqueza $\Rightarrow$ mejor nutrición y salud);
-$\hat{\beta}_{\text{TAM}}<0$ (educación femenina $\Rightarrow$ mejores prácticas
-sanitarias); $\hat{\beta}_{\text{TFT}}>0$ (mayor fecundidad $\Rightarrow$ menor
-inversión por hijo $\Rightarrow$ mayor mortalidad).
+\textit{Signos esperados (Prob.~10.3):}
+$\hat{\beta}_{\text{PIBPC}}<0$ (riqueza mejora salud);
+$\hat{\beta}_{\text{TAM}}<0$ (educaci\'on femenina reduce MI);
+$\hat{\beta}_{\text{TFT}}>0$ (mayor fecundidad reduce inversi\'on por hijo
+$\Rightarrow$ mayor MI).
+
+%----------------------------------------------------------
+\subsection*{A.14\ \ Funciones Estimables: Teor\'ia General}
+%----------------------------------------------------------
+
+\begin{definicion}
+$\bm{\lambda}'\bm{\beta}$ es \textbf{estimable} si existe $\bm{a}$ tal que
+$\bm{a}'\bm{y}$ es lineal insesgado de $\bm{\lambda}'\bm{\beta}$.
+Equivalentemente: $\bm{\lambda}\in\text{row}(\bm{X})=\text{col}(\bm{X}')$.
+\end{definicion}
+
+Cuando $\rg(\bm{X})=r<k$, el espacio estimable tiene dimensi\'on $r$.
+Solo $r$ combinaciones lineales independientes pueden estimarse.
+
+\textit{Aplicaci\'on (Prob.~10.2):} con $\rg(\bm{X})=2<3$, solo dos
+funciones son estimables: $\alpha_1=\beta_1-\beta_3=-12$ y
+$\alpha_2=\beta_2+2\beta_3=2$.  La recta de soluciones
+$(\beta_1,\beta_2,\beta_3)=(-12+t,2-2t,t)$ produce siempre el mismo
+ajuste $\hat{Y}_i=-12+2X_{2i}$ con $R^2=1$.
 
 \end{multicols}
 
-\vspace{0.5cm}
-\noindent\textcolor{midgray}{\rule{\linewidth}{0.4pt}}\\[0.2cm]
-\footnotesize\textsc{Emanuel Quintana Silva}
-\textbar\ \textit{Econometría --- UPTC, Tunja}
-\textbar\ \textit{Referencia: Gujarati \& Porter, Introducción a la Econometría, 5.ª ed.}
+\vspace{0.4cm}
+\noindent{\color{midgray}\rule{\linewidth}{0.4pt}}\\[0.15cm]
+\footnotesize
+\textsc{Emanuel Quintana Silva}
+\textbar\ \textit{Econometr\'ia --- UPTC, Tunja}
+\textbar\ \textit{Ref.: Gujarati \& Porter, \emph{Introducci\'on a la Econometr\'ia}, 5.{}a~ed.}
 \textbar\ \today
 
 \end{document}
