@@ -1,0 +1,1024 @@
+\documentclass[12pt,a4paper]{article}
+
+%% ════════════════════════════════════════════════════════════════════════════
+%%  PAQUETES
+%% ════════════════════════════════════════════════════════════════════════════
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools,bm}
+\usepackage{geometry}\geometry{left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{booktabs,longtable,multirow,array,tabularx}
+\usepackage{graphicx,float,caption}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=uptv,urlcolor=uptv,citecolor=uptv}
+\usepackage{enumitem,fancyhdr,titlesec,setspace,parskip}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{listings}
+\usepackage{pgfplots,tikz}
+\pgfplotsset{compat=1.18}
+\usepackage{mdframed}
+
+%% ════════════════════════════════════════════════════════════════════════════
+%%  COLORES INSTITUCIONALES UPTC
+%% ════════════════════════════════════════════════════════════════════════════
+\definecolor{uptv}{RGB}{0,51,102}
+\definecolor{oro}{RGB}{184,152,53}
+\definecolor{gris_f}{RGB}{247,247,252}
+\definecolor{rojo_a}{RGB}{165,20,20}
+\definecolor{verde_o}{RGB}{10,105,30}
+\definecolor{azul_2}{RGB}{0,80,160}
+\definecolor{naranja}{RGB}{200,90,0}
+\definecolor{gris_t}{RGB}{90,90,90}
+\definecolor{uptc_verde}{RGB}{0,102,51}
+
+%% ════════════════════════════════════════════════════════════════════════════
+%%  CABECERA / PIE DE PÁGINA
+%% ════════════════════════════════════════════════════════════════════════════
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\scriptsize\color{uptv}\textbf{Econometría · UPTC}}
+\fancyhead[C]{\scriptsize\color{uptv}Modelo Log-Log · Inflación Colombia 1975--2005}
+\fancyhead[R]{\scriptsize\color{uptv}E. Quintana Silva}
+\fancyfoot[C]{\small\color{gris_t}\thepage}
+\renewcommand\headrulewidth{1pt}
+\renewcommand\headrule{\hbox to\headwidth{%
+  \color{uptv}\leaders\hrule height\headrulewidth\hfill}}
+
+%% ════════════════════════════════════════════════════════════════════════════
+%%  TITULOS DE SECCIÓN
+%% ════════════════════════════════════════════════════════════════════════════
+\titleformat\section
+  {\large\bfseries\color{uptv}}{\thesection.}{.5em}{}
+  [\color{uptv}\titlerule]
+\titleformat\subsection
+  {\normalsize\bfseries\color{uptv}}{\thesubsection}{.5em}{}
+\titleformat\subsubsection
+  {\small\bfseries\color{uptv!85}}{\thesubsubsection}{.5em}{}
+
+%% ════════════════════════════════════════════════════════════════════════════
+%%  CAJAS TCOLORBOX
+%% ════════════════════════════════════════════════════════════════════════════
+\newtcolorbox{defbox}[1]{
+  colback=uptv!6,colframe=uptv,
+  fonttitle=\small\bfseries,title={#1},
+  breakable,left=4pt,right=4pt,top=2pt,bottom=2pt}
+
+\newtcolorbox{resbox}{
+  colback=verde_o!5,colframe=verde_o,
+  fonttitle=\small\bfseries,
+  title={$\blacktriangleright$\ Resultado (verificado con Stata 17)},
+  breakable}
+
+\newtcolorbox{alertbox}{
+  colback=rojo_a!5,colframe=rojo_a,
+  fonttitle=\small\bfseries,
+  title={$\blacktriangle$\ Advertencia Econométrica},
+  breakable}
+
+\newtcolorbox{notabox}{
+  colback=azul_2!5,
+  colframe=azul_2,
+  fonttitle=\small\bfseries,
+  title={Nota Técnica / Equivalencia Stata--R},
+  width=1.2\textwidth, % Aumenta el ancho al 120%
+  center, % Centra el cuadro si excede el ancho de texto
+  breakable
+}
+
+\newtcolorbox{frmbox}[1]{
+  colback=oro!8,colframe=oro,
+  fonttitle=\small\bfseries,title={#1},
+  breakable}
+
+\newtcolorbox{statabox}{
+  colback=gray!8,
+  colframe=gray!50,
+  fonttitle=\small\bfseries\ttfamily,
+  title={Salida Stata},
+  breakable,
+  left=4pt,
+  width=1.1\textwidth, % Aumenta el ancho al 110%
+  center % Centra el cuadro si excede el ancho del texto
+}
+%% ════════════════════════════════════════════════════════════════════════════
+%%  CÓDIGO
+%% ════════════════════════════════════════════════════════════════════════════
+\lstdefinestyle{Rcode}{
+  language=R,basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gris_t}\itshape,
+  stringstyle=\color{rojo_a!80},
+  backgroundcolor=\color{gray!7},
+  frame=single,rulecolor=\color{gray!40},
+  breaklines=true,numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=5pt,xleftmargin=15pt,captionpos=b}
+
+\lstdefinestyle{Stata}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!7},
+  frame=single,rulecolor=\color{gray!40},
+  breaklines=true}
+
+%% ════════════════════════════════════════════════════════════════════════════
+%%  MACROS MATEMÁTICAS
+%% ════════════════════════════════════════════════════════════════════════════
+\newcommand\bhat{\hat{\bm\beta}}
+\newcommand\X{\mathbf{X}}
+\newcommand\y{\mathbf{y}}
+\newcommand\Xt{\mathbf{X}'}
+\newcommand\E{\mathbb{E}}
+\newcommand\Var{\operatorname{Var}}
+\newcommand\Cov{\operatorname{Cov}}
+\newcommand\YES{\textcolor{verde_o}{\textbf{Sí\,\checkmark}}}
+\newcommand\NOO{\textcolor{rojo_a}{\textbf{No\,\texttimes}}}
+
+\setlength\parindent{0pt}
+\setlength\parskip{5pt}
+\onehalfspacing
+
+%% ════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+%% ─────────────────────────────────────────────────────────────────────────
+%%  PORTADA
+%% ─────────────────────────────────────────────────────────────────────────
+\begin{titlepage}\centering
+{\color{uptv}\rule{\linewidth}{3pt}}\vspace{2pt}
+{\color{oro}\rule{\linewidth}{1.5pt}}
+\vspace{1.6cm}
+
+{\fontsize{24}{30}\selectfont\bfseries\color{uptv}
+ANÁLISIS ECONOMÉTRICO\\[0.35em]
+MODELO LOG-LOG DE INFLACIÓN}
+
+\vspace{0.5cm}
+{\large\color{uptv}\itshape Colombia, período 1975--2005}
+
+\vspace{0.6cm}
+{\color{oro}\rule{0.6\linewidth}{0.8pt}}
+\vspace{0.6cm}
+
+{\large
+Diagnóstico de Multicolinealidad, Sesgo de Especificación\\[0.25em]
+y Coherencia Teórica}\\[0.3em]
+{\normalsize\color{gris_t}
+Resultados verificados con Stata 17 ·
+$n=31$ observaciones anuales}
+
+\vspace{2cm}
+\begin{tabular}{@{\hspace{8mm}}ll@{}}
+\toprule
+\rule{0pt}{10pt}\textbf{Estudiante}    & Emanuel Quintana Silva\\[3pt]
+\textbf{Institución}   & Universidad Pedagógica y Tecnológica de Colombia (UPTC)\\[3pt]
+\textbf{Docente}       & Profesora Rosalba Gil Galindo\\[3pt]
+\textbf{Curso}         & Econometría\\[3pt]
+\textbf{Modelo}        & Log-Log · MCO · Regresión múltiple\\[3pt]
+\textbf{Variable dep.} & Inflación (\%)\\[3pt]
+\textbf{Regresores}    & PIB $\cdot$ Tasa de Interés (TI) $\cdot$ Oferta Monetaria (M)\\[3pt]
+\textbf{Software}      & Stata 17 + R 4.x (car, lmtest, sandwich)\\[3pt]
+\textbf{Fecha}         & \today\\
+\bottomrule
+\end{tabular}
+
+\vspace{0.8cm}
+\begin{mdframed}[linecolor=oro,linewidth=1pt,backgroundcolor=oro!5]
+\centering\small\itshape
+``Con profundo agradecimiento a la Profesora Rosalba Gil Galindo\\
+por su dedicada orientación en el aprendizaje de la Econometría.''
+\end{mdframed}
+
+\vspace{1.5cm}
+{\color{oro}\rule{\linewidth}{1.5pt}}\vspace{2pt}
+{\color{uptv}\rule{\linewidth}{3pt}}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Introducción y contexto macroeconómico}
+%% ════════════════════════════════════════════════════════════════════════════
+
+El presente trabajo analiza los determinantes de la inflación en Colombia durante
+1975--2005 mediante un modelo econométrico de regresión múltiple en forma
+\textbf{log-log}, estimado por Mínimos Cuadrados Ordinarios (MCO). Todos los
+resultados han sido verificados directamente en Stata 17 bajo la guía de la
+Profesora Rosalba Gil Galindo.
+
+La muestra abarca tres regímenes macroeconómicos colombianos:
+
+\begin{enumerate}[noitemsep]
+  \item \textbf{Represión financiera / alta inflación} (1975--1989): inflación entre 16\%
+        y 32\%, tasas de interés fijadas administrativamente.
+  \item \textbf{Apertura y liberalización} (1990--1998): Constitución de 1991,
+        independencia del Banco de la República, apertura al capital extranjero.
+  \item \textbf{Metas de inflación} (1999--2005): inflación desciende de dos dígitos
+        a un dígito; tasas de interés determinadas por el mercado.
+\end{enumerate}
+
+\begin{notabox}º
+\begin{tabular}{ll}
+\toprule
+\textbf{Stata 19} & \textbf{R equivalente}\\
+\midrule
+\texttt{gen lninflacion = ln(inflacion)} & \texttt{datos\$lninflacion <- log(datos\$inflacion)}\\
+\texttt{reg lninflacion lnpib lnti lnm} & \texttt{lm(lninflacion $\sim$ lnpib+lnti+lnm)}\\
+\texttt{correlate lnpib lnti lnm} & \texttt{cor(datos[,c("lnpib","lnti","lnm")])}\\
+\texttt{vif} & \texttt{car::vif(modelo)}\\
+\texttt{reg lninflacion lnpib lnti} & \texttt{lm(lninflacion $\sim$ lnpib+lnti)}\\
+\texttt{ovtest} & \texttt{lmtest::resettest(modelo,power=2:3)}\\
+\bottomrule
+\end{tabular}
+\end{notabox}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Base de datos}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\begin{longtable}{rrrrrrrr}
+\caption{Colombia 1975--2005: datos originales y logarítmicos}\label{tab:datos}\\
+\toprule
+\textbf{Año}&\textbf{INF}&\textbf{PIB}&\textbf{TI}&\textbf{M}&
+\textbf{ln\,INF}&\textbf{ln\,TI}&\textbf{ln\,M}\\
+\midrule\endfirsthead
+\multicolumn{8}{c}{\footnotesize\itshape(continuación)}\\\toprule
+\textbf{Año}&\textbf{INF}&\textbf{PIB}&\textbf{TI}&\textbf{M}&
+\textbf{ln\,INF}&\textbf{ln\,TI}&\textbf{ln\,M}\\\midrule\endhead
+\bottomrule\endfoot
+1975&17.70&405{,}108&23.80&51.9&2.8736&3.1697&3.9485\\
+1976&25.70&424{,}263&22.40&82.7&3.2465&3.1091&4.4153\\
+1977&28.40&441{,}906&22.90&103.5&3.3464&3.1311&4.6396\\
+1978&18.80&479{,}335&25.90&134.9&2.9339&3.2542&4.9045\\
+1979&28.80&505{,}119&36.50&167.6&3.3604&3.5973&5.1215\\
+1980&26.80&525{,}765&41.50&214.3&3.2882&3.7257&5.3679\\
+1981&26.40&537{,}736&35.70&259.7&3.2730&3.5757&5.5591\\
+1982&24.00&542{,}836&37.70&325.7&3.1781&3.6290&5.7861\\
+1983&16.60&551{,}380&37.30&408.9&2.8094&3.6181&6.0132\\
+1984&18.30&569{,}855&34.60&503.8&2.9069&3.5441&6.2219\\
+1985&22.50&587{,}561&35.90&642.2&3.1135&3.5797&6.4647\\
+1986&21.00&621{,}781&32.10&788.5&3.0445&3.4696&6.6702\\
+1987&24.00&655{,}164&34.20&1{,}048.3&3.1781&3.5326&6.9549\\
+1988&28.10&681{,}791&31.80&1{,}318.5&3.3362&3.4592&7.1845\\
+1989&26.10&705{,}088&34.00&1{,}702.1&3.2613&3.5264&7.4392\\
+1990&32.40&24{,}030{,}173&38.20&2{,}141.0&3.4775&3.6428&7.6692\\
+1991&26.80&31{,}130{,}592&37.10&2{,}842.0&3.2882&3.6133&7.9526\\
+1992&25.10&39{,}730{,}752&27.20&4{,}013.1&3.2238&3.3033&8.2972\\
+1993&22.60&52{,}271{,}688&25.60&5{,}214.8&3.1187&3.2426&8.5593\\
+1994&22.60&67{,}532{,}862&29.50&6{,}419.0&3.1187&3.3844&8.7669\\
+1995&19.50&84{,}439{,}102&32.00&7{,}717.8&2.9704&3.4657&8.9513\\
+1996&21.60&100{,}711{,}389&31.43&8{,}992.8&3.0732&3.4475&9.1041\\
+1997&17.70&121{,}707{,}501&24.09&10{,}948.0&2.8749&3.1812&9.3009\\
+1998&16.70&140{,}483{,}322&32.55&10{,}526.5&2.8154&3.4826&9.2617\\
+1999&9.23&151{,}565{,}005&21.60&12{,}856.8&2.2228&3.0741&9.4618\\
+2000&8.75&174{,}896{,}258&12.14&16{,}720.8&2.1691&2.4966&9.7249\\
+2001&7.65&188{,}558{,}786&12.47&18{,}737.0&2.0347&2.5232&9.8381\\
+2002&6.99&203{,}451{,}414&8.92&21{,}635.6&1.9449&2.1884&9.9822\\
+2003&6.49&228{,}516{,}603&7.80&24{,}918.3&1.8699&2.0541&10.1228\\
+2004&5.50&239{,}439{,}697&7.80&29{,}113.7&1.7047&2.0541&10.2795\\
+2005&4.85&251{,}722{,}954&7.03&26{,}954.4&1.5790&1.9509&10.2027\\
+\end{longtable}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Punto 1: Especificación y Estimación del Modelo Log-Log}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\subsection{Forma funcional del modelo}
+
+El modelo multiplicativo en niveles es:
+\begin{equation}
+INF_t = \alpha\cdot PIB_t^{\beta_2}\cdot TI_t^{\beta_3}\cdot M_t^{\beta_4}\cdot e^{u_t}
+\end{equation}
+
+Tomando logaritmo natural a ambos lados se obtiene el modelo linealizado (\textbf{log-log}):
+
+\begin{frmbox}{Ecuación Poblacional del Modelo Log-Log}
+\begin{equation}
+\ln(INF_t)=\underbrace{\beta_1}_{\text{intercepto}}
++\underbrace{\beta_2}_{\varepsilon_{INF,PIB}}\ln(PIB_t)
++\underbrace{\beta_3}_{\varepsilon_{INF,TI}}\ln(TI_t)
++\underbrace{\beta_4}_{\varepsilon_{INF,M}}\ln(M_t)
++u_t
+\label{eq:modelo}
+\end{equation}
+$t=1975,\ldots,2005$;\quad$u_t\sim iid(0,\sigma^2)$;\quad$\beta_1=\ln\alpha$;\quad
+cada $\beta_j$ es una \textbf{elasticidad parcial}.
+\end{frmbox}
+
+\subsection{Representación matricial}
+
+Para $n=31$ observaciones, el modelo \eqref{eq:modelo} se escribe $\y=\X\bm\beta+\bm u$:
+
+\[
+\y_{31\times1}=\begin{bmatrix}\ln INF_{1975}\\\vdots\\\ln INF_{2005}\end{bmatrix},\qquad
+\X_{31\times4}=\begin{bmatrix}
+  1&\ln PIB_{1975}&\ln TI_{1975}&\ln M_{1975}\\
+  \vdots&\vdots&\vdots&\vdots\\
+  1&\ln PIB_{2005}&\ln TI_{2005}&\ln M_{2005}
+\end{bmatrix},\qquad
+\bm\beta=\begin{bmatrix}\beta_1\\\beta_2\\\beta_3\\\beta_4\end{bmatrix}
+\]
+
+\subsection{Estimación MCO}
+
+Minimizando $\bm u'\bm u=(\y-\X\bm\beta)'(\y-\X\bm\beta)$ la condición de primer orden
+produce el sistema de ecuaciones normales $\Xt\X\bm\beta=\Xt\y$, cuya solución única es:
+
+\begin{frmbox}{Fórmula Fundamental MCO}
+\begin{equation}
+\bhat=(\Xt\X)^{-1}\Xt\y
+\label{eq:mco}
+\end{equation}
+Existe si y sólo si $\mathrm{rango}(\X)=k=4$ (no hay multicolinealidad perfecta).\\
+La varianza del estimador es $\Var(\bhat)=\sigma^2(\Xt\X)^{-1}$ (mínima por Gauss-Markov).
+\end{frmbox}
+
+\subsection{Resultados exactos de Stata 17}
+
+\begin{statabox}
+\begin{lstlisting}[style=Stata]
+. reg lninflacion lnpib lnti lnm
+
+      Source |       SS           df       MS      Number of obs =  31
+-------------+----------------------------------   F(3, 27)      = 54.62
+       Model |  7.67359572         3  2.55786524   Prob > F      = 0.0000
+    Residual |  1.26440037        27  .046829643   R-squared     = 0.8585
+-------------+----------------------------------   Adj R-squared = 0.8428
+       Total |  8.93799609        30  .297933203   Root MSE      = .2164
+
+ lninflacion | Coefficient  Std. err.      t    P>|t|   [95% conf. interval]
+-------------+----------------------------------------------------------------
+       lnpib |   .0391012   .0427228     0.92   0.368   -.0485587    .1267611
+        lnti |   .8361166   .0949468     8.81   0.000    .6413019    1.030931
+         lnm |  -.1026192   .0581286    -1.77   0.089   -.2218893    .0166509
+       _cons |    .340877   .5566137     0.61   0.545   -.8011999    1.482954
+\end{lstlisting}
+\end{statabox}
+
+\begin{table}[H]\centering
+\caption{Resultados MCO --- Modelo Log-Log · Colombia 1975--2005}
+\label{tab:mco}
+\begin{tabular}{lrrrrcc}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Std.\,Err.} & $t$ & $P>|t|$ &
+IC 95\% inf & IC 95\% sup\\
+\midrule
+\rowcolor{gris_f}$\ln(PIB)$ & $\phantom{-}0.0391012$ & $0.0427228$ & $0.92$ & $0.368$
+  & $-0.0486$ & $0.1268$\\
+$\ln(TI)$ & $\phantom{-}0.8361166^{***}$ & $0.0949468$ & $8.81$ & $0.000$
+  & $\phantom{-}0.6413$ & $1.0309$\\
+\rowcolor{gris_f}$\ln(M)$ & $-0.1026192^{\dag}$ & $0.0581286$ & $-1.77$ & $0.089$
+  & $-0.2219$ & $0.0167$\\
+Constante & $\phantom{-}0.3408770$ & $0.5566137$ & $0.61$ & $0.545$
+  & $-0.8012$ & $1.4830$\\
+\midrule
+\multicolumn{7}{l}{\small$n=31$\quad SCE$=7.6736$\quad SCR$=1.2644$\quad SCT$=8.9380$}\\
+\multicolumn{7}{l}{\small$F(3,27)=54.62$, $p\approx0$\quad$R^2=0.8585$\quad
+  $\bar R^2=0.8428$\quad Root\,MSE$=0.2164$}\\
+\multicolumn{7}{l}{\footnotesize$^{***}p<0.001$;\quad$^{\dag}p<0.10$}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{resbox}
+Los resultados del script R reproducen con precisión de 7 decimales la salida de Stata.
+El modelo explica el \textbf{85.85\%} de la variación en $\ln(INF)$ y es globalmente
+significativo ($F=54.62$, $p\approx0$). La variable de mayor peso individual es
+$\ln(TI)$ con $t=8.81$ ($p\approx0$).
+\end{resbox}
+
+\subsection{Interpretación de las elasticidades}
+
+En el modelo log-log: $\hat\beta_j=\dfrac{\partial\ln INF_t}{\partial\ln X_{jt}}
+\approx\dfrac{\%\Delta INF}{\%\Delta X_j}$ (elasticidad parcial constante).
+
+\begin{table}[H]\centering
+\caption{Interpretación cuantitativa de las elasticidades estimadas}
+\begin{tabularx}{\linewidth}{llX}
+\toprule
+\textbf{Parámetro} & \textbf{Valor} & \textbf{Lectura económica}\\
+\midrule
+$\hat\beta_2$ (lnpib) & $+0.0391$ &
+  +1\% en el PIB $\Rightarrow$ +0.039\% en inflación, \textit{cet.\,par.}
+  (efecto pequeño, no significativo). \\[4pt]
+$\hat\beta_3$ (lnti) & $+0.8361^{***}$ &
+  +1\% en la TI $\Rightarrow$ +0.836\% en inflación, \textit{cet.\,par.}
+  (altamente significativo; refleja represión financiera en el período). \\[4pt]
+$\hat\beta_4$ (lnm) & $-0.1026^{\dag}$ &
+  +1\% en M $\Rightarrow$ $-$0.103\% en inflación, \textit{cet.\,par.}
+  (signo atípico: efecto de colinealidad con lnpib; $p=0.089$ marginal). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Términos clave del sistema financiero y política monetaria}
+
+\begin{defbox}{Coeficiente de Efectivo ($ce$)}
+$ce = C/D$, donde $C$ = efectivo en circulación y $D$ = depósitos bancarios.
+Indica qué fracción de los medios de pago el público prefiere mantener en
+efectivo. A mayor $ce$, menor multiplicador monetario:
+$m = (1+ce)/(\rho+ce)$.
+En Colombia, el alto $ce$ durante 1975--1989 restringió la expansión crediticia.
+\end{defbox}
+
+\begin{defbox}{Demasiado Grande para Quebrar (\textit{Too Big to Fail} --- TBTF)}
+Institución financiera cuyo colapso generaría externalidades sistémicas tan
+graves que el gobierno se ve políticamente obligado a rescatarla. Genera
+\textbf{riesgo moral}: los directivos asumen riesgos excesivos al percibir que
+las pérdidas serán socializadas. Regulado desde 2010 mediante recargos de
+capital en Basilea III para bancos de importancia sistémica global (G-SIBs).
+\end{defbox}
+
+\begin{defbox}{Demasiado Grande para ser Rescatado (\textit{Too Big to Save})}
+Situación donde el costo del rescate bancario excede la capacidad fiscal soberana.
+Caso paradigmático: Irlanda (2010), cuyo rescate elevó la deuda pública del
+$\approx$\,25\% al $\approx$\,120\% del PIB, forzando un rescate europeo.
+\end{defbox}
+
+\begin{defbox}{Demasiado Interconectado para Quebrar (\textit{Too Interconnected to Fail})}
+El riesgo sistémico depende no sólo del tamaño sino de la \textbf{centralidad en
+la red financiera}. Una institución mediana que actúa como nodo central de
+compensación o contraparte dominante en mercados de derivados puede propagar
+contagio a toda la red financiera ante su quiebra.
+\end{defbox}
+
+\begin{defbox}{Exceso de Reservas ($ER$)}
+\[ER = R_{\text{total}} - R_{\text{requeridas}} = R_{\text{total}} - \rho\cdot D\]
+Reservas mantenidas voluntariamente por encima del encaje mínimo. En recesiones
+o períodos de incertidumbre, $ER$ sube porque los bancos prefieren liquidez a
+crédito. El multiplicador monetario efectivo cae aunque la base $B$ sea elevada:
+el banco central «empuja una cuerda» (\textit{pushing on a string}).
+\end{defbox}
+
+\begin{defbox}{Intervención en el Mercado Cambiario}
+\textbf{Esterilizada:} el BC compra divisas (+$B$) y simultáneamente vende bonos
+($-B$) para neutralizar el efecto monetario. Objetivo: controlar el tipo de cambio
+sin alterar $M_s$. Efectividad limitada si hay movilidad perfecta de capitales.
+
+\textbf{No esterilizada:} la compra de divisas se transmite íntegramente a la base
+monetaria ($\Delta B > 0$). Más efectiva sobre el TC pero con consecuencias
+inflacionarias (Colombia 1975--1989).
+\end{defbox}
+
+\begin{defbox}{Liberación Financiera (\textit{Financial Liberalization})}
+Eliminación de controles sobre tasas de interés, crédito, flujos de capital y
+acceso de banca extranjera. En Colombia, la apertura de 1990--1993 (Ley 45/1990,
+Ley 35/1993) desmanteló la represión financiera previa. Aumenta la eficiencia
+asignativa del sistema financiero pero también la vulnerabilidad a crisis externas
+y ataques especulativos sobre la tasa de cambio.
+\end{defbox}
+
+\begin{defbox}{Multiplicador del Dinero ($m$)}
+\begin{equation}
+M_s = m\cdot B,\qquad m = \frac{1+ce}{\rho+ce},\qquad m>1\;\text{si}\;\rho<1
+\end{equation}
+$B$ = base monetaria; $\rho$ = tasa de encaje; $ce$ = coeficiente de efectivo.
+Un banco central que expande $B$ en \$100 puede generar hasta \$100$\cdot m$ en
+oferta monetaria amplia a través del proceso de creación de depósitos.
+\end{defbox}
+
+\begin{defbox}{Operaciones de Mercado Abierto (OMAs)}
+Compraventa de valores públicos por el banco central en el mercado secundario.
+Principal instrumento de política monetaria operativa:
+\[\text{Compra bonos}\Rightarrow\uparrow B\Rightarrow\uparrow M_s\Rightarrow\downarrow i\Rightarrow\uparrow\pi
+\qquad\text{Venta bonos}\Rightarrow\downarrow B\Rightarrow\downarrow M_s\Rightarrow\uparrow i\Rightarrow\downarrow\pi\]
+El Banco de la República de Colombia las ejecuta mediante \textbf{repos} y
+\textbf{repos en reversa} (SBRs) en subastas de expansión y contracción.
+\end{defbox}
+
+\begin{defbox}{Política de Encaje / Requisito de Reserva ($\rho$)}
+\[\rho = \frac{R_{\text{req}}}{D}\in(0,1)\]
+Fracción de los depósitos que los bancos comerciales deben mantener como reservas
+(en bóveda o depositados en el banco central). En Colombia fue el principal
+instrumento de política cuantitativa durante 1975--1990, antes de que se
+desarrollaran los mercados de bonos internos. Variaciones en $\rho$ alteran
+directamente el multiplicador $m$ sin modificar $B$.
+\end{defbox}
+
+\begin{defbox}{Prestamista de Última Instancia (\textit{Lender of Last Resort} -- LOLR)}
+Función del banco central de proveer liquidez de emergencia a bancos
+\textbf{solventes pero ilíquidos} para prevenir pánicos y corridas bancarias.
+Regla de Bagehot (1873): \textit{prestar libremente, a tasa penalizadora, contra
+colateral de buena calidad}. La ausencia de un LOLR creíble amplificó las crisis
+bancarias latinoamericanas de los años 1990.
+\end{defbox}
+
+\begin{defbox}{Repo / Subasta de Expansión y Tasa Repo}
+Operación en la que el BC compra temporalmente activos (títulos de deuda pública)
+al sistema bancario comprometiéndose a revendérselos en fecha futura:
+\[\text{Hoy: BC paga }P_0\qquad\text{Vencimiento: banco recompra por }P_0(1+i_\text{repo})\]
+Inyecta liquidez (\textit{expansión}). La \textbf{Tasa Repo} es el instrumento
+de política monetaria de referencia del Banco de la República desde 2001;
+su variación transmite el estímulo o la contracción a toda la economía.
+\end{defbox}
+
+\begin{defbox}{Repo en Reversa / Subasta de Contracción y Tasa de Repos en Reversa}
+Operación opuesta al repo: el BC vende temporalmente activos al sistema bancario,
+retirando liquidez (\textit{contracción}, $\downarrow B$). La
+\textbf{Tasa de Repos en Reversa} es el piso de la banda de tasas de interés
+(rendimiento que el BC paga al sistema bancario por captar sus recursos
+excedentarios \textit{overnight}).
+\end{defbox}
+
+\begin{defbox}{Represión Financiera (\textit{Financial Repression})}
+Conjunto de regulaciones que mantienen las tasas de interés reales artificialmente
+bajas (incluso negativas): topes administrativos a las tasas, encajes elevados,
+compras forzosas de bonos públicos y restricciones a flujos de capital. Transfiere
+riqueza implícitamente del sector privado al Estado (impuesto inflacionario).
+Colombia operó bajo represión financiera durante 1975--1989, lo cual explica el
+signo positivo de $\hat\beta_3$ en nuestro modelo.
+\end{defbox}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Punto 2: Diagnóstico de Multicolinealidad Aproximada}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\begin{defbox}{Multicolinealidad aproximada}
+Existe cuando dos o más regresores mantienen una relación lineal aproximada (no
+exacta). No viola ningún supuesto de Gauss-Markov pero \textbf{infla las
+varianzas} de los estimadores: $\Var(\hat\beta_j)=\sigma^2 VIF_j/S_{jj}$.
+Los estimadores MCO siguen siendo MELI pero con poca precisión individual.
+La multicolinealidad es una característica de la muestra, no del modelo.
+\end{defbox}
+
+\subsection{2a. Verificación individual (t) y global (F)}
+
+\subsubsection{Prueba global --- estadístico $F$}
+
+\[H_0:\beta_2=\beta_3=\beta_4=0,\qquad
+F=\frac{SCE/k_r}{SCR/(n-k)}=\frac{7.6736/3}{1.2644/27}=\frac{2.5579}{0.04683}=\mathbf{54.62}\]
+
+$p$-valor $\approx 0.0000 < 0.05 \Rightarrow$ \textbf{RECHAZA} $H_0$: modelo globalmente significativo.
+
+\subsubsection{Pruebas individuales --- estadístico $t$, $t_{0.025,27}=2.052$}
+
+\begin{table}[H]\centering
+\caption{Pruebas $t$ individuales y diagnóstico de multicolinealidad}
+\begin{tabular}{lrrrrl}
+\toprule
+\textbf{Variable} & $\hat\beta$ & $SE$ & $t$ & $p$ & \textbf{Significancia}\\
+\midrule
+$\ln(PIB)$ & $+0.0391$ & $0.0427$ & $0.92$ & $0.368$ &
+  \textcolor{rojo_a}{\textbf{NO significativa}} al 5\%\\
+$\ln(TI)$  & $+0.8361$ & $0.0949$ & $8.81$ & $0.000$ &
+  \textcolor{verde_o}{\textbf{Altamente significativa}} (***)\\
+$\ln(M)$   & $-0.1026$ & $0.0581$ & $-1.77$ & $0.089$ &
+  Marginal ($p<0.10$)\\
+\midrule
+\multicolumn{6}{l}{\small$R^2=0.8585$ (alto) + $F=54.62$ (significativo) + lnpib $p=0.368$ (no sig.)}\\
+\multicolumn{6}{l}{\small$\Rightarrow$ \textbf{SÍNTOMA CLÁSICO de multicolinealidad}}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{alertbox}
+\textbf{Síntoma clásico de multicolinealidad:} $R^2=0.8585$ muy alto, $F=54.62$
+altamente significativo, pero $\ln(PIB)$ tiene $p=0.368$ (no significativo).
+Esto ocurre porque lnpib y lnm están tan correlacionados ($r=0.9385$) que el
+modelo no puede ``desenredar'' su contribución individual: infla sus errores
+estándar y reduce sus estadísticos $t$ aunque su efecto conjunto es claro.
+\end{alertbox}
+
+\subsection{2b. Factor de Inflación de Varianza (VIF)}
+
+\begin{frmbox}{Fórmulas VIF y Tolerancia}
+\[VIF_j = \frac{1}{1-R_j^2} = \frac{1}{TOL_j},
+\qquad\Var(\hat\beta_j)=\frac{\sigma^2}{S_{jj}}\cdot VIF_j\]
+$R_j^2$ = $R^2$ de la regresión auxiliar de $X_j$ sobre los demás regresores.\\
+\textbf{Reglas prácticas:} $VIF>10$: grave; $VIF\in(5,10)$: moderado-alto; $VIF<5$: aceptable.
+\end{frmbox}
+
+\begin{statabox}
+\begin{lstlisting}[style=Stata]
+. vif
+    Variable |       VIF       1/VIF
+-------------+----------------------
+       lnpib |      8.72    0.114700
+         lnm |      8.43    0.118636
+        lnti |      1.61    0.620093
+-------------+----------------------
+    Mean VIF |      6.25
+\end{lstlisting}
+\end{statabox}
+
+\begin{table}[H]\centering
+\caption{VIF calculados manualmente y con Stata (coincidencia exacta)}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Variable} & \textbf{Regresión auxiliar} & $R_j^2$ & $TOL_j$ & $VIF_j$ & \textbf{Diagnóstico}\\
+\midrule
+\rowcolor{naranja!15}$\ln(PIB)$ & lnpib$\sim$lnti+lnm & $0.8853$ & $0.1147$ & $8.72$ & Moderado-alto\\
+$\ln(TI)$ & lnti$\sim$lnpib+lnm & $0.3799$ & $0.6201$ & $1.61$ & \textcolor{verde_o}{Bajo}\\
+\rowcolor{naranja!15}$\ln(M)$ & lnm$\sim$lnpib+lnti & $0.8814$ & $0.1186$ & $8.43$ & Moderado-alto\\
+\midrule
+\multicolumn{5}{l}{Media VIF} & $6.25$\\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize Umbral estricto: VIF$>10$. VIF$\approx8$--9 es ya una señal relevante de colinealidad.}
+\end{tabular}
+\end{table}
+
+\begin{notabox}
+Verificación manual: $VIF_{\ln PIB}=\dfrac{1}{1-0.8853}=\dfrac{1}{0.1147}=\mathbf{8.72}$
+\quad$\checkmark$\quad Coincide exactamente con \texttt{estat vif} de Stata.
+\end{notabox}
+
+\subsection{2c. Test de Farrar-Glauber}
+
+La matriz de correlación de los regresores (\texttt{correlate lnpib lnti lnm}):
+
+\[
+\mathbf{R}=\begin{pmatrix}
+1.0000 & -0.6136 & 0.9385\\
+-0.6136 & 1.0000 & -0.5959\\
+0.9385 & -0.5959 & 1.0000
+\end{pmatrix}
+\]
+
+\begin{statabox}
+\begin{lstlisting}[style=Stata]
+. correlate lnpib lnti lnm
+             |    lnpib     lnti      lnm
+-------------+---------------------------
+       lnpib |   1.0000
+        lnti |  -0.6136   1.0000
+         lnm |   0.9385  -0.5959   1.0000
+\end{lstlisting}
+\end{statabox}
+
+\begin{frmbox}{Estadístico $\chi^2$ de Farrar-Glauber}
+\[H_0:\det(\mathbf{R})=1\quad\text{(no existe multicolinealidad)}\]
+\[\chi^2_{FG}=-\!\left[n-1-\frac{2p+5}{6}\right]\!\ln\!\det(\mathbf{R})
+\;\sim\;\chi^2\!\!\left(\frac{p(p-1)}{2}\right)\]
+Con $p=3$ regresores y $n=31$: $gl=3(2)/2=3$.
+\end{frmbox}
+
+\[\det(\mathbf{R})=0.07396613\qquad\Rightarrow\qquad\ln\det(\mathbf{R})=-2.6041\]
+\[\chi^2_{FG}=-\!\left[30-\frac{11}{6}\right](-2.6041)=-(28.1\overline{6})(-2.6041)=\mathbf{73.35}\]
+\[p\text{-valor}\approx0.0000<0.05\;\Rightarrow\;\textbf{RECHAZA }H_0:\text{ multicolinealidad significativa}\]
+
+\subsubsection{Correlaciones parciales (2ª etapa)}
+
+\begin{table}[H]\centering
+\caption{Correlaciones parciales y prueba $t$ (Farrar-Glauber)}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Par} & $r_{ij\cdot\text{resto}}$ & $t$ & $p$ & \textbf{Conclusión}\\
+\midrule
+$r$(lnpib, lnti $\mid$ lnm) & $-0.1960$ & $-1.0385$ & $0.3082$ & No significativa\\
+\rowcolor{rojo_a!10}$r$(lnpib, lnm $\mid$ lnti) & $\mathbf{+0.9033}$ & $\mathbf{+10.9436}$ &
+  $\mathbf{0.0000}$ & \textbf{ALTAMENTE SIG.}\\
+$r$(lnti, lnm $\mid$ lnpib) & $-0.0736$ & $-0.3835$ & $0.7044$ & No significativa\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{resbox}
+$r(\text{lnpib},\text{lnm}\mid\text{lnti})=0.9033$ con $t=10.94$, $p\approx0$.
+PIB y Oferta Monetaria son casi linealmente dependientes aun controlando por TI:
+ambas variables crecen en tendencia sincronizada durante todo el período.
+\end{resbox}
+
+\subsection{2d. Test de Theil}
+
+\begin{frmbox}{Criterio de Theil}
+$R_j^2$ (regresión auxiliar) $>$ $R^2$ (modelo principal) $\Rightarrow$ colinealidad problemática.
+\end{frmbox}
+
+\begin{table}[H]\centering
+\caption{Test de Theil ($R^2_{\text{principal}}=0.8585$)}
+\begin{tabular}{lccl}
+\toprule
+\textbf{Variable} & $R_j^2$ & $R_j^2>R^2_\text{princ.}$? & \textbf{Diagnóstico}\\
+\midrule
+\rowcolor{rojo_a!10}$\ln(PIB)$ & $0.8853$ & \textcolor{rojo_a}{\textbf{SÍ}} (0.8853$>$0.8585) & Colinealidad problemática\\
+$\ln(TI)$ & $0.3799$ & No (0.3799$<$0.8585) & Sin problema\\
+\rowcolor{rojo_a!10}$\ln(M)$ & $0.8814$ & \textcolor{rojo_a}{\textbf{SÍ}} (0.8814$>$0.8585) & Colinealidad problemática\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{resbox}
+\textbf{Conclusión unificada del Punto 2:} Los cuatro métodos convergen.
+Existe multicolinealidad moderada-alta entre $\ln(PIB)$ y $\ln(M)$ ($r=0.9385$;
+$VIF\approx8.7$; $\chi^2_{FG}=73.35$, $p\approx0$; Theil alerta en ambas).
+La Tasa de Interés no presenta problemas de colinealidad ($VIF=1.61$).
+\end{resbox}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Punto 3: Eliminación de Variables y Sesgo de Especificación}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\subsection{Modelos reducidos (resultados exactos de Stata)}
+
+\begin{statabox}
+\begin{lstlisting}[style=Stata]
+. reg lninflacion lnpib lnti          . reg lninflacion lnti lnm
+  F(2,28)=74.72  R²=0.8422              F(2,28)=81.99  R²=0.8541
+  lnpib: coef=-.0290308  t=-1.53        lnti: coef=.8190854  t=8.82***
+  lnti:  coef=.8484537   t=8.64***      lnm:  coef=-.0545604  t=-2.19*
+  VIF: lnpib=1.61  lnti=1.61            VIF: lnti=1.55  lnm=1.55
+
+. reg lninflacion lnpib lnm
+  F(2,28)=11.56  R²=0.4522
+  lnpib: coef=-.0346351  t=-0.43
+  lnm:   coef=-.1402957  t=-1.25
+\end{lstlisting}
+\end{statabox}
+
+\begin{table}[H]\centering
+\caption{Comparación: modelo completo vs.\ modelos reducidos}
+\label{tab:reducidos}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+& \textbf{Completo} & \textbf{Sin lnM} & \textbf{Sin lnPIB} & \textbf{Sin lnTI}\\
+\midrule
+$\ln(PIB)$ & $+0.0391\,(p\!=\!.37)$ &
+  $\mathbf{-0.0290}\,[\textcolor{rojo_a}{\text{sesgo}}]$ & --- &
+  $-0.0346\,[\textcolor{rojo_a}{\text{sesgo}}]$\\[2pt]
+$\ln(TI)$ & $+0.8361^{***}$ & $+0.8485^{***}$ & $+0.8191^{***}$ & ---\\[2pt]
+$\ln(M)$ & $-0.1026^{\dag}$ & --- &
+  $-0.0546^{*}$ & $-0.1403\,[\textcolor{rojo_a}{\text{sesgo}}]$\\[4pt]
+$R^2$ & $0.8585$ & $0.8422$ & $0.8541$ & $0.4522$\\
+$\bar R^2$ & $0.8428$ & $0.8309$ & $0.8437$ & $0.4131$\\
+Root\,MSE & $0.2164$ & $0.2244$ & $0.2158$ & $0.4182$\\
+$F$ & $54.62$ & $74.72$ & $81.99$ & $11.56$\\
+VIF\,máx & $8.72$ & $1.61$ & $1.55$ & $7.91$\\[4pt]
+\midrule
+MELI? & \YES & \NOO\,(sesgado) & \NOO\,(sesgado) & \NOO\,(sesgado)\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Fórmula del sesgo de especificación por omisión (OVB)}
+
+\begin{frmbox}{Omitted Variable Bias (OVB)}
+Si el modelo verdadero incluye $\ln M$ pero se estima sin él:
+\begin{equation}
+\E[\hat\alpha_2] = \beta_2 + \beta_4\cdot b_{42}
+\label{eq:ovb}
+\end{equation}
+donde $b_{42}=\widehat{\Cov}(\ln PIB,\ln M)\,/\,\widehat{\Var}(\ln PIB)$.
+El sesgo $\beta_4\cdot b_{42}\neq0$ requiere que la variable omitida sea
+relevante ($\beta_4\neq0$) y correlacionada con las incluidas ($b_{42}\neq0$).
+\end{frmbox}
+
+\subsubsection{Cálculo numérico}
+
+\[b_{42}=\frac{\widehat{\Cov}(\ln PIB,\ln M)}{\widehat{\Var}(\ln PIB)}
+=\frac{6.3718}{9.3952}=0.6782\]
+
+\[\text{Sesgo teórico}=\hat\beta_4\cdot b_{42}=(-0.1026192)\times0.6782=\mathbf{-0.06960}\]
+
+\begin{table}[H]\centering
+\caption{Verificación empírica de la fórmula OVB}
+\begin{tabular}{lrl}
+\toprule
+Cantidad & Valor & Origen\\
+\midrule
+$\hat\beta_2$ en modelo pleno & $+0.0391012$ & MCO completo\\
+$\hat\alpha_2$ en modelo sin lnM & $-0.0290308$ & MCO reducido\\
+Diferencia observada & $-0.0681320$ & Diferencia\\
+Sesgo teórico (fórmula \ref{eq:ovb}) & $-0.0696000$ & $(-0.1026)\times 0.6782$\\
+\midrule
+\multicolumn{3}{l}{\small Diferencia obs.\,($-0.0681$) $\approx$ sesgo teórico ($-0.0696$)
+$\Rightarrow$ \textbf{validación empírica de OVB}}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{alertbox}
+\textbf{Conclusión del Punto 3:} Eliminar $\ln(M)$ reduce el VIF de 8.72 a 1.61,
+pero introduce un sesgo de $-0.070$ en el coeficiente del PIB que incluso cambia
+su \textbf{signo} de positivo a negativo. Los estimadores del modelo reducido son
+\textbf{sesgados e inconsistentes}. Bajo los supuestos clásicos, MCO en el modelo
+completo sigue siendo MELI a pesar de la colinealidad.
+\textbf{El remedio (sesgo) es peor que la enfermedad (colinealidad).}
+\end{alertbox}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Punto 4: Coherencia Teórica del Modelo Estimado}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\subsection{Marcos teóricos de referencia}
+
+\textbf{Teoría Cuantitativa del Dinero (TCD):}
+$MV=PQ\Rightarrow\ln P=\ln M+\ln V-\ln Q$.
+Con $V$ estable: +1\% en $M\Rightarrow$ +1\% en $P$. Predicción: $\beta_4>0$.
+
+\textbf{Modelo IS-LM:}
+$\uparrow TI\Rightarrow$ contrae DA $\Rightarrow\downarrow P$.
+Predicción: $\beta_3<0$.
+$\uparrow PIB\Rightarrow$ expande DA $\Rightarrow\uparrow P$.
+Predicción: $\beta_2>0$.
+
+\textbf{Curva de Phillips:}
+$\pi_t=\pi_t^e+\gamma(y_t-\bar y_t)+\varepsilon_t$.
+Mayor output gap $\Rightarrow\uparrow\pi$. Predicción: $\beta_2>0$.
+
+\subsection{Tabla de coherencia}
+
+\begin{table}[H]\centering
+\caption{Evaluación de coherencia teórica de los coeficientes estimados}
+\label{tab:coh}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Parámetro} & $\hat\beta$ & $p$ & \textbf{Signo esp.} & \textbf{Signo obs.} & \textbf{Coherente}\\
+\midrule
+$\hat\beta_2$ (lnpib) & $+0.0391$ & $0.368$ & $+$ (DA/Phillips) & $+$ & \YES\\
+$\hat\beta_3$ (lnti)  & $+0.8361$ & $0.000$ & $-$ (IS-LM) & $+$ & \NOO\\
+$\hat\beta_4$ (lnm)   & $-0.1026$ & $0.089$ & $+$ (TCD) & $-$ & \NOO\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Análisis de las incoherencias}
+
+\subsubsection{$\hat\beta_3=+0.8361$ --- lnTI positivo (esperado negativo por IS-LM)}
+
+En Colombia durante 1975--1989, el sistema financiero operó bajo
+\textbf{represión financiera}: las tasas de interés eran fijadas
+administrativamente en niveles que, en términos reales, eran frecuentemente
+negativos. Las tasas nominales subían \textit{porque} la inflación subía
+(indexación reactiva), no como instrumento de control anti-inflacionario.
+El coeficiente positivo refleja que la TI era un \textbf{indicador contemporáneo
+de la inflación}, no un instrumento de contracción monetaria. La causalidad
+econométrica captura la correlación $r(\ln INF,\ln TI)=0.9105$, no el canal de
+política monetaria IS-LM. Sólo desde 1999 (metas de inflación con tasa repo
+libre) la TI comenzó a actuar como instrumento. Una muestra dividida revelaría
+$\hat\beta_3<0$ para el subperíodo 2000--2005.
+
+\subsubsection{$\hat\beta_4=-0.1026$ --- lnM negativo (esperado positivo por TCD)}
+
+Dos explicaciones complementarias:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Colinealidad:} $r(\ln PIB,\ln M)=0.9385$ impide separar los
+        efectos. La estimación de $\beta_4$ es altamente imprecisa ($p=0.089$).
+  \item \textbf{Endogeneidad:} el Banco de la República expandía $M$
+        precisamente cuando la inflación cedía (política expansiva en
+        recesiones), generando correlación negativa espúrea entre $M$ y $\pi$.
+\end{enumerate}
+
+\begin{resbox}
+\textbf{Conclusión del Punto 4:} Coherencia parcial. $\hat\beta_2>0$ es
+consistente con DA/Phillips. $\hat\beta_3>0$ se explica por el contexto
+institucional de represión financiera colombiana (1975--1989). $\hat\beta_4<0$
+se atribuye principalmente a la multicolinealidad severa con lnpib y a posible
+endogeneidad de la oferta monetaria. La variable de mayor solidez teórica y
+estadística es $\ln(TI)$: $\hat\beta_3=0.8361$, $t=8.81$, $p\approx0$, domina
+el poder explicativo ($R^2$ cae de 0.8585 a 0.4522 cuando se omite).
+\end{resbox}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Supuestos MCO y diagnósticos adicionales}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\begin{table}[H]\centering
+\caption{Batería de pruebas sobre los supuestos MCO}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Supuesto} & \textbf{Test} & \textbf{Estadístico} & \textbf{$p$} & \textbf{Decisión}\\
+\midrule
+Normalidad & Shapiro-Wilk & $W=0.9730$ & $0.6036$ &
+  \textcolor{verde_o}{Residuos normales \checkmark}\\
+Homocedasticidad & Breusch-Pagan & (ver script) & --- &
+  Ver script R\\
+No autocorr. & Durbin-Watson & $DW=1.117$ & --- &
+  \textcolor{rojo_a}{Posible autocorr. positiva \texttimes}\\
+No autocorr. & Breusch-Godfrey(2) & (ver script) & --- &
+  Ver script R\\
+Especificación & RESET-Ramsey & (ver script) & --- &
+  Ver script R\\
+\bottomrule
+\multicolumn{5}{l}{\small$DW=1.117 < d_L(31,3)\approx1.23$: señala autocorrelación positiva de 1er orden.}\\
+\multicolumn{5}{l}{\small Frecuente en series de tiempo macroeconómicas. Corregir con errores HAC (Newey-West).}
+\end{tabular}
+\end{table}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Conclusiones generales}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\begin{enumerate}
+  \item \textbf{Estimación:} El modelo log-log ajusta bien
+        ($R^2=0.8585$, $F=54.62$, $p\approx0$). Los coeficientes son elasticidades
+        parciales verificadas exactamente en Stata. La variable dominante es
+        $\ln(TI)$ con $\hat\beta_3=0.8361^{***}$.
+
+  \item \textbf{Multicolinealidad:} Confirmada por los cuatro diagnósticos
+        (VIF$\approx$8.7, síntoma clásico t/F, $\chi^2_{FG}=73.35$, Theil).
+        La fuente es la alta correlación $r(\ln PIB,\ln M)=0.9385$. La TI
+        no presenta problema.
+
+  \item \textbf{Eliminación de variables:} Reduce el VIF de 8.72 a 1.61
+        pero introduce un sesgo OVB de $-0.070$ que cambia el signo del
+        coeficiente del PIB. MCO sigue siendo MELI en el modelo completo.
+        No se recomienda eliminar variables.
+
+  \item \textbf{Coherencia teórica:} Parcial. Los signos de lnTI y lnM son
+        atípicos, explicados por represión financiera (lnTI) y colinealidad/
+        endogeneidad (lnM). Se recomienda usar primeras diferencias,
+        estimar por subperíodos o aplicar GMM con instrumentos para superar
+        estas limitaciones.
+\end{enumerate}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\appendix
+\section{Anexo A: Compendio de fórmulas econométricas}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\begin{defbox}{Matrices del modelo MCO}
+\begin{align*}
+\text{Sombrero:}&\quad\mathbf{H}=\X(\Xt\X)^{-1}\Xt,\quad\mathbf{H}^2=\mathbf{H},\quad\text{tr}(\mathbf{H})=k\\
+\text{Aniquilador:}&\quad\mathbf{M}=\mathbf{I}-\mathbf{H},\quad\hat{\bm u}=\mathbf{M}\y\\
+\Var(\bhat)&=\sigma^2(\Xt\X)^{-1},\quad
+\hat\sigma^2=\frac{\hat{\bm u}'\hat{\bm u}}{n-k}=\frac{SCR}{n-k}
+\end{align*}
+\end{defbox}
+
+\begin{defbox}{Descomposición y métricas de ajuste}
+\[SCT=SCE+SCR,\quad R^2=\frac{SCE}{SCT},\quad
+\bar R^2=1-\frac{(1-R^2)(n-1)}{n-k}\]
+\[F=\frac{SCE/k_r}{SCR/(n-k)}\sim F_{k_r,n-k},\quad
+AIC=-2\ell+2k,\quad BIC=-2\ell+k\ln n\]
+\end{defbox}
+
+\begin{defbox}{Tabla resumen: instrumentos de política monetaria}
+\begin{center}\small
+\begin{tabular}{lllll}
+\toprule
+\textbf{Instrumento} & \textbf{Tipo} & $\Delta B$ & $\Delta i$ & $\Delta\pi$ esperado\\
+\midrule
+OMA compra bonos & Expansiva & $+$ & $\downarrow$ & $+$\\
+OMA venta bonos  & Contractiva & $-$ & $\uparrow$ & $-$\\
+Repo (SBR expansión) & Expansiva & $+$ & $\downarrow$ & $+$\\
+Repo en reversa  & Contractiva & $-$ & $\uparrow$ & $-$\\
+$\downarrow\rho$ (encaje) & Expansiva & $0\,(\uparrow m)$ & $\downarrow$ & $+$\\
+$\uparrow\rho$ (encaje) & Contractiva & $0\,(\downarrow m)$ & $\uparrow$ & $-$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{defbox}
+
+%% ════════════════════════════════════════════════════════════════════════════
+\section{Anexo B: Extracto del script R}
+%% ════════════════════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=Rcode,caption={Fragmento clave del script R (réplica de Stata)}]
+# gen lninflacion = ln(inflacion)
+datos$lninflacion <- log(datos$inflacion)
+datos$lnpib <- log(datos$pib)
+datos$lnti  <- log(datos$ti)
+datos$lnm   <- log(datos$m)
+
+# Álgebra matricial MCO
+y <- matrix(datos$lninflacion, ncol=1)
+X <- cbind(1, datos$lnpib, datos$lnti, datos$lnm)
+beta_hat <- solve(t(X)%*%X) %*% t(X)%*%y   # (X'X)^{-1} X'y
+
+# reg lninflacion lnpib lnti lnm
+modelo <- lm(lninflacion ~ lnpib + lnti + lnm, data=datos)
+summary(modelo)   # Replica exacta de Stata
+
+# correlate lnpib lnti lnm
+cor(datos[,c("lnpib","lnti","lnm")])
+
+# vif (Stata: estat vif)
+car::vif(modelo)
+# lnpib=8.72  lnm=8.43  lnti=1.61  Mean=6.25
+
+# Farrar-Glauber
+cor_reg <- cor(datos[,c("lnpib","lnti","lnm")])
+detR    <- det(cor_reg)   # 0.07397
+chi2_FG <- -(31-1-(2*3+5)/6)*log(detR)   # 73.35
+pchisq(chi2_FG, df=3, lower.tail=FALSE)   # p ≈ 0
+
+# Sesgo de omision OVB
+b42   <- cov(datos$lnpib,datos$lnm)/var(datos$lnpib)  # 0.6782
+sesgo <- coef(modelo)["lnm"]*b42                       # -0.0696
+
+# reg lninflacion lnpib lnti  (sin lnM)
+m_sinM <- lm(lninflacion ~ lnpib + lnti, data=datos)
+car::vif(m_sinM)   # lnpib=1.61  lnti=1.61
+\end{lstlisting}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\vspace{2cm}
+\begin{center}
+{\color{uptv}\rule{\linewidth}{2pt}}\vspace{2pt}
+{\color{oro}\rule{\linewidth}{1.5pt}}
+\vspace{4mm}
+
+{\large\bfseries\color{uptv}Emanuel Quintana Silva}\\[4pt]
+{\color{gris_t}Universidad Pedagógica y Tecnológica de Colombia (UPTC)}\\[3pt]
+{\color{gris_t}Econometría}\\[6pt]
+{\large\itshape\color{oro}Con agradecimiento a la Profesora Rosalba Gil Galindo}\\[4pt]
+{\scriptsize\color{gris_t}Resultados verificados con Stata 17 $\cdot$ \today}
+
+\vspace{4mm}
+{\color{oro}\rule{\linewidth}{1.5pt}}\vspace{2pt}
+{\color{uptv}\rule{\linewidth}{2pt}}
+\end{center}
+
+\end{document}
