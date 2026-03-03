@@ -1,6 +1,5 @@
 # Multicolinealidad
 
-
 # El Fenómeno de la Multicolinealidad en el Modelo Lineal Múltiple
 
 En un modelo de regresión lineal múltiple (MLM), el supuesto de Gauss-Markov establece que no debe existir **multicolinealidad perfecta**. No obstante, la **multicolinealidad severa (o imperfecta)** es una violación práctica que degrada la potencia estadística del análisis.
@@ -11,22 +10,17 @@ En un modelo de regresión lineal múltiple (MLM), el supuesto de Gauss-Markov e
 
 Consideremos el modelo en notación matricial:
 
-
 Donde  es una matriz de dimensiones . La estimación por Mínimos Cuadrados Ordinarios (MCO) requiere que la matriz  sea invertible.
 
 ### Multicolinealidad Perfecta
 
 Ocurre cuando el rango de la matriz  es menor que  (). En términos algebraicos, existe un vector de constantes  tal que:
 
-
-
 **Consecuencia:** La matriz  es singular, su determinante es cero y los coeficientes  no están determinados de forma única. Como señala **Wooldridge**, esto suele ser un error de especificación (p. ej., caer en la "trampa de la variable ficticia").
 
 ### Multicolinealidad Imperfecta
 
 Existe una relación lineal estocástica tal que:
-
-
 
 Donde  es un término de error. Aquí,  es invertible, pero está **mal condicionada**.
 
@@ -79,7 +73,7 @@ De acuerdo con la literatura clásica, debemos observar:
 
 **Wooldridge** es pragmático: si el objetivo es la **predicción** del valor esperado de , la multicolinealidad no es necesariamente un problema si las futuras observaciones de  mantienen el mismo patrón de correlación. Sin embargo, para la **inferencia causal**, es devastadora.
 
-### Estrategias de Mitigación:
+### Estrategias de Mitigación
 
 1. **Aumentar el tamaño de la muestra ():** Al aumentar , se compensa el aumento del VIF, reduciendo la varianza total.
 2. **Restricciones de exclusión:** Eliminar una variable. *Riesgo:* Si la variable eliminada pertenece al modelo poblacional, se introduce **sesgo por variable omitida**, el cual es peor que la ineficiencia.
@@ -87,3 +81,5 @@ De acuerdo con la literatura clásica, debemos observar:
 4. **Componentes Principales (PCA):** Crear nuevos regresores ortogonales entre sí (aunque se pierde la interpretación económica directa de los coeficientes).
 
 ---
+
+En proceso ...
