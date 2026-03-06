@@ -1,0 +1,583 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{cancel}
+\usepackage{nicefrac}
+
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+\tcbuselibrary{theorems, skins, breakable}
+
+\definecolor{azuloscuro}{RGB}{0,51,102}
+\definecolor{azulclaro}{RGB}{173,216,230}
+\definecolor{verdeclaro}{RGB}{200,240,200}
+\definecolor{rojoclaro}{RGB}{255,220,220}
+\definecolor{amarillo}{RGB}{255,255,200}
+
+\newtcolorbox{definicion}[1]{
+  colback=azulclaro!30,
+  colframe=azuloscuro,
+  fonttitle=\bfseries,
+  title=#1,
+  breakable
+}
+
+\newtcolorbox{resultado}[1]{
+  colback=verdeclaro,
+  colframe=green!60!black,
+  fonttitle=\bfseries,
+  title=#1,
+  breakable
+}
+
+\newtcolorbox{advertencia}[1]{
+  colback=rojoclaro,
+  colframe=red!70!black,
+  fonttitle=\bfseries,
+  title=#1,
+  breakable
+}
+
+\newtcolorbox{nota}[1]{
+  colback=amarillo,
+  colframe=orange!80!black,
+  fonttitle=\bfseries,
+  title=#1,
+  breakable
+}
+
+\title{
+  \textbf{\Large Mínimos Cuadrados Ponderados (MCP)}\\[0.5em]
+  \large Corrección de la Heterocedasticidad mediante Transformación Algebraica\\[0.5em]
+  \normalsize Capítulo 14 --- Econometría
+}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+%==========================================================================
+\section{El Problema: Modelo con Heterocedasticidad}
+%==========================================================================
+
+\subsection{Modelo de Regresión Lineal Simple Original}
+
+El punto de partida es un modelo de regresión lineal simple con dos parámetros:
+
+\begin{definicion}{Modelo Heterocedástico de Partida}
+\begin{equation}
+\boxed{Y_i = \beta_1 + \beta_2 X_i + u_i, \qquad i = 1, 2, \ldots, n}
+\label{eq:modelo_original}
+\end{equation}
+donde el \textbf{supuesto de homocedasticidad está violado}, es decir:
+\begin{equation}
+E(u_i^2) = \sigma_i^2 \neq \text{constante}
+\end{equation}
+La varianza del error cambia para cada observación $i$.
+\end{definicion}
+
+\subsection{Representación Matricial del Modelo Original}
+
+El modelo \eqref{eq:modelo_original} en su forma matricial es:
+
+\begin{equation}
+\underbrace{\begin{pmatrix} Y_1 \\ Y_2 \\ \vdots \\ Y_n \end{pmatrix}}_{\mathbf{Y}_{n\times 1}}
+=
+\underbrace{\begin{pmatrix} 1 & X_1 \\ 1 & X_2 \\ \vdots & \vdots \\ 1 & X_n \end{pmatrix}}_{\mathbf{X}_{n\times 2}}
+\underbrace{\begin{pmatrix} \beta_1 \\ \beta_2 \end{pmatrix}}_{\boldsymbol{\beta}_{2\times 1}}
++
+\underbrace{\begin{pmatrix} u_1 \\ u_2 \\ \vdots \\ u_n \end{pmatrix}}_{\mathbf{u}_{n\times 1}}
+\end{equation}
+
+Es decir: $\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{u}$
+
+\subsection{La Matriz de Varianza-Covarianza del Error (Heterocedástica)}
+
+Bajo heterocedasticidad, la matriz de varianzas y covarianzas del vector de errores \textbf{no} es $\sigma^2 \mathbf{I}$:
+
+\begin{equation}
+E(\mathbf{u}\mathbf{u}') = \boldsymbol{\Omega} =
+\begin{pmatrix}
+\sigma_1^2 & 0 & 0 & \cdots & 0 \\
+0 & \sigma_2^2 & 0 & \cdots & 0 \\
+0 & 0 & \sigma_3^2 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \cdots & \sigma_n^2
+\end{pmatrix}
+\end{equation}
+
+\begin{advertencia}{Consecuencia: MCO ya no es BLUE}
+Cuando $E(\mathbf{u}\mathbf{u}') = \boldsymbol{\Omega} \neq \sigma^2\mathbf{I}$, el estimador de MCO $\hat{\boldsymbol{\beta}}_{MCO} = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}$ sigue siendo \textbf{insesgado}, pero \textbf{ya no es eficiente} (no es el de mínima varianza). Por el Teorema de Gauss-Markov, la condición $E(\mathbf{u}\mathbf{u}')=\sigma^2\mathbf{I}$ es necesaria para que MCO sea BLUE.
+\end{advertencia}
+
+%==========================================================================
+\section{La Solución: Técnica de Mínimos Cuadrados Ponderados (MCP)}
+%==========================================================================
+
+\subsection{Intuición de la Ponderación}
+
+La idea central es la siguiente: si sabemos que la observación $i$ tiene una varianza grande ($\sigma_i^2$ elevada), es una observación ``poco confiable''. Por lo tanto, le \textbf{asignamos menos peso} en la estimación. Formalmente, el peso asignado a cada observación es:
+
+\begin{equation}
+\boxed{w_i = \frac{1}{\sigma_i^2}}
+\end{equation}
+
+Observaciones con mayor variabilidad reciben menor peso; observaciones más precisas reciben mayor peso.
+
+\subsection{El Procedimiento Algebraico Fundamental: División por $\sigma_i$}
+
+Para transformar el modelo heterocedástico en uno homocedástico, \textbf{dividimos cada término de la ecuación \eqref{eq:modelo_original} por $\sigma_i$}:
+
+\begin{align}
+Y_i &= \beta_1 \cdot 1 + \beta_2 X_i + u_i \notag \\[8pt]
+\frac{Y_i}{\sigma_i} &= \beta_1 \cdot \frac{1}{\sigma_i} + \beta_2 \cdot \frac{X_i}{\sigma_i} + \frac{u_i}{\sigma_i}
+\label{eq:transformado}
+\end{align}
+
+\subsection{Definición de las Variables Transformadas}
+
+De la ecuación \eqref{eq:transformado} se definen:
+
+\begin{definicion}{Variables Transformadas (con asterisco)}
+\begin{align}
+Y_i^* &\equiv \frac{Y_i}{\sigma_i} \quad \text{(variable dependiente transformada)} \\[6pt]
+X_{0i}^* &\equiv \frac{1}{\sigma_i} \quad \text{(nuevo regresor para el intercepto)} \\[6pt]
+X_i^* &\equiv \frac{X_i}{\sigma_i} \quad \text{(variable independiente transformada)} \\[6pt]
+u_i^* &\equiv \frac{u_i}{\sigma_i} \quad \text{(nuevo término de error)}
+\end{align}
+\end{definicion}
+
+El modelo transformado queda entonces como:
+
+\begin{equation}
+\boxed{Y_i^* = \beta_1 X_{0i}^* + \beta_2 X_i^* + u_i^*}
+\label{eq:modelo_transformado}
+\end{equation}
+
+\begin{nota}{Observación importante sobre el intercepto}
+Nótese que en el modelo transformado \eqref{eq:modelo_transformado}, el término $\beta_1$ ya \textbf{no multiplica a una constante igual a 1}. Ahora multiplica a $X_{0i}^* = 1/\sigma_i$, que varía con $i$. Esto es una diferencia crucial respecto al modelo original.
+\end{nota}
+
+%==========================================================================
+\section{Demostración Algebraica: El Nuevo Error es Homocedástico}
+%==========================================================================
+
+\subsection{Cálculo de la Varianza de $u_i^*$}
+
+Esta es la prueba central de que la transformación funciona:
+
+\begin{resultado}{Prueba de Homocedasticidad del Error Transformado}
+\begin{align}
+\text{var}(u_i^*) &= E\left[(u_i^*)^2\right] - \left[E(u_i^*)\right]^2
+\end{align}
+
+Primero, la media del error transformado:
+\begin{equation}
+E(u_i^*) = E\left(\frac{u_i}{\sigma_i}\right) = \frac{1}{\sigma_i} E(u_i) = \frac{1}{\sigma_i} \cdot 0 = 0
+\end{equation}
+
+Por lo tanto, la varianza se simplifica:
+\begin{align}
+\text{var}(u_i^*) &= E\left[(u_i^*)^2\right] \\[6pt]
+&= E\left[\left(\frac{u_i}{\sigma_i}\right)^2\right] \\[6pt]
+&= E\left[\frac{u_i^2}{\sigma_i^2}\right] \\[6pt]
+&= \frac{1}{\sigma_i^2} \cdot E\left[u_i^2\right] \quad \text{(pues $\sigma_i^2$ es constante dado $X_i$)} \\[6pt]
+&= \frac{1}{\sigma_i^2} \cdot \sigma_i^2 \quad \text{(por definición de heterocedasticidad: $E[u_i^2]=\sigma_i^2$)} \\[6pt]
+&= \boxed{1}
+\end{align}
+\end{resultado}
+
+\subsection{Implicación Matricial: La Nueva Matriz de Covarianzas}
+
+Tras la transformación, la matriz de varianzas-covarianzas del nuevo error $\mathbf{u}^*$ es:
+
+\begin{equation}
+E(\mathbf{u}^* {\mathbf{u}^*}') =
+\begin{pmatrix}
+\text{var}(u_1^*) & 0 & \cdots & 0 \\
+0 & \text{var}(u_2^*) & \cdots & 0 \\
+\vdots & & \ddots & \vdots \\
+0 & 0 & \cdots & \text{var}(u_n^*)
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & 0 & \cdots & 0 \\
+0 & 1 & \cdots & 0 \\
+\vdots & & \ddots & \vdots \\
+0 & 0 & \cdots & 1
+\end{pmatrix}
+= \mathbf{I}_n
+\end{equation}
+
+Esto es exactamente el supuesto de homocedasticidad: $E(\mathbf{u}^*{\mathbf{u}^*}') = \sigma^2 \mathbf{I}$ con $\sigma^2 = 1$.
+
+%==========================================================================
+\section{Representación Matricial Completa del Modelo Transformado}
+%==========================================================================
+
+\subsection{La Matriz de Transformación $\mathbf{P}$}
+
+Definimos la \textbf{matriz de ponderación diagonal} $\mathbf{P}$ como:
+
+\begin{equation}
+\mathbf{P} =
+\begin{pmatrix}
+\nicefrac{1}{\sigma_1} & 0 & 0 & \cdots & 0 \\[4pt]
+0 & \nicefrac{1}{\sigma_2} & 0 & \cdots & 0 \\[4pt]
+0 & 0 & \nicefrac{1}{\sigma_3} & \cdots & 0 \\[4pt]
+\vdots & \vdots & \vdots & \ddots & \vdots \\[4pt]
+0 & 0 & 0 & \cdots & \nicefrac{1}{\sigma_n}
+\end{pmatrix}
+\end{equation}
+
+\subsection{Premultiplicación del Modelo Original por $\mathbf{P}$}
+
+Premultiplicamos el modelo matricial $\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{u}$ por $\mathbf{P}$:
+
+\begin{equation}
+\mathbf{P}\mathbf{Y} = \mathbf{P}\mathbf{X}\boldsymbol{\beta} + \mathbf{P}\mathbf{u}
+\end{equation}
+
+Desarrollando explícitamente:
+
+\begin{equation}
+\underbrace{
+\begin{pmatrix}
+\nicefrac{1}{\sigma_1} & 0 & \cdots & 0 \\
+0 & \nicefrac{1}{\sigma_2} & \cdots & 0 \\
+\vdots & & \ddots & \vdots \\
+0 & 0 & \cdots & \nicefrac{1}{\sigma_n}
+\end{pmatrix}
+}_{\mathbf{P}}
+\begin{pmatrix} Y_1 \\ Y_2 \\ \vdots \\ Y_n \end{pmatrix}
+=
+\underbrace{
+\begin{pmatrix}
+\nicefrac{1}{\sigma_1} & 0 & \cdots & 0 \\
+0 & \nicefrac{1}{\sigma_2} & \cdots & 0 \\
+\vdots & & \ddots & \vdots \\
+0 & 0 & \cdots & \nicefrac{1}{\sigma_n}
+\end{pmatrix}
+}_{\mathbf{P}}
+\begin{pmatrix} 1 & X_1 \\ 1 & X_2 \\ \vdots & \vdots \\ 1 & X_n \end{pmatrix}
+\begin{pmatrix} \beta_1 \\ \beta_2 \end{pmatrix}
++
+\begin{pmatrix} \nicefrac{u_1}{\sigma_1} \\ \nicefrac{u_2}{\sigma_2} \\ \vdots \\ \nicefrac{u_n}{\sigma_n} \end{pmatrix}
+\end{equation}
+
+Lo cual produce:
+
+\begin{equation}
+\underbrace{
+\begin{pmatrix} Y_1/\sigma_1 \\ Y_2/\sigma_2 \\ \vdots \\ Y_n/\sigma_n \end{pmatrix}
+}_{\mathbf{Y}^*}
+=
+\underbrace{
+\begin{pmatrix} 1/\sigma_1 & X_1/\sigma_1 \\ 1/\sigma_2 & X_2/\sigma_2 \\ \vdots & \vdots \\ 1/\sigma_n & X_n/\sigma_n \end{pmatrix}
+}_{\mathbf{X}^*}
+\begin{pmatrix} \beta_1 \\ \beta_2 \end{pmatrix}
++
+\underbrace{
+\begin{pmatrix} u_1/\sigma_1 \\ u_2/\sigma_2 \\ \vdots \\ u_n/\sigma_n \end{pmatrix}
+}_{\mathbf{u}^*}
+\end{equation}
+
+Es decir: $\mathbf{Y}^* = \mathbf{X}^*\boldsymbol{\beta} + \mathbf{u}^*$, que es el modelo transformado en notación matricial.
+
+\subsection{El Estimador MCP en Forma Matricial}
+
+Aplicando MCO al modelo transformado, el estimador MCP es:
+
+\begin{equation}
+\hat{\boldsymbol{\beta}}_{MCP} = (\mathbf{X}^{*'}\mathbf{X}^*)^{-1}\mathbf{X}^{*'}\mathbf{Y}^*
+\end{equation}
+
+Sustituyendo $\mathbf{X}^* = \mathbf{P}\mathbf{X}$ y $\mathbf{Y}^* = \mathbf{P}\mathbf{Y}$:
+
+\begin{align}
+\hat{\boldsymbol{\beta}}_{MCP} &= \left[(\mathbf{P}\mathbf{X})'(\mathbf{P}\mathbf{X})\right]^{-1}(\mathbf{P}\mathbf{X})'\mathbf{P}\mathbf{Y} \\[8pt]
+&= \left[\mathbf{X}'\mathbf{P}'\mathbf{P}\mathbf{X}\right]^{-1}\mathbf{X}'\mathbf{P}'\mathbf{P}\mathbf{Y}
+\end{align}
+
+Como $\mathbf{P}$ es diagonal y simétrica: $\mathbf{P}' = \mathbf{P}$, entonces $\mathbf{P}'\mathbf{P} = \mathbf{P}^2 = \mathbf{W}$, donde:
+
+\begin{equation}
+\mathbf{W} = \mathbf{P}^2 =
+\begin{pmatrix}
+w_1 & 0 & \cdots & 0 \\
+0 & w_2 & \cdots & 0 \\
+\vdots & & \ddots & \vdots \\
+0 & 0 & \cdots & w_n
+\end{pmatrix}
+=
+\begin{pmatrix}
+1/\sigma_1^2 & 0 & \cdots & 0 \\
+0 & 1/\sigma_2^2 & \cdots & 0 \\
+\vdots & & \ddots & \vdots \\
+0 & 0 & \cdots & 1/\sigma_n^2
+\end{pmatrix}
+\end{equation}
+
+Por lo tanto, el \textbf{estimador MCP en forma matricial} es:
+
+\begin{equation}
+\boxed{\hat{\boldsymbol{\beta}}_{MCP} = (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}\mathbf{Y}}
+\end{equation}
+
+%==========================================================================
+\section{La Función Objetivo: Minimización Ponderada}
+%==========================================================================
+
+MCP equivale a minimizar la \textbf{suma de residuales ponderada}:
+
+\begin{equation}
+\min_{\beta_1,\beta_2} \sum_{i=1}^{n} w_i \hat{u}_i^2 = \min_{\beta_1,\beta_2} \sum_{i=1}^{n} \frac{1}{\sigma_i^2}(Y_i - \beta_1 - \beta_2 X_i)^2
+\end{equation}
+
+En forma matricial:
+
+\begin{equation}
+\min_{\boldsymbol{\beta}} (\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})'\mathbf{W}(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})
+\end{equation}
+
+\subsection{Derivación de las Condiciones de Primer Orden}
+
+Sea $S(\boldsymbol{\beta}) = (\mathbf{Y}-\mathbf{X}\boldsymbol{\beta})'\mathbf{W}(\mathbf{Y}-\mathbf{X}\boldsymbol{\beta})$. Expandiendo:
+
+\begin{align}
+S(\boldsymbol{\beta}) &= \mathbf{Y}'\mathbf{W}\mathbf{Y} - 2\boldsymbol{\beta}'\mathbf{X}'\mathbf{W}\mathbf{Y} + \boldsymbol{\beta}'\mathbf{X}'\mathbf{W}\mathbf{X}\boldsymbol{\beta}
+\end{align}
+
+Derivando respecto a $\boldsymbol{\beta}$ e igualando a cero:
+
+\begin{align}
+\frac{\partial S}{\partial \boldsymbol{\beta}} &= -2\mathbf{X}'\mathbf{W}\mathbf{Y} + 2\mathbf{X}'\mathbf{W}\mathbf{X}\boldsymbol{\beta} = \mathbf{0}
+\end{align}
+
+Las \textbf{ecuaciones normales ponderadas} son:
+
+\begin{equation}
+\boxed{\mathbf{X}'\mathbf{W}\mathbf{X}\hat{\boldsymbol{\beta}} = \mathbf{X}'\mathbf{W}\mathbf{Y}}
+\label{eq:normales}
+\end{equation}
+
+En forma escalar, expandiendo las matrices (con $w_i = 1/\sigma_i^2$):
+
+\begin{equation}
+\begin{pmatrix}
+\displaystyle\sum_{i=1}^n w_i & \displaystyle\sum_{i=1}^n w_i X_i \\[12pt]
+\displaystyle\sum_{i=1}^n w_i X_i & \displaystyle\sum_{i=1}^n w_i X_i^2
+\end{pmatrix}
+\begin{pmatrix} \hat{\beta}_1 \\ \hat{\beta}_2 \end{pmatrix}
+=
+\begin{pmatrix}
+\displaystyle\sum_{i=1}^n w_i Y_i \\[12pt]
+\displaystyle\sum_{i=1}^n w_i X_i Y_i
+\end{pmatrix}
+\end{equation}
+
+\subsection{Solución Explícita del Sistema}
+
+Resolviendo el sistema de ecuaciones normales ponderadas:
+
+\begin{align}
+\hat{\beta}_2 &= \frac{\displaystyle\left(\sum w_i\right)\left(\sum w_i X_i Y_i\right) - \left(\sum w_i X_i\right)\left(\sum w_i Y_i\right)}{\displaystyle\left(\sum w_i\right)\left(\sum w_i X_i^2\right) - \left(\sum w_i X_i\right)^2} \label{eq:beta2_mcp}\\[10pt]
+\hat{\beta}_1 &= \bar{Y}_w - \hat{\beta}_2 \bar{X}_w \label{eq:beta1_mcp}
+\end{align}
+
+donde las medias ponderadas son:
+\begin{equation}
+\bar{Y}_w = \frac{\sum w_i Y_i}{\sum w_i}, \qquad \bar{X}_w = \frac{\sum w_i X_i}{\sum w_i}
+\end{equation}
+
+%==========================================================================
+\section{Casos Específicos según la Naturaleza de la Varianza}
+%==========================================================================
+
+En la práctica, $\sigma_i^2$ no se conoce. Se hacen hipótesis sobre cómo varía la varianza.
+
+\subsection{Caso 1: $E(u_i^2) = \sigma^2 X_i^2$ --- Varianza proporcional al cuadrado de $X_i$}
+
+\textbf{Supuesto:} La varianza es proporcional al cuadrado de la variable explicativa: $\sigma_i^2 = \sigma^2 X_i^2$, por lo tanto $\sigma_i = \sigma X_i$.
+
+\textbf{Transformación:} Se divide el modelo original por $X_i$:
+
+\begin{align}
+Y_i &= \beta_1 + \beta_2 X_i + u_i \quad \Big| \div X_i \notag \\[8pt]
+\frac{Y_i}{X_i} &= \beta_1 \cdot \frac{1}{X_i} + \beta_2 \cdot \frac{X_i}{X_i} + \frac{u_i}{X_i} \\[8pt]
+\frac{Y_i}{X_i} &= \beta_1 \cdot \frac{1}{X_i} + \beta_2 + \frac{u_i}{X_i}
+\end{align}
+
+\textbf{Variables transformadas:}
+\begin{equation}
+Y_i^* = \frac{Y_i}{X_i}, \quad X_i^* = \frac{1}{X_i}, \quad \text{intercepto} = \beta_2, \quad \text{``pendiente''} = \beta_1
+\end{equation}
+
+\textbf{Verificación de homocedasticidad:}
+\begin{equation}
+\text{var}\left(\frac{u_i}{X_i}\right) = \frac{1}{X_i^2} \cdot \sigma^2 X_i^2 = \sigma^2 = \text{constante} \checkmark
+\end{equation}
+
+\begin{advertencia}{¡Los papeles de $\beta_1$ y $\beta_2$ se intercambian!}
+En el modelo transformado del Caso 1, $\beta_1$ (el intercepto original) actúa como la \textbf{pendiente} del regresor $1/X_i$, mientras que $\beta_2$ (la pendiente original) actúa como el \textbf{intercepto}.
+\end{advertencia}
+
+\subsection{Caso 2: $E(u_i^2) = \sigma^2 X_i$ --- Varianza proporcional a $X_i$}
+
+\textbf{Supuesto:} $\sigma_i^2 = \sigma^2 X_i$, por tanto $\sigma_i = \sigma\sqrt{X_i}$.
+
+\textbf{Transformación:} Se divide el modelo original por $\sqrt{X_i}$:
+
+\begin{align}
+Y_i &= \beta_1 + \beta_2 X_i + u_i \quad \Big| \div \sqrt{X_i} \notag \\[8pt]
+\frac{Y_i}{\sqrt{X_i}} &= \beta_1 \cdot \frac{1}{\sqrt{X_i}} + \beta_2 \cdot \frac{X_i}{\sqrt{X_i}} + \frac{u_i}{\sqrt{X_i}} \\[8pt]
+\frac{Y_i}{\sqrt{X_i}} &= \beta_1 \cdot \frac{1}{\sqrt{X_i}} + \beta_2 \cdot \sqrt{X_i} + \frac{u_i}{\sqrt{X_i}}
+\end{align}
+
+\textbf{Variables transformadas:}
+\begin{equation}
+Y_i^* = \frac{Y_i}{\sqrt{X_i}}, \quad X_{0i}^* = \frac{1}{\sqrt{X_i}}, \quad X_i^* = \sqrt{X_i}
+\end{equation}
+
+\textbf{Verificación de homocedasticidad:}
+\begin{equation}
+\text{var}\left(\frac{u_i}{\sqrt{X_i}}\right) = \frac{1}{X_i} \cdot \sigma^2 X_i = \sigma^2 = \text{constante} \checkmark
+\end{equation}
+
+\begin{nota}{Regresión sin intercepto}
+En el Caso 2, el término $\beta_1 \cdot \frac{1}{\sqrt{X_i}}$ tiene un regresor $1/\sqrt{X_i}$ que varía con $i$. Esta regresión transformada \textbf{no tiene un intercepto constante}; se debe estimar como regresión a través del origen si sólo se incluye $\sqrt{X_i}$ como regresor.
+\end{nota}
+
+\subsection{Caso 3: $E(u_i^2) = \sigma^2 [E(Y_i)]^2$ --- Varianza proporcional al cuadrado del valor esperado}
+
+\textbf{Supuesto:} $\sigma_i^2 = \sigma^2 [E(Y_i)]^2$, por tanto $\sigma_i = \sigma E(Y_i)$.
+
+\textbf{Procedimiento en dos etapas:}
+
+\textbf{Etapa 1:} Estimar el modelo por MCO para obtener los valores ajustados $\hat{Y}_i$ (aproximación de $E(Y_i)$):
+\begin{equation}
+\hat{Y}_i = \hat{\beta}_1^{MCO} + \hat{\beta}_2^{MCO} X_i
+\end{equation}
+
+\textbf{Etapa 2:} Dividir el modelo original por $\hat{Y}_i$:
+\begin{align}
+\frac{Y_i}{\hat{Y}_i} &= \beta_1 \cdot \frac{1}{\hat{Y}_i} + \beta_2 \cdot \frac{X_i}{\hat{Y}_i} + \frac{u_i}{\hat{Y}_i}
+\end{align}
+
+\textbf{Verificación (aproximada):}
+\begin{equation}
+\text{var}\left(\frac{u_i}{\hat{Y}_i}\right) \approx \frac{1}{[E(Y_i)]^2} \cdot \sigma^2[E(Y_i)]^2 = \sigma^2 = \text{constante} \checkmark
+\end{equation}
+
+\subsection{Resumen Comparativo de los Tres Casos}
+
+\begin{center}
+\renewcommand{\arraystretch}{2.2}
+\begin{tabular}{>{\bfseries}c c c c c}
+\toprule
+\textbf{Caso} & \textbf{Supuesto sobre $\sigma_i^2$} & \textbf{$\sigma_i$} & \textbf{Divisor} & \textbf{Resultado} \\
+\midrule
+1 & $\sigma^2 X_i^2$ & $\sigma X_i$ & $X_i$ & $\beta_1,\beta_2$ intercambian roles \\
+2 & $\sigma^2 X_i$ & $\sigma\sqrt{X_i}$ & $\sqrt{X_i}$ & Sin intercepto explícito \\
+3 & $\sigma^2[E(Y_i)]^2$ & $\sigma E(Y_i)$ & $\hat{Y}_i$ & Requiere 2 etapas \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%==========================================================================
+\section{Propiedades del Estimador MCP}
+%==========================================================================
+
+\subsection{Insesgadez}
+
+\begin{equation}
+E(\hat{\boldsymbol{\beta}}_{MCP}) = E\left[(\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}\mathbf{Y}\right]
+\end{equation}
+
+Sustituyendo $\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{u}$:
+
+\begin{align}
+E(\hat{\boldsymbol{\beta}}_{MCP}) &= (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}(\mathbf{X}\boldsymbol{\beta} + E[\mathbf{u}]) \\
+&= (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}\mathbf{X}\boldsymbol{\beta} + (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}\underbrace{E[\mathbf{u}]}_{\mathbf{0}} \\
+&= \boldsymbol{\beta}
+\end{align}
+
+$\therefore \hat{\boldsymbol{\beta}}_{MCP}$ es \textbf{insesgado}.
+
+\subsection{Matriz de Varianza-Covarianza del Estimador MCP}
+
+\begin{align}
+\text{Var}(\hat{\boldsymbol{\beta}}_{MCP}) &= E\left[(\hat{\boldsymbol{\beta}}_{MCP} - \boldsymbol{\beta})(\hat{\boldsymbol{\beta}}_{MCP} - \boldsymbol{\beta})'\right] \\[8pt]
+&= (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W} \underbrace{E(\mathbf{u}\mathbf{u}')}_{\boldsymbol{\Omega}} \mathbf{W}\mathbf{X}(\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}
+\end{align}
+
+Dado que $\mathbf{W} = \boldsymbol{\Omega}^{-1}$ (pues $w_i = 1/\sigma_i^2$ y $\boldsymbol{\Omega} = \text{diag}(\sigma_i^2)$), entonces $\mathbf{W}\boldsymbol{\Omega}\mathbf{W} = \mathbf{W}\mathbf{W}^{-1}\mathbf{W} = \mathbf{W}$, y:
+
+\begin{equation}
+\boxed{\text{Var}(\hat{\boldsymbol{\beta}}_{MCP}) = (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}}
+\end{equation}
+
+\subsection{Eficiencia: Teorema de Gauss-Markov Generalizado}
+
+\begin{resultado}{MCP es BLUE bajo heterocedasticidad conocida}
+Cuando la estructura de $\boldsymbol{\Omega}$ es conocida, el estimador MCP $\hat{\boldsymbol{\beta}}_{MCP} = (\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}\mathbf{Y}$ es el \textbf{Mejor Estimador Lineal Insesgado (BLUE)} --- es decir, tiene la mínima varianza dentro de la clase de estimadores lineales insesgados.
+\end{resultado}
+
+%==========================================================================
+\section{Comparación: MCO vs MCP}
+%==========================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Propiedad} & \textbf{MCO bajo heterocedasticidad} & \textbf{MCP} \\
+\midrule
+Estimador & $(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}$ & $(\mathbf{X}'\mathbf{W}\mathbf{X})^{-1}\mathbf{X}'\mathbf{W}\mathbf{Y}$ \\
+Insesgado & \checkmark & \checkmark \\
+Eficiente (BLUE) & $\times$ & \checkmark \\
+Varianza correcta & $\times$ & \checkmark \\
+Inferencia válida & $\times$ & \checkmark \\
+Requiere conocer $\sigma_i^2$ & No & Sí (o estimarla) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%==========================================================================
+\section{Esquema Resumen del Procedimiento MCP}
+%==========================================================================
+
+\begin{definicion}{Procedimiento MCP --- Paso a Paso}
+\textbf{Paso 1.} Identificar el modelo heterocedástico:
+\[Y_i = \beta_1 + \beta_2 X_i + u_i, \quad E(u_i^2) = \sigma_i^2\]
+
+\textbf{Paso 2.} Identificar o suponer la forma de $\sigma_i^2$.
+
+\textbf{Paso 3.} Construir los pesos $w_i = 1/\sigma_i^2$ y la matriz diagonal $\mathbf{W}$.
+
+\textbf{Paso 4.} Transformar las variables dividiendo por $\sigma_i$:
+\[Y_i^* = Y_i/\sigma_i, \quad X_{0i}^* = 1/\sigma_i, \quad X_i^* = X_i/\sigma_i\]
+
+\textbf{Paso 5.} Aplicar MCO al modelo transformado:
+\[Y_i^* = \beta_1 X_{0i}^* + \beta_2 X_i^* + u_i^*\]
+
+\textbf{Paso 6.} Verificar que $\text{var}(u_i^*) = 1$ (homocedasticidad recuperada).
+
+\textbf{Paso 7.} Los estimadores obtenidos son BLUE por Gauss-Markov.
+\end{definicion}
+
+\end{document}
