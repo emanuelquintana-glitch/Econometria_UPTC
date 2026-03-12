@@ -7,6 +7,13 @@
                      '(("report" "12pt" "a4paper")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("inputenc" "utf8") ("fontenc" "T1") ("amsmath" "") ("amssymb" "") ("amsthm" "") ("mathtools" "") ("geometry" "") ("graphicx" "") ("xcolor" "") ("booktabs" "") ("array" "") ("longtable" "") ("multirow" "") ("pgfplots" "") ("tikz" "") ("pgfplotstable" "") ("fancyhdr" "") ("titlesec" "") ("tcolorbox" "") ("enumitem" "") ("hyperref" "") ("cleveref" "") ("caption" "") ("subcaption" "") ("float" "") ("setspace" "") ("parskip" "") ("mathrsfs" "") ("bm" "") ("cancel" "")))
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
     "report"
@@ -124,7 +131,7 @@
     "eq:beta2_final"
     "eq:beta1_final"
     "fig:eficiencia")
-   (LaTeX-add-environments
+   (LaTeX-add-amsthm-newtheorems
     "teorema"
     "proposicion"
     "corolario"
@@ -132,6 +139,18 @@
     "definicion"
     "ejemplo"
     "ejercicio"
-    "observacion"))
+    "observacion")
+   (LaTeX-add-xcolor-definecolors
+    "azuloscuro"
+    "azulmedio"
+    "azulclaro"
+    "rojoalerta"
+    "verdematematica"
+    "amarillonota"
+    "grisclaro"
+    "naranjaejemplo"
+    "moradoteorema")
+   (LaTeX-add-tcolorbox-tcbuselibraries
+    "theorems,skins,breakable,most"))
  :latex)
 
