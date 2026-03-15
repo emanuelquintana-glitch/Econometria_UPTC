@@ -101,8 +101,6 @@
 \hrule height 1.5pt
 \vspace{1em}
 
-\newpage
-
 %===============================================================
 \section{Descripción del Problema}
 
@@ -136,7 +134,7 @@ ambas en rupias. El modelo de regresión es:
  8 & 325.0 & 478.0 & &  36 & 340.0 & 695.0 & \\
  9 & 336.0 & 494.0 & &  37 & 500.0 & 695.0 & \\
 10 & 345.0 & 516.0 & &  38 & 450.0 & 720.0 & \\
-11 & 325.0 & 525.0 & &  39 & 415.0 & 721.0 & \\
+11 & 326.0 & 525.0 & &  39 & 415.0 & 721.0 & \\
 12 & 362.0 & 554.0 & &  40 & 540.0 & 730.0 & \\
 13 & 315.0 & 575.0 & &  41 & 360.0 & 731.0 & \\
 14 & 355.0 & 579.0 & &  42 & 450.0 & 733.0 & \\
@@ -220,7 +218,7 @@ Por cada rupia adicional de gasto total, el gasto en comida aumenta \textbf{0.43
   \centering
   \begin{subfigure}[b]{0.48\textwidth}
     \includegraphics[width=\textwidth]{relacion_u_2_y_gasto_total.png}
-    \caption{$\hat{u}_i^2$ vs.\ Gasto Total. Patrón de abanico clásico.}
+    \caption{$\hat{u}_i^2$ vs.\ $\ln(\text{Gasto Total})$. Patrón de abanico. \textit{Nota:} en Stata generado con \texttt{scatter R logaritmo\_x}.}
   \end{subfigure}\hfill
   \begin{subfigure}[b]{0.48\textwidth}
     \includegraphics[width=\textwidth]{rvfplot.png}
@@ -232,12 +230,24 @@ Por cada rupia adicional de gasto total, el gasto en comida aumenta \textbf{0.43
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{rvpplot.png}
+    \caption{\texttt{rvpplot}: residuos vs.\ Gasto Total directo.}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\textwidth}
     \includegraphics[width=\textwidth]{kdensity_errores.png}
     \caption{Densidad de residuos vs.\ normal. Cola derecha más pesada.}
-  \end{subfigure}\hfill
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
   \begin{subfigure}[b]{0.48\textwidth}
     \includegraphics[width=\textwidth]{lvr2plot.png}
     \caption{Leverage vs.\ $\hat{u}^2$: observaciones influyentes.}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{avplot.png}
+    \caption{\texttt{avplot}: added-variable plot Gasto Total.}
   \end{subfigure}
 \end{figure}
 
@@ -928,5 +938,91 @@ E & Errores robustos & EE bajan 5--15\% & Log-log es la opción preferida\\
 \noindent\textbf{Fuente:} Chandan Mukherjee, Howard White y Marc Wuyts,
 \textit{Econometrics and Data Analysis for Developing Countries},
 Routledge, Nueva York, 1998, p.~457.
+
+%===============================================================
+\newpage
+\appendix
+\section{Apéndice: Variables generadas en Stata}
+
+\begin{table}[H]
+\centering
+\caption{Variables del dataset \texttt{taller\_econometria\_13\_03\_2026.dta}}
+\begin{tabular}{lll}
+\toprule
+\textbf{Variable} & \textbf{Comando Stata} & \textbf{Descripción}\\
+\midrule
+\texttt{Gasto\_en\_Comida} & \texttt{rename var2} & Variable dependiente $Y$ (rupias)\\
+\texttt{Gasto\_Total}      & \texttt{rename var3} & Variable independiente $X$ (rupias)\\
+\texttt{errores}           & \texttt{predict errores, residuals} & Residuos MCO $\hat{u}_i$\\
+\texttt{R}                 & \texttt{gen R = errores\^{}2} & Residuos al cuadrado $\hat{u}_i^2$\\
+\texttt{logaritmo\_y}      & \texttt{gen logaritmo\_y = ln(Gasto\_en\_Comida)} & $\ln(Y_i)$\\
+\texttt{logaritmo\_x}      & \texttt{gen logaritmo\_x = ln(Gasto\_Total)} & $\ln(X_i)$\\
+\texttt{abs\_u}            & \texttt{gen abs\_u = abs(errores)} & $|\hat{u}_i|$ (Glejser)\\
+\texttt{sqrt\_x}           & \texttt{gen sqrt\_x = sqrt(Gasto\_Total)} & $\sqrt{X_i}$ (Glejser F2)\\
+\texttt{inv\_x}            & \texttt{gen inv\_x = 1/Gasto\_Total} & $1/X_i$ (Glejser F3)\\
+\texttt{X2}                & \texttt{gen X2 = Gasto\_Total\^{}2} & $X_i^2$ (White auxiliar)\\
+\texttt{log\_u2}           & \texttt{gen log\_u2 = ln(R)} & $\ln(\hat{u}_i^2)$ (Park)\\
+\texttt{Gasto\_Comida\_n1} & \texttt{rename var9} & Grupo 1 Goldfeld-Quandt (obs 1--25)\\
+\texttt{Gasto\_Total\_n1}  & \texttt{rename var10} & Grupo 1 Goldfeld-Quandt (obs 1--25)\\
+\texttt{Gasto\_Comida\_n2} & \texttt{rename var11} & Grupo 2 Goldfeld-Quandt (obs 31--55)\\
+\texttt{Gasto\_Total\_n2}  & \texttt{rename var12} & Grupo 2 Goldfeld-Quandt (obs 31--55)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{cajaresultado}[title=Nota sobre la Observación 11]
+En el log de Stata la observación 11 fue ingresada como \texttt{var1 = 326}, mientras que
+la Tabla 2.8 original del libro reporta \textbf{325 rupias} de Gasto en Comida.
+Esta discrepancia de 1 rupia es mínima y no afecta los resultados de regresión
+ni las pruebas de heteroscedasticidad de forma significativa.
+La tabla de datos de este documento refleja el valor registrado en Stata (\textbf{326}).
+\end{cajaresultado}
+
+\begin{cajaresultado}[title=Nota sobre el gráfico \texttt{relacion\_u\_2\_y\_gasto\_total.png}]
+Aunque el archivo se denomina \texttt{relacion\_u\_2\_y\_gasto\_total.png},
+en el log de Stata fue generado con el comando:
+\quad \texttt{twoway (scatter R logaritmo\_x)}\\
+El eje horizontal es $\ln(\text{Gasto\_Total})$, no el Gasto\_Total directo.
+Esto es equivalente en términos diagnósticos: la relación creciente entre
+$\hat{u}^2$ y $\ln(X)$ confirma igualmente la heteroscedasticidad.
+\end{cajaresultado}
+
+\section{Apéndice: Secuencia de comandos ejecutados en Stata}
+
+\begin{cajacomando}[title=Log de Stata -- Problema 2.15 completo]
+\footnotesize
+\texttt{. rename var2 Gasto\_en\_Comida \quad . rename var3 Gasto\_Total}\\[3pt]
+\texttt{* --- Inciso A: Regresión MCO ---}\\
+\texttt{. reg Gasto\_en\_Comida Gasto\_Total}\\
+\texttt{. predict errores, residuals \quad . gen R = errores\^{}2}\\
+\texttt{. gen logaritmo\_y = ln(Gasto\_en\_Comida) \quad . gen logaritmo\_x = ln(Gasto\_Total)}\\[3pt]
+\texttt{* --- Inciso B: Gráficos diagnósticos ---}\\
+\texttt{. twoway (scatter R Gasto\_Total)}\\
+\texttt{. twoway (scatter R logaritmo\_x)} \hfill \textit{\% $\Rightarrow$ relacion\_u\_2\_y\_gasto\_total.png}\\
+\texttt{. twoway (scatter Gasto\_en\_Comida Gasto\_Total)(lfit Gasto\_en\_Comida Gasto\_Total)}\\
+\texttt{. rvfplot \quad . rvpplot Gasto\_Total \quad . avplot Gasto\_Total}\\
+\texttt{. lvr2plot \quad . kdensity errores}\\[3pt]
+\texttt{* --- Inciso C: Pruebas formales ---}\\
+\texttt{. estat hettest} \hfill \textit{\% B-P: $\chi^2(1)=7.18$, p=0.0074}\\
+\texttt{. estat imtest, white} \hfill \textit{\% White: $\chi^2(2)=4.14$; IM-test: 15.45}\\
+\texttt{. gen X2 = Gasto\_Total\^{}2 \quad . reg R Gasto\_Total X2} \hfill \textit{\% White aux: F(2,52)=4.03}\\[3pt]
+\texttt{* Park}\\
+\texttt{. gen log\_u2 = ln(R) \quad . reg log\_u2 logaritmo\_x} \hfill \textit{\% t=2.39, p=0.021}\\[3pt]
+\texttt{* Glejser}\\
+\texttt{. gen abs\_u = abs(errores) \quad . gen sqrt\_x = sqrt(Gasto\_Total) \quad . gen inv\_x = 1/Gasto\_Total}\\
+\texttt{. reg abs\_u Gasto\_Total} \hfill \textit{\% F1: t=2.88, p=0.006}\\
+\texttt{. reg abs\_u sqrt\_x} \hfill \textit{\% F2: t=2.80, p=0.007}\\
+\texttt{. reg abs\_u inv\_x} \hfill \textit{\% F3: t=$-$2.49, p=0.016}\\[3pt]
+\texttt{* Goldfeld-Quandt ($c=5$)}\\
+\texttt{. reg Gasto\_Comida\_n1 Gasto\_Total\_n1} \hfill \textit{\% Grupo bajo: SCR=43{,}300, RMSE=43.39}\\
+\texttt{. reg Gasto\_Comida\_n2 Gasto\_Total\_n2} \hfill \textit{\% Grupo alto: SCR=159{,}475, RMSE=83.27}\\[3pt]
+\texttt{* --- Inciso D: Modelo Log-Log ---}\\
+\texttt{. reg logaritmo\_y logaritmo\_x} \hfill \textit{\% elasticidad=0.736, $R^2$=0.41}\\
+\texttt{. estat hettest} \hfill \textit{\% $\chi^2(1)$=1.60, p=0.205 -- heteroscedasticidad corregida}\\[3pt]
+\texttt{* --- Inciso E: Errores robustos ---}\\
+\texttt{. reg Gasto\_en\_Comida Gasto\_Total, robust}\\[3pt]
+\texttt{* Guardar}\\
+\texttt{. save "taller\_econometria\_13\_03\_2026.dta"}
+\end{cajacomando}
 
 \end{document}
