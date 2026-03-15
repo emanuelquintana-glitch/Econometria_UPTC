@@ -14,6 +14,7 @@
 \usepackage{tcolorbox}
 \usepackage{multirow}
 \usepackage{float}
+\usepackage{subcaption}
 
 \geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
 
@@ -49,9 +50,9 @@
 
 %===============================================================
 \begin{center}
-{\LARGE \textbf{Solución Completa -- Problema 2.15}}\\[0.5em]
-{\large Tabla 2.8: Gasto en Comida y Gasto Total (55 familias, India)}\\[0.3em]
-{\normalsize \textit{Gujarati -- Econometría Básica, Capítulo 2}}
+  {\LARGE \textbf{Solución Completa -- Problema 2.15}}\\[0.5em]
+  {\large Tabla 2.8: Gasto en Comida y Gasto Total (55 familias, India)}\\[0.3em]
+  {\normalsize \textit{Gujarati -- Econometría Básica, Capítulo 2}}
 \end{center}
 \hrule height 1.5pt
 \vspace{1em}
@@ -59,22 +60,38 @@
 %===============================================================
 \section{Descripción del Problema}
 
-Se cuenta con datos de 55 familias de la India sobre su \textbf{Gasto en Comida} (variable dependiente, $Y$) y su \textbf{Gasto Total} (variable independiente, $X$), ambas medidas en rupias. El objetivo es estudiar la relación entre ambas variables, diagnosticar y corregir el problema de \textbf{heteroscedasticidad}.
+Se cuenta con datos de 55 familias de la India sobre su \textbf{Gasto en Comida}
+(variable dependiente, $Y$) y su \textbf{Gasto Total} (variable independiente, $X$),
+ambas medidas en rupias. El objetivo es estudiar la relación entre ambas variables,
+diagnosticar y corregir el problema de \textbf{heteroscedasticidad}.
 
 El modelo de regresión es:
 \[
-\text{Gasto\_en\_Comida}_i = \beta_0 + \beta_1 \cdot \text{Gasto\_Total}_i + u_i, \quad i = 1, 2, \ldots, 55
+  \text{Gasto\_en\_Comida}_i = \beta_0 + \beta_1 \cdot \text{Gasto\_Total}_i + u_i,
+  \quad i = 1, 2, \ldots, 55
 \]
 
 %===============================================================
 \section{Inciso A: Regresión del Gasto en Comida sobre el Gasto Total}
 
 \subsection{Comandos en Stata}
+
 \begin{cajacomando}[title=Stata -- Regresión MCO]
 \texttt{. rename var2 Gasto\_en\_Comida}\\
 \texttt{. rename var3 Gasto\_Total}\\
-\texttt{. reg Gasto\_en\_Comida Gasto\_Total}
+\texttt{. reg Gasto\_en\_Comida Gasto\_Total}\\
+\texttt{. twoway (scatter Gasto\_en\_Comida Gasto\_Total) (lfit Gasto\_en\_Comida Gasto\_Total)}
 \end{cajacomando}
+
+\subsection{Gráfico de Dispersión con Línea Ajustada}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.80\textwidth]{dispersion_con_linea_ajustada.png}
+  \caption{Dispersión de Gasto en Comida vs.\ Gasto Total con línea de regresión MCO ajustada.
+           Se observa una tendencia positiva aunque con variabilidad creciente.}
+  \label{fig:dispersion}
+\end{figure}
 
 \subsection{Resultados de la Regresión (MCO)}
 
@@ -83,10 +100,11 @@ El modelo de regresión es:
 \caption{Resultados de Regresión: Gasto\_en\_Comida sobre Gasto\_Total}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t} & \textbf{P$>|t|$} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t} & \textbf{P$>|t|$}
+  & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
 Gasto\_Total  & 0.4368 & 0.0783 & 5.58 & 0.000 & 0.2797 & 0.5939\\
-\_cons        & 94.2088 & 50.8563 & 1.85 & 0.070 & -7.7961 & 196.2137\\
+\_cons        & 94.2088 & 50.8563 & 1.85 & 0.070 & $-7.7961$ & 196.2137\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -98,7 +116,7 @@ Gasto\_Total  & 0.4368 & 0.0783 & 5.58 & 0.000 & 0.2797 & 0.5939\\
 \toprule
 \textbf{Estadístico} & \textbf{Valor} & \textbf{Estadístico} & \textbf{Valor}\\
 \midrule
-N observaciones & 55      & R-cuadrado      & 0.3698\\
+N observaciones & 55      & R-cuadrado       & 0.3698\\
 F(1, 53)        & 31.10   & R-cuad. ajustado & 0.3579\\
 Prob $>$ F      & 0.0000  & Raíz ECM (RMSE)  & 66.856\\
 \bottomrule
@@ -109,14 +127,22 @@ Prob $>$ F      & 0.0000  & Raíz ECM (RMSE)  & 66.856\\
 
 \begin{cajaconclucion}[title=Interpretación de la Regresión MCO]
 \begin{itemize}
-  \item \textbf{Intercepto ($\hat{\beta}_0 = 94.21$):} Cuando el gasto total es cero, el gasto estimado en comida sería de 94.21 rupias (sin interpretación económica directa, ya que no se puede tener gasto total igual a cero en la práctica).
-  \item \textbf{Pendiente ($\hat{\beta}_1 = 0.4368$):} Por cada rupia adicional de gasto total, el gasto en comida aumenta en promedio \textbf{0.4368 rupias}. Es decir, aproximadamente el 43.7\% del ingreso marginal (representado por el gasto total) se destina a la alimentación.
-  \item \textbf{Significancia:} El coeficiente de Gasto\_Total es estadísticamente significativo al 1\% (p-valor = 0.000). El intercepto es marginalmente significativo (p = 0.070).
-  \item \textbf{Bondad de ajuste:} El $R^2 = 0.3698$ indica que el gasto total explica el \textbf{36.98\%} de la variación en el gasto en comida, lo cual es razonable para datos de corte transversal.
-  \item \textbf{La ecuación estimada es:}
+  \item \textbf{Intercepto ($\hat{\beta}_0 = 94.21$):} Cuando el gasto total es cero,
+        el gasto estimado en comida sería de 94.21 rupias (sin interpretación económica
+        directa, ya que no se puede tener gasto total igual a cero en la práctica).
+  \item \textbf{Pendiente ($\hat{\beta}_1 = 0.4368$):} Por cada rupia adicional de
+        gasto total, el gasto en comida aumenta en promedio \textbf{0.4368 rupias}.
+        Es decir, aproximadamente el 43.7\% del ingreso marginal se destina a alimentación.
+  \item \textbf{Significancia:} El coeficiente de Gasto\_Total es estadísticamente
+        significativo al 1\% (p-valor = 0.000). El intercepto es marginalmente
+        significativo (p = 0.070).
+  \item \textbf{Bondad de ajuste:} $R^2 = 0.3698$ indica que el gasto total explica
+        el \textbf{36.98\%} de la variación en el gasto en comida, razonable para
+        datos de corte transversal.
+  \item \textbf{Ecuación estimada:}
 \end{itemize}
 \[
-\widehat{\text{Gasto\_en\_Comida}} = 94.2088 + 0.4368 \cdot \text{Gasto\_Total}
+  \widehat{\text{Gasto\_en\_Comida}} = 94.2088 + 0.4368 \cdot \text{Gasto\_Total}
 \]
 \end{cajaconclucion}
 
@@ -124,22 +150,86 @@ Prob $>$ F      & 0.0000  & Raíz ECM (RMSE)  & 66.856\\
 \section{Inciso B: Gráfica de Residuos vs.\ Gasto Total}
 
 \subsection{Comandos en Stata}
+
 \begin{cajacomando}[title=Stata -- Generación y Gráfica de Residuos]
 \texttt{. predict errores, residuals}\\
 \texttt{. gen R = errores\^{}2}\\
-\texttt{. twoway (scatter R Gasto\_Total)}
+\texttt{. twoway (scatter R Gasto\_Total), ///}\\
+\texttt{\ \ \ \ title("Residuos al cuadrado vs Gasto Total")}\\[0.3em]
+\texttt{* Gráficos diagnósticos adicionales:}\\
+\texttt{. rvfplot}\\
+\texttt{. rvpplot Gasto\_Total}\\
+\texttt{. kdensity errores, normal}\\
+\texttt{. lvr2plot}
 \end{cajacomando}
+
+\subsection{Gráfico Principal: $\hat{u}^2$ vs.\ Gasto Total}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.80\textwidth]{relacion_u_2_y_gasto_total.png}
+  \caption{Residuos al cuadrado ($\hat{u}_i^2$) contra Gasto Total. El patrón de
+           ``abanico'' o ``cono'' es la señal clásica de heteroscedasticidad: la
+           varianza de los errores crece con la variable independiente.}
+  \label{fig:residuos_cuadrado}
+\end{figure}
+
+\subsection{Gráficos Diagnósticos Adicionales}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{rvfplot.png}
+    \caption{Residuos vs.\ valores ajustados (\texttt{rvfplot}). La dispersión
+             creciente confirma la heteroscedasticidad.}
+    \label{fig:rvfplot}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{rvpplot.png}
+    \caption{Residuos vs.\ Gasto Total (\texttt{rvpplot}). Patrón similar al
+             gráfico de $\hat{u}^2$.}
+    \label{fig:rvpplot}
+  \end{subfigure}
+  \caption{Gráficos de residuos de Stata. Ambos muestran varianza no constante.}
+  \label{fig:rvplots}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{kdensity_errores.png}
+    \caption{Densidad kernel de los residuos vs.\ distribución normal. Cola
+             derecha ligeramente más pesada, consistente con asimetría positiva.}
+    \label{fig:kdensity}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{lvr2plot.png}
+    \caption{Leverage vs.\ residuos al cuadrado (\texttt{lvr2plot}). Permite
+             identificar observaciones influyentes.}
+    \label{fig:lvr2plot}
+  \end{subfigure}
+  \caption{Diagnósticos adicionales: distribución de errores y observaciones influyentes.}
+  \label{fig:diag_adicionales}
+\end{figure}
 
 \subsection{Análisis Visual}
 
-La gráfica de dispersión de los residuos al cuadrado ($\hat{u}^2$) contra el Gasto\_Total (Imagen 1) muestra:
-
 \begin{cajaresultado}[title=Diagnóstico Visual de Heteroscedasticidad]
 \begin{itemize}
-  \item Para valores bajos de Gasto\_Total (alrededor de 380--500), los residuos al cuadrado son relativamente \textbf{pequeños y concentrados} cerca de cero.
-  \item Conforme el Gasto\_Total aumenta (600--800), la dispersión de $\hat{u}^2$ se vuelve \textbf{notablemente mayor}, con valores que alcanzan hasta 30,000.
-  \item Este patrón de \textbf{abanico o cono} es la señal clásica de heteroscedasticidad: la varianza de los errores crece con la variable independiente.
-  \item \textbf{Conclusión visual:} Se sospecha fuertemente la presencia de heteroscedasticidad. El supuesto $\text{Var}(u_i) = \sigma^2$ (varianza constante) no se satisface.
+  \item Para valores bajos de Gasto\_Total (alrededor de 380--500), los residuos
+        al cuadrado son relativamente \textbf{pequeños y concentrados} cerca de cero.
+  \item Conforme el Gasto\_Total aumenta (600--800), la dispersión de $\hat{u}^2$
+        se vuelve \textbf{notablemente mayor}, con valores que alcanzan hasta 30{,}000.
+  \item Este patrón de \textbf{abanico o cono} (ver Figura \ref{fig:residuos_cuadrado})
+        es la señal clásica de heteroscedasticidad.
+  \item El \texttt{rvfplot} (Figura \ref{fig:rvfplot}) confirma el mismo patrón:
+        la nube de puntos se ensancha hacia la derecha.
+  \item La densidad kernel (Figura \ref{fig:kdensity}) muestra asimetría positiva
+        en los residuos, señal adicional de mal especificación o heteroscedasticidad.
+  \item \textbf{Conclusión visual:} Se sospecha fuertemente la presencia de
+        heteroscedasticidad. El supuesto $\text{Var}(u_i) = \sigma^2$ no se satisface.
 \end{itemize}
 \end{cajaresultado}
 
@@ -149,24 +239,26 @@ La gráfica de dispersión de los residuos al cuadrado ($\hat{u}^2$) contra el G
 \subsection{Prueba de Breusch-Pagan / Cook-Weisberg (LM)}
 
 \subsubsection{Hipótesis Formales}
-
 \[
-H_0: \text{Var}(u_i \mid X_i) = \sigma^2 \quad \text{(varianza constante — homocedasticidad)}
+  H_0: \text{Var}(u_i \mid X_i) = \sigma^2
+  \quad \text{(varianza constante — homocedasticidad)}
 \]
 \[
-H_a: \text{Var}(u_i \mid X_i) = f(X_i) \quad \text{(varianza depende de } X \text{ — heteroscedasticidad)}
+  H_a: \text{Var}(u_i \mid X_i) = f(X_i)
+  \quad \text{(varianza depende de } X \text{ — heteroscedasticidad)}
 \]
 
-\textbf{Estadístico:} $\text{LM} = n \cdot R^2_{\text{aux}} \sim \chi^2(p)$ bajo $H_0$, donde $p$ es el número de regresores en la regresión auxiliar ($\hat{u}^2$ sobre $\hat{Y}$).
-
-\textbf{Regla de decisión:} Rechazar $H_0$ si LM $> \chi^2_{\alpha}(p)$ o equivalentemente si p-valor $< \alpha$.
+\textbf{Estadístico:} $\text{LM} = n \cdot R^2_{\text{aux}} \sim \chi^2(p)$ bajo $H_0$.\\
+\textbf{Regla de decisión:} Rechazar $H_0$ si p-valor $< \alpha$.
 
 \subsubsection{Comando en Stata}
+
 \begin{cajacomando}[title=Stata -- Prueba Breusch-Pagan]
 \texttt{. estat hettest}
 \end{cajacomando}
 
 \subsubsection{Resultados}
+
 \begin{table}[H]
 \centering
 \caption{Prueba Breusch-Pagan/Cook-Weisberg}
@@ -174,40 +266,41 @@ H_a: \text{Var}(u_i \mid X_i) = f(X_i) \quad \text{(varianza depende de } X \tex
 \toprule
 \textbf{Hipótesis nula} & \multicolumn{2}{c}{$H_0$: Varianza constante (homocedasticidad)}\\
 \midrule
-$\chi^2(1)$ & = & 7.18\\
+$\chi^2(1)$     & = & 7.18\\
 Prob $> \chi^2$ & = & \textbf{0.0074}\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsubsection{Interpretación}
-\begin{cajaconclucion}[title=Conclusión -- Breusch-Pagan]
-El estadístico $\chi^2(1) = 7.18$ con p-valor $= 0.0074 < 0.05$ (e incluso $< 0.01$). Se \textbf{rechaza la hipótesis nula de varianza constante} al 1\% de significancia. La prueba confirma formalmente la presencia de \textbf{heteroscedasticidad} en el modelo original.
 
-La prueba B-P es de tipo multiplicador de Lagrange (LM): regresa los residuos al cuadrado sobre los valores ajustados y utiliza un test $\chi^2$. Bajo $H_0$: $\text{Var}(u_i \mid X_i) = \sigma^2$. El rechazo implica que la varianza depende sistemáticamente del Gasto Total.
+\begin{cajaconclucion}[title=Conclusión -- Breusch-Pagan]
+El estadístico $\chi^2(1) = 7.18$ con p-valor $= 0.0074 < 0.01$.
+Se \textbf{rechaza la hipótesis nula de varianza constante} al 1\% de significancia.
+La prueba confirma formalmente la presencia de \textbf{heteroscedasticidad} en el
+modelo original.
 \end{cajaconclucion}
 
+%---------------------------------------------------------------
 \subsection{Prueba de White}
 
 \subsubsection{Hipótesis Formales}
-
 \[
-H_0: \text{Var}(u_i \mid X_i) = \sigma^2 \quad \text{(homocedasticidad)}
+  H_0: \text{Var}(u_i \mid X_i) = \sigma^2 \quad \text{(homocedasticidad)}
 \]
 \[
-H_a: \text{Var}(u_i) \text{ depende de } X_i, X_i^2 \text{ y/o sus productos cruzados (heteroscedasticidad no restringida)}
+  H_a: \text{Var}(u_i) \text{ depende de } X_i, X_i^2
+  \text{ y/o sus productos cruzados}
 \]
-
-\textbf{Estadístico:} $W = n \cdot R^2_{\text{aux}} \sim \chi^2(p)$ bajo $H_0$, donde la regresión auxiliar incluye los regresores originales, sus cuadrados y productos cruzados.
-
-\textbf{Regla de decisión:} Rechazar $H_0$ si p-valor $< \alpha$.
 
 \subsubsection{Comando en Stata}
+
 \begin{cajacomando}[title=Stata -- Prueba de White]
 \texttt{. estat imtest, white}
 \end{cajacomando}
 
 \subsubsection{Resultados}
+
 \begin{table}[H]
 \centering
 \caption{Prueba de White para Heteroscedasticidad No Restringida}
@@ -224,74 +317,72 @@ Curtosis (Kurtosis)  & 3.50 & 1 \quad 0.0615\\
 \end{tabular}
 \end{table}
 
-La prueba de White específicamente para heteroscedasticidad arroja:
-\[
-\chi^2(2) = 4.14, \quad \text{Prob} > \chi^2 = 0.1259
-\]
-
-\subsubsection{Interpretación}
 \begin{cajaconclucion}[title=Conclusión -- Prueba de White]
 \begin{itemize}
-  \item La \textbf{prueba de White para heteroscedasticidad} ($\chi^2 = 4.14$, p $= 0.1259 > 0.05$) \textbf{no rechaza} $H_0$ de homocedasticidad. Esto puede parecer contradictorio con B-P, pero la prueba de White con un regresor solo tiene 2 grados de libertad (incluye $X$ y $X^2$) y tiene menos poder en muestras moderadas.
-  \item La \textbf{descomposición Cameron-Trivedi} del IM-test muestra que el total es significativo ($\chi^2 = 15.45$, p $= 0.0038$), principalmente impulsado por la \textbf{asimetría} de los residuos ($\chi^2 = 7.81$, p $= 0.0052$), lo cual refuerza la necesidad de transformar el modelo.
+  \item La prueba de White para heteroscedasticidad ($\chi^2 = 4.14$, p $= 0.1259 > 0.05$)
+        \textbf{no rechaza} $H_0$ aisladamente.
+  \item La descomposición Cameron-Trivedi muestra que el total es significativo
+        ($\chi^2 = 15.45$, p $= 0.0038$), principalmente impulsado por la
+        \textbf{asimetría} de los residuos, consistente con lo observado en la
+        Figura~\ref{fig:kdensity}.
   \item En conjunto con B-P, la evidencia apoya la presencia de heteroscedasticidad.
 \end{itemize}
 \end{cajaconclucion}
-
-
 
 %---------------------------------------------------------------
 \subsection{Prueba de Park}
 
 \subsubsection{Fundamento Teórico}
 
-Park (1966) propone que la varianza del error sigue la forma $\sigma_i^2 = \sigma^2 X_i^{\beta} e^{v_i}$. Tomando logaritmos:
+Park (1966) propone que $\sigma_i^2 = \sigma^2 X_i^{\beta} e^{v_i}$. Tomando logaritmos:
 \[
-\ln(\hat{u}_i^2) = \ln(\sigma^2) + \beta \ln(X_i) + v_i = \alpha_0 + \alpha_1 \ln(X_i) + v_i
+  \ln(\hat{u}_i^2) = \alpha_0 + \alpha_1 \ln(X_i) + v_i
 \]
 Si $\alpha_1$ es significativo, existe heteroscedasticidad.
 
-\subsubsection{Hipótesis Formales}
-
-\[
-H_0: \alpha_1 = 0 \quad \text{(la varianza no depende de } X \text{ — homocedasticidad)}
-\]
-\[
-H_a: \alpha_1 \neq 0 \quad \text{(la varianza depende de } X^{\alpha_1} \text{ — heteroscedasticidad)}
-\]
-
-\textbf{Estadístico:} $t = \hat{\alpha}_1 / \text{SE}(\hat{\alpha}_1) \sim t(n-2)$ bajo $H_0$.
-
-\textbf{Regla de decisión:} Rechazar $H_0$ si $|t| > t_{\alpha/2}(n-2)$ o p-valor $< \alpha$.
-
 \subsubsection{Comandos en Stata}
+
 \begin{cajacomando}[title=Stata -- Prueba de Park]
 \texttt{. gen ln\_u2 = ln(errores\^{}2)}\\
 \texttt{. gen ln\_x  = ln(Gasto\_Total)}\\
-\texttt{. reg ln\_u2 ln\_x}
+\texttt{. reg ln\_u2 ln\_x}\\
+\texttt{. twoway (scatter ln\_u2 ln\_x) (lfit ln\_u2 ln\_x), ///}\\
+\texttt{\ \ \ \ xtitle("ln(Gasto Total)") ytitle("ln(u\^{}2)")}
 \end{cajacomando}
 
+\subsubsection{Gráfico Park: $\ln(\hat{u}^2)$ vs.\ $\ln(X)$}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{glejser_in_u2_in_x.png}
+  \caption{Prueba de Park: $\ln(\hat{u}_i^2)$ contra $\ln(\text{Gasto\_Total})$.
+           La pendiente positiva y significativa ($\hat{\alpha}_1 = 3.70$, p = 0.021)
+           confirma heteroscedasticidad de tipo potencial.}
+  \label{fig:park}
+\end{figure}
+
 \subsubsection{Resultados de Stata}
+
 \begin{table}[H]
 \centering
 \caption{Prueba de Park: $\ln(\hat{u}^2)$ sobre $\ln(\text{Gasto\_Total})$}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t} & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t}
+  & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
 $\ln(\text{Gasto\_Total})$ & 3.7032 & 1.5519 & 2.39 & 0.0206 & 0.5907 & 6.8157\\
 \_cons & $-16.8629$ & 10.0014 & $-1.69$ & 0.0977 & $-36.928$ & 3.203\\
 \midrule
-\multicolumn{3}{l}{$R^2 = 0.0970$, \; $R^2_{\text{adj}} = 0.0800$} & \multicolumn{3}{l}{F(1,53) = 5.69, \; Prob $>$ F = 0.0206}\\
+\multicolumn{3}{l}{$R^2 = 0.0970$} & \multicolumn{3}{l}{F(1,53) = 5.69, \; p = 0.0206}\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Decisión:} $|t| = 2.39 > t_{0.025}(53) \approx 2.006$ y p-valor $= 0.0206 < 0.05$ $\Rightarrow$ \textbf{Se rechaza $H_0$}.
-
-\subsubsection{Interpretación}
 \begin{cajaconclucion}[title=Conclusión -- Prueba de Park]
-El coeficiente $\hat{\alpha}_1 = 3.7032$ es significativo (p = 0.0206 $< 0.05$). Se rechaza $H_0$. La varianza del error crece aproximadamente como $X^{3.7}$, lo que indica heteroscedasticidad fuerte y creciente. Esta forma funcional ratifica que la transformación logarítmica es una corrección adecuada.
+$\hat{\alpha}_1 = 3.7032$ significativo (p = 0.0206 $< 0.05$). Se rechaza $H_0$.
+La varianza del error crece como $X^{3.7}$, indicando heteroscedasticidad fuerte.
+La Figura~\ref{fig:park} muestra visualmente esta relación creciente.
 \end{cajaconclucion}
 
 %---------------------------------------------------------------
@@ -299,110 +390,119 @@ El coeficiente $\hat{\alpha}_1 = 3.7032$ es significativo (p = 0.0206 $< 0.05$).
 
 \subsubsection{Fundamento Teórico}
 
-Glejser (1969) propone regresar el \textbf{valor absoluto de los residuos} $|\hat{u}_i|$ sobre diferentes formas funcionales de $X_i$. Se prueban tres especificaciones:
+Glejser (1969) propone regresar $|\hat{u}_i|$ sobre transformaciones de $X_i$:
 \begin{enumerate}
   \item $|\hat{u}_i| = \alpha_0 + \alpha_1 X_i + v_i$ \quad (lineal)
   \item $|\hat{u}_i| = \alpha_0 + \alpha_1 \sqrt{X_i} + v_i$ \quad (raíz cuadrada)
   \item $|\hat{u}_i| = \alpha_0 + \alpha_1 \dfrac{1}{X_i} + v_i$ \quad (inversa)
 \end{enumerate}
 
-\subsubsection{Hipótesis Formales}
-
-Para \textbf{cada} forma funcional:
-\[
-H_0: \alpha_1 = 0 \quad \text{(la varianza no depende de } X \text{ — homocedasticidad)}
-\]
-\[
-H_a: \alpha_1 \neq 0 \quad \text{(la varianza depende de } X \text{ — heteroscedasticidad)}
-\]
-
-\textbf{Estadístico:} $t = \hat{\alpha}_1 / \text{SE}(\hat{\alpha}_1) \sim t(n-2)$ bajo $H_0$.\\
-\textbf{Regla de decisión:} Rechazar $H_0$ si $|t| > t_{0.025}(53) \approx 2.006$, equivalente a p-valor $< 0.05$.
-
 \subsubsection{Comandos en Stata}
+
 \begin{cajacomando}[title=Stata -- Prueba de Glejser]
 \texttt{. gen abs\_u  = abs(errores)}\\
 \texttt{. gen sqrt\_x = sqrt(Gasto\_Total)}\\
 \texttt{. gen inv\_x  = 1/Gasto\_Total}\\[0.3em]
 \texttt{. reg abs\_u Gasto\_Total} \qquad \textit{* Forma 1: lineal}\\
+\texttt{. twoway (scatter abs\_u Gasto\_Total)(lfit abs\_u Gasto\_Total)}\\[0.3em]
 \texttt{. reg abs\_u sqrt\_x} \qquad \quad \textit{* Forma 2: raíz cuadrada}\\
+\texttt{. twoway (scatter abs\_u sqrt\_x)(lfit abs\_u sqrt\_x)}\\[0.3em]
 \texttt{. reg abs\_u inv\_x} \qquad \quad \textit{* Forma 3: inversa}
 \end{cajacomando}
+
+\subsubsection{Gráficos de las Tres Formas de Glejser}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{glejser_abs_u_gasto_total.png}
+    \caption{Forma 1 -- Lineal: $|\hat{u}_i|$ vs.\ $X_i$.\\
+             Pendiente = 0.1307, $t = 2.88$, p = 0.006.}
+    \label{fig:glejser1}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{glejser_abs_u_sqrt_x.png}
+    \caption{Forma 2 -- Raíz cuadrada: $|\hat{u}_i|$ vs.\ $\sqrt{X_i}$.\\
+             Pendiente = 6.199, $t = 2.80$, p = 0.007.}
+    \label{fig:glejser2}
+  \end{subfigure}
+  \caption{Prueba de Glejser -- Formas 1 y 2. En ambos casos el coeficiente $\hat{\alpha}_1$
+           es positivo y significativo (p $<$ 0.01), rechazando $H_0$ de homocedasticidad.}
+  \label{fig:glejser_12}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.50\textwidth]{glejser_in_u2_in_x.png}
+  \caption{Forma Park/Log: $\ln(\hat{u}_i^2)$ vs.\ $\ln(X_i)$ (también aplicable como
+           Forma 3 de Glejser en escala logarítmica). Ver análisis completo en
+           Figura~\ref{fig:park}.}
+  \label{fig:glejser3}
+\end{figure}
 
 \subsubsection{Resultados por Forma Funcional}
 
 \medskip
-\noindent\textbf{Forma 1 -- Lineal: $|\hat{u}_i| = \alpha_0 + \alpha_1 X_i + v_i$}
+\noindent\textbf{Forma 1 -- Lineal}
 
 \begin{table}[H]
 \centering
 \caption{Glejser Forma 1: \texttt{reg abs\_u Gasto\_Total}}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t} & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t}
+  & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
 Gasto\_Total & 0.1307 & 0.0454 & \textbf{2.88} & \textbf{0.006} & 0.0396 & 0.2218\\
-\_cons & $-32.2197$ & 29.4900 & $-1.09$ & 0.280 & $-91.369$ & 26.930\\
+\_cons & $-32.22$ & 29.49 & $-1.09$ & 0.280 & $-91.37$ & 26.93\\
 \midrule
-\multicolumn{3}{l}{$R^2 = 0.1352$, $R^2_{\text{adj}} = 0.1188$} & \multicolumn{3}{l}{F(1,53) = 8.28, \; Prob $>$ F = 0.0058}\\
+\multicolumn{3}{l}{$R^2 = 0.135$} & \multicolumn{3}{l}{F(1,53) = 8.28, \; p = 0.006}\\
 \bottomrule
 \end{tabular}
 \end{table}
-\textbf{Decisión:} $t = 2.88 > 2.006$ y p = 0.006 $< 0.05$ $\Rightarrow$ \textbf{Se rechaza $H_0$}. $|\hat{u}|$ crece 0.1307 rupias por cada rupia adicional de gasto total.
 
 \medskip
-\noindent\textbf{Forma 2 -- Raíz Cuadrada: $|\hat{u}_i| = \alpha_0 + \alpha_1 \sqrt{X_i} + v_i$}
+\noindent\textbf{Forma 2 -- Raíz Cuadrada}
 
 \begin{table}[H]
 \centering
 \caption{Glejser Forma 2: \texttt{reg abs\_u sqrt\_x}}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t} & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t}
+  & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
 sqrt\_x & 6.1994 & 2.2134 & \textbf{2.80} & \textbf{0.007} & 1.7598 & 10.639\\
-\_cons & $-104.7165$ & 55.9541 & $-1.87$ & 0.067 & $-216.946$ & 7.513\\
+\_cons & $-104.72$ & 55.95 & $-1.87$ & 0.067 & $-216.95$ & 7.51\\
 \midrule
-\multicolumn{3}{l}{$R^2 = 0.1289$, $R^2_{\text{adj}} = 0.1125$} & \multicolumn{3}{l}{F(1,53) = 7.84, \; Prob $>$ F = 0.0071}\\
+\multicolumn{3}{l}{$R^2 = 0.129$} & \multicolumn{3}{l}{F(1,53) = 7.84, \; p = 0.007}\\
 \bottomrule
 \end{tabular}
 \end{table}
-\textbf{Decisión:} $t = 2.80 > 2.006$ y p = 0.007 $< 0.05$ $\Rightarrow$ \textbf{Se rechaza $H_0$}. Sugiere $\sigma_i^2 \propto X_i$ (varianza proporcional al gasto total).
 
 \medskip
-\noindent\textbf{Forma 3 -- Inversa: $|\hat{u}_i| = \alpha_0 + \alpha_1 (1/X_i) + v_i$}
+\noindent\textbf{Forma 3 -- Inversa}
 
 \begin{table}[H]
 \centering
 \caption{Glejser Forma 3: \texttt{reg abs\_u inv\_x}}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t} & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est.} & \textbf{t}
+  & \textbf{p-valor} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
-inv\_x & $-37567.74$ & 15057.74 & $\mathbf{-2.49}$ & \textbf{0.016} & $-67769.75$ & $-7365.72$\\
-\_cons & 112.4307 & 25.0693 & 4.48 & 0.000 & 62.148 & 162.713\\
+inv\_x & $-37{,}567.74$ & 15{,}057.74 & $\mathbf{-2.49}$ & \textbf{0.016}
+  & $-67{,}769.75$ & $-7{,}365.72$\\
+\_cons & 112.43 & 25.07 & 4.48 & 0.000 & 62.15 & 162.71\\
 \midrule
-\multicolumn{3}{l}{$R^2 = 0.1051$, $R^2_{\text{adj}} = 0.0882$} & \multicolumn{3}{l}{F(1,53) = 6.22, \; Prob $>$ F = 0.0157}\\
+\multicolumn{3}{l}{$R^2 = 0.105$} & \multicolumn{3}{l}{F(1,53) = 6.22, \; p = 0.016}\\
 \bottomrule
 \end{tabular}
 \end{table}
-\textbf{Decisión:} $|t| = 2.49 > 2.006$ y p = 0.016 $< 0.05$ $\Rightarrow$ \textbf{Se rechaza $H_0$}. Signo negativo: $|\hat{u}|$ decrece con $1/X$, es decir, crece con $X$. Consistente con las formas anteriores.
 
-\subsubsection{Gráficos de las Formas de Glejser y Prueba de Park}
+\subsubsection{Resumen Glejser}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{grafico_glejser_park.png}
-  \caption{Prueba de Glejser (3 formas) y Park: $|\hat{u}_i|$ y $\ln(\hat{u}_i^2)$ contra transformaciones de Gasto\_Total. En los cuatro paneles el coeficiente $\alpha_1$ es significativo (p~$<$~0.05), rechazando $H_0$ de homocedasticidad.}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.95\textwidth]{grafico_residuos_glejser.png}
-  \caption{Izquierda: $\hat{u}_i^2$ vs.\ Gasto Total (patrón de abanico). Derecha: $|\hat{u}_i|$ con las tres líneas ajustadas de Glejser --- todas crecientes, confirmando heteroscedasticidad.}
-\end{figure}
-
-\subsubsection{Resumen Glejser -- Las Tres Formas}
 \begin{table}[H]
 \centering
 \caption{Síntesis Prueba de Glejser}
@@ -410,19 +510,21 @@ inv\_x & $-37567.74$ & 15057.74 & $\mathbf{-2.49}$ & \textbf{0.016} & $-67769.75
 \toprule
 \textbf{Forma} & $\hat{\alpha}_1$ & $t$ & \textbf{p-valor} & $R^2$ & \textbf{Decisión}\\
 \midrule
-1. Lineal   & $0.1307$ & $2.88$ & $0.006$ & $0.135$ & Rechazar $H_0$ \\
-2. Raíz     & $6.1994$ & $2.80$ & $0.007$ & $0.129$ & Rechazar $H_0$ \\
-3. Inversa  & $-37567.74$ & $-2.49$ & $0.016$ & $0.105$ & Rechazar $H_0$ \\
+1. Lineal   & $0.1307$    & $2.88$  & $0.006$ & $0.135$ & Rechazar $H_0$ \\
+2. Raíz     & $6.1994$    & $2.80$  & $0.007$ & $0.129$ & Rechazar $H_0$ \\
+3. Inversa  & $-37{,}567$ & $-2.49$ & $0.016$ & $0.105$ & Rechazar $H_0$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{cajaconclucion}[title=Conclusión -- Prueba de Glejser]
 \begin{itemize}
-  \item Las \textbf{tres formas funcionales} rechazan $H_0$ (p $<$ 0.05). La heteroscedasticidad es robusta a la especificación elegida.
-  \item La \textbf{Forma 1 lineal} tiene el mejor ajuste ($R^2 = 0.135$) y la mayor significancia (p = 0.006), siendo la especificación preferida.
-  \item La \textbf{Forma 2 de raíz cuadrada} (p = 0.007) sugiere que la desviación estándar de los errores crece con $\sqrt{X}$, es decir $\sigma_i \propto \sqrt{X_i}$, lo que implica $\sigma_i^2 \propto X_i$. Esta es la forma de heteroscedasticidad más común en datos de gasto familiar.
-  \item La \textbf{Forma 3 inversa} (p = 0.016) confirma que $|\hat{u}|$ crece con $X$ (el coeficiente negativo de $1/X$ es equivalente a una relación positiva con $X$).
+  \item Las \textbf{tres formas funcionales} rechazan $H_0$ (p $<$ 0.05).
+  \item La \textbf{Forma 1 lineal} tiene el mejor ajuste ($R^2 = 0.135$).
+  \item La \textbf{Forma 2 raíz} (p = 0.007) sugiere $\sigma_i^2 \propto X_i$,
+        la forma más común en datos de gasto familiar.
+  \item Los gráficos (Figuras \ref{fig:glejser1} y \ref{fig:glejser2}) confirman
+        visualmente la relación creciente entre $|\hat{u}|$ y las transformaciones de $X$.
 \end{itemize}
 \end{cajaconclucion}
 
@@ -431,121 +533,71 @@ inv\_x & $-37567.74$ & 15057.74 & $\mathbf{-2.49}$ & \textbf{0.016} & $-67769.75
 
 \subsubsection{Fundamento Teórico}
 
-La prueba de Goldfeld-Quandt (1965) supone que la varianza de los errores es mayor para observaciones con $X$ alto que para observaciones con $X$ bajo. El procedimiento es:
-\begin{enumerate}
-  \item Ordenar las observaciones por la variable independiente $X$ (Gasto\_Total). \textbf{Los datos de la Tabla 2.8 ya están ordenados de forma ascendente por Gasto\_Total.}
-  \item Eliminar $c$ observaciones del centro para separar claramente los dos grupos.
-  \item Estimar MCO por separado en cada subgrupo y obtener su Suma de Cuadrados de los Residuos (SCR).
-  \item Calcular el estadístico $F = \text{SCR}_2 / \text{SCR}_1$ (el grupo con $X$ alto sobre el grupo con $X$ bajo).
-  \item Bajo $H_0$ de homocedasticidad, $F \sim F\left(\frac{n-c}{2}-k,\; \frac{n-c}{2}-k\right)$.
-\end{enumerate}
+Goldfeld-Quandt (1965): ordenar por $X$, eliminar $c$ observaciones del centro,
+estimar MCO por subgrupo y calcular:
+\[
+  \lambda = \frac{\text{SCR}_2 / (m-k)}{\text{SCR}_1 / (m-k)}
+          = \frac{\text{SCR}_2}{\text{SCR}_1} \sim F(m-k,\; m-k)
+\]
 
 \subsubsection{Hipótesis Formales}
-
 \[
-H_0: \sigma_1^2 = \sigma_2^2 \quad \text{(homocedasticidad: igual varianza en ambos grupos)}
-\]
-\[
-H_a: \sigma_2^2 > \sigma_1^2 \quad \text{(la varianza del grupo de gasto alto es mayor — heteroscedasticidad)}
+  H_0: \sigma_1^2 = \sigma_2^2 \qquad
+  H_a: \sigma_2^2 > \sigma_1^2
 \]
 
-\textbf{Estadístico:} $\lambda = \dfrac{\text{SCR}_2/(m-k)}{\text{SCR}_1/(m-k)} = \dfrac{\text{SCR}_2}{\text{SCR}_1} \sim F(m-k,\; m-k)$ bajo $H_0$.\\[0.3em]
-\textbf{Regla de decisión:} Rechazar $H_0$ si $\lambda > F_{\alpha}(m-k,\; m-k)$ (prueba unilateral derecha).
+\subsubsection{Comandos en Stata}
 
-\subsubsection{Definición de los Grupos ($c = 5$, $n = 55$)}
+\begin{cajacomando}[title=Stata -- Prueba de Goldfeld-Quandt]
+\texttt{* Grupo 1: observaciones 1--25 (Gasto\_Total bajo)}\\
+\texttt{. reg Gasto\_en\_Comida Gasto\_Total if \_n <= 25}\\[0.4em]
+\texttt{* Grupo 2: observaciones 31--55 (Gasto\_Total alto)}\\
+\texttt{. reg Gasto\_en\_Comida Gasto\_Total if \_n >= 31}
+\end{cajacomando}
 
-Con $n = 55$ observaciones y eliminando $c = 5$ observaciones centrales, cada grupo queda con:
-\[
-m = \frac{n - c}{2} = \frac{55 - 5}{2} = \frac{50}{2} = 25 \text{ observaciones}
-\]
+\subsubsection{Partición de Observaciones ($c = 5$)}
 
 \begin{table}[H]
 \centering
 \caption{Partición de Observaciones -- Prueba Goldfeld-Quandt}
 \begin{tabular}{lccc}
 \toprule
-\textbf{Grupo} & \textbf{Observaciones} & \textbf{Gasto Total (rango)} & \textbf{n por grupo}\\
+\textbf{Grupo} & \textbf{Observaciones} & \textbf{Gasto Total (rango)} & \textbf{n}\\
 \midrule
-Grupo 1 (bajo)    & obs 1 -- 25  & 382 -- 635 rupias & 25\\
-\textit{Eliminadas} & \textit{obs 26 -- 30} & \textit{640 -- 662 rupias} & \textit{5}\\
-Grupo 2 (alto)    & obs 31 -- 55 & 663 -- 801 rupias & 25\\
+Grupo 1 (bajo)      & obs 1--25   & 382--635 rupias & 25\\
+\textit{Eliminadas} & \textit{obs 26--30} & \textit{640--662 rupias} & \textit{5}\\
+Grupo 2 (alto)      & obs 31--55  & 663--801 rupias & 25\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Comandos en Stata}
-
-\begin{cajacomando}[title=Stata -- Prueba de Goldfeld-Quandt]
-\texttt{* Grupo 1: observaciones 1 a 25 (Gasto\_Total bajo)}\\
-\texttt{. reg Gasto\_en\_Comida Gasto\_Total if \_n <= 25}\\[0.4em]
-\texttt{* Grupo 2: observaciones 31 a 55 (Gasto\_Total alto)}\\
-\texttt{. reg Gasto\_en\_Comida Gasto\_Total if \_n >= 31}\\[0.4em]
-\texttt{* Alternativamente, usando la variable Gasto\_Total directamente:}\\
-\texttt{. reg Gasto\_en\_Comida Gasto\_Total if Gasto\_Total <= 635}\\
-\texttt{. reg Gasto\_en\_Comida Gasto\_Total if Gasto\_Total >= 663}
-\end{cajacomando}
-
-\subsubsection{Resultados de Stata y Cálculo del Estadístico}
-
-Con $k = 2$ parámetros y $m = 25$ observaciones por grupo, los grados de libertad son $m - k = 23$ por grupo.
+\subsubsection{Resultados y Cálculo del Estadístico}
 
 \begin{table}[H]
 \centering
-\caption{Resultados de las Regresiones por Grupo -- Goldfeld-Quandt}
+\caption{Regresiones por Grupo -- Goldfeld-Quandt}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Estadístico} & \textbf{Grupo 1 (obs 1--25, bajo)} & \textbf{Grupo 2 (obs 31--55, alto)}\\
+\textbf{Estadístico} & \textbf{Grupo 1 (bajo)} & \textbf{Grupo 2 (alto)}\\
 \midrule
-$n$ por grupo      & 25        & 25\\
-Gasto\_Total rango & 382--635  & 663--801\\
-$\hat{\beta}_0$    & 65.7368   & 420.6548\\
-$\hat{\beta}_1$    & 0.4921    & 0.0014\\
-$R^2$              & 0.4917    & 0.0000\\
-F del modelo       & 22.25 (p=0.0001) & 0.00 (p=0.9973)\\
-Raíz ECM           & 43.389    & 83.269\\
-\textbf{SCR (Residual SS)} & \textbf{43{,}300.21} & \textbf{159{,}475.36}\\
-gl residual        & 23        & 23\\
+$n$             & 25       & 25\\
+Raíz ECM        & 43.389   & 83.269\\
+\textbf{SCR}    & \textbf{43{,}300.21} & \textbf{159{,}475.36}\\
+gl residual     & 23       & 23\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-El estadístico de la prueba es:
 \[
-\lambda = \frac{\text{SCR}_2 / (m-k)}{\text{SCR}_1 / (m-k)} = \frac{\text{SCR}_2}{\text{SCR}_1} = \frac{159{,}475.36}{43{,}300.21} = \mathbf{3.683}
+  \lambda = \frac{159{,}475.36}{43{,}300.21} = \mathbf{3.683}
+  > F_{0.05}(23,23) = 2.014
+  \quad \Rightarrow \quad \textbf{Se rechaza } H_0
 \]
 
-\subsubsection{Hipótesis y Regla de Decisión}
-
-\[
-H_0: \sigma_1^2 = \sigma_2^2 \quad \text{(homocedasticidad)}
-\]
-\[
-H_a: \sigma_2^2 > \sigma_1^2 \quad \text{(el grupo de alto gasto tiene mayor varianza)}
-\]
-
-\textbf{Distribución bajo $H_0$:} $\lambda \sim F(23,\; 23)$
-
-\textbf{Valor crítico:} $F_{0.05}(23, 23) = 2.014$ \quad (tabla F, unilateral derecha, 5\%)
-
-\textbf{p-valor:} $P[F(23,23) > 3.683] = 0.0014$
-
-\textbf{Regla de decisión:}
-\[
-\lambda = 3.683 > F_{0.05}(23,23) = 2.014 \quad \Rightarrow \quad \textbf{Se rechaza } H_0
-\]
-
-\subsubsection{Interpretación}
-
-\begin{cajaconclucion}[title=Conclusión -- Prueba de Goldfeld-Quandt]
-\begin{itemize}
-  \item $\lambda = 3.683$ con p-valor $= 0.0014 < 0.01$. Se rechaza $H_0$ al \textbf{1\% de significancia}: la varianza del grupo de gasto alto es estadísticamente mayor que la del grupo de gasto bajo.
-
-  \item \textbf{Nota sobre el Grupo 2:} El $R^2 = 0.0000$ y el coeficiente de Gasto\_Total prácticamente nulo (0.0014) en el grupo de gasto alto no es un error de datos --- refleja que en el rango 663--801 rupias, el gasto en comida presenta una dispersión tan elevada y asistemática que no hay relación lineal detectable. Esto es precisamente la manifestación de la heteroscedasticidad: la varianza es tan grande en ese tramo que ``ahoga'' la señal de la pendiente. La raíz ECM del Grupo 2 (83.27) prácticamente duplica la del Grupo 1 (43.39), y SCR$_2 \approx 3.7 \times$ SCR$_1$.
-
-  \item \textbf{Consistencia con las demás pruebas:} Breusch-Pagan (p = 0.0074), regresión auxiliar Park (p = 0.011) y ahora Goldfeld-Quandt ($\lambda = 3.683$, p = 0.0014) apuntan en la misma dirección: existe heteroscedasticidad significativa que crece con el nivel de gasto total.
-
-  \item \textbf{Ventaja de GQ:} intuitiva, basada en distribución F exacta bajo normalidad. \textbf{Desventaja:} sensible a la elección de $c$ y pierde $c$ observaciones. Con $c = 5$ y $n = 55$ la separación es suficiente sin sacrificar demasiada información.
-\end{itemize}
+\begin{cajaconclucion}[title=Conclusión -- Goldfeld-Quandt]
+$\lambda = 3.683$ con p-valor $= 0.0014 < 0.01$. Se rechaza $H_0$ al 1\%.
+La varianza del Grupo 2 (gasto alto) es estadísticamente mayor que la del Grupo 1.
+La raíz ECM del Grupo 2 (83.27) prácticamente duplica la del Grupo 1 (43.39).
 \end{cajaconclucion}
 
 %===============================================================
@@ -553,18 +605,22 @@ H_a: \sigma_2^2 > \sigma_1^2 \quad \text{(el grupo de alto gasto tiene mayor var
 
 \subsection{Justificación Teórica}
 
-Cuando la varianza de los errores crece con $X$ (posiblemente de forma proporcional), una transformación logarítmica de ambas variables frecuentemente estabiliza la varianza. El modelo log-log es:
+El modelo log-log estabiliza la varianza cuando $\sigma_i^2 \propto X_i$:
 \[
-\ln(\text{Gasto\_en\_Comida}_i) = \beta_0 + \beta_1 \ln(\text{Gasto\_Total}_i) + u_i
+  \ln(\text{Gasto\_en\_Comida}_i) = \beta_0 + \beta_1 \ln(\text{Gasto\_Total}_i) + u_i
 \]
-En este modelo, $\beta_1$ se interpreta como la \textbf{elasticidad}: el cambio porcentual en el gasto en comida ante un cambio del 1\% en el gasto total.
+donde $\beta_1$ es la \textbf{elasticidad-gasto en comida}.
 
 \subsection{Comandos en Stata}
+
 \begin{cajacomando}[title=Stata -- Transformación Logarítmica]
 \texttt{. gen logaritmo\_y = ln(Gasto\_en\_Comida)}\\
 \texttt{. gen logaritmo\_x = ln(Gasto\_Total)}\\
 \texttt{. reg logaritmo\_y logaritmo\_x}\\
-\texttt{. estat hettest}
+\texttt{. estat hettest}\\
+\texttt{. predict errores\_log, residuals}\\
+\texttt{. rvfplot}\\
+\texttt{. kdensity errores\_log, normal}
 \end{cajacomando}
 
 \subsection{Resultados}
@@ -574,10 +630,11 @@ En este modelo, $\beta_1$ se interpreta como la \textbf{elasticidad}: el cambio 
 \caption{Regresión Log-Log: logaritmo\_y sobre logaritmo\_x}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Err. Est.} & \textbf{t} & \textbf{P$>|t|$} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Err. Est.} & \textbf{t}
+  & \textbf{P$>|t|$} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
 logaritmo\_x & 0.7363 & 0.1207 & 6.10 & 0.000 & 0.4942 & 0.9784\\
-\_cons       & 1.1543 & 0.7780 & 1.48 & 0.144 & -0.4061 & 2.7147\\
+\_cons       & 1.1543 & 0.7780 & 1.48 & 0.144 & $-0.4061$ & 2.7147\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -587,14 +644,14 @@ logaritmo\_x & 0.7363 & 0.1207 & 6.10 & 0.000 & 0.4942 & 0.9784\\
 \caption{Estadísticos Globales -- Modelo Log-Log}
 \begin{tabular}{lclc}
 \toprule
-N observaciones & 55   & R-cuadrado       & 0.4125\\
+N observaciones & 55    & R-cuadrado       & 0.4125\\
 F(1, 53)        & 37.21 & R-cuad. ajustado & 0.4014\\
 Prob $>$ F      & 0.0000 & Raíz ECM        & 0.17662\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Verificación de Heteroscedasticidad en el Modelo Log-Log}
+\subsection{Verificación de Heteroscedasticidad (Post-corrección)}
 
 \begin{table}[H]
 \centering
@@ -611,18 +668,23 @@ Prob $> \chi^2$ & = & \textbf{0.2052}\\
 
 \begin{cajaconclucion}[title=Interpretación del Modelo Log-Log]
 \begin{enumerate}
-  \item \textbf{Elasticidad ($\hat{\beta}_1 = 0.7363$):} Por cada 1\% de aumento en el gasto total, el gasto en comida aumenta en promedio \textbf{0.7363\%}. El bien ``alimentos'' se comporta como un \textbf{bien normal no de lujo} (elasticidad $< 1$), lo cual es consistente con la Ley de Engel: la proporción del ingreso destinada a alimentos disminuye conforme el ingreso aumenta.
-  
-  \item \textbf{Mejora en el ajuste:} El $R^2$ mejora de 0.3698 (modelo lineal) a \textbf{0.4125} (modelo log-log), indicando que la especificación logarítmica captura mejor la relación.
-  
-  \item \textbf{Corrección de la heteroscedasticidad:} El test de Breusch-Pagan en el modelo log-log da $\chi^2(1) = 1.60$ con p-valor $= 0.2052 > 0.05$. \textbf{No se rechaza $H_0$} de varianza constante. La transformación logarítmica \textbf{corrigió exitosamente} el problema de heteroscedasticidad.
-  
-  \item \textbf{La ecuación estimada (en logaritmos) es:}
+  \item \textbf{Elasticidad ($\hat{\beta}_1 = 0.7363$):} Por cada 1\% de aumento en
+        el gasto total, el gasto en comida aumenta \textbf{0.7363\%}. Los alimentos se
+        comportan como \textbf{bien normal no de lujo} (Ley de Engel: la proporción
+        del ingreso destinada a alimentos disminuye conforme el ingreso crece).
+
+  \item \textbf{Mejora en el ajuste:} $R^2$ mejora de 0.3698 (lineal) a \textbf{0.4125}
+        (log-log).
+
+  \item \textbf{Corrección de heteroscedasticidad:} Breusch-Pagan post-corrección:
+        $\chi^2(1) = 1.60$, p $= 0.2052 > 0.05$. \textbf{No se rechaza $H_0$}.
+        La transformación logarítmica \textbf{corrigió exitosamente} el problema.
+
+  \item \textbf{Ecuación estimada:}
   \[
-  \widehat{\ln(\text{Gasto\_en\_Comida})} = 1.1543 + 0.7363 \cdot \ln(\text{Gasto\_Total})
-  \]
-  \[
-  \text{o equivalentemente:} \quad \widehat{\text{Gasto\_en\_Comida}} = e^{1.1543} \cdot \text{Gasto\_Total}^{0.7363}
+    \widehat{\ln(\text{GC})} = 1.1543 + 0.7363 \cdot \ln(\text{GT})
+    \quad \Leftrightarrow \quad
+    \widehat{\text{GC}} = e^{1.1543} \cdot \text{GT}^{0.7363}
   \]
 \end{enumerate}
 \end{cajaconclucion}
@@ -632,12 +694,14 @@ Prob $> \chi^2$ & = & \textbf{0.2052}\\
 
 \subsection{Fundamento Teórico}
 
-Los \textbf{errores estándar robustos} (consistentes con la heteroscedasticidad) propuestos por \textbf{White (1980)} permiten realizar inferencia válida incluso cuando existe heteroscedasticidad, sin necesidad de corregir el modelo. La varianza corregida es:
+White (1980) propone estimar la varianza de $\hat{\beta}$ de forma consistente:
 \[
-\widehat{\text{Var}}_{HC}(\hat{\boldsymbol{\beta}}) = (X'X)^{-1} \left(\sum_{i=1}^{n} \hat{u}_i^2 x_i x_i'\right) (X'X)^{-1}
+  \widehat{\text{Var}}_{HC}(\hat{\boldsymbol{\beta}})
+  = (X'X)^{-1} \left(\sum_{i=1}^{n} \hat{u}_i^2 x_i x_i'\right) (X'X)^{-1}
 \]
 
 \subsection{Comando en Stata}
+
 \begin{cajacomando}[title=Stata -- Regresión con Errores Robustos de White]
 \texttt{. reg Gasto\_en\_Comida Gasto\_Total, robust}
 \end{cajacomando}
@@ -646,27 +710,26 @@ Los \textbf{errores estándar robustos} (consistentes con la heteroscedasticidad
 
 \begin{table}[H]
 \centering
-\caption{Regresión con Errores Robustos (White): Gasto\_en\_Comida sobre Gasto\_Total}
+\caption{Regresión con Errores Robustos (White)}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Err. Robusto} & \textbf{t} & \textbf{P$>|t|$} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Err. Robusto} & \textbf{t}
+  & \textbf{P$>|t|$} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.}\\
 \midrule
 Gasto\_Total & 0.4368 & 0.0743 & 5.88 & 0.000 & 0.2879 & 0.5857\\
 \_cons       & 94.2088 & 43.2631 & 2.18 & 0.034 & 7.434 & 180.984\\
-\midrule
-\multicolumn{3}{l}{F(1,53) = 34.60} & \multicolumn{4}{l}{Prob $>$ F = 0.0000, $R^2 = 0.3698$}\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Comparación de Errores Estándar}
+\subsection{Comparación MCO vs.\ Robustos}
 
 \begin{table}[H]
 \centering
-\caption{Comparación: Errores MCO vs.\ Errores Robustos de White}
+\caption{Comparación de Errores Estándar}
 \begin{tabular}{lccc}
 \toprule
-\textbf{Variable} & \textbf{Coef.} & \textbf{Error Est. MCO} & \textbf{Error Est. Robusto}\\
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error MCO} & \textbf{Error Robusto}\\
 \midrule
 Gasto\_Total & 0.4368 & 0.0783 & \textbf{0.0743}\\
 \_cons       & 94.2088 & 50.8563 & \textbf{43.2631}\\
@@ -674,26 +737,21 @@ Gasto\_Total & 0.4368 & 0.0783 & \textbf{0.0743}\\
 \end{tabular}
 \end{table}
 
-\subsection{Interpretación y Decisión}
-
 \begin{cajaconclucion}[title=Conclusión -- Errores Robustos y Decisión Final]
 \begin{enumerate}
-  \item \textbf{Diferencias entre errores:} Los errores estándar robustos son \textit{ligeramente menores} que los MCO ordinarios (0.0743 vs.\ 0.0783 para la pendiente; 43.26 vs.\ 50.86 para el intercepto). Esto indica que los errores MCO \textit{sobreestiman} modestamente la incertidumbre en este caso particular.
-  
-  \item \textbf{Cambio en las conclusiones inferenciales:}
+  \item Los errores robustos son \textit{ligeramente menores}: los MCO
+        \textit{sobreestimaban} modestamente la incertidumbre.
+  \item El intercepto cambia su significancia: con MCO p = 0.070
+        (marginalmente sig.), con robustos p = 0.034 (\textbf{significativo al 5\%}).
+  \item Los coeficientes no cambian (solo cambian los errores estándar).
+  \item \textbf{Recomendación:}
   \begin{itemize}
-    \item Gasto\_Total: sigue siendo significativo al 1\% con ambos métodos (p = 0.000 en ambos).
-    \item Intercepto: cambia su significancia --- con MCO es marginalmente significativo (p = 0.070), mientras que con errores robustos \textbf{pasa a ser significativo al 5\%} (p = 0.034).
-    \item La magnitud de los coeficientes \textbf{no cambia} (como es esperado: la robustez solo afecta los errores estándar, no los coeficientes).
-  \end{itemize}
-  
-  \item \textbf{¿Vale la pena corregir el modelo?}
-  
-  En este caso se \textbf{recomienda sí corregir}, pero la elección entre métodos depende del objetivo:
-  \begin{itemize}
-    \item \textbf{Si se desea interpretación directa en niveles}: usar errores robustos de White es suficiente. Los coeficientes son los mismos MCO, pero la inferencia es válida bajo heteroscedasticidad. Esto es la solución más sencilla.
-    \item \textbf{Si se desea mayor eficiencia y mejor ajuste}: el modelo log-log es preferible, pues corrige la heteroscedasticidad en la especificación del modelo, mejora el $R^2$ (0.41 vs.\ 0.37) y ofrece una interpretación económicamente significativa (elasticidad).
-    \item Dado que la heterocedasticidad fue confirmada significativamente por B-P (p = 0.0074) y la transformación logarítmica la eliminó, se recomienda \textbf{el modelo log-log como la especificación final preferida}.
+    \item \textbf{Errores robustos}: solución sencilla cuando se desea mantener
+          la interpretación en niveles.
+    \item \textbf{Modelo log-log}: preferible por mayor eficiencia, mejor $R^2$
+          y corrección estructural de la heteroscedasticidad.
+    \item \textbf{Especificación final recomendada}: modelo log-log
+          (B-P post: p = 0.205, $R^2 = 0.41$, elasticidad = 0.74).
   \end{itemize}
 \end{enumerate}
 \end{cajaconclucion}
@@ -704,33 +762,46 @@ Gasto\_Total & 0.4368 & 0.0783 & \textbf{0.0743}\\
 \begin{table}[H]
 \centering
 \caption{Resumen de Resultados por Inciso}
-\begin{tabular}{p{1cm}p{5.5cm}p{7cm}}
+\begin{tabular}{p{1cm}p{5.2cm}p{7.2cm}}
 \toprule
 \textbf{Inc.} & \textbf{Procedimiento} & \textbf{Conclusión Principal}\\
 \midrule
-A & Regresión MCO lineal & $\hat{Y} = 94.21 + 0.437X$; $R^2 = 0.37$; Gasto Total significativo (p$<$0.001)\\
+A & Regresión MCO lineal
+  & $\hat{Y} = 94.21 + 0.437X$; $R^2 = 0.37$; sig.\ al 1\% \\
 \addlinespace
-B & Gráfica $\hat{u}^2$ vs.\ $X$ & Patrón de abanico sugiere heterocedasticidad creciente con $X$\\
+B & Gráfica $\hat{u}^2$ vs.\ $X$ (Fig.\ \ref{fig:residuos_cuadrado})
+  & Patrón de abanico; heteroscedasticidad visual clara \\
 \addlinespace
-C & B-P: $\chi^2=7.18$ (p=0.007); White: p=0.126; Park: $\hat{\alpha}_1=3.70$ (p=0.021); Glejser: 3 formas p$<$0.016; GQ: $\lambda=3.683>F_{0.05}(23,23)=2.014$ & Todas las pruebas (excepto White aislado) confirman heteroscedasticidad creciente con $X$\\
+C & B-P (p=0.007); White (p=0.126 / IM=0.004); Park ($t=2.39$); Glejser (3 formas, p$<$0.02); GQ ($\lambda=3.68$)
+  & Todas confirman heteroscedasticidad creciente con $X$ \\
 \addlinespace
-D & Modelo log-log; B-P post: $\chi^2=1.60$ (p=0.205) & Transformación log corrige la heterocedasticidad; elasticidad = 0.74; $R^2$ mejora a 0.41\\
+D & Modelo log-log + B-P post
+  & Heteroscedasticidad corregida (p=0.205); elasticidad=0.74; $R^2$=0.41 \\
 \addlinespace
-E & Errores robustos de White & Diferencias pequeñas vs.\ MCO; intercepto cambia significancia; corrección recomendable; modelo log-log es la opción preferida\\
+E & Errores robustos de White
+  & Diferencias pequeñas; modelo log-log es la opción preferida \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\vspace{2em}
-\begin{cajaresultado}[title=Nota sobre los Comandos de Stata]
-\textbf{Corrección requerida:} En la imagen se observa el intento de usar \texttt{estat imtest, whiitw} (con doble ``i''), que Stata rechazó con el mensaje \textit{``option whiitw not allowed''}. El comando correcto es:
-\[
-\texttt{. estat imtest, white}
-\]
-(con una sola ``i'' en ``white''). Esta corrección está reflejada en la Imagen 4 donde el comando se ejecuta correctamente.
+\vspace{1em}
+
+\begin{cajaresultado}[title=Nota sobre los Archivos Gráficos Utilizados]
+Los gráficos integrados en este documento corresponden a los archivos \texttt{.png}
+generados en Stata y disponibles en el directorio de trabajo:
+\texttt{relacion\_u\_2\_y\_gasto\_total.png},
+\texttt{glejser\_abs\_u\_gasto\_total.png},
+\texttt{glejser\_abs\_u\_sqrt\_x.png},
+\texttt{glejser\_in\_u2\_in\_x.png},
+\texttt{dispersion\_con\_linea\_ajustada.png},
+\texttt{rvfplot.png}, \texttt{rvpplot.png},
+\texttt{kdensity\_errores.png}, \texttt{lvr2plot.png}.
+Para compilar, todos deben estar en el mismo directorio que el archivo \texttt{.tex}.
 \end{cajaresultado}
 
 \vspace{1em}
-\noindent\textbf{Fuente de los datos:} Chandan Mukherjee, Howard White y Marc Wuyts, \textit{Econometrics and Data Analysis for Developing Countries}, Routledge, Nueva York, 1998, p.~457.
+\noindent\textbf{Fuente de los datos:} Chandan Mukherjee, Howard White y Marc Wuyts,
+\textit{Econometrics and Data Analysis for Developing Countries},
+Routledge, Nueva York, 1998, p.~457.
 
 \end{document}
