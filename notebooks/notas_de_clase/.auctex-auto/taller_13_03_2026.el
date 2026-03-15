@@ -41,6 +41,8 @@
     "tikz")
    (TeX-add-symbols
     "leyendadist")
+   (LaTeX-add-labels
+    "tab:datos")
    (LaTeX-add-xcolor-definecolors
     "azuloscuro"
     "grisclaro"
