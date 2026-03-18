@@ -83,3 +83,8 @@ De acuerdo con la literatura clásica, debemos observar:
 ---
 
 En proceso ...
+
+* Coeficiente de correlación: $r_{23} = \frac{\sum_{i=1}^{n}(X_{2i} - \bar{X}_2)(X_{3i} - \bar{X}_3)}{\sqrt{\sum_{i=1}^{n}(X_{2i} - \bar{X}_2)^2}\sqrt{\sum_{i=1}^{n}(X_{3i} - \bar{X}_3)^2}}$
+* Coeficiente de regresión: $\beta_2 = \frac{\sum_{i=1}^{n}(X_{2i} - \bar{X}_2)(Y_i - \bar{Y})}{\sum_{i=1}^{n}(X_{2i} - \bar{X}_2)^2}$
+
+$$\text{Var}(\hat{\beta}) = \sigma^2 (X^T X)^{-1}$$
