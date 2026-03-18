@@ -1,0 +1,846 @@
+% ================================================================
+%  UNIVERSIDAD PEDAGÓGICA Y TECNOLÓGICA DE COLOMBIA — UPTC
+%  Econometría · Capítulo 12: Autocorrelación en los Errores
+%  Autor: Emanuel Quintana Silva
+%  Estilo: New York Times / The Economist — monocromático
+% ================================================================
+
+\documentclass[12pt, letterpaper]{article}
+
+% ── ENCODING & IDIOMA ───────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish, es-nodecimaldot]{babel}
+
+% ── TIPOGRAFÍA SERIF NYT (Palatino) ─────────────────────────────
+\usepackage{palatino}
+\usepackage{mathpazo}
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+
+% ── GEOMETRÍA ───────────────────────────────────────────────────
+\usepackage[
+  top        = 2.8cm,
+  bottom     = 2.8cm,
+  left       = 3.2cm,
+  right      = 3.2cm,
+  headheight = 14pt
+]{geometry}
+
+% ── MATEMÁTICAS ─────────────────────────────────────────────────
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+
+% ── TIKZ & GRÁFICOS ─────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{
+  arrows.meta, positioning, calc,
+  decorations.pathmorphing, shapes.geometric,
+  fit, backgrounds
+}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{graphicx}
+\usepackage{float}
+
+% ── TABLAS ──────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\renewcommand{\arraystretch}{1.40}
+
+% ── ESCALA DE GRISES ────────────────────────────────────────────
+\usepackage{xcolor}
+\definecolor{Black}{gray}{0.00}
+\definecolor{VDark}{gray}{0.10}
+\definecolor{Dark}{gray}{0.25}
+\definecolor{Mid}{gray}{0.50}
+\definecolor{Light}{gray}{0.82}
+\definecolor{VLight}{gray}{0.93}
+\definecolor{OffWhite}{gray}{0.97}
+
+% ── CAJAS EDITORIALES (monocromáticas) ──────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+\tcbset{
+  nytdef/.style={
+    enhanced, breakable,
+    colback=OffWhite, colframe=VDark,
+    boxrule=0pt,
+    borderline west={3.5pt}{0pt}{Black},
+    arc=0pt,
+    left=10pt, right=8pt, top=6pt, bottom=6pt,
+    fonttitle=\small\bfseries\scshape,
+    attach title to upper={\par\smallskip}
+  },
+  nytthm/.style={
+    enhanced, breakable,
+    colback=OffWhite, colframe=Black,
+    boxrule=0.8pt,
+    arc=0pt,
+    left=10pt, right=8pt, top=6pt, bottom=6pt,
+    fonttitle=\small\bfseries\scshape,
+    attach title to upper={\par\smallskip}
+  },
+  nytnote/.style={
+    enhanced, breakable,
+    colback=white, colframe=Mid,
+    boxrule=0pt,
+    borderline west={1.5pt}{0pt}{Mid},
+    arc=0pt,
+    left=10pt, right=8pt, top=4pt, bottom=4pt,
+    fonttitle=\small\itshape,
+    attach title to upper={\par\smallskip}
+  },
+  nytformula/.style={
+    enhanced, breakable,
+    colback=VLight, colframe=Black,
+    boxrule=1.2pt,
+    arc=0pt,
+    left=12pt, right=12pt, top=10pt, bottom=10pt,
+    fonttitle=\normalsize\bfseries\scshape,
+    attach title to upper={\par\medskip}
+  }
+}
+
+\newtcolorbox{definicion}[1]{nytdef,   title={#1}}
+\newtcolorbox{teorema}[1]   {nytthm,   title={#1}}
+\newtcolorbox{nota}[1]      {nytnote,  title={#1}}
+\newtcolorbox{formulabox}[1]{nytformula, title={#1}}
+
+% ── CABECERAS & PIES ────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Econometría — Autocorrelación en los Errores}}
+\fancyhead[R]{\small\textit{E. Quintana Silva · UPTC}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+% ── SECCIONES (estilo editorial limpio) ─────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}
+  {\large\bfseries\scshape}
+  {\thesection.}{0.55em}{}[{\vspace{2pt}\hrule height 0.8pt}]
+\titleformat{\subsection}
+  {\normalsize\bfseries}
+  {\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\itshape}
+  {\thesubsubsection.}{0.5em}{}
+
+\titlespacing*{\section}     {0pt}{18pt}{6pt}
+\titlespacing*{\subsection}  {0pt}{12pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% ── LISTAS ──────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[enumerate]{leftmargin=*, itemsep=4pt, topsep=3pt}
+\setlist[itemize]  {leftmargin=*, itemsep=4pt, topsep=3pt}
+
+% ── NUMERACIÓN ECUACIONES ───────────────────────────────────────
+\numberwithin{equation}{section}
+
+% ── ABSTRACT ────────────────────────────────────────────────────
+\usepackage{abstract}
+\renewcommand{\abstractname}{\scshape Resumen}
+\renewcommand{\abstractnamefont}{\normalsize\bfseries}
+\renewcommand{\abstracttextfont}{\small\itshape}
+
+% ── HIPERVÍNCULOS ───────────────────────────────────────────────
+\usepackage[
+  colorlinks = false,
+  pdfborder  = {0 0 0},
+  pdftitle   = {Autocorrelacion - Econometria UPTC},
+  pdfauthor  = {Emanuel Quintana Silva}
+]{hyperref}
+
+% ================================================================
+%                       PORTADA (NYT / BOOK STYLE)
+% ================================================================
+\begin{document}
+\begin{titlepage}
+  \newgeometry{top=3.5cm, bottom=3cm, left=4cm, right=4cm}
+  \thispagestyle{empty}
+
+  \noindent\rule{\linewidth}{2.5pt}
+  \vspace{2pt}
+  \noindent\rule{\linewidth}{0.6pt}
+
+  \vspace{1.6cm}
+
+  \begin{center}
+    {\small\scshape
+      Universidad Pedagógica y Tecnológica de Colombia}\\[3pt]
+    {\small\scshape
+      Facultad de Ciencias Económicas y Administrativas
+      $\cdot$ Programa de Economía}
+  \end{center}
+
+  \vspace{1.0cm}
+  \noindent\rule{\linewidth}{0.4pt}
+  \vspace{0.8cm}
+
+  \begin{center}
+    {\fontsize{34}{42}\selectfont\bfseries
+      Autocorrelación\\[6pt]en los Errores}
+
+    \vspace{0.7cm}
+    {\large\itshape Notas de Clase — Econometría}
+
+    \vspace{0.4cm}
+    {\normalsize\scshape Capítulo 12: Wooldridge \& Gujarati}
+  \end{center}
+
+  \vspace{0.9cm}
+  \noindent\rule{\linewidth}{0.4pt}
+  \vspace{0.8cm}
+
+  \begin{center}
+    \begin{tabular}{r@{\hspace{10pt}}l}
+      \textsc{\small Estudiante}  & Emanuel Quintana Silva \\[5pt]
+      \textsc{\small Asignatura}  & Econometría \\[5pt]
+      \textsc{\small Referencias} & Wooldridge, Cap.\,12 \;·\; Gujarati, Cap.\,12 \\[5pt]
+      \textsc{\small Fecha}       & Martes, 17 de marzo de 2026 \\[5pt]
+      \textsc{\small Semestre}    & 2026-I \\[5pt]
+      \textsc{\small Institución} & UPTC, Sede Tunja \\
+    \end{tabular}
+  \end{center}
+
+  \vfill
+
+  \noindent\rule{\linewidth}{0.6pt}
+  \vspace{2pt}
+  \noindent\rule{\linewidth}{2.5pt}
+\end{titlepage}
+\restoregeometry
+
+% ── Página de resumen ───────────────────────────────────────────
+\newpage
+\thispagestyle{empty}
+\vspace*{4cm}
+\begin{abstract}
+\noindent
+Estas notas corresponden a la sesión del martes 17 de marzo de 2026 del
+curso de Econometría del programa de Economía de la UPTC. Se aborda el
+problema de la \emph{autocorrelación} o correlación serial en los términos
+de perturbación del Modelo Clásico de Regresión Lineal (MCRL), siguiendo
+el Capítulo 12 de Gujarati \& Porter y el Capítulo 12 de Wooldridge.
+Se presentan la naturaleza del fenómeno, sus ocho causas, el esquema AR(1),
+las consecuencias sobre los estimadores MCO, los métodos de detección
+---gráfico, prueba de Rachas, estadístico $d$ de Durbin--Watson y prueba
+de Breusch--Godfrey--- y las medidas remediales mediante MCG, FGLS y
+errores estándar robustos de Newey--West (HAC).
+\end{abstract}
+\vfill
+\begin{center}
+  \small\itshape
+  Elaborado por Emanuel Quintana Silva\\
+  Economía · UPTC · Tunja, Colombia · 2026
+\end{center}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ================================================================
+\section{Supuestos del Modelo Clásico de Regresión Lineal}
+% ================================================================
+
+El \textsc{mcrl} exige, entre otros supuestos, que los términos de
+perturbación aleatoria no estén correlacionados entre sí. Este es el
+quinto supuesto clásico, y es exactamente la condición que la
+autocorrelación viola.
+
+\begin{definicion}{Supuesto Clásico \#5 — No Autocorrelación}
+\[
+  \operatorname{Cov}(u_i,\, u_j)
+  \;=\;
+  E\!\left[u_i\, u_j\right]
+  \;=\; 0,
+  \qquad \forall\; i \neq j
+\]
+Para el modelo $Y_i = \beta_1 + \beta_2 X_i + u_i$, esto significa que el
+error de cualquier observación no está relacionado con el de ninguna otra,
+ni en el tiempo (series de tiempo) ni en el espacio (datos de corte
+transversal).
+\end{definicion}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \draw[->, thick] (0,0) -- (6.5,0) node[right]{$X_i$};
+  \draw[->, thick] (0,0) -- (0,5.2) node[above]{$Y_i$};
+  \draw[Black, very thick] (0.5,0.7) -- (6.0,4.6)
+    node[right, font=\footnotesize]{$\hat Y_i = \hat\beta_1+\hat\beta_2 X_i$};
+  \foreach \px/\py/\lab in {
+    0.9/2.0/u_m, 1.7/0.9/u_s, 2.5/3.0/u_i,
+    3.3/1.7/u_4, 4.1/3.8/u_l, 4.9/2.6/u_r}{
+    \pgfmathsetmacro{\fy}{0.7 + 0.70*\px}
+    \draw[Mid, thin, dashed] (\px,\py)--(\px,\fy);
+    \filldraw[Black] (\px,\py) circle (2.5pt);
+    \node[font=\tiny, above right] at (\px,\py){$\lab$};
+  }
+\end{tikzpicture}
+\caption{Modelo sin autocorrelación: residuos $u_i$ aleatorios sin
+patrón sistemático alrededor de la línea de regresión.}
+\end{figure}
+
+% ================================================================
+\section{Naturaleza del Problema}
+% ================================================================
+
+\begin{definicion}{Definición — Autocorrelación (Gujarati, Cap. 12)}
+La \textbf{autocorrelación} (o correlación serial) es la correlación entre
+miembros de series de observaciones ordenadas en el \emph{tiempo} o en el
+\emph{espacio}. Se presenta cuando $E(u_i\,u_j) \neq 0$ para $i \neq j$.
+\end{definicion}
+
+\subsection{Tipos de datos susceptibles}
+
+\begin{enumerate}
+  \item \textbf{Datos transversales} — correlación espacial entre unidades
+        geográficas o grupos cercanos.
+  \item \textbf{Series de tiempo} — dependencia temporal: el error en $t$
+        influye en $t+1$, $t+2$, etc.
+  \item \textbf{Datos de panel} — combinación simultánea de ambas formas.
+\end{enumerate}
+
+\subsection{Distinción terminológica}
+
+\begin{center}
+\begin{tabular}{>{\bfseries}p{3.5cm} p{9.0cm}}
+\toprule
+Término & Definición \\
+\midrule
+Autocorrelación
+  & Correlación de una serie consigo misma desplazada:
+    $\operatorname{Corr}(u_t,\, u_{t-k})$. \\[4pt]
+Correlación serial
+  & Correlación entre dos series distintas con rezago:
+    $\operatorname{Corr}(u_t,\, v_{t-k})$. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{nota}{Uso práctico}
+En econometría moderna ambos términos se emplean indistintamente para
+referirse a la dependencia serial en los errores del mismo modelo.
+\end{nota}
+
+% ================================================================
+\section{Causas de la Autocorrelación}
+% ================================================================
+
+Gujarati distingue entre \textbf{autocorrelación pura} ---intrínseca al
+proceso generador de datos--- y \textbf{autocorrelación inducida}
+---resultado de errores en la especificación del modelo---.
+
+\begin{enumerate}[label=\textbf{\arabic{enumi}.}]
+
+  \item \textbf{Inercia.}
+  Las series económicas (PIB, consumo, empleo) exhiben ciclos sostenidos.
+  En fases ascendentes, el valor actual supera al anterior, creando
+  dependencia sistemática entre observaciones sucesivas.
+
+  \item \textbf{Sesgo de especificación: variables excluidas.}
+  Si el modelo omite una variable relevante que está autocorrelacionada,
+  su efecto se traslada al término de error. Ejemplo de clase:
+  \begin{alignat}{2}
+    \text{Incorrecto:}\quad &
+      I_t &= \beta_1 + \beta_2\,\text{Ingreso}_t
+               + \beta_3\,\text{Impuestos}_t + u_t \notag\\[2pt]
+    \text{Correcto:}\quad &
+      I_t &= \alpha_1 + \alpha_2\,\text{Ingreso}_t
+               + \alpha_3\,\text{Impuestos}_t
+               + \alpha_4\,\text{Interés}_t + v_t \notag
+  \end{alignat}
+  Al omitir la tasa de interés:
+  $\widetilde{u}_t = u_t + \alpha_4\,\text{Interés}_t$,
+  que hereda la autocorrelación de la variable excluida.
+
+  \item \textbf{Forma funcional incorrecta.}
+  Ajustar un modelo lineal sobre una relación curvilínea genera residuos
+  con patrón sistemático, que el software detecta como autocorrelación.
+
+  \item \textbf{Omisión de variables rezagadas.}
+  Ignorar efectos dinámicos. Ejemplo de la oferta agrícola:
+  \begin{alignat}{2}
+    \text{Incorrecto:}\quad &
+      S_t &= \beta_1 + \beta_2 P_t - \beta_3 C_t + u_t \notag\\[2pt]
+    \text{Correcto:}\quad &
+      S_t &= \beta_1 + \beta_2 P_{t-1} - \beta_3 C_{t-1} + u_t \notag
+  \end{alignat}
+  ($S_t=$ oferta agrícola, $P_t=$ precio, $C_t=$ costos de producción.)
+
+  \item \textbf{Manipulación de datos.}
+  La interpolación o extrapolación introduce suavizado artificial que
+  correlaciona observaciones sucesivas.
+
+  \item \textbf{Fenómeno de la Telaraña (\textit{Cobweb}).}
+  En mercados con ciclos de ajuste, la sobreproducción en un periodo
+  presiona el precio a la baja en el siguiente, generando dependencia
+  oscilatoria en los errores.
+
+  \item \textbf{Transformación de datos (primeras diferencias).}
+  Aplicar $\Delta u_t = u_t - u_{t-1}$ puede inducir autocorrelación
+  negativa en el nuevo error, aunque el original fuese ruido blanco.
+
+  \item \textbf{No estacionariedad.}
+  Si las variables tienen propiedades estadísticas cambiantes en el
+  tiempo, los errores reflejan esa inestabilidad mediante autocorrelación
+  fuerte y persistente.
+
+\end{enumerate}
+
+% ================================================================
+\section{El Esquema Autorregresivo de Primer Orden: AR(1)}
+% ================================================================
+
+\begin{definicion}{Proceso AR(1)}
+\[
+  \boxed{u_t \;=\; \rho\, u_{t-1} \;+\; \varepsilon_t},
+  \qquad -1 < \rho < 1
+\]
+donde $\rho$ es el coeficiente de autocorrelación poblacional y
+$\varepsilon_t$ es \emph{ruido blanco}: $E[\varepsilon_t]=0$,
+$\operatorname{Var}(\varepsilon_t)=\sigma_\varepsilon^2$,
+$\operatorname{Cov}(\varepsilon_t,\varepsilon_s)=0$ para $t\neq s$.
+La condición $|\rho|<1$ garantiza la estacionariedad del proceso.
+\end{definicion}
+
+\subsection{Propiedades estadísticas}
+
+\begin{align}
+  E[u_t] &= 0 \\[6pt]
+  \operatorname{Var}(u_t) &= \frac{\sigma_\varepsilon^2}{1-\rho^2} \\[6pt]
+  \operatorname{Cov}(u_t,\, u_{t-k}) &= \rho^{\,k}
+    \cdot\frac{\sigma_\varepsilon^2}{1-\rho^2}, \qquad k=1,2,3,\ldots
+\end{align}
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{3cm} p{9cm}}
+\toprule
+\textbf{Valor de $\rho$} & \textbf{Interpretación} \\
+\midrule
+$\rho = 0$
+  & No autocorrelación — supuesto clásico satisfecho. \\
+$0 < \rho < 1$
+  & Autocorrelación positiva: errores tienden al mismo signo (rachas largas). \\
+$-1 < \rho < 0$
+  & Autocorrelación negativa: el signo del error alterna frecuentemente. \\
+$|\rho| \to 1$
+  & Proceso no estacionario; la memoria del error es infinita. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ================================================================
+\section{Consecuencias sobre los Estimadores MCO}
+% ================================================================
+
+\begin{teorema}{Propiedades de MCO bajo Autocorrelación AR(1)}
+Al estimar por MCO en presencia de autocorrelación:
+\begin{enumerate}
+  \item \textbf{Insesgadez}: $E[\hat\beta] = \beta$ \quad\checkmark
+  \item \textbf{Consistencia}: $\hat\beta \xrightarrow{\;p\;} \beta$ \quad\checkmark
+  \item \textbf{Eficiencia (BLUE)}: MCO ya \textbf{no es BLUE} ---
+        el MCG tiene varianza estrictamente menor.\quad$\boldsymbol\times$
+\end{enumerate}
+\end{teorema}
+
+\subsection{Distorsión de la varianza}
+
+Fórmula estándar MCO (incorrecta bajo autocorrelación):
+\begin{equation}
+  \widehat{\operatorname{Var}}(\hat\beta_2)_{\textsc{mco}}
+  = \frac{\hat\sigma^2}{\displaystyle\sum_{t=1}^n x_t^2}
+\end{equation}
+
+Varianza verdadera del estimador MCO bajo AR(1):
+\begin{equation}
+  \operatorname{Var}(\hat\beta_2)_{\textsc{ar1}}
+  = \frac{\sigma^2}{\displaystyle\sum x_t^2}
+    \left[
+      1
+      + 2\rho\,\frac{\sum x_t x_{t-1}}{\sum x_t^2}
+      + 2\rho^2\,\frac{\sum x_t x_{t-2}}{\sum x_t^2}
+      + \cdots
+    \right]
+\end{equation}
+
+Si $X_t$ también sigue AR(1) con coeficiente $r$:
+\begin{equation}
+  \boxed{
+    \operatorname{Var}(\hat\beta_2)_{\textsc{ar1}}
+    \;\approx\;
+    \operatorname{Var}(\hat\beta_2)_{\textsc{mco}}
+    \cdot \frac{1 + r\rho}{1 - r\rho}
+  }
+\end{equation}
+
+Cuando $r>0$ y $\rho>0$ ---situación habitual en series económicas--- el
+factor $\frac{1+r\rho}{1-r\rho}>1$ implica que la fórmula estándar
+\textbf{subestima} la varianza real del estimador.
+
+\subsection{Resumen de consecuencias}
+
+\begin{center}
+\begin{tabular}{l c p{7.5cm}}
+\toprule
+\textbf{Propiedad} & & \textbf{Implicación} \\
+\midrule
+Insesgadez            & \checkmark
+  & $E[\hat\beta]=\beta$; correcto en promedio. \\[3pt]
+Consistencia          & \checkmark
+  & Converge al valor real cuando $n\to\infty$. \\[3pt]
+Eficiencia / BLUE     & $\boldsymbol\times$
+  & MCG tiene varianza menor; MCO ya no es BLUE. \\[3pt]
+Varianza estimada     & $\boldsymbol\times$
+  & $\hat\sigma^2$ sesgado hacia abajo; falsa precisión. \\[3pt]
+Pruebas $t$ y $F$     & $\boldsymbol\times$
+  & Estadísticos inflados; Error Tipo I excesivo. \\[3pt]
+$R^2$                 & $\boldsymbol\times$
+  & Sobreestimado; ajuste aparentemente mejor de lo real. \\[3pt]
+Intervalos de conf.   & $\boldsymbol\times$
+  & Demasiado estrechos; inferencia inválida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ================================================================
+\section{Métodos de Detección}
+% ================================================================
+
+\subsection{Método gráfico}
+
+Se grafican los residuos $\hat{u}_t$ frente al tiempo $t$ o frente a
+$\hat{u}_{t-1}$. Los patrones sistemáticos delatan dependencia serial.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\footnotesize, >=Stealth]
+
+  % ── Sin autocorrelación ───────────────────────────────────
+  \begin{scope}[xshift=0cm]
+    \draw[->, thick] (0,0) -- (4.8,0) node[right]{\tiny $t$};
+    \draw[->, thick] (0,-1.7) -- (0,1.9) node[above]{\tiny $\hat{u}_t$};
+    \draw[Mid, dashed] (0,0)--(4.6,0);
+    \foreach \x/\y in {
+      0.4/0.85, 0.9/-0.65, 1.4/1.15, 1.9/-1.20,
+      2.4/0.40, 2.9/1.05, 3.4/-0.95, 3.9/0.60, 4.3/-0.45}{
+      \filldraw[Black] (\x,\y) circle (2pt);
+    }
+    \node[align=center] at (2.3,-2.3){\textit{Sin autocorrelación}};
+  \end{scope}
+
+  % ── Autocorrelación positiva ──────────────────────────────
+  \begin{scope}[xshift=5.8cm]
+    \draw[->, thick] (0,0) -- (4.8,0) node[right]{\tiny $t$};
+    \draw[->, thick] (0,-1.7) -- (0,1.9) node[above]{\tiny $\hat{u}_t$};
+    \draw[Mid, dashed] (0,0)--(4.6,0);
+    \foreach \x/\y in {
+      0.4/-1.40, 0.9/-1.05, 1.4/-0.50, 1.9/0.10,
+      2.4/0.60,  2.9/1.05,  3.4/1.25,  3.9/0.90, 4.3/0.45}{
+      \filldraw[Black] (\x,\y) circle (2pt);
+    }
+    \draw[Dark, smooth, tension=0.5, thick]
+      plot coordinates {(0.4,-1.40)(1.4,-0.50)(2.4,0.60)(3.4,1.25)(4.3,0.45)};
+    \node[align=center] at (2.3,-2.3){$(a)$\;\textit{Autocorrelación positiva}};
+  \end{scope}
+
+  % ── Autocorrelación negativa ──────────────────────────────
+  \begin{scope}[xshift=11.6cm]
+    \draw[->, thick] (0,0) -- (4.8,0) node[right]{\tiny $t$};
+    \draw[->, thick] (0,-1.7) -- (0,1.9) node[above]{\tiny $\hat{u}_t$};
+    \draw[Mid, dashed] (0,0)--(4.6,0);
+    \foreach \x/\y in {
+      0.4/1.30,  0.9/-1.10, 1.4/1.00, 1.9/-0.90,
+      2.4/1.15,  2.9/-1.25, 3.4/0.80, 3.9/-1.00, 4.3/0.90}{
+      \filldraw[Black] (\x,\y) circle (2pt);
+    }
+    \node[align=center] at (2.3,-2.3){$(b)$\;\textit{Autocorrelación negativa}};
+  \end{scope}
+
+\end{tikzpicture}
+\caption{Patrones de $\hat{u}_t$ frente al tiempo. Panel central: rachas
+largas del mismo signo ($\rho>0$). Panel derecho: alternancia frecuente
+de signo ($\rho<0$).}
+\end{figure}
+
+\subsection{Prueba de las Rachas (Runs Test)}
+
+\noindent\textbf{Hipótesis:}
+\begin{align*}
+  H_0 &: \text{Los }\hat{u}_i\text{ son aleatorios — no están
+               correlacionados en el tiempo.}\\
+  H_a &: \text{Los }\hat{u}_i\text{ no son aleatorios — están
+               correlacionados en el tiempo.}
+\end{align*}
+
+\subsubsection{Procedimiento}
+\begin{enumerate}
+  \item Estimar por MCO y registrar la secuencia de signos de $\hat{u}_t$.
+  \item Contar las \textbf{rachas} $R$: sucesión ininterrumpida de
+        observaciones con el mismo signo ($+$ ó $-$).
+  \item Sean $N_1=$ número de $+$, $N_2=$ número de $-$, $N=N_1+N_2$.
+\end{enumerate}
+
+\subsubsection{Estadísticos bajo $H_0$}
+\begin{align}
+  E(R)       &= \frac{2\,N_1\,N_2}{N} + 1 \\[8pt]
+  \sigma_R^2 &= \frac{2\,N_1\,N_2\,(2\,N_1\,N_2 - N)}{N^2\,(N-1)}
+\end{align}
+
+\subsubsection{Regla de decisión}
+\[
+  \Pr\!\Bigl[
+    E(R) - z_{\alpha/2}\,\sigma_R
+    \;\leq\; R \;\leq\;
+    E(R) + z_{\alpha/2}\,\sigma_R
+  \Bigr] = 1-\alpha
+\]
+Si $R$ cae dentro del intervalo, no se rechaza $H_0$. Si cae fuera, se
+rechaza: los errores son interdependientes en el tiempo.
+
+\subsection{Prueba $d$ de Durbin--Watson}
+
+\subsubsection{Hipótesis y supuestos}
+\begin{align*}
+  H_0 &: \rho = 0\quad\text{(no hay autocorrelación de primer orden)}\\
+  H_a &: \rho \neq 0\quad\text{(hay autocorrelación de primer orden)}
+\end{align*}
+
+Seis condiciones deben cumplirse:
+\begin{enumerate}
+  \item El modelo incluye intercepto.
+  \item Los regresores son no estocásticos (fijos en muestras repetidas).
+  \item Las perturbaciones siguen exactamente AR(1).
+  \item Los $\varepsilon_t$ tienen distribución normal.
+  \item No hay datos faltantes.
+  \item $Y_{t-1}$ \textbf{no} aparece como regresor.
+\end{enumerate}
+
+\subsubsection{El estadístico}
+\begin{equation}
+  d \;=\;
+  \frac{\displaystyle\sum_{t=2}^{n}(\hat{u}_t - \hat{u}_{t-1})^2}
+       {\displaystyle\sum_{t=1}^{n}\hat{u}_t^2}
+\end{equation}
+
+\subsubsection{Derivación algebraica}
+
+Expandiendo el numerador:
+\begin{align}
+  d &= \frac{\sum\hat u_t^2 - 2\sum\hat u_t\hat u_{t-1} + \sum\hat u_{t-1}^2}
+            {\sum\hat u_t^2} \notag
+\end{align}
+
+Para $n$ grande, $\sum_{t=2}^n\hat u_{t-1}^2 \approx \sum_{t=1}^n\hat u_t^2$:
+\begin{align}
+  d &\approx
+  \frac{2\sum\hat u_t^2 - 2\sum\hat u_t\hat u_{t-1}}{\sum\hat u_t^2}
+  = 2\!\left(1 - \frac{\sum\hat u_t\hat u_{t-1}}{\sum\hat u_t^2}\right)
+\end{align}
+
+Definiendo el estimador muestral de $\rho$:
+\begin{equation}
+  \hat\rho \;=\;
+  \frac{\displaystyle\sum_{t=2}^{n}\hat{u}_t\,\hat{u}_{t-1}}
+       {\displaystyle\sum_{t=1}^{n}\hat{u}_t^2}
+\end{equation}
+
+Se obtiene la relación fundamental:
+\begin{equation}
+  \boxed{d \;\approx\; 2(1-\hat\rho)}, \qquad 0 \leq d \leq 4
+\end{equation}
+
+\subsubsection{Regiones de decisión}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \draw[very thick] (0,0) -- (14,0);
+  \foreach \x/\lab in {
+    0/{$0$}, 3/{$d_L$}, 4.5/{$d_U$},
+    7/{$2$}, 9.5/{$4{-}d_U$}, 11/{$4{-}d_L$}, 14/{$4$}}{
+    \draw[thick] (\x,0.2)--(\x,-0.2);
+    \node[below, font=\small] at (\x,-0.3){\lab};
+  }
+  \fill[VDark]  (0,0.4)   rectangle (3,0.9);
+  \fill[Light]  (3,0.4)   rectangle (4.5,0.9);
+  \fill[VLight] (4.5,0.4) rectangle (9.5,0.9);
+  \fill[Light]  (9.5,0.4) rectangle (11,0.9);
+  \fill[Dark]   (11,0.4)  rectangle (14,0.9);
+  % Etiquetas en zonas
+  \node[font=\fontsize{7}{9}\selectfont, align=center, text=white]
+    at (1.5,0.65){Rechazar $H_0$\\autocorr.$+$};
+  \node[font=\fontsize{7}{9}\selectfont, align=center, text=Dark]
+    at (3.75,0.65){Indeter-\\minado};
+  \node[font=\fontsize{7}{9}\selectfont, align=center, text=VDark]
+    at (7.0,0.65){No rechazar $H_0$\quad$\rho\approx 0$};
+  \node[font=\fontsize{7}{9}\selectfont, align=center, text=Dark]
+    at (10.25,0.65){Indeter-\\minado};
+  \node[font=\fontsize{7}{9}\selectfont, align=center, text=white]
+    at (12.5,0.65){Rechazar $H_0$\\autocorr.$-$};
+  % Flechas debajo
+  \draw[->, thick] (7,-1.0) -- (1.2,-1.0)
+    node[midway, below, font=\fontsize{7}{9}\selectfont]{$\hat\rho \to +1$};
+  \draw[->, thick] (7,-1.0) -- (12.8,-1.0)
+    node[midway, below, font=\fontsize{7}{9}\selectfont]{$\hat\rho \to -1$};
+\end{tikzpicture}
+\caption{Regiones de decisión del estadístico $d$ de Durbin--Watson.
+$d_L$ y $d_U$ se obtienen de las tablas en función de $n$ y $k$.}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{ccp{7cm}}
+\toprule
+$\hat\rho$ & $d \approx 2(1-\hat\rho)$ & Conclusión \\
+\midrule
+$\approx 0$  & $d \approx 2$ & No hay autocorrelación. \\
+$\approx+1$  & $d \approx 0$ & Autocorrelación positiva fuerte. \\
+$\approx-1$  & $d \approx 4$ & Autocorrelación negativa fuerte. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{nota}{Limitaciones del estadístico de Durbin--Watson}
+\begin{itemize}
+  \item Detecta sólo autocorrelación de \textbf{primer orden}.
+  \item \textbf{Inválido} si el modelo incluye $Y_{t-1}$ como regresor.
+  \item Existe zona de indeterminación $[d_L,\,d_U]$.
+  \item Valores críticos dependen de $n$, $k$ y $\alpha$.
+\end{itemize}
+\end{nota}
+
+\subsection{Prueba de Breusch--Godfrey (BG)}
+
+\begin{itemize}
+  \item Detecta autocorrelación de \textbf{orden superior} AR($p$), $p>1$.
+  \item Válida con regresores estocásticos e incluyendo $Y_{t-1}$.
+  \item Basada en estadístico $\chi^2$ o $F$ sobre residuos MCO aumentados
+        con sus rezagos.
+  \item Recomendada como prueba estándar en series de tiempo.
+\end{itemize}
+
+% ================================================================
+\section{Medidas Remediales}
+% ================================================================
+
+\subsection{MCG exacto — $\rho$ conocido}
+
+Transformación de Prais--Winsten para $t=2,\ldots,n$:
+\begin{align}
+  Y_t^* = Y_t - \rho\, Y_{t-1},
+  \qquad
+  X_t^* = X_t - \rho\, X_{t-1}
+\end{align}
+
+El modelo transformado $Y_t^* = \beta_1(1-\rho) + \beta_2 X_t^* + \varepsilon_t$
+satisface todos los supuestos clásicos. Para la primera observación:
+\[
+  Y_1^* = \sqrt{1-\rho^2}\cdot Y_1,
+  \qquad
+  X_1^* = \sqrt{1-\rho^2}\cdot X_1
+\]
+
+\subsection{MCG Factibles (FGLS) — $\rho$ desconocido}
+
+\begin{enumerate}
+  \item Estimar por MCO y obtener $\{\hat{u}_t\}$.
+  \item Estimar: $\hat\rho = \dfrac{\sum \hat u_t\hat u_{t-1}}{\sum \hat u_t^2}$.
+  \item Transformar las variables usando $\hat\rho$.
+  \item \textbf{Cochrane--Orcutt}: iterar pasos 1--3 hasta convergencia.
+  \item \textbf{Prais--Winsten}: igual, pero retener la primera observación
+        con el factor $\sqrt{1-\hat\rho^2}$ en cada iteración.
+\end{enumerate}
+
+\begin{nota}{Muestras pequeñas}
+Prais--Winsten es preferible porque retiene la primera observación y
+evita la pérdida de eficiencia que genera descartarla (como hace
+Cochrane--Orcutt en su versión estándar).
+\end{nota}
+
+\subsection{Errores estándar robustos — Newey--West (HAC)}
+
+Para muestras grandes sin necesidad de transformar el modelo:
+\begin{itemize}
+  \item Se estima por MCO con errores estándar \textsc{hac}
+        (\textit{Heteroskedasticity and Autocorrelation Consistent}).
+  \item Los coeficientes $\hat\beta$ no cambian; sólo se corrige la
+        inferencia estadística.
+  \item Recomendado cuando el objetivo principal es la inferencia robusta
+        en series de tiempo largas.
+\end{itemize}
+
+\newpage
+
+
+% ================================================================
+\section*{Hoja de Fórmulas Clave}
+\addcontentsline{toc}{section}{Hoja de Fórmulas Clave}
+% ================================================================
+
+\begin{formulabox}{Referencia Rápida — Autocorrelación · Cap. 12}
+\begin{alignat}{3}
+  &\textsc{supuesto clásico:}\quad
+    && E(u_i u_j) = 0,\quad i\neq j
+    \tag{SC.5}\\[6pt]
+  &\textsc{proceso ar(1):}\quad
+    && u_t = \rho\,u_{t-1} + \varepsilon_t,\quad |\rho|<1
+    \tag{AR1}\\[6pt]
+  &\textsc{varianza ar(1):}\quad
+    && \operatorname{Var}(u_t) = \dfrac{\sigma_\varepsilon^2}{1-\rho^2}
+    \tag{VAR}\\[6pt]
+  &\textsc{estadístico dw:}\quad
+    && d = \dfrac{\sum_{t=2}^n(\hat u_t-\hat u_{t-1})^2}
+                 {\sum_{t=1}^n\hat u_t^2}
+    \tag{DW}\\[6pt]
+  &\textsc{aprox.\ dw:}\quad
+    && d \approx 2(1-\hat\rho),\quad 0\leq d\leq 4
+    \tag{DW$\approx$}\\[6pt]
+  &\textsc{estimador de }\rho\text{:}\quad
+    && \hat\rho = \dfrac{\sum\hat u_t\hat u_{t-1}}{\sum\hat u_t^2}
+    \tag{$\hat\rho$}\\[6pt]
+  &\textsc{media de rachas:}\quad
+    && E(R) = \dfrac{2N_1 N_2}{N}+1
+    \tag{M.R}\\[6pt]
+  &\textsc{varianza de rachas:}\quad
+    && \sigma_R^2 = \dfrac{2N_1N_2(2N_1N_2-N)}{N^2(N-1)}
+    \tag{V.R}\\[6pt]
+  &\textsc{transformación gls:}\quad
+    && Y_t^* = Y_t-\rho Y_{t-1};\quad X_t^* = X_t-\rho X_{t-1}
+    \tag{GLS}\\[6pt]
+  &\textsc{prais-winsten (obs. 1):}\quad
+    && Y_1^*=\!\sqrt{1{-}\rho^2}\,Y_1;\quad X_1^*=\!\sqrt{1{-}\rho^2}\,X_1
+    \tag{PW}
+\end{alignat}
+\end{formulabox}
+
+\vspace{1.6cm}
+
+\noindent\rule{\linewidth}{0.6pt}
+\vspace{2pt}
+\noindent\rule{\linewidth}{2.0pt}
+
+\vspace{0.5cm}
+\begin{center}
+  \small
+  \textbf{Emanuel Quintana Silva}\quad·\quad
+  Economía\quad·\quad
+  \textsc{uptc} — Universidad Pedagógica y Tecnológica de Colombia\\[3pt]
+  Tunja, Colombia\quad·\quad Semestre 2026-I\\[6pt]
+  \itshape
+  Gujarati, D.\,N. \& Porter, D.\,C. (2010).
+  \textit{Econometría}, 5.\textsuperscript{a} ed., Cap.\,12. McGraw-Hill.\\
+  Wooldridge, J.\,M. (2016).
+  \textit{Introductory Econometrics}, 6th ed., Cap.\,12. Cengage.
+\end{center}
+
+\end{document}
