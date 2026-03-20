@@ -1,0 +1,485 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.10}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Regresion Polinomial, Correlaciones de Orden Cero}\\[6pt]
+  {\LARGE\bfseries y Multicolinealidad en la Funcion de Costo Cubica}\\[12pt]
+  {\large\itshape Una distincion entre dependencia funcional y multicolinealidad lineal}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.10 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Derivaciones formales, geometria polinomial y sesgo de especificacion}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Contexto.}\quad
+El ejemplo~7.4 estima una funcion de costo cubica para una empresa, donde la
+variable dependiente es el costo total $Y_i$ y los regresores son el nivel de
+produccion $X_i$, su cuadrado $X_i^2$ y su cubo $X_i^3$. El modelo es:
+
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_i + \beta_3 X_i^2 + \beta_4 X_i^3 + u_i
+  \label{eq:cubica}
+\end{equation}
+
+\noindent La matriz de correlaciones de orden cero reportada es:
+
+\begin{table}[ht]
+\centering
+\caption{Matriz de correlaciones de orden cero entre los regresores}
+\label{tab:corr}
+\small
+\begin{tabular}{lcccc}
+\toprule
+         & $X_i$  & $X_i^2$ & $X_i^3$ \\
+\midrule
+$X_i$    & $1.00$ & $0.9742$ & $0.9284$ \\
+$X_i^2$  &        & $1.00$   & $0.9872$ \\
+$X_i^3$  &        &          & $1.00$   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Todas las correlaciones superan $0.92$, lo que a primera vista sugiere
+multicolinealidad grave. A continuacion se analiza si esta interpretacion es correcta
+y cuales son las implicaciones practicas.
+
+\section{Inciso (a): las correlaciones altas implican multicolinealidad grave?}
+
+\subsection{La distincion fundamental: dependencia funcional vs. colinealidad lineal}
+
+El supuesto de no multicolinealidad del modelo de regresion clasico exige que
+no exista una \textbf{relacion lineal exacta} entre los regresores en la muestra.
+Formalmente, la condicion que se debe evitar es que existan escalares
+$\lambda_1, \lambda_2, \lambda_3$ no todos nulos tales que:
+
+\begin{equation}
+  \lambda_2 X_i + \lambda_3 X_i^2 + \lambda_4 X_i^3 = 0
+  \qquad \text{para todo } i = 1, \ldots, n
+  \label{eq:colineal_exacta}
+\end{equation}
+
+En la regresion polinomial, las variables $X_i$, $X_i^2$ y $X_i^3$ son
+\textbf{transformaciones no lineales de la misma variable base} $X_i$.
+La relacion entre ellas es de tipo potencial, no lineal:
+\begin{equation}
+  X_i^2 = (X_i)^2 \neq aX_i + b \qquad \text{en general}
+  \label{eq:no_lineal}
+\end{equation}
+
+\noindent Por lo tanto, la condicion~(\ref{eq:colineal_exacta}) no se cumple
+para ningun conjunto de constantes no triviales, y la multicolinealidad
+\emph{perfecta} no existe entre estos regresores.
+
+\subsection{Por que las correlaciones de orden cero son altas}
+
+La alta correlacion muestral entre $X_i$, $X_i^2$ y $X_i^3$ tiene una
+explicacion aritmetica, no economica. Considere que si $X_i > 0$ para todo $i$
+(como es el caso para niveles de produccion), entonces:
+
+\begin{equation}
+  r(X_i,\, X_i^2)
+    = \frac{\sum x_i x_i^2}{\sqrt{\sum x_i^2 \sum (x_i^2)^2}}
+    = \frac{\sum x_i^3}{\sqrt{\sum x_i^2 \sum x_i^4}}
+  \label{eq:corr_x_x2}
+\end{equation}
+
+\noindent donde $x_i = X_i - \bar X$ y $x_i^2 = X_i^2 - \overline{X^2}$.
+Si la distribucion de $X_i$ esta concentrada en valores positivos y no tiene
+simetria alrededor de cero, los momentos de orden superior son todos positivos
+y la correlacion es naturalmente alta.
+
+Esto es un fenomeno muestral vinculado a la escala y rango de los datos, no
+a una dependencia lineal entre los regresores. Cuando la produccion oscila,
+por ejemplo, entre 1 y 10 unidades, los valores de $X^2$ (1 a 100) y $X^3$
+(1 a 1000) son proporcionales a $X$ en esa muestra especifica, pero
+globalmente la relacion es curvilinea.
+
+\subsection{Consecuencias practicas: VIF elevado pero estimadores validos}
+
+Aunque la multicolinealidad no es perfecta, los VIF de los regresores
+polinomiales son tipicamente altos. Para el modelo cubico con las
+correlaciones de la Tabla~\ref{tab:corr}:
+
+\begin{equation}
+  \text{VIF}(X_i^2) = \frac{1}{1 - R_{X_i^2 \cdot X_i, X_i^3}^2}
+  \label{eq:VIF_X2}
+\end{equation}
+
+\noindent donde $R_{X_i^2 \cdot X_i, X_i^3}^2$ es el $R^2$ de la regresion
+auxiliar de $X_i^2$ sobre $X_i$ y $X_i^3$. Con $r_{12} = 0.9742$ y
+$r_{23} = 0.9872$, este $R^2$ es muy cercano a~1 y el VIF es grande.
+
+Sin embargo, la alta colinealidad imperfecta solo infla los errores estandar;
+\emph{no sesga los estimadores}. Si los coeficientes de~(\ref{eq:cubica}) son
+estadisticamente significativos a pesar del VIF elevado, la muestra contiene
+suficiente variacion independiente para identificarlos.
+
+\begin{clave}
+  \textbf{Respuesta al inciso~(a).} La afirmacion es \textbf{parcialmente
+  incorrecta}. Que las correlaciones de orden cero sean altas no implica
+  automaticamente multicolinealidad grave en el sentido de invalidar la
+  estimacion. En regresiones polinomiales, las altas correlaciones entre
+  $X$, $X^2$ y $X^3$ son un artefacto aritmetico de la escala de los
+  datos, no una dependencia lineal estructural. La multicolinealidad
+  perfecta no existe entre potencias de la misma variable (a menos que el
+  rango de $X$ sea tan estrecho que $X^2 \approx cX + d$). La colinealidad
+  imperfecta infla varianzas pero no sesga los estimadores.
+\end{clave}
+
+\section{Inciso (b): ¿eliminar \texorpdfstring{$X_i^2$}{Xi2} y \texorpdfstring{$X_i^3$}{Xi3}?}
+
+\subsection{Respuesta}
+
+\textbf{No}. Eliminar $X_i^2$ y $X_i^3$ basandose en la alta correlacion
+seria un error metodologico grave por las siguientes razones.
+
+\subsection{Razon 1: fundamento teorico de la funcion de costo cubica}
+
+La teoria microeconomica del costo a corto plazo establece que:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item El costo marginal ($CM$) tiene forma de U: primero decrece
+    (rendimientos crecientes de los factores variables) y luego crece
+    (rendimientos decrecientes). Esto implica que el $CM$ es una funcion
+    cuadratica de $X$.
+  \item Integrando: el costo total debe ser una funcion cubica de $X$.
+  \item El costo variable promedio ($CVP$) tambien tiene forma de U, lo que
+    requiere un termino cuadratico.
+\end{itemize}
+
+Formalmente, si $CM = \partial Y/\partial X = \beta_2 + 2\beta_3 X + 3\beta_4 X^2$,
+para que esta funcion tenga forma de U se necesita $\beta_3 < 0$ y $\beta_4 > 0$,
+lo que requiere los tres terminos en el modelo.
+
+\subsection{Razon 2: el criterio de omision correcto es la relevancia, no la correlacion}
+
+La colinealidad entre regresores no es criterio valido para omitir variables.
+La decision de omitir una variable debe basarse en:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item Evidencia empirica de que su coeficiente es cero (test $t$ no significativo).
+  \item Justificacion teorica de que la variable es irrelevante.
+\end{enumerate}
+
+Si los coeficientes de $X_i^2$ y $X_i^3$ son significativos (como sugiere
+la teoria de costos), omitirlos introduce sesgo de especificacion independientemente
+de la correlacion que tengan con $X_i$.
+
+\subsection{Razon 3: la colinealidad se resuelve de otras formas}
+
+Si la colinealidad entre los terminos polinomiales genera errores estandar
+inaceptables, el remedio correcto es la \textbf{ortogonalizacion polinomial},
+no la eliminacion de terminos. Los \textbf{polinomios ortogonales de Legendre}
+transforman $X_i$, $X_i^2$, $X_i^3$ en combinaciones lineales $P_0(X)$,
+$P_1(X)$, $P_2(X)$, $P_3(X)$ tales que:
+
+\begin{equation}
+  \sum_{i=1}^n P_j(X_i)\, P_k(X_i) = 0 \quad \text{para } j \neq k
+  \label{eq:ortogonal}
+\end{equation}
+
+El modelo estimado con polinomios ortogonales es algebraicamente equivalente
+al modelo cubico original pero sin colinealidad entre regresores, por lo que
+los errores estandar son minimos y cada coeficiente se puede probar
+independientemente.
+
+\begin{clave}
+  \textbf{Respuesta al inciso~(b).} No se deben eliminar $X_i^2$ y $X_i^3$.
+  Son terminos teoricamente necesarios para capturar la forma en U del costo
+  marginal. Si la colinealidad es un problema practico, el remedio es
+  la ortogonalizacion de los terminos polinomiales, no su eliminacion.
+\end{clave}
+
+\section{Inciso (c): que sucede con el coeficiente de \texorpdfstring{$X_i$}{Xi} si se eliminan \texorpdfstring{$X_i^2$}{Xi2} y \texorpdfstring{$X_i^3$}{Xi3}}
+
+\subsection{Derivacion formal del sesgo}
+
+Suponga que el verdadero modelo es~(\ref{eq:cubica}) pero se estima el modelo
+mal especificado:
+
+\begin{equation}
+  Y_i = \alpha_1 + \alpha_2 X_i + e_i
+  \label{eq:lineal}
+\end{equation}
+
+Sea $b_{2,X^2}$ el coeficiente de la regresion de $X_i^2$ sobre $X_i$, y
+$b_{2,X^3}$ el coeficiente de la regresion de $X_i^3$ sobre $X_i$ (ambas en
+desviaciones). El estimador MCO $\hat\alpha_2$ del modelo~(\ref{eq:lineal}) es:
+
+\begin{equation}
+  \hat\alpha_2 = \frac{\sum x_i y_i}{\sum x_i^2}
+  \label{eq:alpha2}
+\end{equation}
+
+Sustituyendo el verdadero modelo en~(\ref{eq:alpha2}):
+
+\begin{align}
+  \hat\alpha_2
+  &= \frac{\sum x_i (\beta_2 x_i + \beta_3 x_i^{(2)} + \beta_4 x_i^{(3)} + u_i)}
+          {\sum x_i^2}
+  \notag\\[4pt]
+  &= \beta_2 + \beta_3 \cdot \frac{\sum x_i x_i^{(2)}}{\sum x_i^2}
+            + \beta_4 \cdot \frac{\sum x_i x_i^{(3)}}{\sum x_i^2}
+            + \frac{\sum x_i u_i}{\sum x_i^2}
+  \notag\\[4pt]
+  &= \beta_2 + \beta_3 b_{2,X^2} + \beta_4 b_{2,X^3} + \frac{\sum x_i u_i}{\sum x_i^2}
+  \label{eq:alpha2_descomp}
+\end{align}
+
+donde $x_i^{(k)} = X_i^k - \overline{X^k}$ son las desviaciones de los
+terminos polinomiales. Tomando esperanza:
+
+\begin{equation}
+  \boxed{
+    \E[\hat\alpha_2]
+      = \beta_2
+        + \underbrace{\beta_3 \cdot b_{2,X^2}}_{\text{sesgo por } X^2}
+        + \underbrace{\beta_4 \cdot b_{2,X^3}}_{\text{sesgo por } X^3}
+  }
+  \label{eq:sesgo_total}
+\end{equation}
+
+\subsection{Signo y naturaleza del sesgo}
+
+Para una funcion de costo cubica con la forma teorica correcta:
+
+\begin{align}
+  \beta_2 &> 0 \quad \text{(costo marginal inicial positivo)}\\
+  \beta_3 &< 0 \quad \text{(tramo de rendimientos crecientes)}\\
+  \beta_4 &> 0 \quad \text{(tramo de rendimientos decrecientes)}
+\end{align}
+
+Los coeficientes de las regresiones auxiliares son:
+
+\begin{equation}
+  b_{2,X^2} = r_{X,X^2} \cdot \frac{s_{X^2}}{s_X} > 0
+  \label{eq:b_X2}
+\end{equation}
+
+\begin{equation}
+  b_{2,X^3} = r_{X,X^3} \cdot \frac{s_{X^3}}{s_X} > 0
+  \label{eq:b_X3}
+\end{equation}
+
+Los dos terminos de sesgo tienen signos opuestos:
+
+\begin{align}
+  \beta_3 b_{2,X^2} &< 0 \quad (\beta_3 < 0, \; b_{2,X^2} > 0)\\
+  \beta_4 b_{2,X^3} &> 0 \quad (\beta_4 > 0, \; b_{2,X^3} > 0)
+\end{align}
+
+El sesgo neto depende de la magnitud relativa de estos dos efectos.
+En general:
+
+\begin{equation}
+  \E[\hat\alpha_2] \neq \beta_2
+  \label{eq:sesgo_neto}
+\end{equation}
+
+\subsection{Perdida de la interpretacion economica}
+
+El coeficiente $\beta_2$ en el modelo completo tiene una interpretacion
+precisa: es la pendiente del costo total respecto a la produccion en el
+punto donde $X = 0$, es decir, el costo marginal inicial. El estimador
+$\hat\alpha_2$ del modelo reducido ya no tiene esta interpretacion: es
+una mezcla de los efectos lineal, cuadratico y cubico de la produccion
+sobre el costo.
+
+En particular, el modelo lineal~(\ref{eq:lineal}) implica que el costo
+marginal es constante e igual a $\hat\alpha_2$, lo que contradice la
+teoria del costo a corto plazo.
+
+\subsection{Consecuencias sobre la varianza del error}
+
+El error del modelo reducido es:
+
+\begin{equation}
+  e_i = u_i + \beta_3 X_i^2 + \beta_4 X_i^3
+  \label{eq:error_reducido}
+\end{equation}
+
+(en terminos de las desviaciones de los regresores omitidos). La varianza del
+error del modelo reducido es:
+
+\begin{equation}
+  \sigma_e^2
+    = \sigma_u^2
+    + \beta_3^2 \sigma_{X^2}^2
+    + \beta_4^2 \sigma_{X^3}^2
+    + 2\beta_3\beta_4 \Cov(X_i^2, X_i^3)
+    > \sigma_u^2
+  \label{eq:var_error_red}
+\end{equation}
+
+Al igual que en ejercicios anteriores, la varianza del error aumenta al
+omitir variables relevantes, deteriorando la precision de toda la inferencia.
+
+\begin{clave}
+  \textbf{Respuesta al inciso~(c).} Si se eliminan $X_i^2$ y $X_i^3$:
+  \begin{enumerate}[leftmargin=1.4em, itemsep=4pt]
+    \item El coeficiente de $X_i$ resulta sesgado:
+      $\E[\hat\alpha_2] = \beta_2 + \beta_3 b_{2,X^2} + \beta_4 b_{2,X^3}$.
+    \item El sesgo combina efectos de signo opuesto ($\beta_3 b_{2,X^2} < 0$
+      y $\beta_4 b_{2,X^3} > 0$), cuyo resultado neto es indeterminado sin
+      datos concretos.
+    \item $\hat\alpha_2$ pierde toda interpretacion economica como costo
+      marginal en $X = 0$.
+    \item El modelo lineal impone un costo marginal constante, contradiciendo
+      la teoria.
+    \item La varianza del error aumenta, invalidando la inferencia.
+  \end{enumerate}
+\end{clave}
+
+\section{Sintesis comparativa}
+
+\begin{table}[ht]
+\centering
+\caption{Consecuencias de mantener vs. eliminar los terminos polinomiales}
+\label{tab:comparacion}
+\small
+\begin{tabular}{p{3.5cm} p{5cm} p{5cm}}
+\toprule
+\textbf{Criterio}
+  & \textbf{Modelo cubico completo}
+  & \textbf{Modelo lineal (omitiendo $X^2$, $X^3$)} \\
+\midrule
+Sesgo de coeficientes
+  & Ninguno (insesgado bajo supuestos clasicos)
+  & Sesgo $= \beta_3 b_{2,X^2} + \beta_4 b_{2,X^3}$ \\[4pt]
+Interpretacion de $\hat\beta_2$
+  & Pendiente del $CT$ en $X=0$ (costo marginal inicial)
+  & Mezcla indistinguible de efectos lineal, cuadratico y cubico \\[4pt]
+Forma del costo marginal
+  & Cuadratica (forma de U): teoricamente correcta
+  & Constante: teoricamente incorrecta \\[4pt]
+Errores estandar
+  & Inflados por colinealidad entre $X$, $X^2$, $X^3$
+  & Menores, pero basados en un modelo incorrecto \\[4pt]
+Validez de inferencia
+  & Valida si los supuestos de MCO se cumplen
+  & Invalida por omision de variables relevantes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Ortogonalizacion de polinomios: la solucion correcta}
+
+Si la colinealidad entre $X_i$, $X_i^2$, $X_i^3$ genera errores estandar
+excesivamente grandes, la solucion correcta es construir polinomios ortogonales.
+Para una muestra $\{X_1, \ldots, X_n\}$, los polinomios ortogonales se definen
+recursivamente:
+
+\begin{align}
+  P_0(X_i) &= 1
+  \label{eq:P0}\\
+  P_1(X_i) &= X_i - \bar X
+  \label{eq:P1}\\
+  P_2(X_i) &= (X_i - \bar X)^2 - \frac{\sum (X_i - \bar X)^2}{n}
+  \label{eq:P2}\\
+  P_3(X_i) &= P_1(X_i)P_2(X_i) - \frac{\sum P_1(X_i)P_2(X_i)^2}{\sum P_1(X_i)^2} P_1(X_i)
+  \label{eq:P3}
+\end{align}
+
+Por construccion, $\sum_i P_j(X_i) P_k(X_i) = 0$ para $j \neq k$. El modelo
+estimado con estos polinomios:
+
+\begin{equation}
+  Y_i = \gamma_0 P_0(X_i) + \gamma_1 P_1(X_i) + \gamma_2 P_2(X_i) + \gamma_3 P_3(X_i) + u_i
+  \label{eq:modelo_ortog}
+\end{equation}
+
+es algebraicamente equivalente al modelo cubico original pero tiene regresores
+ortogonales, por lo que los errores estandar son minimos y cada $\hat\gamma_k$
+se puede probar independientemente sin interferencia de los demas terminos.
+Los coeficientes originales $\beta_2, \beta_3, \beta_4$ se recuperan mediante
+la transformacion inversa.
+
+\section{Condicion necesaria para la forma cubica del costo}
+
+Desde el punto de vista de la teoria del costo, el modelo cubico~(\ref{eq:cubica})
+implica que la funcion de costo marginal es:
+
+\begin{equation}
+  \text{CMg}(X) = \frac{dY}{dX} = \beta_2 + 2\beta_3 X + 3\beta_4 X^2
+  \label{eq:CMg}
+\end{equation}
+
+Para que el costo marginal tenga forma de U (minimo en $X^* > 0$):
+
+\begin{equation}
+  \frac{d(\text{CMg})}{dX} = 2\beta_3 + 6\beta_4 X = 0
+  \quad \Rightarrow \quad
+  X^* = -\frac{\beta_3}{3\beta_4} > 0
+  \label{eq:minimo_CMg}
+\end{equation}
+
+Esto requiere $\beta_3 < 0$ y $\beta_4 > 0$. Si se elimina $X_i^3$ (forzando
+$\beta_4 = 0$), la condicion de minimo desaparece y el costo marginal no puede
+tener forma de U, lo cual invalida la teoria.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los valores de la matriz de correlaciones
+provienen del ejemplo~7.4 de Gujarati~\& Porter (2010). La formula del sesgo
+$\E[\hat\alpha_2] = \beta_2 + \beta_3 b_{2,X^2} + \beta_4 b_{2,X^3}$ es exacta
+en muestras finitas bajo los supuestos clasicos de MCO.}
+
+\end{document}
