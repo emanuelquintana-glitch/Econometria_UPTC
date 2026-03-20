@@ -1,0 +1,256 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.13}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}\renewcommand{\footrulewidth}{0pt}
+\titleformat{\section}{\large\bfseries\scshape}{\thesection.}{0.6em}{}[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}\newtheorem{obs}{Observacion}
+\newtcolorbox{clave}{colback=white,colframe=black,boxrule=0.5pt,arc=3pt,left=8pt,right=8pt,top=6pt,bottom=6pt,breakable}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries $R^2 = 0$ cuando Todas las Correlaciones}\\[6pt]
+  {\LARGE\bfseries de Orden Cero son Nulas}\\[12pt]
+  {\large\itshape Tres demostraciones independientes: escalar, matricial y geometrica}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.13 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento.}\quad
+Se tiene la regresion de $X_1$ (variable dependiente $Y$) sobre $X_2, X_3, \ldots, X_k$:
+\begin{equation}
+  X_{1i} = \beta_1 + \beta_2 X_{2i} + \cdots + \beta_k X_{ki} + u_i
+  \label{eq:modelo}
+\end{equation}
+con correlaciones de orden cero $r_{1i} = \sum x_{1\ell} x_{i\ell}/\sqrt{\sum x_{1\ell}^2 \sum x_{i\ell}^2}$,
+donde las minusculas son desviaciones respecto a la media.
+Se pide demostrar que $r_{1i} = 0$ para todo $i = 2,\ldots,k$ implica $R^2_{1\cdot 23\ldots k} = 0$.
+
+\section{Inciso (a): demostracion}
+
+\subsection{Consecuencia inmediata de $r_{1i} = 0$}
+
+Si $r_{1i} = 0$ para todo $i$, dado que los denominadores son positivos:
+\begin{equation}
+  \sum_{\ell=1}^n x_{1\ell}\, x_{i\ell} = 0 \qquad \text{para todo } i = 2, 3, \ldots, k
+  \label{eq:ortog}
+\end{equation}
+El vector $\mathbf{x}_1$ es ortogonal (en desviaciones) a cada columna de la matriz de regresores.
+
+\subsection{Demostracion 1: via ecuaciones normales}
+
+Las ecuaciones normales en desviaciones son:
+\begin{equation}
+  \sum_{j=2}^{k} \hat\beta_j \sum_\ell x_{j\ell}\, x_{i\ell} = \sum_\ell x_{1\ell}\, x_{i\ell},
+  \qquad i = 2, \ldots, k
+  \label{eq:normales}
+\end{equation}
+
+Por~(\ref{eq:ortog}), el lado derecho es cero para todo $i$. El sistema se convierte en:
+\begin{equation}
+  \sum_{j=2}^{k} \hat\beta_j \sum_\ell x_{j\ell}\, x_{i\ell} = 0, \qquad i = 2, \ldots, k
+  \label{eq:normales_cero}
+\end{equation}
+
+La unica solucion (dado que $\mathbf{X'X}$ es invertible) es:
+\begin{equation}
+  \hat\beta_2 = \hat\beta_3 = \cdots = \hat\beta_k = 0
+  \label{eq:betas_cero}
+\end{equation}
+
+El $R^2$ en desviaciones es:
+\begin{equation}
+  R^2 = \frac{\displaystyle\sum_{j=2}^{k} \hat\beta_j \sum_\ell x_{1\ell}\, x_{j\ell}}
+             {\displaystyle\sum_\ell x_{1\ell}^2}
+  \label{eq:R2_escalar}
+\end{equation}
+
+Sustituyendo $\hat\beta_j = 0$ y $\sum_\ell x_{1\ell} x_{j\ell} = 0$:
+\begin{equation}
+  \boxed{R^2_{1\cdot 23\ldots k} = \frac{0}{\sum_\ell x_{1\ell}^2} = 0}
+  \label{eq:R2_cero}
+\end{equation}
+\hfill $\square$
+
+\subsection{Demostracion 2: via el estimador matricial}
+
+Sea $\tilde{\mathbf{X}}$ la matriz $n \times (k-1)$ de desviaciones de los regresores y $\mathbf{x}_1$ el vector de desviaciones de $X_1$. El estimador MCO es:
+\begin{equation}
+  \hat{\boldsymbol\delta} = (\tilde{\mathbf{X}}'\tilde{\mathbf{X}})^{-1}\tilde{\mathbf{X}}'\mathbf{x}_1
+  \label{eq:MCO_mat}
+\end{equation}
+
+La condicion $r_{1i} = 0$ para todo $i$ es equivalente a:
+\begin{equation}
+  \tilde{\mathbf{X}}'\mathbf{x}_1 = \mathbf{0}
+  \label{eq:ortog_mat}
+\end{equation}
+
+Por tanto:
+\begin{equation}
+  \hat{\boldsymbol\delta} = (\tilde{\mathbf{X}}'\tilde{\mathbf{X}})^{-1}\mathbf{0} = \mathbf{0}
+\end{equation}
+
+Los valores ajustados son $\hat{\mathbf{x}}_1 = \tilde{\mathbf{X}}\mathbf{0} = \mathbf{0}$ y la SCE es:
+\begin{equation}
+  \text{SCE} = \hat{\mathbf{x}}_1'\hat{\mathbf{x}}_1 = 0 \quad \Rightarrow \quad R^2 = 0
+\end{equation}
+\hfill $\square$
+
+\subsection{Demostracion 3: via el proyector ortogonal}
+
+El $R^2$ es la norma al cuadrado de la proyeccion de $\mathbf{x}_1$ sobre el espacio columna de $\tilde{\mathbf{X}}$, dividida entre $\|\mathbf{x}_1\|^2$:
+\begin{equation}
+  R^2 = \frac{\|\mathbf{P}\mathbf{x}_1\|^2}{\|\mathbf{x}_1\|^2}
+\end{equation}
+
+donde $\mathbf{P} = \tilde{\mathbf{X}}(\tilde{\mathbf{X}}'\tilde{\mathbf{X}})^{-1}\tilde{\mathbf{X}}'$.
+Por~(\ref{eq:ortog_mat}):
+\begin{equation}
+  \mathbf{P}\mathbf{x}_1
+    = \tilde{\mathbf{X}}(\tilde{\mathbf{X}}'\tilde{\mathbf{X}})^{-1}\underbrace{\tilde{\mathbf{X}}'\mathbf{x}_1}_{=\,\mathbf{0}}
+    = \mathbf{0}
+\end{equation}
+
+El vector $\mathbf{x}_1$ es ortogonal al espacio columna de $\tilde{\mathbf{X}}$ (angulo de $90^\circ$),
+por lo que su proyeccion es el vector cero:
+\begin{equation}
+  R^2 = \frac{\|\mathbf{0}\|^2}{\|\mathbf{x}_1\|^2} = 0
+\end{equation}
+\hfill $\square$
+
+\begin{clave}
+  \textbf{Resultado.} Si $r_{1i} = 0$ para $i = 2, \ldots, k$, entonces:
+  $\hat\beta_j = 0$ para todo $j \geq 2$, SCE $= 0$, y $R^2_{1\cdot 23\ldots k} = 0$.
+\end{clave}
+
+\section{Inciso (b): importancia del resultado}
+
+\subsection{Ausencia de poder explicativo}
+
+$R^2 = 0$ implica SCE $= 0$ y SCT $=$ SCR:
+\begin{equation}
+  \sum_\ell (X_{1\ell} - \bar X_1)^2 = \sum_\ell \hat u_\ell^2
+\end{equation}
+Toda la variacion de $X_1$ queda sin explicar. Los regresores no aportan ninguna informacion lineal sobre $X_1$.
+
+\subsection{Prediccion trivial}
+
+Con $\hat\beta_j = 0$ para todo $j \geq 2$:
+\begin{equation}
+  \hat X_{1i} = \hat\beta_1 = \bar X_1 \qquad \text{para toda observacion } i
+  \label{eq:pred_media}
+\end{equation}
+
+El modelo predice siempre la media muestral, independientemente de los valores de los regresores. Es el modelo nulo: cero valor predictivo por encima de la media.
+
+\subsection{Insignificancia global}
+
+El estadistico $F$ de significancia conjunta es:
+\begin{equation}
+  F = \frac{R^2/(k-1)}{(1-R^2)/(n-k)} = \frac{0}{(n-k)^{-1}} = 0
+\end{equation}
+
+$F = 0$ no rechaza $H_0: \beta_2 = \cdots = \beta_k = 0$. El modelo falla completamente la prueba de significancia global.
+
+\subsection{Condicion necesaria para una regresion util}
+
+El resultado establece que para que una regresion multiple sea util, \textbf{al menos una} de las correlaciones $r_{1i}$ debe ser distinta de cero. Esto tiene consecuencias practicas:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=5pt]
+  \item \textbf{La correlacion simple es el punto de partida}: antes de estimar
+    el modelo multiple, se debe calcular $r_{1i}$ para cada regresor. Si todas son
+    aproximadamente cero, el modelo multiple no ayudara.
+
+  \item \textbf{La correlacion entre regresores es irrelevante si $\mathbf{r}_1 = \mathbf{0}$}:
+    la formula del $R^2$ para dos regresores,
+    \begin{equation}
+      R^2_{1\cdot 23} = \frac{r_{12}^2 + r_{13}^2 - 2r_{12}r_{13}r_{23}}{1 - r_{23}^2}
+    \end{equation}
+    con $r_{12} = r_{13} = 0$ da $R^2 = 0$ independientemente de $r_{23}$.
+    La multicolinealidad entre regresores no puede ``crear'' poder explicativo
+    si ninguno esta correlacionado con $X_1$.
+
+  \item \textbf{Advertencia sobre correlaciones individuales nulas en modelos multiples}:
+    el resultado es condicion \emph{suficiente}, no \emph{necesaria} para $R^2 = 0$.
+    Puede existir $r_{1i} = 0$ para algun $i$ pero $\hat\beta_i \neq 0$ en el modelo
+    multiple si $X_i$ esta correlacionada con otro regresor que si tiene $r_{1j} \neq 0$.
+    Sin embargo, si \emph{todas} las $r_{1i}$ son nulas, el modelo multiple no puede
+    superar al modelo nulo.
+\end{enumerate}
+
+\begin{clave}
+  \textbf{Importancia.} El hallazgo demuestra que las correlaciones $r_{1i}$ entre
+  la variable dependiente y los regresores son el ingrediente fundamental del poder
+  explicativo. Si $r_{1i} = 0$ para todo $i$: (1) $R^2 = 0$; (2) todos los coeficientes
+  de pendiente son cero; (3) la prediccion es trivialmente la media; (4) $F = 0$.
+  La estructura de correlacion entre los propios regresores es irrelevante para el
+  ajuste cuando ninguno de ellos esta correlacionado con $X_1$.
+\end{clave}
+
+\appendix
+
+\section{Formula compacta del $R^2$ en terminos de correlaciones}
+
+Para $k-1$ regresores, sea $\mathbf{R}$ la matriz $(k-1)\times(k-1)$ de correlaciones
+entre regresores y $\mathbf{r}_1$ el vector de correlaciones de $X_1$ con cada regresor:
+\begin{equation}
+  R^2_{1\cdot 23\ldots k} = \mathbf{r}_1'\mathbf{R}^{-1}\mathbf{r}_1
+\end{equation}
+Si $\mathbf{r}_1 = \mathbf{0}$:
+\begin{equation}
+  R^2_{1\cdot 23\ldots k} = \mathbf{0}'\mathbf{R}^{-1}\mathbf{0} = 0
+\end{equation}
+independientemente de $\mathbf{R}$. Esta es la demostracion mas compacta del ejercicio.
+
+\section{El intercepto bajo $r_{1i} = 0$}
+
+La condicion de primer orden para $\beta_1$ siempre da:
+\begin{equation}
+  \hat\beta_1 = \bar X_1 - \hat\beta_2 \bar X_2 - \cdots - \hat\beta_k \bar X_k
+\end{equation}
+Con $\hat\beta_j = 0$ para todo $j \geq 2$: $\hat\beta_1 = \bar X_1$.
+El modelo estimado es $\hat X_{1i} = \bar X_1$: una linea horizontal en la media,
+el modelo de referencia contra el que se mide todo $R^2$.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} El resultado es un caso especial del teorema general
+que el $R^2$ multiple es una funcion monotona creciente de las correlaciones entre
+la variable dependiente y los regresores. Para la demostracion de la formula
+$R^2_{1\cdot 23} = (r_{12}^2+r_{13}^2-2r_{12}r_{13}r_{23})/(1-r_{23}^2)$,
+vease el apendice del capitulo~7 de Gujarati \& Porter (2010).}
+
+\end{document}
