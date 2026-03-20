@@ -1,0 +1,488 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 11.1}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{verdict}[2]{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  title={\textbf{Inciso #1 --- #2}},
+  fonttitle=\small\bfseries,
+  breakable
+}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Verdadero, Falso o Incierto:}\\[6pt]
+  {\LARGE\bfseries Siete Afirmaciones sobre Heteroscedasticidad}\\[12pt]
+  {\large\itshape Justificacion formal con algebra matricial, teoria asintótica}\\
+  {\large\itshape y analisis de casos}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~11.1 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con demostraciones del teorema de Gauss-Markov bajo varianza no constante,
+  sesgo de los estimadores de varianza y prueba de White}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Nota preliminar.}\quad
+El modelo de referencia es:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \cdots + \beta_k X_{ki} + u_i,
+  \qquad i = 1, \ldots, n
+  \label{eq:modelo}
+\end{equation}
+con el supuesto de heteroscedasticidad:
+\begin{equation}
+  \E[u_i] = 0, \quad \E[u_i^2] = \sigma_i^2, \quad \E[u_i u_j] = 0 \; (i \neq j)
+  \label{eq:heterosc}
+\end{equation}
+donde $\sigma_i^2$ no es constante entre observaciones. En forma matricial,
+la matriz de varianzas-covarianzas del vector de errores es:
+\begin{equation}
+  \E[\mathbf{u}\mathbf{u}'] = \boldsymbol\Omega =
+  \begin{pmatrix}
+    \sigma_1^2 & 0 & \cdots & 0\\
+    0 & \sigma_2^2 & \cdots & 0\\
+    \vdots & \vdots & \ddots & \vdots\\
+    0 & 0 & \cdots & \sigma_n^2
+  \end{pmatrix}
+  \neq \sigma^2 \mathbf{I}_n
+  \label{eq:Omega}
+\end{equation}
+
+\bigskip
+
+%% ── Inciso (a) ────────────────────────────────────────────────────────────
+\begin{verdict}{(a)}{FALSO}
+  En presencia de heteroscedasticidad, los estimadores de MCO son sesgados e
+  ineficientes.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+El estimador MCO es $\hat{\boldsymbol\beta} = (\mathbf{X'X})^{-1}\mathbf{X'y}$.
+Sustituyendo $\mathbf{y} = \mathbf{X}\boldsymbol\beta + \mathbf{u}$:
+\begin{equation}
+  \hat{\boldsymbol\beta}
+    = \boldsymbol\beta + (\mathbf{X'X})^{-1}\mathbf{X'u}
+  \label{eq:beta_descomp}
+\end{equation}
+Tomando esperanza bajo exogeneidad ($\E[\mathbf{X'u}] = \mathbf{0}$):
+\begin{equation}
+  \E[\hat{\boldsymbol\beta}] = \boldsymbol\beta
+  \label{eq:insesgado}
+\end{equation}
+
+El estimador MCO es \textbf{insesgado} independientemente de si hay
+heteroscedasticidad. La insesgadez no requiere homoscedasticidad: solo
+requiere exogeneidad de los regresores ($\E[u_i | \mathbf{X}] = 0$),
+que no se ve afectada por la varianza no constante.
+
+Lo que se pierde bajo heteroscedasticidad es la \textbf{eficiencia}: el
+estimador MCO ya no es MELI (Mejor Estimador Lineal Insesgado). La varianza
+del estimador MCO bajo heteroscedasticidad es:
+\begin{equation}
+  \Var(\hat{\boldsymbol\beta}) = (\mathbf{X'X})^{-1}\mathbf{X'}\boldsymbol\Omega\mathbf{X}(\mathbf{X'X})^{-1}
+  \label{eq:var_heterosc}
+\end{equation}
+que es mayor que la varianza del estimador de Minimos Cuadrados Generalizados
+(MCG):
+\begin{equation}
+  \Var(\hat{\boldsymbol\beta}^{\text{MCG}}) = (\mathbf{X'}\boldsymbol\Omega^{-1}\mathbf{X})^{-1}
+  \leq \Var(\hat{\boldsymbol\beta}^{\text{MCO}})
+  \label{eq:MCG_eficiente}
+\end{equation}
+por el teorema de Gauss-Markov generalizado.
+
+\textbf{Conclusion}: \textsc{Falso}. MCO sigue siendo insesgado y consistente.
+Solo pierde eficiencia: ya no es MELI.
+
+\bigskip
+
+%% ── Inciso (b) ────────────────────────────────────────────────────────────
+\begin{verdict}{(b)}{VERDADERO}
+  Si hay heteroscedasticidad, las pruebas convencionales $t$ y $F$ son invalidas.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Las pruebas convencionales $t$ y $F$ se construyen usando el estimador de
+varianza homoscedastico:
+\begin{equation}
+  \hat\sigma^2_{\text{conv}} = \frac{\hat{\mathbf{u}}'\hat{\mathbf{u}}}{n - k}
+  \label{eq:sigma2_conv}
+\end{equation}
+y la formula de varianza que asume $\boldsymbol\Omega = \sigma^2\mathbf{I}$:
+\begin{equation}
+  \widehat{\Var}(\hat\beta_j)_{\text{conv}} = \hat\sigma^2[(\mathbf{X'X})^{-1}]_{jj}
+  \label{eq:var_conv}
+\end{equation}
+
+Bajo heteroscedasticidad, la verdadera varianza de $\hat\beta_j$ es el
+elemento $j,j$ de~(\ref{eq:var_heterosc}), que en general difiere de~(\ref{eq:var_conv}).
+Por tanto, el estimador convencional~(\ref{eq:var_conv}) es un estimador
+\textbf{sesgado} de la verdadera varianza, lo que implica que:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item El estadistico $t_j = \hat\beta_j / \text{ee}_{\text{conv}}(\hat\beta_j)$
+    no sigue la distribucion $t_{n-k}$ bajo $H_0$, porque el denominador es incorrecto.
+  \item El estadistico $F$ tampoco sigue la distribucion $F_{k-1, n-k}$.
+\end{itemize}
+
+El remedio es usar errores estandar robustos a la heteroscedasticidad
+(estimadores de White, 1980):
+\begin{equation}
+  \widehat{\Var}^{\text{White}}(\hat{\boldsymbol\beta})
+    = (\mathbf{X'X})^{-1}
+      \left(\sum_i \hat u_i^2 \mathbf{x}_i\mathbf{x}_i'\right)
+      (\mathbf{X'X})^{-1}
+  \label{eq:White_var}
+\end{equation}
+que es un estimador consistente de~(\ref{eq:var_heterosc}).
+
+\textbf{Conclusion}: \textsc{Verdadero}. Las pruebas $t$ y $F$ convencionales
+son invalidas bajo heteroscedasticidad porque los errores estandar usados en
+su construccion son sesgados.
+
+\bigskip
+
+%% ── Inciso (c) ────────────────────────────────────────────────────────────
+\begin{verdict}{(c)}{FALSO}
+  En presencia de heteroscedasticidad, el metodo de MCO habitual siempre
+  sobreestima los errores estandar de los estimadores.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+El sesgo del estimador convencional de varianza depende de la forma de la
+heteroscedasticidad y de la estructura de los datos. Para ilustrarlo en
+el caso simple de regresion con un regresor:
+
+\begin{equation}
+  \Var(\hat\beta_2)_{\text{verdadera}}
+    = \frac{\sum_i \sigma_i^2 x_i^2}{(\sum_i x_i^2)^2}
+  \label{eq:var_verdadera}
+\end{equation}
+\begin{equation}
+  \E[\widehat{\Var}(\hat\beta_2)_{\text{conv}}]
+    = \sigma^2 [(\mathbf{X'X})^{-1}]_{22}
+  \label{eq:var_conv_esp}
+\end{equation}
+
+donde $\sigma^2$ es algun promedio de las $\sigma_i^2$. El signo del sesgo
+$\E[\widehat{\Var}_{\text{conv}}] - \Var_{\text{verdadera}}$ depende de si
+las varianzas $\sigma_i^2$ son mayores o menores para las observaciones con
+$x_i^2$ grande:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item Si $\sigma_i^2$ es grande cuando $x_i^2$ es grande (heteroscedasticidad
+    ``tipica'', como en datos de ingresos), la varianza verdadera puede ser
+    mayor que la convencional: MCO \emph{subestima} el error estandar.
+  \item Si $\sigma_i^2$ es grande cuando $x_i^2$ es pequeno, la varianza
+    convencional puede exceder la verdadera: MCO \emph{sobreestima} el error.
+\end{itemize}
+
+La afirmacion de que MCO ``siempre sobreestima'' es incorrecta: el sesgo puede
+ir en cualquier direccion.
+
+\textbf{Conclusion}: \textsc{Falso}. El sesgo del estimador convencional de
+varianza puede ser positivo o negativo; no hay una direccion unica.
+
+\bigskip
+
+%% ── Inciso (d) ────────────────────────────────────────────────────────────
+\begin{verdict}{(d)}{INCIERTO}
+  Si los residuales estimados mediante una regresion por MCO exhiben un patron
+  sistematico, significa que hay heteroscedasticidad en los datos.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Un patron sistematico en los residuos $\hat u_i$ puede originarse en multiples
+fuentes, no solo en heteroscedasticidad:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=5pt]
+  \item \textbf{Heteroscedasticidad}: si $\sigma_i^2 = f(X_i)$, los residuos
+    mostraran mayor dispersion para valores grandes de $X_i$ (patron de abanico).
+
+  \item \textbf{Autocorrelacion}: si los errores estan correlacionados en el
+    tiempo ($\Cov(u_t, u_{t-s}) \neq 0$), los residuos mostraran runs o ciclos
+    sistematicos que se pueden confundir con heteroscedasticidad.
+
+  \item \textbf{Forma funcional incorrecta}: si el verdadero modelo es
+    $Y = \beta_1 + \beta_2 X + \beta_3 X^2 + u$ pero se estima solo la parte
+    lineal, los residuos tendran una curvatura sistematica.
+
+  \item \textbf{Variable omitida}: si se omite una variable relevante $Z$,
+    los residuos capturan $\beta_Z Z_i + u_i$, lo que crea patron si $Z$ varia
+    sistematicamente con $X$.
+\end{enumerate}
+
+La inspeccion visual de residuos es un primer diagnostico util, pero no
+es concluyente. Para distinguir entre estas causas se necesitan pruebas
+formales (Breusch-Pagan, White, Durbin-Watson, RESET, etc.).
+
+\textbf{Conclusion}: \textsc{Incierto}. Un patron en los residuos es necesario
+pero no suficiente para concluir heteroscedasticidad; puede deberse a otras
+formas de mala especificacion.
+
+\bigskip
+
+%% ── Inciso (e) ────────────────────────────────────────────────────────────
+\begin{verdict}{(e)}{FALSO}
+  No hay una prueba general de heteroscedasticidad que no este basada en algun
+  supuesto acerca de cual variable esta correlacionada con el termino de error.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+La \textbf{prueba de White} (1980) es una prueba general que no requiere
+supuestos previos sobre cual variable causa la heteroscedasticidad.
+El procedimiento es:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item Estimar el modelo~(\ref{eq:modelo}) por MCO y obtener los residuos $\hat u_i$.
+  \item Regresar $\hat u_i^2$ sobre todos los regresores, sus cuadrados y sus
+    productos cruzados:
+    \begin{equation}
+      \hat u_i^2 = \alpha_0 + \sum_j \alpha_j X_{ji}
+                 + \sum_j \alpha_{jj} X_{ji}^2
+                 + \sum_{j<k} \alpha_{jk} X_{ji} X_{ki}
+                 + v_i
+      \label{eq:white_reg}
+    \end{equation}
+  \item El estadistico de prueba es $nR^2_{\hat u^2}$, donde $R^2_{\hat u^2}$
+    es el $R^2$ de la regresion auxiliar~(\ref{eq:white_reg}):
+    \begin{equation}
+      W = nR^2_{\hat u^2} \xrightarrow{d} \chi^2_p
+      \label{eq:white_stat}
+    \end{equation}
+    donde $p$ es el numero de regresores en~(\ref{eq:white_reg}) (sin el intercepto).
+\end{enumerate}
+
+La prueba de White no supone ninguna forma funcional especifica para
+$\sigma_i^2 = f(\cdot)$: detecta cualquier forma de heteroscedasticidad que
+este relacionada con los regresores, sus cuadrados o sus productos cruzados.
+
+\textbf{Conclusion}: \textsc{Falso}. La prueba de White es una prueba general
+que no requiere supuesto previo sobre cual variable genera la varianza no constante.
+
+\bigskip
+
+%% ── Inciso (f) ────────────────────────────────────────────────────────────
+\begin{verdict}{(f)}{VERDADERO (con matices)}
+  Si el modelo de regresion esta mal especificado (por ejemplo, si se omitio
+  una variable importante), los residuos de MCO mostraran un patron claramente
+  distinguible.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Si el verdadero modelo es:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+  \label{eq:verdadero}
+\end{equation}
+pero se estima omitiendo $X_3$:
+\begin{equation}
+  Y_i = \alpha_1 + \alpha_2 X_{2i} + e_i, \qquad e_i = u_i + \beta_3 X_{3i}
+  \label{eq:reducido}
+\end{equation}
+El termino de error compuesto $e_i = u_i + \beta_3 X_{3i}$ contiene la
+influencia sistematica de $X_{3i}$. Si $X_3$ varia sistematicamente con
+$X_2$, los residuos del modelo reducido mostraran un patron vinculado a
+$X_2$: al graficar $\hat e_i$ contra $X_{2i}$, aparecera una tendencia
+que no deberia existir si el modelo estuviera bien especificado.
+
+Analogamente, si la forma funcional es incorrecta (modelo lineal cuando
+la verdadera relacion es cuadratica), los residuos tendran curvatura
+sistematica al graficarlos contra $X$.
+
+El matiz es que el patron puede no ser siempre ``claramente distinguible''
+en muestras pequenas con mucho ruido, pero en principio la mala especificacion
+introduce componentes no aleatorios en los residuos.
+
+\textbf{Conclusion}: \textsc{Verdadero}. La mala especificacion introduce
+componentes sistematicos en los residuos que producen patrones detectables.
+
+\bigskip
+
+%% ── Inciso (g) ────────────────────────────────────────────────────────────
+\begin{verdict}{(g)}{VERDADERO}
+  Si una regresora con varianza no constante se omite incorrectamente de un
+  modelo, los residuos (MCO) seran heteroscedasticos.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Suponga que el verdadero modelo es:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i,
+  \quad \E[u_i^2] = \sigma^2 \text{ (homosc.)}
+  \label{eq:verdadero_g}
+\end{equation}
+y que $X_{3i}$ tiene varianza condicional no constante en el sentido de que
+$\Var(X_{3i} | X_{2i}) = h(X_{2i})$ no es constante. Si se omite $X_3$ y
+se estima:
+\begin{equation}
+  Y_i = \alpha_1 + \alpha_2 X_{2i} + v_i, \quad v_i = u_i + \beta_3 X_{3i}
+  \label{eq:reducido_g}
+\end{equation}
+la varianza del error compuesto es:
+\begin{equation}
+  \Var(v_i | X_{2i})
+    = \Var(u_i | X_{2i}) + \beta_3^2 \Var(X_{3i} | X_{2i})
+    = \sigma^2 + \beta_3^2 h(X_{2i})
+  \label{eq:var_vi}
+\end{equation}
+Como $h(X_{2i})$ no es constante, $\Var(v_i | X_{2i})$ tampoco lo es:
+el modelo reducido tiene heteroscedasticidad aunque el verdadero modelo sea
+homoscedastico. Los residuos del modelo reducido exhibiran varianza no
+constante inducida por la omision.
+
+Este resultado subraya una fuente frecuentemente pasada por alto de
+heteroscedasticidad aparente: la mala especificacion del modelo puede
+generar residuos heteroscedasticos que no reflejan varianza no constante
+del proceso verdadero, sino la omision de una variable relevante con
+variabilidad no uniforme.
+
+\textbf{Conclusion}: \textsc{Verdadero}. Al omitir una variable con varianza
+condicional no constante, el error del modelo reducido hereda esa
+heteroscedasticidad.
+
+\bigskip
+
+%% ── Tabla resumen ─────────────────────────────────────────────────────────
+\section{Tabla resumen}
+
+\begin{table}[ht]
+\centering
+\caption{Veredictos del ejercicio~11.1}
+\label{tab:resumen}
+\small
+\begin{tabular}{clp{9cm}}
+\toprule
+\textbf{Inciso} & \textbf{Veredicto} & \textbf{Razon principal} \\
+\midrule
+(a) & Falso
+  & MCO sigue siendo insesgado y consistente; solo pierde eficiencia (MELI). \\[4pt]
+(b) & Verdadero
+  & Las varianzas convencionales son estimadores sesgados bajo heterosc.; los estadisticos $t$ y $F$ no siguen sus distribuciones nominales. \\[4pt]
+(c) & Falso
+  & El sesgo del estimador convencional de varianza puede ser positivo o negativo segun la forma de la heterosc. \\[4pt]
+(d) & Incierto
+  & Patron en residuos puede deberse tambien a autocorrelacion, forma funcional incorrecta o variable omitida. \\[4pt]
+(e) & Falso
+  & La prueba de White (1980) es general: no supone que variable causa la heterosc. \\[4pt]
+(f) & Verdadero
+  & Mala especificacion introduce componentes sistematicos en los residuos. \\[4pt]
+(g) & Verdadero
+  & La varianza del error compuesto hereda la heterogeneidad de la variable omitida. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Demostracion del sesgo del estimador convencional de varianza}
+
+Bajo heteroscedasticidad, el valor esperado del estimador convencional
+$\hat\sigma^2 = \hat{\mathbf{u}}'\hat{\mathbf{u}}/(n-k)$ es:
+
+\begin{equation}
+  \E[\hat\sigma^2]
+    = \frac{1}{n-k}\E[\hat{\mathbf{u}}'\hat{\mathbf{u}}]
+    = \frac{1}{n-k}\operatorname{tr}(\mathbf{M}\boldsymbol\Omega)
+  \label{eq:E_sigma2}
+\end{equation}
+
+donde $\mathbf{M} = \mathbf{I} - \mathbf{X}(\mathbf{X'X})^{-1}\mathbf{X}'$
+es la matriz de proyeccion ortogonal sobre el complemento del espacio columna
+de $\mathbf{X}$. Bajo homoscedasticidad ($\boldsymbol\Omega = \sigma^2\mathbf{I}$):
+
+\begin{equation}
+  \E[\hat\sigma^2] = \frac{\sigma^2}{n-k}\operatorname{tr}(\mathbf{M}) = \sigma^2
+  \label{eq:E_sigma2_homosc}
+\end{equation}
+
+Bajo heteroscedasticidad, $\operatorname{tr}(\mathbf{M}\boldsymbol\Omega) \neq (n-k)\sigma^2_{\text{promedio}}$
+en general, y el estimador puede ser mayor o menor que la varianza promedio.
+
+\section{Por que el estimador de White es consistente}
+
+El estimador de White~(\ref{eq:White_var}) es consistente porque:
+
+\begin{equation}
+  \frac{1}{n}\sum_i \hat u_i^2 \mathbf{x}_i\mathbf{x}_i'
+  \xrightarrow{p} \frac{1}{n}\sum_i \sigma_i^2 \mathbf{x}_i\mathbf{x}_i'
+  \label{eq:white_consistent}
+\end{equation}
+
+bajo condiciones de regularidad (Ley de los Grandes Numeros). La convergencia
+usa el hecho de que $\hat u_i = u_i - (\hat{\boldsymbol\beta} - \boldsymbol\beta)'\mathbf{x}_i$
+y que $\hat{\boldsymbol\beta} \xrightarrow{p} \boldsymbol\beta$, lo que hace
+que $\hat u_i \xrightarrow{p} u_i$ asintoticamente.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} La distincion entre insesgadez y eficiencia del
+inciso~(a) es fundamental: el teorema de Gauss-Markov requiere homoscedasticidad
+para garantizar eficiencia (minima varianza), pero la insesgadez solo requiere
+exogeneidad ($\E[u_i|\mathbf{X}] = 0$). Estos son supuestos distintos y la
+violacion de uno no implica la violacion del otro.}
+
+\end{document}
