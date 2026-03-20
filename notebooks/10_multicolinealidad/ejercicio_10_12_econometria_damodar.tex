@@ -1,0 +1,498 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.12}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{verdict}[2]{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  title={\textbf{Inciso #1 --- #2}},
+  fonttitle=\small\bfseries,
+  breakable
+}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\verdadero}{\textsc{Falso}}
+\newcommand{\falso}{\textsc{Falso}}
+\newcommand{\incierto}{\textsc{Incierto}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Verdadero, Falso o Incierto:}\\[6pt]
+  {\LARGE\bfseries Nueve Afirmaciones sobre Multicolinealidad}\\[12pt]
+  {\large\itshape Justificacion formal con algebra y demostraciones}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.12 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con derivaciones matriciales, formulas de varianza y analisis de casos limite}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Nota preliminar.}\quad
+El modelo de referencia en todos los incisos es:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + \cdots + \beta_k X_{ki} + u_i
+  \label{eq:modelo}
+\end{equation}
+bajo los supuestos clasicos de MCO: errores $u_i \overset{\text{iid}}{\sim}(0, \sigma^2)$,
+regresores no estocasticos y no singularidad de $\mathbf{X'X}$.
+La multicolinealidad \emph{perfecta} es el caso limite en que
+$\det(\mathbf{X'X}) = 0$; la multicolinealidad \emph{imperfecta} o
+\emph{alta} es cuando $\det(\mathbf{X'X}) \approx 0$ pero $> 0$.
+
+\bigskip
+
+%% ── Inciso (a) ────────────────────────────────────────────────────────────
+\begin{verdict}{(a)}{FALSO}
+  A pesar de la multicolinealidad perfecta, los estimadores de MCO son MELI.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+El estimador MCO es $\hat{\boldsymbol\beta} = (\mathbf{X'X})^{-1}\mathbf{X'y}$.
+Bajo multicolinealidad perfecta existe $\boldsymbol\lambda \neq \mathbf{0}$ tal que
+$\mathbf{X}\boldsymbol\lambda = \mathbf{0}$, lo que implica:
+\begin{equation}
+  \det(\mathbf{X'X}) = 0
+  \label{eq:det_cero}
+\end{equation}
+La matriz $\mathbf{X'X}$ es singular y \textbf{no tiene inversa}. Por tanto,
+el estimador $(\mathbf{X'X})^{-1}\mathbf{X'y}$ \textbf{no existe} como objeto
+matematico unico. Hay infinitos vectores $\boldsymbol\beta$ que minimizan la
+suma de cuadrados de los residuos.
+
+El teorema de Gauss-Markov establece que el estimador MCO es MELI
+(\textit{Best Linear Unbiased Estimator}, BLUE) bajo los supuestos clasicos,
+que incluyen explicitamente que $\mathbf{X'X}$ sea invertible (rango completo
+de $\mathbf{X}$). Al violarse este supuesto, el teorema no aplica. Los
+estimadores individuales $\hat\beta_j$ son indeterminados con varianza infinita,
+condicion que es incompatible con ser ``mejor'' en el sentido de minima varianza.
+
+\begin{equation}
+  \Var(\hat\beta_j) = \sigma^2 [(\mathbf{X'X})^{-1}]_{jj}
+  \xrightarrow{\det(\mathbf{X'X}) \to 0} \infty
+  \label{eq:var_inf}
+\end{equation}
+
+\textbf{Conclusion}: \textsc{Falso}. Bajo multicolinealidad perfecta, el
+estimador MCO no existe, por lo que no puede ser MELI.
+
+\bigskip
+
+%% ── Inciso (b) ────────────────────────────────────────────────────────────
+\begin{verdict}{(b)}{INCIERTO}
+  En los casos de alta multicolinealidad, no es posible evaluar la significancia
+  individual de uno o mas coeficientes de regresion parcial.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+El estadistico $t$ del $j$-esimo coeficiente es:
+\begin{equation}
+  t_j = \frac{\hat\beta_j}{\text{ee}(\hat\beta_j)}
+       = \frac{\hat\beta_j}{\hat\sigma/\sqrt{S_{jj}}} \cdot \frac{1}{\sqrt{\text{VIF}_j}}
+  \label{eq:t_vif}
+\end{equation}
+Con VIF$_j$ alto, el denominador se infla y $|t_j|$ se reduce, lo que
+\emph{tiende} a producir no rechazo de $H_0: \beta_j = 0$ aunque $\beta_j \neq 0$
+(error tipo~II). Sin embargo:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item El estadistico $t$ \emph{puede calcularse siempre} que $\mathbf{X'X}$
+    sea invertible (colinealidad imperfecta). No es que sea imposible evaluarlo;
+    es que el resultado puede ser no significativo por razones de colinealidad,
+    no de irrelevancia.
+  \item Si el efecto real $\beta_j$ es suficientemente grande o el tamano
+    muestral $n$ es suficientemente grande, el coeficiente puede seguir siendo
+    significativo incluso con VIF elevado, como se demostro en el ejercicio~10.9.
+\end{itemize}
+
+La afirmacion es verdadera en el sentido de que la prueba $t$ \emph{pierde poder}
+bajo alta colinealidad, pero es falsa si se interpreta como que la evaluacion
+es imposible. La palabra ``no es posible'' hace la afirmacion incorrecta.
+
+\textbf{Conclusion}: \textsc{Incierto}. La prueba $t$ se puede calcular pero
+su poder se reduce severamente; puede ser significativa si el efecto real es
+grande.
+
+\bigskip
+
+%% ── Inciso (c) ────────────────────────────────────────────────────────────
+\begin{verdict}{(c)}{VERDADERO}
+  Si una regresion auxiliar muestra que una $R^2_j$ particular es alta, hay
+  evidencia clara de alta colinealidad.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+La regresion auxiliar de $X_j$ sobre los demas $k-1$ regresores produce un
+$R^2_j$. El VIF se define como:
+\begin{equation}
+  \text{VIF}_j = \frac{1}{1 - R^2_j} \geq 1
+  \label{eq:VIF_R2}
+\end{equation}
+
+Un $R^2_j$ alto significa que $X_j$ es bien explicada por una combinacion
+lineal de los otros regresores, es decir, que $X_j$ es aproximadamente
+redundante en el modelo. Concretamente:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item $R^2_j = 0.9$ $\Rightarrow$ VIF $= 10$: colinealidad severa.
+  \item $R^2_j = 0.99$ $\Rightarrow$ VIF $= 100$: colinealidad muy severa.
+  \item $R^2_j \to 1$ $\Rightarrow$ VIF $\to \infty$: aproximacion a multicolinealidad perfecta.
+\end{itemize}
+
+La varianza de $\hat\beta_j$ escala con VIF$_j$:
+\begin{equation}
+  \Var(\hat\beta_j) = \frac{\sigma^2}{S_{jj}} \cdot \text{VIF}_j
+  \label{eq:var_VIF}
+\end{equation}
+Un $R^2_j$ alto implica directamente VIF alto y varianzas infladas. Esta es
+la tecnica de diagnostico de Klein (1962): si $R^2_j > R^2$ del modelo principal,
+la colinealidad es problematica.
+
+\textbf{Conclusion}: \textsc{Verdadero}. Un $R^2_j$ alto en la regresion
+auxiliar es evidencia directa de alta colinealidad de $X_j$ con los demas
+regresores.
+
+\bigskip
+
+%% ── Inciso (d) ────────────────────────────────────────────────────────────
+\begin{verdict}{(d)}{FALSO}
+  Las correlaciones altas entre parejas de regresoras no sugieren una alta
+  multicolinealidad.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Las correlaciones de orden cero $r_{jk}$ entre pares de regresores son una
+\textbf{condicion suficiente} para la existencia de multicolinealidad.
+Si $r_{jk} \approx 1$, la relacion lineal aproximada $X_j \approx aX_k + b$
+implica que $\mathbf{X'X}$ se aproxima a la singularidad. En el caso de
+dos regresores, el determinante de la submatriz de productos cruzados es:
+\begin{equation}
+  \det(\mathbf{S}) = S_{22}S_{33} - S_{23}^2
+                   = S_{22}S_{33}(1 - r_{23}^2)
+  \label{eq:det_S}
+\end{equation}
+Cuando $r_{23} \to 1$, $\det(\mathbf{S}) \to 0$: multicolinealidad perfecta.
+Por tanto, correlaciones altas por pares \emph{si sugieren} alta colinealidad.
+
+La aclaracion importante es que correlaciones bajas \emph{no garantizan} ausencia
+de colinealidad: en modelos con $k \geq 3$ regresores puede existir colinealidad
+entre combinaciones lineales de varios regresores aunque cada par individual
+tenga correlacion baja. Pero eso no cambia la afirmacion: correlaciones altas
+\emph{si} sugieren colinealidad, lo cual hace la afirmacion del inciso \emph{falsa}.
+
+\textbf{Conclusion}: \textsc{Falso}. Correlaciones altas entre pares de
+regresores son condicion suficiente para la existencia de multicolinealidad.
+
+\bigskip
+
+%% ── Inciso (e) ────────────────────────────────────────────────────────────
+\begin{verdict}{(e)}{INCIERTO}
+  La multicolinealidad es inofensiva si el objetivo del analisis es solo la
+  prediccion.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Para la prediccion, el objeto de interes es $\hat Y_0 = \mathbf{x}_0'\hat{\boldsymbol\beta}$,
+no los coeficientes individuales. La varianza del error de prediccion es:
+\begin{equation}
+  \Var(\hat Y_0 - Y_0) = \sigma^2\left(1 + \mathbf{x}_0'(\mathbf{X'X})^{-1}\mathbf{x}_0\right)
+  \label{eq:var_pred}
+\end{equation}
+
+La multicolinealidad infla $(\mathbf{X'X})^{-1}$, pero si el vector de
+prediccion $\mathbf{x}_0$ cae dentro del espacio de colinealidad de los
+datos de entrenamiento, el segundo termino puede seguir siendo pequeno.
+Formalmente, si la estructura de colinealidad de los datos futuros es
+identica a la de la muestra original, las predicciones son precisas aunque
+los coeficientes individuales sean imprecisos.
+
+Sin embargo, la afirmacion es \emph{incierta} porque:
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item Si $\mathbf{x}_0$ contiene valores de los regresores que rompen la
+    estructura de colinealidad del entrenamiento, la prediccion sera muy
+    imprecisa.
+  \item En la practica, la colinealidad cambia a lo largo del tiempo y los
+    nuevos datos rara vez obedecen exactamente la misma estructura lineal.
+  \item Incluso para prediccion, los intervalos de prediccion son mas
+    amplios bajo alta colinealidad, reduciendo la utilidad practica.
+\end{itemize}
+
+\textbf{Conclusion}: \textsc{Incierto}. La multicolinealidad es inofensiva
+para la prediccion \emph{solo si} la estructura de colinealidad se mantiene
+en los datos de prediccion. En la practica, esto raramente se garantiza.
+
+\bigskip
+
+%% ── Inciso (f) ────────────────────────────────────────────────────────────
+\begin{verdict}{(f)}{VERDADERO}
+  Entre mayor sea el FIV, ceteris paribus, mas grandes seran las varianzas de
+  los estimadores de MCO.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+Por definicion del VIF (Factor de Inflacion de la Varianza), la varianza del
+estimador MCO de $\beta_j$ es:
+\begin{equation}
+  \Var(\hat\beta_j)
+    = \frac{\sigma^2}{S_{jj}(1-R_j^2)}
+    = \frac{\sigma^2}{S_{jj}} \cdot \text{VIF}_j
+  \label{eq:var_vif_def}
+\end{equation}
+donde $S_{jj} = \sum_i x_{ji}^2$ y $R_j^2$ es el $R^2$ de la regresion
+auxiliar de $X_j$ sobre los demas regresores. La relacion es \textbf{lineal
+y directa}: duplicar el VIF duplica la varianza, todo lo demas constante.
+La desigualdad es estricta:
+\begin{equation}
+  \text{VIF}_j \geq 1 \quad \forall j, \quad
+  \text{con igualdad solo si } R_j^2 = 0 \text{ (ortogonalidad)}
+  \label{eq:VIF_geq1}
+\end{equation}
+El VIF cuantifica exactamente cuanto se infla la varianza respecto al
+escenario ideal de regresores ortogonales. Un VIF de 10 significa que la
+varianza es 10 veces mayor de lo que seria con ortogonalidad.
+
+\textbf{Conclusion}: \textsc{Verdadero}. La varianza de $\hat\beta_j$ es
+directamente proporcional a VIF$_j$, por definicion.
+
+\bigskip
+
+%% ── Inciso (g) ────────────────────────────────────────────────────────────
+\begin{verdict}{(g)}{FALSO}
+  La tolerancia (TOL) es una medida de multicolinealidad mejor que el FIV.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+La tolerancia se define como:
+\begin{equation}
+  \text{TOL}_j = 1 - R_j^2
+  \label{eq:TOL}
+\end{equation}
+y su relacion con el VIF es exactamente:
+\begin{equation}
+  \text{TOL}_j = \frac{1}{\text{VIF}_j}
+  \label{eq:TOL_VIF}
+\end{equation}
+Dado que TOL y VIF son funciones biunivocas una de la otra
+(transformacion monotona decreciente), contienen \textbf{exactamente la
+misma informacion}. Conocer uno equivale a conocer el otro:
+\begin{align}
+  \text{TOL}_j = 0.10 &\iff \text{VIF}_j = 10 \quad \text{(colinealidad severa)}\\
+  \text{TOL}_j = 0.01 &\iff \text{VIF}_j = 100 \quad \text{(colinealidad muy severa)}
+\end{align}
+No existe ninguna situacion en la que TOL revele informacion que VIF no
+revele, ni viceversa. Decir que una es ``mejor'' que la otra carece de
+sentido matematico. Son dos escales distintas para medir lo mismo.
+
+\textbf{Conclusion}: \textsc{Falso}. TOL y VIF son el inverso multiplicativo
+una de la otra. Proveen identica informacion; ninguna es superior.
+
+\bigskip
+
+%% ── Inciso (h) ────────────────────────────────────────────────────────────
+\begin{verdict}{(h)}{FALSO}
+  No podra obtener un valor $R^2$ elevado en una regresion multiple si todos
+  los coeficientes parciales de pendiente no son estadisticamente significativos,
+  en lo individual, con base en la prueba $t$ usual.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+La afirmacion es \textbf{falsa}: la combinacion de $R^2$ alto con todos los
+$t_j$ no significativos es precisamente el \emph{sintoma clasico} de
+multicolinealidad severa. La compatibilidad de estas dos situaciones se
+demuestra formalmente a continuacion.
+
+El estadistico $F$ del modelo completo contrasta $H_0: \beta_2 = \cdots = \beta_k = 0$:
+\begin{equation}
+  F = \frac{R^2/(k-1)}{(1-R^2)/(n-k)}
+  \label{eq:F_global}
+\end{equation}
+Un $R^2$ alto implica un $F$ global significativo, lo que rechaza
+$H_0$ conjuntamente. Sin embargo, cada estadistico $t$ individual es:
+\begin{equation}
+  t_j = \frac{\hat\beta_j}{\hat\sigma\sqrt{[(\mathbf{X'X})^{-1}]_{jj}}}
+  \label{eq:t_individual}
+\end{equation}
+Bajo colinealidad, $[(\mathbf{X'X})^{-1}]_{jj}$ es grande (VIF elevado),
+inflando el denominador de cada $t_j$ y haciendolo no significativo. La
+varianza del error $\hat\sigma^2$ puede ser pequena (buen ajuste global),
+pero los errores estandar individuales pueden ser grandes simultaneamente.
+
+Estas dos condiciones son perfectamente compatibles:
+\begin{equation}
+  R^2 \approx 1 \quad \text{y} \quad |t_j| < t_c \quad \forall j
+  \label{eq:paradoja}
+\end{equation}
+Es la paradoja del $R^2$ alto con $t$'s insignificantes, documentada en
+el ejemplo~10.1 de Gujarati con $R^2 = 0.9608$ y ambos $t$'s menores que~2.
+
+\textbf{Conclusion}: \textsc{Falso}. Es completamente posible tener $R^2$
+elevado con todos los $t_j$ no significativos. Esa combinacion es de hecho
+el indicador mas conspicuo de multicolinealidad severa.
+
+\bigskip
+
+%% ── Inciso (i) ────────────────────────────────────────────────────────────
+\begin{verdict}{(i)}{VERDADERO}
+  En la regresion de $Y$ sobre $X_2$ y $X_3$, poca variabilidad en $X_3$
+  aumenta $\Var(\hat\beta_3)$. En el extremo, si todas las $X_3$ son
+  identicas, $\Var(\hat\beta_3)$ seria infinita.
+\end{verdict}
+
+\subsection*{Justificacion}
+
+La varianza del estimador MCO de $\beta_3$ en la regresion multiple es:
+\begin{equation}
+  \Var(\hat\beta_3)
+    = \frac{\sigma^2}{\sum x_{3i}^2 \cdot (1 - r_{23}^2)}
+    = \frac{\sigma^2}{S_{33}} \cdot \text{VIF}_3
+  \label{eq:var_beta3}
+\end{equation}
+donde $S_{33} = \sum_i (X_{3i} - \bar X_3)^2$ es la varianza muestral
+total de $X_3$ (multiplicada por $n-1$). La varianza de $\hat\beta_3$
+es \textbf{inversamente proporcional a $S_{33}$}:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item Si la variabilidad de $X_3$ es pequena ($S_{33}$ pequeno),
+    $\Var(\hat\beta_3)$ es grande: hay poca informacion para estimar $\beta_3$.
+  \item En el extremo, si todas las $X_{3i}$ son identicas ($S_{33} = 0$):
+    \begin{equation}
+      \Var(\hat\beta_3) = \frac{\sigma^2}{0 \cdot (1-r_{23}^2)} \to \infty
+      \label{eq:var_inf_x3}
+    \end{equation}
+    Ademas, si $X_3$ es constante, es perfectamente colineal con la
+    constante del modelo (columna de unos), $\det(\mathbf{X'X}) = 0$
+    y el estimador no existe.
+\end{itemize}
+
+Este fenomeno —variabilidad insuficiente en un regresor— se denomina
+\textbf{micronumerosidad} y es conceptualmente analogo a la multicolinealidad.
+La intuicion es clara: para estimar el efecto de $X_3$ sobre $Y$ se necesita
+variacion en $X_3$. Sin variacion, no hay informacion.
+
+\textbf{Conclusion}: \textsc{Verdadero}. La varianza de $\hat\beta_3$ es
+inversamente proporcional a $S_{33}$; con $S_{33} = 0$ la varianza es infinita
+y el estimador no existe.
+
+\bigskip
+
+%% ── Resumen ───────────────────────────────────────────────────────────────
+\section{Tabla resumen}
+
+\begin{table}[ht]
+\centering
+\caption{Veredictos del ejercicio~10.12}
+\label{tab:resumen}
+\small
+\begin{tabular}{clp{8.5cm}}
+\toprule
+\textbf{Inciso} & \textbf{Veredicto} & \textbf{Razon principal} \\
+\midrule
+(a) & Falso    & Con multicolinealidad perfecta $(\mathbf{X'X})^{-1}$ no existe; el estimador MCO es indeterminado y no puede ser MELI. \\[4pt]
+(b) & Incierto & La prueba $t$ se puede calcular pero pierde poder; bajo efectos muy grandes puede ser significativa. \\[4pt]
+(c) & Verdadero & $R^2_j$ alto en regresion auxiliar $\Rightarrow$ VIF$_j$ alto $\Rightarrow$ varianza inflada; evidencia directa de colinealidad. \\[4pt]
+(d) & Falso    & Correlaciones altas son condicion suficiente (no necesaria) de colinealidad; si la sugieren. \\[4pt]
+(e) & Incierto & Inofensiva para prediccion solo si la estructura de colinealidad se mantiene en datos futuros. \\[4pt]
+(f) & Verdadero & $\Var(\hat\beta_j) = (\sigma^2/S_{jj})\cdot$VIF$_j$; relacion directa y proporcional por definicion. \\[4pt]
+(g) & Falso    & TOL $= 1/$VIF; contienen identica informacion; ninguna es superior. \\[4pt]
+(h) & Falso    & $R^2$ alto con $t$'s insignificantes es el sintoma clasico de multicolinealidad. Son perfectamente compatibles. \\[4pt]
+(i) & Verdadero & $\Var(\hat\beta_3) \propto 1/S_{33}$; si $S_{33} = 0$ la varianza es infinita y el estimador no existe. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Demostracion de la compatibilidad de $R^2$ alto con $t$'s insignificantes}
+
+Sea el modelo $Y = \beta_1 + \beta_2 X_2 + \beta_3 X_3 + u$ con
+$r_{23} = r$ cercano a~1. Los estadisticos $t$ son:
+
+\begin{equation}
+  t_2 = \frac{\hat\beta_2}{\hat\sigma} \cdot \sqrt{\frac{S_{22}(1-r^2)}{1}}
+      = \frac{\hat\beta_2}{\hat\sigma/\sqrt{S_{22}}} \cdot \sqrt{1-r^2}
+\end{equation}
+
+Cuando $r \to 1$: $\sqrt{1-r^2} \to 0$, por lo que $t_2 \to 0$ aunque
+$\hat\beta_2 \neq 0$. El $R^2$ del modelo, en cambio, depende de la variacion
+total explicada y puede permanecer alto incluso cuando $r \to 1$, pues las
+variables en conjunto siguen explicando bien a $Y$.
+
+\section{Relacion entre varianza de prediccion y colinealidad}
+
+Para el vector de prediccion $\mathbf{x}_0$, la varianza es:
+\begin{equation}
+  \Var(\hat Y_0) = \sigma^2 \mathbf{x}_0'(\mathbf{X'X})^{-1}\mathbf{x}_0
+\end{equation}
+
+Si $\mathbf{x}_0$ es una combinacion lineal de los vectores de entrenamiento
+(es decir, cae dentro del espacio columna de $\mathbf{X}$), la varianza puede
+ser pequena incluso con colinealidad alta. Pero si $\mathbf{x}_0$ se aleja
+de ese espacio, la varianza puede ser enorme. Esto es lo que hace que la
+afirmacion del inciso~(e) sea incierta en la practica.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los resultados de este ejercicio constituyen un
+resumen de los conceptos centrales del capitulo~10 de Gujarati \& Porter (2010).
+El inciso~(h) reproduce la paradoja del ejemplo~10.1 (consumo, ingreso y
+riqueza), donde $R^2 = 0.9608$ y los estadisticos $t$ son $1.14$ y $-0.52$,
+ninguno significativo al $5\%$.}
+
+\end{document}
