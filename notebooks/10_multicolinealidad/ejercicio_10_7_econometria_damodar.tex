@@ -1,0 +1,434 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.7}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Corr}{\operatorname{Corr}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Multicolinealidad en Series de Tiempo Economicas:}\\[6pt]
+  {\LARGE\bfseries Tendencias, Inercia y Ciclos Comunes}\\[12pt]
+  {\large\itshape Por que se sospecha multicolinealidad en PNB, oferta monetaria,}\\
+  {\large\itshape precios, ingreso, desempleo y variables afines}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.7 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Analisis formal: tendencias estocasticas, autocorrelacion, factores comunes y diagnostico}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{La pregunta.}\quad
+En modelos de regresion con datos de series de tiempo macroeconomicas ---producto
+nacional bruto (PNB), oferta monetaria, nivel de precios, ingreso nacional,
+tasa de desempleo, poblacion, riqueza, entre otros--- se sospecha sistematicamente
+la presencia de multicolinealidad. Este ejercicio justifica formalmente esa
+sospecha identificando los mecanismos generadores de colinealidad propios de
+las series temporales economicas.
+
+\section{Naturaleza de las series de tiempo macroeconomicas}
+
+\subsection{Definicion operativa de multicolinealidad en series de tiempo}
+
+En el modelo de regresion multiple
+\begin{equation}
+  Y_t = \beta_1 + \beta_2 X_{2t} + \beta_3 X_{3t} + \cdots + \beta_k X_{kt} + u_t
+  \label{eq:modelo}
+\end{equation}
+existe multicolinealidad cuando la matriz de correlaciones entre los regresores
+$\{X_{2t}, \ldots, X_{kt}\}$ tiene elementos fuera de la diagonal cercanos
+a~$\pm 1$. En terminos matriciales, la matriz $\mathbf{X'X}$ se aproxima a la
+singularidad:
+\begin{equation}
+  \det(\mathbf{X'X}) \approx 0
+  \label{eq:det}
+\end{equation}
+lo que infla los errores estandar de los estimadores MCO y hace que los
+coeficientes individuales sean imprecisos o tengan signos incorrectos.
+
+\subsection{Diferencia entre datos de corte transversal y series de tiempo}
+
+En datos de corte transversal (observaciones de individuos, hogares o empresas
+en un momento dado), las variables independientes exhiben variacion
+\emph{idiosincratica}: el ingreso de un hogar no determina necesariamente la
+riqueza del vecino. La correlacion entre regresores puede ser baja o moderada.
+
+En series de tiempo macroeconomicas, en cambio, todas las variables se observan
+sobre la \emph{misma} economia en \emph{momentos sucesivos}. Los mecanismos
+macroeconomicos crean dependencia estructural entre las series. A continuacion
+se formalizan las tres fuentes principales de esa dependencia.
+
+\section{Fuente 1: tendencia temporal comun}
+
+\subsection{Tendencia determinista}
+
+Si varias variables macroeconomicas tienen tendencias deterministas de la misma
+direccion, sus niveles estaran correlacionados aunque sus \emph{innovaciones}
+sean independientes. Considere dos variables:
+\begin{align}
+  X_{2t} &= \alpha_2 + \delta_2 t + \varepsilon_{2t}
+  \label{eq:trend2}\\
+  X_{3t} &= \alpha_3 + \delta_3 t + \varepsilon_{3t}
+  \label{eq:trend3}
+\end{align}
+con $\delta_2, \delta_3 > 0$ (ambas crecen en el tiempo) y
+$\Cov(\varepsilon_{2t}, \varepsilon_{3t}) = 0$ (innovaciones independientes).
+La correlacion entre $X_{2t}$ y $X_{3t}$ en niveles es:
+\begin{equation}
+  r_{23}
+    = \frac{\Cov(X_{2t}, X_{3t})}{\sqrt{\Var(X_{2t})\Var(X_{3t})}}
+    \approx \frac{\delta_2\delta_3 \Var(t)}
+                 {\sqrt{(\delta_2^2\Var(t)+\sigma_2^2)(\delta_3^2\Var(t)+\sigma_3^2)}}
+  \label{eq:corr_trend}
+\end{equation}
+Cuando $T$ es grande, $\Var(t) = (T^2-1)/12 \to \infty$ y el termino de
+tendencia domina:
+\begin{equation}
+  r_{23} \xrightarrow{T\to\infty} \frac{\delta_2\delta_3}{|\delta_2||\delta_3|}
+         = \text{signo}(\delta_2\delta_3) = +1
+  \label{eq:corr_trend_lim}
+\end{equation}
+\textbf{Conclusion}: dos series con tendencia positiva tienen correlacion
+asintoticamente igual a~1, aunque sus fluctuaciones sean independientes.
+El PNB, el ingreso, la oferta monetaria y el nivel de precios crecen todos
+en el largo plazo: su correlacion en niveles tiende a~1 por pura aritmetica
+de las tendencias.
+
+\subsection{Tendencia estocastica: caminata aleatoria}
+
+Muchas series macroeconomicas son mejor descritas por procesos integrados
+de orden~1 (I(1)), tambien llamados caminatas aleatorias con deriva:
+\begin{align}
+  X_{2t} &= \mu_2 + X_{2,t-1} + \varepsilon_{2t}
+  \label{eq:rw2}\\
+  X_{3t} &= \mu_3 + X_{3,t-1} + \varepsilon_{3t}
+  \label{eq:rw3}
+\end{align}
+con $\varepsilon_{jt} \overset{\text{iid}}{\sim}(0, \sigma_j^2)$.
+Expandiendo recursivamente desde $t=0$:
+\begin{equation}
+  X_{jt} = X_{j0} + \mu_j t + \sum_{s=1}^{t}\varepsilon_{js}
+  \label{eq:rw_expand}
+\end{equation}
+La varianza crece con el tiempo: $\Var(X_{jt}) = \sigma_j^2 t \to \infty$.
+En una muestra finita de $T$ periodos, dos series I(1) con derivas del mismo
+signo ($\mu_2, \mu_3 > 0$) exhibiran una correlacion muestral alta aunque
+$\Cov(\varepsilon_{2t}, \varepsilon_{3t}) = 0$.
+
+Este fenomeno es la \textbf{regresion espuria} de Granger y Newbold (1974):
+la regresion de $X_{2t}$ sobre $X_{3t}$ puede dar un $R^2$ alto y un
+estadistico $t$ grande incluso cuando las dos series son generadas
+independientemente, solo porque ambas tienen tendencias estocasticas.
+
+\section{Fuente 2: autocorrelacion positiva e inercia}
+
+\subsection{Suavidad de las series macroeconomicas}
+
+Las series como el PNB, el consumo o la oferta monetaria no saltan
+bruscamente de un trimestre al siguiente. Presentan \textbf{inercia}: el
+valor pasado predice bien el valor presente. Formalmente, si cada variable
+sigue un proceso AR(1):
+\begin{equation}
+  X_{jt} = \rho_j X_{j,t-1} + \varepsilon_{jt},
+  \qquad |\rho_j| < 1
+  \label{eq:AR1}
+\end{equation}
+la funcion de autocorrelacion (FAC) en el rezago $s$ es:
+\begin{equation}
+  \rho_{j,s} = \Corr(X_{jt}, X_{j,t-s}) = \rho_j^s
+  \label{eq:FAC}
+\end{equation}
+Para datos trimestrales de variables nominales, $\rho_j \approx 0.9$--$0.95$.
+Esto implica que $X_{jt}$ y $X_{j,t-4}$ tienen correlacion $\rho_j^4 \approx 0.66$.
+
+\subsection{Por que la inercia genera colinealidad entre variables distintas}
+
+Si dos variables $X_{2t}$ y $X_{3t}$ son ambas suaves (alta autocorrelacion)
+y responden a los mismos shocks macroeconomicos (ciclo economico, politica
+monetaria, demanda agregada), sus trayectorias se parecen:
+\begin{equation}
+  \Corr(X_{2t}, X_{3t})
+    = \frac{\sum_{s=-\infty}^{\infty} a_s b_s \sigma_\eta^2}
+           {\sqrt{\Var(X_{2t})\Var(X_{3t})}}
+  \label{eq:corr_factor}
+\end{equation}
+donde $a_s$ y $b_s$ son los coeficientes de la representacion de media movil
+de cada serie y $\eta_t$ es el shock comun. Cuanto mas dominante sea el factor
+comun, mas alta sera la correlacion.
+
+\subsection{Implicacion para la matriz $\mathbf{X'X}$}
+
+Sea $\mathbf{x}_{jt} = X_{jt} - \bar X_j$ la desviacion respecto a la media.
+El elemento $(j, k)$ de $\mathbf{X'X}$ (normalizado) es:
+\begin{equation}
+  \frac{\sum_t x_{jt} x_{kt}}{T} \approx \hat\gamma_{jk}(0)
+  \label{eq:XpX_elem}
+\end{equation}
+la covarianza muestral contemporanea. Si $X_{jt}$ y $X_{kt}$ tienen
+factor comun dominante, $\hat\gamma_{jk}(0)$ es grande relativo a
+$\hat\gamma_{jj}(0)$ y $\hat\gamma_{kk}(0)$, y la correlacion se aproxima a~1.
+
+\section{Fuente 3: ciclos comunes y factores macroeconomicos compartidos}
+
+\subsection{El ciclo economico como generador de colinealidad}
+
+Durante las fases expansivas del ciclo, el PNB, el empleo, el ingreso,
+el consumo y la inversion crecen simultaneamente. Durante las contracciones,
+todas caen juntas. Este co-movimiento es la definicion misma del ciclo
+economico (Burns y Mitchell, 1946). En terminos de un modelo de factor comun:
+\begin{align}
+  X_{2t} &= \lambda_2 F_t + e_{2t}
+  \label{eq:factor2}\\
+  X_{3t} &= \lambda_3 F_t + e_{3t}
+  \label{eq:factor3}
+\end{align}
+donde $F_t$ es el factor macroeconomico latente (ciclo), $\lambda_j$ son las
+cargas del factor (\textit{factor loadings}) y $e_{jt}$ son los componentes
+idiosincraticos con $\Cov(e_{2t}, e_{3t}) = 0$.
+
+La correlacion entre $X_{2t}$ y $X_{3t}$ es:
+\begin{equation}
+  \Corr(X_{2t}, X_{3t})
+    = \frac{\lambda_2 \lambda_3 \Var(F_t)}
+           {\sqrt{(\lambda_2^2\Var(F_t)+\sigma_{e2}^2)(\lambda_3^2\Var(F_t)+\sigma_{e3}^2)}}
+  \label{eq:corr_factor_expr}
+\end{equation}
+Si el factor comun domina ($\Var(F_t) \gg \sigma_{ej}^2$):
+\begin{equation}
+  \Corr(X_{2t}, X_{3t}) \approx \text{signo}(\lambda_2\lambda_3)
+  \label{eq:corr_factor_lim}
+\end{equation}
+Cuando $\lambda_2$ y $\lambda_3$ tienen el mismo signo (ambas variables
+son prociclicas, como PNB e ingreso), la correlacion es cercana a~1.
+
+\subsection{Politica economica como fuente adicional}
+
+Las variables de politica economica ---base monetaria, gasto publico, tasa
+de interes de referencia--- suelen responder al estado del ciclo y a las
+mismas variables macroeconomicas. Un banco central que sigue una regla de
+Taylor ajusta la tasa de interes en funcion del PNB y la inflacion, que a su
+vez estan correlacionadas entre si. Esto crea correlacion entre instrumentos
+de politica y variables objetivo.
+
+\section{Consecuencias econometricas formales}
+
+\subsection{Inflacion de varianzas}
+
+Bajo multicolinealidad con factor de inflacion $\text{VIF}_j$:
+\begin{equation}
+  \Var(\hat\beta_j) = \frac{\sigma^2}{S_{jj}} \cdot \text{VIF}_j,
+  \qquad \text{VIF}_j = \frac{1}{1 - R_j^2}
+  \label{eq:var_vif}
+\end{equation}
+donde $S_{jj} = \sum_t x_{jt}^2$ y $R_j^2$ es el $R^2$ de la regresion
+auxiliar de $X_{jt}$ sobre los demas regresores. Con correlaciones entre
+series de tiempo superiores a $0.95$, los VIF superan facilmente $20$--$100$.
+
+\subsection{Estadisticos $t$ pequenos a pesar de $R^2$ alto}
+
+El estadistico $t$ del $j$-esimo coeficiente es:
+\begin{equation}
+  t_j = \frac{\hat\beta_j}{\text{ee}(\hat\beta_j)}
+       = \frac{\hat\beta_j}{\hat\sigma} \cdot \sqrt{\frac{S_{jj}}{\text{VIF}_j}}
+  \label{eq:t_stat}
+\end{equation}
+Con VIF grande, $t_j$ se reduce aunque $\hat\beta_j$ sea economicamente grande.
+El resultado es la paradoja clasica de series de tiempo: $R^2 > 0.95$ con
+todos los $t_j$ no significativos.
+
+\subsection{Inestabilidad de los coeficientes}
+
+El estimador MCO puede escribirse como:
+\begin{equation}
+  \hat{\boldsymbol{\beta}} = \boldsymbol{\beta} + (\mathbf{X'X})^{-1}\mathbf{X'u}
+  \label{eq:beta_error}
+\end{equation}
+La varianza de $\hat{\boldsymbol{\beta}}$ escala con $(\mathbf{X'X})^{-1}$.
+Cuando $\det(\mathbf{X'X}) \approx 0$, los elementos de $(\mathbf{X'X})^{-1}$
+son grandes: pequenas perturbaciones en los datos (agregar o quitar una
+observacion, cambiar ligeramente la muestra) producen cambios grandes en
+$\hat{\boldsymbol{\beta}}$. Esto explica la inestabilidad numerica bien
+documentada en regresiones macroeconometricas de largo plazo.
+
+\section{Diagnostico de multicolinealidad en series de tiempo}
+
+\subsection{Indicadores practicos}
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item \textbf{Factor de inflacion de varianza (VIF):}
+    \begin{equation}
+      \text{VIF}_j = \frac{1}{1 - R_j^2} > 10 \quad \Rightarrow \quad
+      \text{colinealidad severa}
+      \label{eq:VIF_criterio}
+    \end{equation}
+
+  \item \textbf{Numero de condicion} de la matriz $\mathbf{X'X}$
+    estandarizada:
+    \begin{equation}
+      \kappa = \sqrt{\frac{\lambda_{\max}}{\lambda_{\min}}} > 30
+      \quad \Rightarrow \quad \text{colinealidad severa}
+      \label{eq:kappa}
+    \end{equation}
+
+  \item \textbf{Indices de condicion de Belsley, Kuh y Welsch (1980):}
+    valores superiores a~30 en alguno de los indices de condicion de las
+    columnas de $\mathbf{X}$ indican problemas de colinealidad que afectan
+    a los coeficientes correspondientes.
+
+  \item \textbf{Correlacion entre series en niveles vs. en diferencias:}
+    si la correlacion cae drasticamente al tomar primeras diferencias
+    ($\Delta X_{jt} = X_{jt} - X_{j,t-1}$), la colinealidad original
+    proviene de la tendencia comun, no de una relacion economica estructural.
+\end{enumerate}
+
+\subsection{Distincion crucial: colinealidad espuria vs. estructural}
+
+\begin{itemize}[leftmargin=1.6em, itemsep=5pt]
+  \item \textbf{Colinealidad espuria}: las series estan correlacionadas
+    solo porque ambas tienen tendencia o son I(1). No hay una relacion
+    economica causal entre ellas. En este caso, la correlacion desaparece
+    en diferencias. El remedio es trabajar en diferencias o, si hay
+    cointegracion, usar el modelo de correccion de error (MCE).
+
+  \item \textbf{Colinealidad estructural}: las variables estan relacionadas
+    por un mecanismo economico real (por ejemplo, el ingreso y la riqueza
+    crecen juntos porque la riqueza acumulada es funcion del ingreso pasado).
+    En este caso, la correlacion persiste en diferencias. El remedio requiere
+    restricciones teoricas, datos adicionales o metodos como Koyck o Almon.
+\end{itemize}
+
+\section{Sintesis: por que se sospecha multicolinealidad en series macroeconomicas}
+
+\begin{clave}
+  La multicolinealidad es practicamente inevitable en regresiones con series
+  de tiempo macroeconomicas por tres razones que actuan simultaneamente:
+
+  \begin{enumerate}[leftmargin=1.4em, itemsep=5pt]
+    \item \textbf{Tendencia comun}: el PNB, el ingreso, la oferta monetaria
+      y el nivel de precios crecen todos en el largo plazo. Sus niveles estan
+      correlacionados asintoticamente con~1 aunque sus innovaciones sean
+      independientes. La correlacion no refleja causalidad: es un artefacto
+      de la tendencia compartida.
+
+    \item \textbf{Inercia y autocorrelacion}: las series macroeconomicas son
+      suaves ($\rho \approx 0.9$). En muestras de tamano moderado (20--50
+      anos de datos trimestrales), los rezagos de una variable y otras
+      variables del mismo ciclo tienen correlaciones muestrales altas incluso
+      si las correlaciones poblacionales son moderadas.
+
+    \item \textbf{Factor macroeconomico comun}: el ciclo economico, la
+      politica monetaria y los shocks de oferta mueven simultaneamente todas
+      las variables agregadas en la misma direccion. Las cargas del factor
+      comun ($\lambda_j$) son positivas para la mayoria de las variables
+      prociclicas (PNB, empleo, ingreso, consumo), lo que produce correlaciones
+      altas entre todos los pares.
+  \end{enumerate}
+
+  La consecuencia practica es que en un modelo con varias de estas variables
+  como regresores, los estimadores MCO tendran errores estandar grandes,
+  coeficientes potencialmente con signo incorrecto y una marcada sensibilidad
+  a la especificacion exacta del modelo, incluso con $R^2$ cercano a~1.
+\end{clave}
+
+\appendix
+
+\section{Regresion espuria: formalizacion de Granger-Newbold}
+
+Sean $X_{2t}$ y $X_{3t}$ dos caminatas aleatorias independientes sin deriva:
+\begin{align}
+  X_{2t} &= X_{2,t-1} + \varepsilon_{2t}\\
+  X_{3t} &= X_{3,t-1} + \varepsilon_{3t}
+\end{align}
+con $\varepsilon_{2t} \perp \varepsilon_{3t}$. Por construccion,
+$\beta_3 = 0$ en la regresion $X_{2t} = \beta_1 + \beta_3 X_{3t} + u_t$.
+Sin embargo, Granger y Newbold (1974) demostraron que el estadistico~$t$ de
+$\hat\beta_3$ no converge a su distribucion nula $t_{T-2}$. En cambio:
+\begin{equation}
+  t_{\hat\beta_3} \xrightarrow{d} \frac{\int_0^1 W_2\, dW_3}
+                                        {\left(\int_0^1 W_3^2\,ds\right)^{1/2}}
+  \label{eq:t_espurio}
+\end{equation}
+donde $W_2$ y $W_3$ son movimientos brownianos estandar independientes.
+Esta distribucion no es la $t$ de Student: tiene colas mucho mas pesadas
+y rechaza $H_0: \beta_3 = 0$ con probabilidad mucho mayor que el nivel
+nominal. El $R^2$ de la regresion espuria converge en probabilidad a~1
+a medida que $T \to \infty$, lo que produce la apariencia de una relacion
+perfecta entre variables completamente independientes.
+
+\section{Consecuencia del numero de condicion sobre la precision numerica}
+
+Sea $\kappa(\mathbf{X'X})$ el numero de condicion espectral. La precision
+relativa de $\hat{\boldsymbol{\beta}}$ esta acotada por:
+\begin{equation}
+  \frac{\|\delta\hat{\boldsymbol{\beta}}\|}{\|\hat{\boldsymbol{\beta}}\|}
+  \leq \kappa(\mathbf{X'X}) \cdot
+  \frac{\|\delta\mathbf{X'y}\|}{\|\mathbf{X'y}\|}
+  \label{eq:cond_bound}
+\end{equation}
+donde $\delta$ denota perturbaciones en los datos. Si $\kappa = 100$, un
+error relativo del $1\%$ en $\mathbf{X'y}$ (por redondeo o por una
+observacion atipica) puede inducir un error relativo del $100\%$ en
+$\hat{\boldsymbol{\beta}}$. Para series de tiempo macroeconomicas con
+correlaciones de $0.99$, $\kappa$ puede superar $1000$, haciendo los
+estimadores numericamente inutiles.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} El fenomeno de regresion espuria fue
+documentado por Granger y Newbold (1974) y formalizado asintoticamente
+por Phillips (1986). El tratamiento correcto de series I(1) requiere
+contrastar cointegracion (Engle-Granger, 1987; Johansen, 1991) antes
+de decidir si trabajar en niveles o en diferencias.}
+
+\end{document}
