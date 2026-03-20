@@ -1,0 +1,542 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.8}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Regresores Ortogonales:}\\[6pt]
+  {\LARGE\bfseries Coeficientes, Interceptos y Varianzas}\\[6pt]
+  {\LARGE\bfseries bajo $r_{23} = 0$}\\[12pt]
+  {\large\itshape Derivacion completa desde las ecuaciones normales}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.8 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con demostraciones matriciales, algebra escalar y comparacion de eficiencia}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento.}\quad
+Se tiene el modelo de regresion multiple:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+  \label{eq:multiple}
+\end{equation}
+y se supone que la correlacion entre los dos regresores es exactamente cero:
+\begin{equation}
+  r_{23} = \frac{\sum x_{2i} x_{3i}}{\sqrt{\sum x_{2i}^2 \sum x_{3i}^2}} = 0
+  \quad \Longleftrightarrow \quad
+  \sum x_{2i} x_{3i} = 0
+  \label{eq:ortogonal}
+\end{equation}
+donde $x_{ji} = X_{ji} - \bar{X}_j$ denota la desviacion respecto a la media.
+Se propone ademas estimar dos regresiones simples separadas:
+\begin{align}
+  Y_i &= \alpha_1 + \alpha_2 X_{2i} + u_{1i}
+  \label{eq:simple1}\\
+  Y_i &= \gamma_1 + \gamma_3 X_{3i} + u_{2i}
+  \label{eq:simple2}
+\end{align}
+y se pregunta sobre la relacion entre los estimadores de los tres modelos.
+
+\section{Inciso (a): \texorpdfstring{$\hat\alpha_2 = \hat\beta_2$}{alpha2 = beta2} y \texorpdfstring{$\hat\gamma_3 = \hat\beta_3$}{gamma3 = beta3}}
+
+\subsection{Formulas generales del estimador MCO multiple}
+
+Las ecuaciones normales del modelo~(\ref{eq:multiple}), escritas en desviaciones
+respecto a la media (lo que elimina el intercepto del sistema), son:
+
+\begin{align}
+  \hat\beta_2 \sum x_{2i}^2 + \hat\beta_3 \sum x_{2i} x_{3i}
+    &= \sum x_{2i} y_i
+  \label{eq:normal1}\\
+  \hat\beta_2 \sum x_{2i} x_{3i} + \hat\beta_3 \sum x_{3i}^2
+    &= \sum x_{3i} y_i
+  \label{eq:normal2}
+\end{align}
+
+donde $y_i = Y_i - \bar Y$. Resolviendo por la regla de Cramer:
+
+\begin{equation}
+  \hat\beta_2
+    = \frac{(\sum x_{2i} y_i)(\sum x_{3i}^2)
+            - (\sum x_{3i} y_i)(\sum x_{2i} x_{3i})}
+           {(\sum x_{2i}^2)(\sum x_{3i}^2) - (\sum x_{2i} x_{3i})^2}
+  \label{eq:beta2_general}
+\end{equation}
+
+\begin{equation}
+  \hat\beta_3
+    = \frac{(\sum x_{3i} y_i)(\sum x_{2i}^2)
+            - (\sum x_{2i} y_i)(\sum x_{2i} x_{3i})}
+           {(\sum x_{2i}^2)(\sum x_{3i}^2) - (\sum x_{2i} x_{3i})^2}
+  \label{eq:beta3_general}
+\end{equation}
+
+\subsection{Simplificacion bajo ortogonalidad}
+
+Aplicando la condicion~(\ref{eq:ortogonal}), $\sum x_{2i} x_{3i} = 0$,
+en~(\ref{eq:beta2_general}):
+
+\begin{equation}
+  \hat\beta_2
+    = \frac{(\sum x_{2i} y_i)(\sum x_{3i}^2) - 0}
+           {(\sum x_{2i}^2)(\sum x_{3i}^2) - 0}
+    = \frac{\sum x_{2i} y_i}{\sum x_{2i}^2}
+  \label{eq:beta2_ortogonal}
+\end{equation}
+
+Esta es exactamente la formula del estimador MCO de la pendiente en la
+regresion simple~(\ref{eq:simple1}):
+
+\begin{equation}
+  \hat\alpha_2 = \frac{\sum x_{2i} y_i}{\sum x_{2i}^2}
+  \label{eq:alpha2}
+\end{equation}
+
+Por tanto:
+\begin{equation}
+  \boxed{\hat\beta_2 = \hat\alpha_2}
+  \label{eq:igual_beta2}
+\end{equation}
+
+El mismo argumento para $\hat\beta_3$ con~(\ref{eq:beta3_general}):
+
+\begin{equation}
+  \hat\beta_3
+    = \frac{(\sum x_{3i} y_i)(\sum x_{2i}^2) - 0}
+           {(\sum x_{2i}^2)(\sum x_{3i}^2) - 0}
+    = \frac{\sum x_{3i} y_i}{\sum x_{3i}^2}
+    = \hat\gamma_3
+  \label{eq:beta3_ortogonal}
+\end{equation}
+
+\begin{equation}
+  \boxed{\hat\beta_3 = \hat\gamma_3}
+  \label{eq:igual_beta3}
+\end{equation}
+
+\subsection{Interpretacion}
+
+Cuando $r_{23} = 0$, los regresores no comparten informacion lineal. El efecto
+de $X_2$ sobre $Y$ es completamente separable del efecto de $X_3$, sin que
+ninguno contamine al otro. Cada coeficiente de pendiente del modelo multiple
+coincide con el que se obtendria en una regresion simple que ignora la otra
+variable.
+
+En terminos de las ecuaciones normales, el cruce $\sum x_{2i}x_{3i}$ actua
+como el ``canal de interferencia'' entre los dos estimadores. Al anularse,
+el sistema~(\ref{eq:normal1})--(\ref{eq:normal2}) se desacopla:
+
+\begin{align}
+  \hat\beta_2 \sum x_{2i}^2 &= \sum x_{2i} y_i
+  \label{eq:desacoplado1}\\
+  \hat\beta_3 \sum x_{3i}^2 &= \sum x_{3i} y_i
+  \label{eq:desacoplado2}
+\end{align}
+
+Cada ecuacion se resuelve independientemente, como si la otra variable no
+existiera.
+
+\begin{clave}
+  La ortogonalidad ($r_{23} = 0$) es la condicion bajo la cual omitir una
+  variable del modelo \textbf{no sesga} el coeficiente de la variable
+  incluida. Este es el caso ideal en diseno experimental (variables
+  controladas y ortogonales por construccion). En datos observacionales,
+  $r_{23} = 0$ es excepcional.
+\end{clave}
+
+\section{Inciso (b): relacion entre los interceptos}
+
+\subsection{Formula general del intercepto}
+
+En cualquier regresion MCO, el intercepto se obtiene evaluando la recta
+de regresion en las medias (condicion de primer orden respecto a $\beta_1$):
+
+\begin{align}
+  \hat\beta_1 &= \bar Y - \hat\beta_2 \bar X_2 - \hat\beta_3 \bar X_3
+  \label{eq:beta1}\\
+  \hat\alpha_1 &= \bar Y - \hat\alpha_2 \bar X_2
+  \label{eq:alpha1}\\
+  \hat\gamma_1 &= \bar Y - \hat\gamma_3 \bar X_3
+  \label{eq:gamma1}
+\end{align}
+
+\subsection{Relaciones entre los tres interceptos}
+
+Dado que $\hat\beta_2 = \hat\alpha_2$ y $\hat\beta_3 = \hat\gamma_3$,
+sustituimos~(\ref{eq:alpha1}) en~(\ref{eq:beta1}):
+
+\begin{align}
+  \hat\beta_1
+  &= \bar Y - \hat\beta_2 \bar X_2 - \hat\beta_3 \bar X_3
+  \notag\\
+  &= (\bar Y - \hat\alpha_2 \bar X_2) - \hat\beta_3 \bar X_3
+  \notag\\
+  &= \hat\alpha_1 - \hat\beta_3 \bar X_3
+  \label{eq:beta1_vs_alpha1}
+\end{align}
+
+Analogamente, sustituyendo~(\ref{eq:gamma1}):
+
+\begin{align}
+  \hat\beta_1
+  &= (\bar Y - \hat\gamma_3 \bar X_3) - \hat\beta_2 \bar X_2
+  \notag\\
+  &= \hat\gamma_1 - \hat\beta_2 \bar X_2
+  \label{eq:beta1_vs_gamma1}
+\end{align}
+
+Resumiendo:
+
+\begin{equation}
+  \boxed{
+    \hat\beta_1
+      = \hat\alpha_1 - \hat\beta_3 \bar X_3
+      = \hat\gamma_1 - \hat\beta_2 \bar X_2
+  }
+  \label{eq:relacion_interceptos}
+\end{equation}
+
+\subsection{Cuando coinciden los interceptos}
+
+De~(\ref{eq:beta1_vs_alpha1}) se deduce:
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item $\hat\beta_1 = \hat\alpha_1$ si y solo si $\hat\beta_3 \bar X_3 = 0$,
+    es decir, si $\bar X_3 = 0$ (la media de $X_3$ es cero) o si
+    $\hat\beta_3 = 0$ (la variable $X_3$ no tiene efecto sobre $Y$).
+  \item $\hat\beta_1 = \hat\gamma_1$ si y solo si $\hat\beta_2 \bar X_2 = 0$,
+    es decir, si $\bar X_2 = 0$ o $\hat\beta_2 = 0$.
+\end{itemize}
+
+En general, ninguna de estas condiciones se cumple con datos economicos reales,
+por lo que $\hat\beta_1 \neq \hat\alpha_1$ y $\hat\beta_1 \neq \hat\gamma_1$.
+
+\subsection{Interpretacion geometrica}
+
+El intercepto ajusta la recta para que pase por el punto de medias
+$(\bar X_2, \bar X_3, \bar Y)$. Cuando el modelo simple omite $X_3$, el punto
+de medias que usa es $(\bar X_2, \bar Y)$. Dado que $\bar X_3 \neq 0$ en
+general, las dos rectas de regresion no tienen el mismo origen vertical.
+
+\begin{clave}
+  Los interceptos de las regresiones simples \textbf{no coinciden} con el
+  intercepto del modelo multiple, excepto en casos especiales ($\bar X_j = 0$
+  o $\hat\beta_j = 0$). La relacion exacta es
+  $\hat\beta_1 = \hat\alpha_1 - \hat\beta_3 \bar X_3$.
+\end{clave}
+
+\section{Inciso (c): comparacion de varianzas}
+
+\subsection{Varianza de \texorpdfstring{$\hat\beta_2$}{beta2} en el modelo multiple}
+
+Bajo ortogonalidad, la formula general~(\ref{eq:beta2_general}) se simplifica
+a~(\ref{eq:beta2_ortogonal}). La varianza del estimador en el modelo multiple es:
+
+\begin{equation}
+  \Var(\hat\beta_2)
+    = \frac{\sigma^2}{\sum x_{2i}^2}
+  \label{eq:var_beta2}
+\end{equation}
+
+donde $\sigma^2 = \Var(u_i)$ es la varianza del error del modelo
+multiple~(\ref{eq:multiple}). Nótese que el factor VIF desaparece porque
+$r_{23} = 0$: $\text{VIF}_2 = 1/(1 - r_{23}^2) = 1$.
+
+\subsection{Varianza de \texorpdfstring{$\hat\alpha_2$}{alpha2} en la regresion simple}
+
+En la regresion simple~(\ref{eq:simple1}), el termino de error es:
+
+\begin{equation}
+  u_{1i} = u_i + \beta_3 X_{3i}
+  \label{eq:error_simple}
+\end{equation}
+
+Esto es asi porque el verdadero modelo incluye $\beta_3 X_{3i}$, pero al
+omitirlo, ese termino pasa al error. La varianza del error simple es:
+
+\begin{align}
+  \sigma_{u_1}^2
+    &= \Var(u_i + \beta_3 X_{3i})
+  \notag\\
+    &= \Var(u_i) + \beta_3^2 \Var(X_{3i}) + 2\beta_3 \Cov(u_i, X_{3i})
+  \notag\\
+    &= \sigma^2 + \beta_3^2 \sigma_{X_3}^2
+  \label{eq:var_error_simple}
+\end{align}
+
+donde usamos $\Cov(u_i, X_{3i}) = 0$ (supuesto de exogeneidad) y
+$\sigma_{X_3}^2 = \Var(X_{3i})$. Por tanto:
+
+\begin{equation}
+  \sigma_{u_1}^2 = \sigma^2 + \beta_3^2 \sigma_{X_3}^2 \geq \sigma^2
+  \label{eq:desigualdad_var}
+\end{equation}
+
+con igualdad solo si $\beta_3 = 0$.
+
+La varianza del estimador simple es:
+
+\begin{equation}
+  \Var(\hat\alpha_2)
+    = \frac{\sigma_{u_1}^2}{\sum x_{2i}^2}
+    = \frac{\sigma^2 + \beta_3^2 \sigma_{X_3}^2}{\sum x_{2i}^2}
+  \label{eq:var_alpha2}
+\end{equation}
+
+\subsection{Comparacion directa}
+
+Restando~(\ref{eq:var_beta2}) de~(\ref{eq:var_alpha2}):
+
+\begin{equation}
+  \Var(\hat\alpha_2) - \Var(\hat\beta_2)
+    = \frac{\sigma^2 + \beta_3^2 \sigma_{X_3}^2}{\sum x_{2i}^2}
+    - \frac{\sigma^2}{\sum x_{2i}^2}
+    = \frac{\beta_3^2 \sigma_{X_3}^2}{\sum x_{2i}^2}
+    \geq 0
+  \label{eq:diferencia_var}
+\end{equation}
+
+Por tanto:
+
+\begin{equation}
+  \boxed{
+    \Var(\hat\alpha_2) \geq \Var(\hat\beta_2)
+  }
+  \label{eq:ineq_var}
+\end{equation}
+
+con igualdad si y solo si $\beta_3 = 0$ (la variable omitida es irrelevante).
+
+\subsection{Mismo resultado para \texorpdfstring{$\hat\gamma_3$}{gamma3} y \texorpdfstring{$\hat\beta_3$}{beta3}}
+
+Por simetria del argumento, el error de la regresion simple~(\ref{eq:simple2})
+es $u_{2i} = u_i + \beta_2 X_{2i}$, con varianza:
+
+\begin{equation}
+  \sigma_{u_2}^2 = \sigma^2 + \beta_2^2 \sigma_{X_2}^2 \geq \sigma^2
+  \label{eq:var_error_simple2}
+\end{equation}
+
+y por tanto:
+
+\begin{equation}
+  \Var(\hat\gamma_3) = \frac{\sigma_{u_2}^2}{\sum x_{3i}^2} \geq \frac{\sigma^2}{\sum x_{3i}^2} = \Var(\hat\beta_3)
+  \label{eq:ineq_var_gamma}
+\end{equation}
+
+\begin{clave}
+  Aunque los estimadores puntuales de las pendientes son identicos
+  ($\hat\alpha_2 = \hat\beta_2$ y $\hat\gamma_3 = \hat\beta_3$), las
+  varianzas \textbf{no lo son}. La regresion multiple es siempre mas
+  eficiente:
+  \[
+    \Var(\hat\alpha_2) \geq \Var(\hat\beta_2), \qquad
+    \Var(\hat\gamma_3) \geq \Var(\hat\beta_3)
+  \]
+  La razon es que el modelo multiple ``sabe'' que $X_3$ ya esta controlada,
+  mientras que el modelo simple lo ignora y su error absorbe la influencia
+  de $X_3$, inflando la varianza del estimador.
+\end{clave}
+
+\section{Sintesis}
+
+\begin{table}[ht]
+\centering
+\caption{Comparacion entre modelo multiple y regresiones simples bajo $r_{23} = 0$}
+\label{tab:resumen}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Cantidad} & \textbf{Modelo multiple} & \textbf{Regresion simple}
+                  & \textbf{Igualdad?} \\
+\midrule
+Coeficiente de $X_2$
+  & $\hat\beta_2 = \dfrac{\sum x_{2i}y_i}{\sum x_{2i}^2}$
+  & $\hat\alpha_2 = \dfrac{\sum x_{2i}y_i}{\sum x_{2i}^2}$
+  & \textbf{Si} \\[10pt]
+Coeficiente de $X_3$
+  & $\hat\beta_3 = \dfrac{\sum x_{3i}y_i}{\sum x_{3i}^2}$
+  & $\hat\gamma_3 = \dfrac{\sum x_{3i}y_i}{\sum x_{3i}^2}$
+  & \textbf{Si} \\[10pt]
+Intercepto
+  & $\hat\beta_1 = \bar Y - \hat\beta_2\bar X_2 - \hat\beta_3\bar X_3$
+  & $\hat\alpha_1 = \bar Y - \hat\alpha_2\bar X_2$
+  & No (en gral.) \\[10pt]
+Varianza de $\hat\cdot_2$
+  & $\dfrac{\sigma^2}{\sum x_{2i}^2}$
+  & $\dfrac{\sigma^2 + \beta_3^2\sigma_{X_3}^2}{\sum x_{2i}^2}$
+  & No: simple $\geq$ multiple \\[10pt]
+Varianza de $\hat\cdot_3$
+  & $\dfrac{\sigma^2}{\sum x_{3i}^2}$
+  & $\dfrac{\sigma^2 + \beta_2^2\sigma_{X_2}^2}{\sum x_{3i}^2}$
+  & No: simple $\geq$ multiple \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Demostracion matricial bajo ortogonalidad}
+
+La matriz de productos cruzados del modelo multiple es:
+\begin{equation}
+  \mathbf{X'X} =
+  \begin{pmatrix}
+    n & \sum X_{2i} & \sum X_{3i}\\
+    \sum X_{2i} & \sum X_{2i}^2 & \sum X_{2i}X_{3i}\\
+    \sum X_{3i} & \sum X_{2i}X_{3i} & \sum X_{3i}^2
+  \end{pmatrix}
+  \label{eq:XpX}
+\end{equation}
+
+Trabajando en desviaciones respecto a la media, la submatriz relevante es:
+\begin{equation}
+  \mathbf{S} =
+  \begin{pmatrix}
+    \sum x_{2i}^2 & \sum x_{2i}x_{3i}\\
+    \sum x_{2i}x_{3i} & \sum x_{3i}^2
+  \end{pmatrix}
+  \label{eq:S}
+\end{equation}
+
+Bajo ortogonalidad, $\sum x_{2i}x_{3i} = 0$ y la matriz se vuelve diagonal:
+\begin{equation}
+  \mathbf{S} =
+  \begin{pmatrix}
+    \sum x_{2i}^2 & 0\\
+    0 & \sum x_{3i}^2
+  \end{pmatrix}
+  \label{eq:S_diag}
+\end{equation}
+
+Su inversa es trivial:
+\begin{equation}
+  \mathbf{S}^{-1} =
+  \begin{pmatrix}
+    1/\sum x_{2i}^2 & 0\\
+    0 & 1/\sum x_{3i}^2
+  \end{pmatrix}
+  \label{eq:Sinv}
+\end{equation}
+
+El estimador MCO es $\hat{\boldsymbol\beta} = \mathbf{S}^{-1}\mathbf{S}_{y}$
+donde $\mathbf{S}_y = (\sum x_{2i}y_i, \sum x_{3i}y_i)'$:
+
+\begin{equation}
+  \begin{pmatrix}\hat\beta_2\\\hat\beta_3\end{pmatrix}
+  =
+  \begin{pmatrix}
+    1/\sum x_{2i}^2 & 0\\
+    0 & 1/\sum x_{3i}^2
+  \end{pmatrix}
+  \begin{pmatrix}\sum x_{2i}y_i\\\sum x_{3i}y_i\end{pmatrix}
+  =
+  \begin{pmatrix}
+    \sum x_{2i}y_i/\sum x_{2i}^2\\
+    \sum x_{3i}y_i/\sum x_{3i}^2
+  \end{pmatrix}
+  \label{eq:betahat_diag}
+\end{equation}
+
+Cada componente es exactamente el estimador de la regresion simple correspondiente.
+La matriz de varianzas-covarianzas es:
+
+\begin{equation}
+  \Var(\hat{\boldsymbol\beta}) = \sigma^2 \mathbf{S}^{-1} =
+  \begin{pmatrix}
+    \sigma^2/\sum x_{2i}^2 & 0\\
+    0 & \sigma^2/\sum x_{3i}^2
+  \end{pmatrix}
+  \label{eq:varmat}
+\end{equation}
+
+Los estimadores de las dos pendientes son no correlacionados entre si
+($\Cov(\hat\beta_2, \hat\beta_3) = 0$), propiedad que solo se da bajo
+ortogonalidad. Esto confirma que los resultados del modelo multiple y de
+las dos regresiones simples coinciden \emph{en los coeficientes de
+pendiente} pero difieren en las varianzas porque el $\sigma^2$ del modelo
+multiple es menor que las varianzas de los errores de las regresiones simples.
+
+\section{Magnitud del exceso de varianza en la regresion simple}
+
+El exceso de varianza relativo del estimador simple respecto al multiple es:
+
+\begin{equation}
+  \frac{\Var(\hat\alpha_2) - \Var(\hat\beta_2)}{\Var(\hat\beta_2)}
+    = \frac{\beta_3^2 \sigma_{X_3}^2}{\sigma^2}
+    = \beta_3^2 \cdot \text{SNR}_{X_3}
+  \label{eq:exceso_relativo}
+\end{equation}
+
+donde $\text{SNR}_{X_3} = \sigma_{X_3}^2/\sigma^2$ es la razon
+senal-ruido de $X_3$. El exceso de varianza es mayor cuando:
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item $|\beta_3|$ es grande (efecto real de la variable omitida sobre $Y$).
+  \item $\sigma_{X_3}^2$ es grande (mucha variacion en la variable omitida).
+  \item $\sigma^2$ es pequeno (modelo con poco ruido, donde la omision
+    importa relativamente mas).
+\end{enumerate}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los resultados del inciso~(a) generalizan al
+caso de $k$ regresores: si todos los pares de regresores son ortogonales
+(es decir, $\mathbf{X'X}$ es diagonal en desviaciones), entonces cada
+coeficiente MCO del modelo multiple coincide con el de la regresion simple
+de $Y$ sobre ese unico regresor. Este es el principio que subyace al diseno
+de experimentos con bloques completos aleatorizados y factores ortogonales.}
+
+\end{document}
