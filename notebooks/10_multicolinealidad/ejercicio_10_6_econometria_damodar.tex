@@ -1,0 +1,442 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.6}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+\newcommand{\bhat}{\hat{\beta}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Propension Marginal a Consumir,}\\[6pt]
+  {\LARGE\bfseries Multicolinealidad y Sesgo por Variable Omitida}\\[12pt]
+  {\large\itshape Interpretacion de la diferencia entre los modelos (10.6.1) y (10.6.4)}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.6 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Derivacion completa del sesgo, algebra matricial y diagnostico de colinealidad}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Contexto.}\quad
+El ejemplo~10.1 de Gujarati estima una funcion de consumo donde la variable
+dependiente es el gasto de consumo personal $Y_i$ y los regresores son el
+ingreso personal disponible $X_{2i}$ y la riqueza personal $X_{3i}$. Se
+presentan dos versiones del modelo: una con ambas variables y otra eliminando
+la riqueza. La propension marginal a consumir (PMC) estimada difiere
+sustancialmente entre los dos modelos, lo que plantea una pregunta de
+interpretacion econometrica fundamental.
+
+\section{Los dos modelos en cuestion}
+
+\subsection{Modelo completo: ingreso y riqueza (10.6.1)}
+
+\begin{equation}
+  \hat{Y}_i = \hat{\beta}_1 + \hat{\beta}_2 X_{2i} + \hat{\beta}_3 X_{3i}
+  \label{eq:completo}
+\end{equation}
+
+\noindent con los siguientes resultados estimados:
+
+\begin{table}[ht]
+\centering
+\caption{Resultados del modelo completo~(\ref{eq:completo})}
+\label{tab:completo}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error estandar}
+                  & \textbf{Estadistico $t$} & \textbf{$p$-valor} \\
+\midrule
+Constante         & $-184.0$  & ---      & ---     & ---    \\
+Ingreso $X_2$     & $0.9415$  & $0.8229$ & $1.14$  & $> 0.05$ \\
+Riqueza $X_3$     & $-0.0424$ & $0.0807$ & $-0.52$ & $> 0.05$ \\
+\midrule
+\multicolumn{2}{l}{$R^2 = 0.9608$} & \multicolumn{3}{l}{$F$-estadistico: significativo} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Observacion critica}: ninguno de los coeficientes individuales
+es estadisticamente significativo al nivel convencional del $5\%$, a pesar de
+que el $R^2$ global es $0.9608$. Esto es la firma clasica de multicolinealidad
+severa.
+
+\subsection{Modelo reducido: solo ingreso (10.6.4)}
+
+\begin{equation}
+  \hat{Y}_i = \hat{\beta}_1^* + \hat{\beta}_2^* X_{2i}
+  \label{eq:reducido}
+\end{equation}
+
+\noindent con los siguientes resultados:
+
+\begin{table}[ht]
+\centering
+\caption{Resultados del modelo reducido~(\ref{eq:reducido})}
+\label{tab:reducido}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error estandar}
+                  & \textbf{Estadistico $t$} & \textbf{$p$-valor} \\
+\midrule
+Constante         & $-184.0$  & ---      & ---     & ---    \\
+Ingreso $X_2$     & $0.5091$  & $0.0357$ & $14.24$ & $< 0.001$ \\
+\midrule
+\multicolumn{2}{l}{$R^2 = 0.9621$} & \multicolumn{3}{l}{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Al eliminar $X_3$, el coeficiente de $X_2$ cae de $0.9415$ a
+$0.5091$ y su estadistico $t$ salta de $1.14$ a $14.24$.
+
+\section{La multicolinealidad como causa de la discrepancia}
+
+\subsection{Diagnostico de colinealidad}
+
+La regresion auxiliar de $X_3$ sobre $X_2$ produce un $R^2$ de $0.9979$.
+El factor de inflacion de varianza (VIF) del ingreso en el modelo completo es:
+
+\begin{equation}
+  \text{VIF}(X_2) = \frac{1}{1 - R_{2\cdot 3}^2}
+                  = \frac{1}{1 - 0.9979}
+                  = \frac{1}{0.0021}
+                  \approx 476
+  \label{eq:VIF}
+\end{equation}
+
+\noindent Un VIF de $476$ es extremo: la varianza del estimador de $\beta_2$
+es $476$ veces mayor de lo que seria si $X_2$ y $X_3$ fuesen ortogonales.
+Esto explica por que el error estandar de $\hat\beta_2$ en~(\ref{eq:completo})
+es $0.8229$ ---enorme--- mientras que en~(\ref{eq:reducido}) es solo $0.0357$.
+
+\subsection{Efecto sobre los errores estandar}
+
+La varianza del estimador MCO de $\beta_2$ en el modelo completo es:
+
+\begin{equation}
+  \Var(\hat\beta_2) = \frac{\sigma^2}{\sum x_{2i}^2} \cdot \frac{1}{1 - r_{23}^2}
+  \label{eq:var_beta2}
+\end{equation}
+
+\noindent donde $x_{2i} = X_{2i} - \bar X_2$ y $r_{23}$ es la correlacion entre
+$X_2$ y $X_3$. Con $r_{23}^2 = 0.9979$, el factor $1/(1 - r_{23}^2) = 476$
+infla la varianza en ese factor respecto al modelo sin $X_3$. El error estandar
+escala con la raiz de este factor:
+
+\begin{equation}
+  \frac{\text{ee}(\hat\beta_2)^{\text{completo}}}{\text{ee}(\hat\beta_2)^{\text{reducido}}}
+  \approx \sqrt{476} \approx 21.8
+  \label{eq:razon_ee}
+\end{equation}
+
+\noindent Efectivamente, $0.8229 / 0.0357 \approx 23$, coherente con este calculo.
+
+\section{El sesgo por variable omitida: derivacion formal}
+
+\subsection{Planteamiento del problema}
+
+Suponga que el verdadero modelo de la economia es el modelo completo:
+
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i
+  \label{eq:verdadero}
+\end{equation}
+
+\noindent Pero el econometrista estima en cambio el modelo reducido~(\ref{eq:reducido}),
+omitiendo $X_3$. Sea $b_{12}$ el estimador de la pendiente de la regresion de $Y$
+sobre $X_2$ unicamente, y $b_{32}$ el estimador de la pendiente de la regresion de
+$X_3$ sobre $X_2$:
+
+\begin{align}
+  b_{12} &= \frac{\sum x_{2i} y_i}{\sum x_{2i}^2}
+  \label{eq:b12}\\[4pt]
+  b_{32} &= \frac{\sum x_{2i} x_{3i}}{\sum x_{2i}^2}
+  \label{eq:b32}
+\end{align}
+
+\noindent donde las minusculas indican desviaciones respecto a la media.
+
+\subsection{Demostracion del sesgo}
+
+Sustituimos~( \ref{eq:verdadero} ) en~(\ref{eq:b12}):
+
+\begin{align}
+  b_{12}
+  &= \frac{\sum x_{2i}(\beta_2 x_{2i} + \beta_3 x_{3i} + u_i)}{\sum x_{2i}^2}
+  \notag\\[4pt]
+  &= \beta_2 \cdot \frac{\sum x_{2i}^2}{\sum x_{2i}^2}
+   + \beta_3 \cdot \frac{\sum x_{2i} x_{3i}}{\sum x_{2i}^2}
+   + \frac{\sum x_{2i} u_i}{\sum x_{2i}^2}
+  \notag\\[4pt]
+  &= \beta_2 + \beta_3 b_{32} + \frac{\sum x_{2i} u_i}{\sum x_{2i}^2}
+  \label{eq:sesgo_derivacion}
+\end{align}
+
+Tomando esperanza (bajo el supuesto de que $X_2$ es exogena, $\E[\sum x_{2i} u_i] = 0$):
+
+\begin{equation}
+  \boxed{
+    \E[b_{12}] = \beta_2 + \beta_3 \cdot b_{32}
+  }
+  \label{eq:sesgo}
+\end{equation}
+
+\noindent El termino $\beta_3 \cdot b_{32}$ es el \textbf{sesgo por variable omitida}.
+El estimador $b_{12}$ es sesgado e inconsistente siempre que $\beta_3 \neq 0$
+y $b_{32} \neq 0$.
+
+\subsection{Calculo numerico del sesgo}
+
+Del ejercicio tenemos los siguientes valores:
+
+\begin{align}
+  \hat\beta_2 &= 0.9415 \quad \text{(coeficiente de ingreso en modelo completo)}
+  \label{eq:valores1}\\
+  \hat\beta_3 &= -0.0424 \quad \text{(coeficiente de riqueza en modelo completo)}
+  \label{eq:valores2}\\
+  b_{32}      &= 10.191 \quad \text{(pendiente de } X_3 \text{ regresado sobre } X_2\text{)}
+  \label{eq:valores3}\\
+  b_{12}      &= 0.5091 \quad \text{(PMC del modelo reducido)}
+  \label{eq:valores4}
+\end{align}
+
+El sesgo es:
+
+\begin{equation}
+  \text{Sesgo} = \hat\beta_3 \cdot b_{32} = (-0.0424)(10.191) = -0.4321
+  \label{eq:sesgo_numerico}
+\end{equation}
+
+\noindent Verificamos la identidad~(\ref{eq:sesgo}) con los datos:
+
+\begin{equation}
+  b_{12} = \hat\beta_2 + \hat\beta_3 \cdot b_{32}
+         = 0.9415 + (-0.4321)
+         = 0.5094
+         \approx 0.5091 \quad \checkmark
+  \label{eq:verificacion}
+\end{equation}
+
+\noindent La pequena discrepancia se debe al redondeo. La identidad se cumple
+exactamente en algebra de precision infinita.
+
+\begin{clave}
+  \textbf{Interpretacion.} El $0.5091$ del modelo reducido no es la PMC
+  ``verdadera''. Es una mezcla del efecto directo del ingreso ($\beta_2$) y
+  del efecto indirecto de la riqueza que el ingreso captura en su ausencia
+  ($\beta_3 b_{32}$). Dado que $b_{32} = 10.191 > 0$ (riqueza y ingreso se
+  mueven juntos) y $\beta_3 = -0.0424 < 0$ (riqueza tiene efecto negativo),
+  el sesgo es negativo: omitir la riqueza subestima la PMC verdadera.
+\end{clave}
+
+\section{Interpretacion economica de la diferencia}
+
+\subsection{Por que difieren tanto los coeficientes}
+
+La diferencia $0.9415 - 0.5091 = 0.4324 \approx |\text{sesgo}|$ se explica
+completamente por la formula~(\ref{eq:sesgo}). No hay misterio econometrico:
+es una consecuencia algebraica de omitir una variable correlacionada con el
+regresor incluido.
+
+\subsection{Que mide cada coeficiente}
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item \textbf{$\hat\beta_2 = 0.9415$ en el modelo completo} es el
+    \textbf{efecto parcial} del ingreso sobre el consumo, manteniendo constante
+    la riqueza. Mide cuanto cambia $Y$ ante un cambio de una unidad en $X_2$
+    \emph{sin mover} $X_3$. El problema es que con $r_{23}^2 = 0.9979$, los
+    datos no tienen variacion suficiente de $X_2$ con $X_3$ constante:
+    el error estandar es tan grande ($0.8229$) que el intervalo de confianza
+    al $95\%$ para $\beta_2$ abarca desde valores negativos hasta casi~$2.6$.
+    Es decir, el coeficiente es estadisticamente inutil, no porque sea economicamente
+    cero, sino porque la colinealidad impide estimarlo.
+
+  \item \textbf{$b_{12} = 0.5091$ en el modelo reducido} es el
+    \textbf{efecto total} del ingreso sobre el consumo, incluyendo su correlacion
+    con la riqueza. Cuando el ingreso sube en una unidad, la riqueza tambien
+    tiende a subir en $b_{32} = 10.191$ unidades; ese movimiento de la riqueza
+    tambien afecta al consumo con coeficiente $\beta_3 = -0.0424$. El modelo
+    reducido atribuye ese efecto conjunto al ingreso, por eso su coeficiente
+    es diferente.
+\end{enumerate}
+
+\subsection{Signo incorrecto del coeficiente de riqueza}
+
+En el modelo completo, $\hat\beta_3 = -0.0424$: la riqueza tiene un efecto
+negativo sobre el consumo. Esto contradice la teoria economica (mayor riqueza
+deberia inducir mayor consumo). Este signo incorrecto es tambien consecuencia
+de la colinealidad: con VIF $= 476$, los estimadores son extremadamente sensibles
+a pequeñas perturbaciones en los datos. El verdadero valor de $\beta_3$ muy
+probablemente es positivo, pero la colinealidad genera una estimacion con signo
+erroneo.
+
+\subsection{Paradoja del alto $R^2$ con bajos $t$}
+
+Esta situacion ---$R^2 = 0.9608$ con $t_{X_2} = 1.14$ y $t_{X_3} = -0.52$---
+es el ejemplo canonico de multicolinealidad. Se explica porque:
+
+\begin{equation}
+  R^2_{\text{conjunto}} \neq \sum_j \text{(contribucion individual de } X_j\text{)}
+  \label{eq:paradoja}
+\end{equation}
+
+El ingreso y la riqueza juntos explican el $96\%$ de la variacion del consumo,
+pero sus efectos individuales son tan similares que el modelo no puede discernir
+cual de los dos es responsable de que fraccion. El test $F$ global es significativo
+(rechaza $\beta_2 = \beta_3 = 0$) pero los tests $t$ individuales no pueden
+rechazar $\beta_2 = 0$ ni $\beta_3 = 0$ por separado.
+
+\section{Sintesis y conclusion}
+
+La diferencia entre $0.9415$ y $0.5091$ no refleja un comportamiento distinto
+del consumidor. Refleja tres fenomenos econometricos interrelacionados:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item \textbf{Multicolinealidad casi perfecta} ($r_{23}^2 = 0.9979$,
+    VIF $= 476$): los datos no tienen variacion independiente de ingreso y
+    riqueza, haciendo imposible separar sus efectos con precision.
+
+  \item \textbf{Inestabilidad del modelo completo}: el coeficiente $0.9415$
+    tiene un error estandar de $0.8229$, lo que lo hace estadisticamente
+    indistinguible de cero. La estimacion es tecnicamente valida pero
+    practicamente inutilizable.
+
+  \item \textbf{Sesgo por variable omitida en el modelo reducido}: el
+    coeficiente $0.5091$ combina el efecto propio del ingreso con parte
+    del efecto de la riqueza. El sesgo exacto es $(-0.0424)(10.191) = -0.4321$,
+    que sumado a $0.5091$ recupera $0.9412 \approx 0.9415$.
+\end{enumerate}
+
+\begin{clave}
+  Ninguno de los dos coeficientes es la PMC ``verdadera'' en un sentido
+  incondicional. El $0.9415$ es el efecto parcial del ingreso con riqueza
+  constante, pero es impreciso. El $0.5091$ es el efecto total del ingreso
+  (absorbiendo el canal de riqueza), pero esta sesgado si la riqueza es
+  causalmente relevante. La solucion correcta no es elegir entre los dos
+  modelos, sino conseguir datos con suficiente variacion independiente de
+  ambas variables para estimar el modelo completo con precision.
+\end{clave}
+
+\appendix
+
+\section{Demostracion general del sesgo por variable omitida}
+
+Sea el modelo verdadero con $k$ regresores:
+\begin{equation}
+  \mathbf{y} = \mathbf{X}_1\boldsymbol{\beta}_1 + \mathbf{X}_2\boldsymbol{\beta}_2 + \mathbf{u}
+  \label{eq:gral_completo}
+\end{equation}
+
+El estimador MCO del modelo mal especificado (omitiendo $\mathbf{X}_2$) es:
+\begin{equation}
+  \hat{\boldsymbol{\beta}}_1^{\text{red}}
+    = (\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1'\mathbf{y}
+  \label{eq:MCO_red}
+\end{equation}
+
+Sustituyendo~(\ref{eq:gral_completo}) en~(\ref{eq:MCO_red}):
+\begin{align}
+  \hat{\boldsymbol{\beta}}_1^{\text{red}}
+  &= (\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1'
+     (\mathbf{X}_1\boldsymbol{\beta}_1 + \mathbf{X}_2\boldsymbol{\beta}_2 + \mathbf{u})
+  \notag\\
+  &= \boldsymbol{\beta}_1
+   + \underbrace{(\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1'\mathbf{X}_2}_{\mathbf{B}_{21}}
+     \boldsymbol{\beta}_2
+   + (\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1'\mathbf{u}
+  \label{eq:sesgo_gral}
+\end{align}
+
+Tomando esperanza:
+\begin{equation}
+  \E[\hat{\boldsymbol{\beta}}_1^{\text{red}}]
+    = \boldsymbol{\beta}_1 + \mathbf{B}_{21}\boldsymbol{\beta}_2
+  \label{eq:esperanza_sesgo}
+\end{equation}
+
+\noindent donde $\mathbf{B}_{21} = (\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1'\mathbf{X}_2$
+es la matriz de coeficientes de la proyeccion de $\mathbf{X}_2$ sobre $\mathbf{X}_1$.
+El sesgo es $\mathbf{B}_{21}\boldsymbol{\beta}_2$.
+
+Para el caso escalar del ejercicio ($\mathbf{X}_1 = X_2$, $\mathbf{X}_2 = X_3$):
+\begin{equation}
+  B_{21} = b_{32} = \frac{\sum x_{2i} x_{3i}}{\sum x_{2i}^2} = 10.191
+\end{equation}
+\begin{equation}
+  \text{Sesgo} = b_{32}\beta_3 = (10.191)(-0.0424) = -0.4321 \qquad \square
+\end{equation}
+
+\section{Condiciones para que el sesgo sea cero}
+
+El estimador $b_{12}$ es insesgado si y solo si se cumple al menos una de:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item $\beta_3 = 0$: la variable omitida no afecta a $Y$ (irrelevancia).
+  \item $b_{32} = 0$: la variable omitida es ortogonal al regresor incluido
+    ($X_3 \perp X_2$).
+\end{enumerate}
+
+En el presente ejercicio no se cumple ninguna: $\beta_3 = -0.0424 \neq 0$ y
+$b_{32} = 10.191 \neq 0$, lo que garantiza un sesgo de magnitud $0.4321$.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los valores numericos provienen de la tabla de datos
+del ejemplo~10.1 de Gujarati \& Porter (2010). La formula de sesgo~(\ref{eq:sesgo})
+es exacta en muestras finitas bajo exogeneidad de $X_2$; bajo endogeneidad se
+requiere la formula de sesgo asintotico usando probabilidades limite.}
+
+\end{document}
