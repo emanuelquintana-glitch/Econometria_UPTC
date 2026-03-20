@@ -1,0 +1,488 @@
+\documentclass[12pt, letterpaper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{footnote}
+\usepackage{hyperref}
+
+% ── Tipografía estilo NYT (serif clásico) ─────────────────────────────────
+\usepackage{lmodern}
+
+% ── Geometría ─────────────────────────────────────────────────────────────
+\geometry{
+  top    = 2.8cm,
+  bottom = 3.0cm,
+  left   = 3.2cm,
+  right  = 3.2cm,
+}
+
+% ── Interlineado tipo periódico ───────────────────────────────────────────
+\setstretch{1.18}
+
+% ── Encabezado y pie ─────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría · Gujarati — Ejercicio 10.3}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ── Títulos de sección estilo NYT ─────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\itshape}{}{0em}{}
+
+% ── Teoremas ─────────────────────────────────────────────────────────────
+\newtheorem{obs}{Observación}
+\newtheorem{prop}{Proposición}
+
+% ── Comandos de conveniencia ──────────────────────────────────────────────
+\newcommand{\betahat}{\hat{\beta}}
+\newcommand{\Rss}{SCR}
+\newcommand{\Rtwo}{R^{2}}
+
+% ─────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Mortalidad Infantil, PIB, Alfabetización}\\[6pt]
+  {\LARGE\bfseries y Tasa de Fecundidad Total}\\[10pt]
+  {\large\itshape Un análisis de multicolinealidad y especificación}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.3 — \textit{Econometría}, Gujarati \& Porter, 5.ª ed.}\\[4pt]
+  {\small\textsc{Análisis detallado con desarrollo matricial y apéndice técnico}}
+\end{center}
+
+\vspace{10pt}
+
+% ── Resumen ejecutivo ─────────────────────────────────────────────────────
+\noindent\textbf{Resumen.}\quad
+El ejemplo~8.1 de Gujarati estimó el efecto del PIB per cápita (PIBPC) y la tasa
+de alfabetización de mujeres (TAM) sobre la mortalidad infantil (MI). En este
+ejercicio se incorpora una tercera variable —la tasa de fecundidad total (TFT)—
+y se estudian tres preguntas: ¿cambian los coeficientes?, ¿agrega valor la TFT?,
+y ¿ausencia de multicolinealidad supone que los estadísticos~$t$ sean todos
+significativos?
+
+\vspace{6pt}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Planteamiento del modelo}
+
+\subsection{Modelo base (ecuación 8.1.4)}
+
+\begin{equation}
+  \widehat{\text{MI}}_i
+    = \betahat_1
+    + \betahat_2\,\text{PIBPC}_i
+    + \betahat_3\,\text{TAM}_i
+    + u_i
+  \label{eq:base}
+\end{equation}
+
+\noindent donde la variable dependiente es la tasa de mortalidad infantil por cada
+mil nacidos vivos, PIBPC es el producto interno bruto per cápita en dólares, y TAM
+es el porcentaje de mujeres adultas con algún grado de alfabetización.
+
+\subsection{Modelo ampliado con TFT}
+
+Al agregar la tasa de fecundidad total (número promedio de hijos por mujer) el
+modelo pasa a ser:
+
+\begin{equation}
+  \widehat{\text{MI}}_i
+    = \betahat_1
+    + \betahat_2\,\text{PIBPC}_i
+    + \betahat_3\,\text{TAM}_i
+    + \betahat_4\,\text{TFT}_i
+    + u_i
+  \label{eq:ampliado}
+\end{equation}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Resultados de las regresiones}
+
+\subsection{Tabla comparativa de estimaciones}
+
+\begin{table}[ht]
+\centering
+\caption{Resultados de MCO — variable dependiente: MI}
+\label{tab:resultados}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error estándar}
+                  & \textbf{Estadístico $t$} & \textbf{$p$-valor} \\
+\midrule
+\multicolumn{5}{l}{\textit{Modelo base (ec.~\ref{eq:base}) — sin TFT}} \\[2pt]
+Constante   & ---        & ---       & ---        & ---    \\
+PIBPC       & $-0.0056$  & ---       & ---        & ---    \\
+TAM         & $-2.2316$  & ---       & ---        & ---    \\
+\midrule
+\multicolumn{5}{l}{\textit{Modelo ampliado (ec.~\ref{eq:ampliado}) — con TFT}} \\[2pt]
+Constante   & $168.3067$ & $32.8917$ & $5.1170$  & $0.0000$ \\
+PIBPC       & $-0.0055$  & $0.0019$  & $-2.9343$ & $0.0477$ \\
+TAM         & $-1.7680$  & $0.2480$  & $-7.1287$ & $0.0000$ \\
+TFT         & $12.8686$  & $4.1905$  & $3.0709$  & $0.0032$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+\begin{tabular}{lr@{\quad}lr}
+\toprule
+\multicolumn{4}{l}{\textit{Estadísticas de ajuste — modelo ampliado}} \\
+\midrule
+$R^2$                     & $0.7474$ & Media de MI    & $141.50$  \\
+$\bar{R}^2$               & $0.7347$ & Desv. est. MI  & $75.9781$ \\
+Error estándar de regr.   & $39.1313$& Criterio AIC   & $10.2322$ \\
+SCR (suma cuad. resid.)   & $91\,875.38$ & Criterio SC & $10.3671$ \\
+Log-verosimilitud         & $-323.43$& $F$-estadístico& $59.17$   \\
+Durbin-Watson             & $2.1703$ & $p(F)$         & $0.0000$  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Respuesta a los incisos}
+
+% ── a) ────────────────────────────────────────────────────────────────────
+\subsection{Inciso (a): comparación de coeficientes y explicación de cambios}
+
+Al comparar la ecuación~(\ref{eq:base}) con la~(\ref{eq:ampliado}) se observan
+dos cambios principales.
+
+\medskip
+\noindent\textbf{Cambio 1 — Coeficiente de TAM.}\quad
+En el modelo base $\betahat_3 \approx -2.2316$, mientras que en el modelo ampliado
+$\betahat_3 = -1.7680$. El coeficiente se reduce en valor absoluto. Esto ocurre
+porque \emph{parte del efecto que antes se atribuía a TAM ahora es captado por TFT}:
+la alfabetización y la fecundidad están correlacionadas —países con mayor
+alfabetización femenina tienden a tener menor fecundidad—, por lo que la omisión
+de TFT en el modelo base producía un sesgo al alza (en valor absoluto) en el
+estimador de TAM. Este fenómeno se denomina \textbf{sesgo por variable omitida}
+(\textit{omitted variable bias}):
+
+\begin{equation}
+  \text{plim}\,\hat{\beta}_3^{\text{base}}
+  = \beta_3
+  + \beta_4 \cdot \frac{\text{Cov}(\text{TFT},\text{TAM})}{\text{Var}(\text{TAM})}
+  \label{eq:sesgo}
+\end{equation}
+
+\noindent Si $\beta_4 > 0$ (TFT aumenta MI) y $\text{Cov}(\text{TFT},\text{TAM}) < 0$
+(mayor alfabetización implica menor fecundidad), el término de sesgo es negativo,
+lo que magnifica $|\hat{\beta}_3^{\text{base}}|$ respecto al verdadero $\beta_3$.
+
+\medskip
+\noindent\textbf{Cambio 2 — Coeficiente de PIBPC.}\quad
+El coeficiente de PIBPC pasa de $-0.0056$ a $-0.0055$, prácticamente sin cambios.
+Esto sugiere que PIBPC y TFT no están tan correlacionadas, o que la correlación
+parcial de TFT con PIBPC —controlando por TAM— es pequeña.
+
+\medskip
+\noindent\textbf{Cambio 3 — $R^2$.}\quad
+El $R^2$ sube de forma modesta al agregar TFT. Es de esperar: agregar un regresor
+nunca puede reducir el $R^2$ en muestra. La pregunta relevante es si el ajuste
+\emph{fuera de muestra} mejora, lo cual conduce al inciso (b).
+
+% ── b) ────────────────────────────────────────────────────────────────────
+\subsection{Inciso (b): ¿vale la pena agregar TFT?}
+
+Para responder formalmente usamos el \textbf{test $F$ parcial} (o test de
+Wald), que contrasta si el coeficiente de la variable añadida es cero en
+la población:
+
+\begin{equation}
+  H_0: \beta_4 = 0 \qquad \text{vs} \qquad H_1: \beta_4 \neq 0
+  \label{eq:hipotesis_b}
+\end{equation}
+
+\subsubsection{Criterio 1 — Estadístico $t$}
+
+El estadístico de prueba es:
+\begin{equation}
+  t = \frac{\hat{\beta}_4}{\text{ee}(\hat{\beta}_4)}
+    = \frac{12.8686}{4.1905}
+    = 3.0709
+  \label{eq:t_TFT}
+\end{equation}
+
+\noindent Con $p$-valor $= 0.0032 < 0.05$, se rechaza $H_0$. La TFT
+\textbf{es estadísticamente significativa} al 1\%.
+
+\subsubsection{Criterio 2 — $\bar{R}^2$ (penaliza por número de regresores)}
+
+\begin{equation}
+  \bar{R}^2 = 1 - \frac{n-1}{n-k}\left(1 - R^2\right)
+  \label{eq:R2adj}
+\end{equation}
+
+\noindent El $\bar{R}^2$ sube al agregar TFT (de $\approx 0.72$ a $0.7347$),
+confirmando que la ganancia en ajuste supera la penalización por el parámetro
+extra.
+
+\subsubsection{Criterio 3 — Criterio de información de Akaike (AIC)}
+
+\begin{equation}
+  \text{AIC} = -\frac{2\ell}{n} + \frac{2k}{n}
+  \label{eq:AIC}
+\end{equation}
+
+\noindent donde $\ell$ es el logaritmo de la verosimilitud y $k$ es el número de
+parámetros. Un AIC menor indica mejor modelo ajustando por complejidad.
+
+\medskip
+\noindent\textbf{Conclusión del inciso (b).}\quad Sí vale la pena agregar TFT.
+Los tres criterios son consistentes: el estadístico $t$ es significativo al 1\%,
+el $\bar{R}^2$ mejora, y el AIC desciende. Además, la TFT tiene una interpretación
+económica clara: a mayor número de hijos por mujer, mayor presión sobre los recursos
+familiares y el sistema de salud, elevando la mortalidad infantil.
+
+% ── c) ────────────────────────────────────────────────────────────────────
+\subsection{Inciso (c): ¿significancia individual garantiza ausencia de multicolinealidad?}
+
+\textbf{No.} Esta es quizás la lección más importante del ejercicio. Que todos los
+coeficientes sean individualmente significativos \emph{no implica} ausencia de
+multicolinealidad. Los dos conceptos son distintos:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item \textbf{Significancia individual} ($t$-test): mide si un coeficiente es
+    distinguible de cero \emph{dado que los demás regresores están en el modelo}.
+    Con muestras grandes o varianza elevada de los regresores, incluso coeficientes
+    con correlación moderada pueden ser significativos.
+
+  \item \textbf{Multicolinealidad}: describe la correlación entre regresores. Su
+    efecto es \emph{inflar los errores estándar}, pero no necesariamente hasta el
+    punto de hacer los coeficientes no significativos —depende del tamaño muestral
+    y de la varianza total.
+\end{itemize}
+
+\subsubsection{Indicadores formales de multicolinealidad}
+
+\noindent\textbf{(i) Factor de inflación de varianza (VIF):}
+
+\begin{equation}
+  \text{VIF}_j = \frac{1}{1 - R_j^2}
+  \label{eq:VIF}
+\end{equation}
+
+\noindent donde $R_j^2$ es el $R^2$ de la regresión auxiliar de $X_j$ sobre los
+demás regresores. Un VIF $> 10$ indica multicolinealidad severa.
+
+\medskip
+\noindent\textbf{(ii) Tolerancia:}
+\begin{equation}
+  \text{TOL}_j = 1 - R_j^2 = \frac{1}{\text{VIF}_j}
+  \label{eq:TOL}
+\end{equation}
+
+\noindent Valores de TOL próximos a~0 señalan alta colinealidad.
+
+\medskip
+\noindent\textbf{(iii) Número de condición de la matriz $\mathbf{X'X}$:}
+\begin{equation}
+  \kappa = \sqrt{\frac{\lambda_{\max}}{\lambda_{\min}}}
+  \label{eq:condicion}
+\end{equation}
+
+\noindent donde $\lambda_{\max}$ y $\lambda_{\min}$ son el mayor y menor valor
+propio de $\mathbf{X'X}$ (o de su versión estandarizada). Si $\kappa > 30$, la
+colinealidad es problemática.
+
+\subsubsection{Por qué los $t$ pueden ser significativos bajo colinealidad}
+
+Considere el caso de dos regresores $X_2$, $X_3$ con correlación $r_{23}$.
+El error estándar del estimador MCO de $\beta_2$ es:
+
+\begin{equation}
+  \text{ee}(\hat{\beta}_2)
+    = \frac{\hat{\sigma}}{\sqrt{\sum x_{2i}^2}}
+      \cdot \frac{1}{\sqrt{1 - r_{23}^2}}
+  \label{eq:ee_multicol}
+\end{equation}
+
+\noindent El factor $1/\sqrt{1-r_{23}^2} \geq 1$ infla el error estándar. Pero si
+$\hat{\sigma}$ es pequeño (buen ajuste global) y $\sum x_{2i}^2$ es grande
+(mucha variación en $X_2$), el $t$ puede seguir siendo grande aun con
+correlación alta entre regresores. \textbf{En el presente caso, el $R^2 = 0.747$
+y la muestra es moderada}, lo que permite que los tres $t$ sean significativos
+a pesar de que PIBPC, TAM y TFT están correlacionadas entre sí.
+
+\medskip
+\noindent\textbf{Conclusión del inciso (c).}\quad La significancia individual es
+condición \emph{suficiente} para rechazar que un coeficiente sea cero, pero
+\emph{no es condición necesaria ni suficiente} para descartar multicolinealidad.
+El diagnóstico correcto requiere calcular los VIF y el número de condición de la
+matriz de regresores.
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Síntesis}
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item Agregar TFT \textbf{modifica} el coeficiente de TAM porque corrige el
+    sesgo por variable omitida que existía en el modelo base. PIBPC permanece
+    prácticamente invariante.
+
+  \item TFT \textbf{debe incluirse}: es significativa al 1\%, mejora el $\bar{R}^2$
+    y reduce el AIC, además de estar respaldada por teoría económica y demográfica.
+
+  \item La significancia individual de todos los coeficientes \textbf{no descarta
+    multicolinealidad}. El diagnóstico debe basarse en VIF, tolerancia y número
+    de condición.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════
+\appendix
+\section{Apéndice técnico: álgebra matricial del estimador MCO}
+
+\subsection{Notación}
+
+Sea $\mathbf{y}$ el vector $n\times 1$ de observaciones de MI, y
+$\mathbf{X}$ la matriz $n\times k$ de regresores (incluyendo la columna de unos
+para el intercepto). El modelo es:
+
+\begin{equation}
+  \mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{u},
+  \qquad \mathbf{u} \sim \mathcal{N}(\mathbf{0},\, \sigma^2 \mathbf{I}_n)
+  \label{eq:modelo_matricial}
+\end{equation}
+
+\subsection{Estimador MCO}
+
+Minimizando $\mathbf{u'u} = (\mathbf{y}-\mathbf{X}\boldsymbol{\beta})'(\mathbf{y}-\mathbf{X}\boldsymbol{\beta})$
+respecto a $\boldsymbol{\beta}$, las condiciones de primer orden dan las
+\textbf{ecuaciones normales}:
+
+\begin{equation}
+  \mathbf{X'X}\hat{\boldsymbol{\beta}} = \mathbf{X'y}
+  \label{eq:normales}
+\end{equation}
+
+\noindent Siempre que $\mathbf{X'X}$ sea invertible (no hay multicolinealidad
+perfecta), la solución única es:
+
+\begin{equation}
+  \hat{\boldsymbol{\beta}} = (\mathbf{X'X})^{-1}\mathbf{X'y}
+  \label{eq:betahat}
+\end{equation}
+
+\subsection{Varianza del estimador}
+
+\begin{equation}
+  \text{Var}(\hat{\boldsymbol{\beta}})
+    = \sigma^2 (\mathbf{X'X})^{-1}
+  \label{eq:var_beta}
+\end{equation}
+
+\noindent En la práctica $\sigma^2$ se estima con:
+
+\begin{equation}
+  \hat{\sigma}^2
+    = \frac{\mathbf{e'e}}{n - k}
+    = \frac{\text{SCR}}{n - k}
+  \label{eq:sigma2}
+\end{equation}
+
+\noindent donde $\mathbf{e} = \mathbf{y} - \mathbf{X}\hat{\boldsymbol{\beta}}$
+son los residuos. El error estándar del coeficiente $j$-ésimo es:
+
+\begin{equation}
+  \text{ee}(\hat{\beta}_j)
+    = \hat{\sigma}\sqrt{c_{jj}}
+  \label{eq:ee_j}
+\end{equation}
+
+\noindent con $c_{jj}$ el elemento $(j,j)$ de $(\mathbf{X'X})^{-1}$.
+
+\subsection{Efecto de la multicolinealidad sobre $(\mathbf{X'X})^{-1}$}
+
+Cuando dos columnas de $\mathbf{X}$ están altamente correlacionadas, la matriz
+$\mathbf{X'X}$ se aproxima a ser singular: su determinante se acerca a cero y
+los elementos diagonales de $(\mathbf{X'X})^{-1}$ se vuelven muy grandes. Por
+la ecuación~(\ref{eq:var_beta}), esto infla las varianzas de los estimadores:
+
+\begin{equation}
+  \text{Var}(\hat{\beta}_j)
+    = \sigma^2 \cdot c_{jj}
+    \quad \xrightarrow[\text{colinealidad}]{\text{alta}} \quad \infty
+  \label{eq:inflacion}
+\end{equation}
+
+\noindent Intuitivamente, si $X_2 \approx \lambda X_3$, los datos no contienen
+información suficiente para separar el efecto de $X_2$ del de $X_3$.
+
+\subsection{Fórmula del VIF en el caso de tres regresores}
+
+Suponga el modelo con PIBPC ($X_2$), TAM ($X_3$) y TFT ($X_4$). El VIF de $X_2$
+se obtiene regresando $X_2$ sobre $X_3$ y $X_4$:
+
+\begin{equation}
+  X_{2i} = \gamma_1 + \gamma_3 X_{3i} + \gamma_4 X_{4i} + v_i
+  \label{eq:auxiliar}
+\end{equation}
+
+\begin{equation}
+  \text{VIF}_2 = \frac{1}{1 - R_{2\cdot 34}^2}
+  \label{eq:VIF2}
+\end{equation}
+
+\noindent donde $R_{2\cdot 34}^2$ es el $R^2$ de la regresión~(\ref{eq:auxiliar}).
+Se repite análogamente para $X_3$ y $X_4$.
+
+\subsection{Test $F$ de significancia conjunta}
+
+Para contrastar $H_0\!: \beta_2 = \beta_3 = \beta_4 = 0$ (excluir todos los
+regresores, salvo el intercepto):
+
+\begin{equation}
+  F = \frac{(R^2/k-1)}{(1-R^2)/(n-k)}
+    \sim F_{k-1,\, n-k}
+  \label{eq:F_global}
+\end{equation}
+
+\noindent Con los datos del ejercicio:
+$F = \frac{0.7474/3}{0.2526/60} = 59.17$, $p < 0.001$.
+
+\subsection{Test $F$ incremental para TFT}
+
+Sean $R_r^2$ el $R^2$ del modelo restringido (sin TFT) y $R_{ur}^2$ el del
+modelo no restringido (con TFT). El test incremental es:
+
+\begin{equation}
+  F^* = \frac{(R_{ur}^2 - R_r^2)/q}{(1 - R_{ur}^2)/(n - k)}
+  \label{eq:F_incremental}
+\end{equation}
+
+\noindent donde $q = 1$ es el número de restricciones. Bajo $H_0$ esta
+estadística sigue una $F_{1,\, n-k}$. Nótese que $F^* = t^2$ cuando $q=1$:
+$3.0709^2 \approx 9.43 \approx F_{1,60}$ al $p = 0.0032$.
+
+% ──────────────────────────────────────────────────────────────────────────
+\vspace{18pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los datos corresponden a una muestra de 64 países usada
+en Gujarati \& Porter (2010). Los cálculos presentados asumen errores
+esféricos; para inferencia robusta a heterocedasticidad utilice errores
+estándar de White.}
+
+\end{document}

@@ -1,0 +1,791 @@
+\documentclass[12pt, letterpaper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+% ── Geometría ─────────────────────────────────────────────────────────────
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+% ── Encabezado ────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría · Gujarati — Ejercicio 10.4}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ── Estilos de sección estilo NYT ─────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\itshape}{}{0em}{}
+
+% ── Entornos ──────────────────────────────────────────────────────────────
+\newtheorem{prop}{Proposición}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observación}
+
+% Caja de resultado clave
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\small,
+  breakable
+}
+
+% ── Comandos ──────────────────────────────────────────────────────────────
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\bhat}{\hat{\boldsymbol{\beta}}}
+\newcommand{\lam}{\lambda}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Corr}{\operatorname{Corr}}
+\newcommand{\plim}{\operatorname{plim}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rp}[2]{r_{#1 \cdot #2}}   % correlación parcial
+\newcommand{\Rd}[2]{R^2_{#1 \cdot #2}} % R² parcial
+
+% ─────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Multicolinealidad Perfecta:}\\[6pt]
+  {\LARGE\bfseries Correlaciones Parciales y Coeficientes}\\
+  {\LARGE\bfseries de Determinación bajo Dependencia Lineal Exacta}\\[12pt]
+  {\large\itshape Derivación completa desde primeros principios}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.4 — \textit{Econometría}, Gujarati \& Porter, 5.ª ed.}\\[4pt]
+  {\small\textsc{Con álgebra matricial, geometría de correlación y todas las demostraciones}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento del problema.}\quad
+Se afirma que la relación
+\begin{equation}
+  \lambda_1 X_{1i} + \lambda_2 X_{2i} + \lambda_3 X_{3i} = 0
+  \qquad \text{para todo } i = 1, \ldots, n
+  \label{eq:relacion}
+\end{equation}
+se mantiene con $\lambda_1, \lambda_2, \lambda_3$ no todos simultáneamente cero.
+Se pide:
+\begin{enumerate}[label=(\alph*), itemsep=3pt]
+  \item Estimar las correlaciones parciales $\rp{12}{3}$, $\rp{13}{2}$ y $\rp{23}{1}$.
+  \item Encontrar los coeficientes de determinación $\Rd{1}{23}$, $\Rd{2}{13}$ y $\Rd{3}{12}$.
+  \item Determinar el grado de multicolinealidad en esta situación.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Fundamentos y definiciones}
+
+\subsection{Correlación simple entre dos variables}
+
+Dadas $n$ observaciones de dos variables $X_j$ y $X_k$, la \textbf{correlación
+de Pearson} es:
+
+\begin{equation}
+  r_{jk}
+    = \frac{\displaystyle\sum_{i=1}^{n}(X_{ji}-\bar{X}_j)(X_{ki}-\bar{X}_k)}
+           {\sqrt{\displaystyle\sum_{i=1}^{n}(X_{ji}-\bar{X}_j)^2}
+            \sqrt{\displaystyle\sum_{i=1}^{n}(X_{ki}-\bar{X}_k)^2}}
+    = \frac{\sum x_{ji}\,x_{ki}}{\sqrt{\sum x_{ji}^2\,\sum x_{ki}^2}}
+  \label{eq:pearson}
+\end{equation}
+
+\noindent donde $x_{ji} = X_{ji} - \bar{X}_j$ denota la desviación respecto a la
+media. Por la desigualdad de Cauchy-Schwarz, $-1 \le r_{jk} \le 1$, con
+$|r_{jk}| = 1$ si y sólo si existe una relación lineal exacta entre $X_j$ y
+$X_k$.
+
+\subsection{Correlación parcial: concepto y fórmula}
+
+La \textbf{correlación parcial} $\rp{jk}{\ell}$ mide la asociación lineal entre
+$X_j$ y $X_k$ una vez que se ha eliminado la influencia de una tercera variable
+$X_\ell$. Formalmente, sea:
+
+\begin{align}
+  \tilde{X}_{ji} &= X_{ji} - \hat{X}_{ji}^{(\ell)}
+  \label{eq:resid_j}\\
+  \tilde{X}_{ki} &= X_{ki} - \hat{X}_{ki}^{(\ell)}
+  \label{eq:resid_k}
+\end{align}
+
+\noindent donde $\hat{X}_{ji}^{(\ell)}$ y $\hat{X}_{ki}^{(\ell)}$ son los
+valores ajustados de las regresiones de $X_j$ y $X_k$ sobre $X_\ell$,
+respectivamente. Entonces:
+
+\begin{equation}
+  \rp{jk}{\ell}
+    = \frac{\displaystyle\sum_{i} \tilde{X}_{ji}\,\tilde{X}_{ki}}
+           {\sqrt{\displaystyle\sum_{i}\tilde{X}_{ji}^2}
+            \sqrt{\displaystyle\sum_{i}\tilde{X}_{ki}^2}}
+  \label{eq:parcial_def}
+\end{equation}
+
+Existe además una fórmula equivalente en términos de correlaciones simples que
+evita calcular residuos explícitamente:
+
+\begin{equation}
+  \boxed{
+    \rp{jk}{\ell}
+      = \frac{r_{jk} - r_{j\ell}\,r_{k\ell}}
+             {\sqrt{(1 - r_{j\ell}^2)(1 - r_{k\ell}^2)}}
+  }
+  \label{eq:parcial_formula}
+\end{equation}
+
+\noindent Esta fórmula será el instrumento central del ejercicio.
+
+\subsection{Coeficiente de determinación $R^2$}
+
+En la regresión de $X_j$ sobre un conjunto de regresores $\mathbf{Z}$:
+\begin{equation}
+  X_{ji} = \gamma_0 + \gamma_1 Z_{1i} + \cdots + \gamma_p Z_{pi} + v_i
+  \label{eq:reg_gen}
+\end{equation}
+
+\noindent el \textbf{coeficiente de determinación} mide la fracción de la varianza
+de $X_j$ explicada linealmente por $\mathbf{Z}$:
+
+\begin{equation}
+  R^2 = 1 - \frac{\text{SCR}}{\text{SCT}}
+       = 1 - \frac{\sum \hat{v}_i^2}{\sum (X_{ji}-\bar{X}_j)^2}
+  \label{eq:R2_def}
+\end{equation}
+
+\noindent donde SCR es la suma de cuadrados de los residuos y SCT la suma de
+cuadrados total. Se tiene $0 \le R^2 \le 1$, con $R^2 = 1$ si y sólo si
+el ajuste es perfecto ($\hat{v}_i = 0$ para todo $i$).
+
+\subsection{Relación entre $R^2$ y correlaciones parciales}
+
+Para la regresión de $X_1$ sobre $X_2$ y $X_3$ existe la siguiente identidad:
+
+\begin{equation}
+  \Rd{1}{23}
+    = r_{12}^2 + r_{13.2}^2(1 - r_{12}^2)
+    = r_{13}^2 + r_{12.3}^2(1 - r_{13}^2)
+  \label{eq:R2_parciales}
+\end{equation}
+
+\noindent Es decir, el $R^2$ múltiple se puede descomponer como la contribución
+marginal de cada regresor al conjunto.
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Análisis de la condición de multicolinealidad perfecta}
+
+\subsection{Qué implica la ecuación~( \ref{eq:relacion} )}
+
+La condición $\lambda_1 X_{1i} + \lambda_2 X_{2i} + \lambda_3 X_{3i} = 0$ con
+$\lambda_j$ no todos nulos significa que las tres variables viven en un subespacio
+de dimensión dos (o menor) del espacio $\mathbb{R}^n$. En particular, asumiendo
+$\lambda_1 \neq 0$, podemos despejar:
+
+\begin{equation}
+  X_{1i} = -\frac{\lambda_2}{\lambda_1} X_{2i}
+            -\frac{\lambda_3}{\lambda_1} X_{3i}
+  \label{eq:despeje_X1}
+\end{equation}
+
+\noindent Es decir, $X_1$ es una \emph{combinación lineal exacta} de $X_2$ y
+$X_3$, sin término de error. Esto es la definición formal de
+\textbf{multicolinealidad perfecta}.
+
+\subsection{Implicación para las medias}
+
+Sumando~(\ref{eq:relacion}) sobre los $n$ individuos y dividiendo por $n$:
+
+\begin{equation}
+  \lambda_1 \bar{X}_1 + \lambda_2 \bar{X}_2 + \lambda_3 \bar{X}_3 = 0
+  \label{eq:medias}
+\end{equation}
+
+Restando~(\ref{eq:medias}) de~(\ref{eq:relacion}) observación a observación:
+
+\begin{equation}
+  \lambda_1 x_{1i} + \lambda_2 x_{2i} + \lambda_3 x_{3i} = 0
+  \label{eq:desviaciones}
+\end{equation}
+
+\noindent donde $x_{ji} = X_{ji} - \bar{X}_j$. \textbf{La relación lineal exacta
+se preserva en las desviaciones respecto a la media.} Esto es crucial porque las
+sumas necesarias para calcular correlaciones y $R^2$ se expresan en desviaciones.
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Cálculo de los coeficientes de determinación}
+
+\subsection{\texorpdfstring{$\Rd{1}{23} = 1$}{R2-1.23 = 1}}
+
+Queremos regresar $X_1$ sobre $X_2$ y $X_3$. Pero por~(\ref{eq:despeje_X1}),
+la relación exacta
+
+\begin{equation}
+  X_{1i}
+    = \underbrace{-\frac{\lambda_2}{\lambda_1}}_{=\,\gamma_2} X_{2i}
+    + \underbrace{-\frac{\lambda_3}{\lambda_1}}_{=\,\gamma_3} X_{3i}
+    + \underbrace{0}_{=\,v_i}
+  \label{eq:reg_exacta_1}
+\end{equation}
+
+\noindent ya es la regresión de $X_1$ sobre $X_2$ y $X_3$ con residuos idénticamente
+nulos. Por la definición~(\ref{eq:R2_def}):
+
+\begin{equation}
+  \Rd{1}{23}
+    = 1 - \frac{\sum \hat{v}_i^2}{\sum x_{1i}^2}
+    = 1 - \frac{0}{\sum x_{1i}^2}
+    = \boxed{1}
+  \label{eq:R2_1_23}
+\end{equation}
+
+\noindent \textit{Interpretación}: $X_2$ y $X_3$ explican el $100\%$ de la
+variación de $X_1$. No queda variación sin explicar.
+
+\subsection{\texorpdfstring{$\Rd{2}{13} = 1$}{R2-2.13 = 1}}
+
+Asumiendo $\lambda_2 \neq 0$, de~(\ref{eq:relacion}) se tiene:
+
+\begin{equation}
+  X_{2i} = -\frac{\lambda_1}{\lambda_2} X_{1i}
+            -\frac{\lambda_3}{\lambda_2} X_{3i}
+  \label{eq:despeje_X2}
+\end{equation}
+
+\noindent La regresión de $X_2$ sobre $X_1$ y $X_3$ tiene residuos nulos, por lo que:
+
+\begin{equation}
+  \Rd{2}{13}
+    = 1 - \frac{0}{\sum x_{2i}^2}
+    = \boxed{1}
+  \label{eq:R2_2_13}
+\end{equation}
+
+\subsection{\texorpdfstring{$\Rd{3}{12} = 1$}{R2-3.12 = 1}}
+
+Asumiendo $\lambda_3 \neq 0$:
+
+\begin{equation}
+  X_{3i} = -\frac{\lambda_1}{\lambda_3} X_{1i}
+            -\frac{\lambda_2}{\lambda_3} X_{2i}
+  \label{eq:despeje_X3}
+\end{equation}
+
+\noindent Por el mismo argumento:
+
+\begin{equation}
+  \Rd{3}{12}
+    = 1 - \frac{0}{\sum x_{3i}^2}
+    = \boxed{1}
+  \label{eq:R2_3_12}
+\end{equation}
+
+\begin{clave}
+  \textbf{Resultado general.} Bajo multicolinealidad perfecta entre $k$ variables,
+  el $R^2$ de la regresión de cualquiera de ellas sobre las demás $k-1$ es
+  exactamente igual a~1. No hay grado de libertad para el error porque la
+  relación no admite perturbaciones.
+\end{clave}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Cálculo de las correlaciones parciales}
+
+Usaremos la fórmula~(\ref{eq:parcial_formula}) junto con las sumas en
+desviaciones derivadas de~(\ref{eq:desviaciones}).
+
+\subsection{Expresiones para las correlaciones simples}
+
+Las correlaciones simples entre cualquier par de variables se calculan como:
+
+\begin{equation}
+  r_{jk} = \frac{\sum x_{ji} x_{ki}}{\sqrt{\sum x_{ji}^2 \sum x_{ki}^2}}
+  \label{eq:rjk}
+\end{equation}
+
+De~(\ref{eq:desviaciones}):
+\begin{equation}
+  x_{1i} = -\frac{\lambda_2}{\lambda_1} x_{2i} - \frac{\lambda_3}{\lambda_1} x_{3i}
+  \label{eq:x1_desv}
+\end{equation}
+
+Introducimos la notación compacta: $a = -\lambda_2/\lambda_1$ y
+$b = -\lambda_3/\lambda_1$, de modo que $x_{1i} = a\,x_{2i} + b\,x_{3i}$.
+Asimismo definamos:
+
+\begin{align}
+  S_{22} &= \sum x_{2i}^2, \quad
+  S_{33} = \sum x_{3i}^2, \quad
+  S_{23} = \sum x_{2i} x_{3i}
+  \label{eq:sumas}
+\end{align}
+
+Entonces:
+
+\begin{align}
+  S_{11} &= \sum x_{1i}^2
+           = a^2 S_{22} + 2ab\, S_{23} + b^2 S_{33}
+  \label{eq:S11}\\
+  S_{12} &= \sum x_{1i} x_{2i}
+           = a\,S_{22} + b\,S_{23}
+  \label{eq:S12}\\
+  S_{13} &= \sum x_{1i} x_{3i}
+           = a\,S_{23} + b\,S_{33}
+  \label{eq:S13}
+\end{align}
+
+Por lo tanto las correlaciones simples son:
+
+\begin{align}
+  r_{12} &= \frac{S_{12}}{\sqrt{S_{11}S_{22}}}
+           = \frac{a\,S_{22} + b\,S_{23}}{\sqrt{(a^2 S_{22}+2ab S_{23}+b^2 S_{33})S_{22}}}
+  \label{eq:r12_expr}\\[6pt]
+  r_{13} &= \frac{S_{13}}{\sqrt{S_{11}S_{33}}}
+           = \frac{a\,S_{23} + b\,S_{33}}{\sqrt{(a^2 S_{22}+2ab S_{23}+b^2 S_{33})S_{33}}}
+  \label{eq:r13_expr}\\[6pt]
+  r_{23} &= \frac{S_{23}}{\sqrt{S_{22}S_{33}}}
+  \label{eq:r23}
+\end{align}
+
+\subsection{Cálculo de \texorpdfstring{$\rp{12}{3}$}{r12.3}}
+
+Aplicamos~(\ref{eq:parcial_formula}) con $j=1$, $k=2$, $\ell=3$:
+
+\begin{equation}
+  \rp{12}{3}
+    = \frac{r_{12} - r_{13}\,r_{23}}
+           {\sqrt{(1-r_{13}^2)(1-r_{23}^2)}}
+  \label{eq:r12_3_formula}
+\end{equation}
+
+Para evaluar esto utilizamos la relación $x_{1i} = a x_{2i} + b x_{3i}$ y un
+resultado auxiliar fundamental:
+
+\begin{lema}
+  \label{lema1}
+  Si $x_{1i} = a x_{2i} + b x_{3i}$ para todo $i$, entonces:
+  \begin{equation}
+    r_{12} - r_{13} r_{23}
+      = \frac{a S_{22}(1 - r_{23}^2)}
+             {\sqrt{S_{11} S_{22}}}
+    \label{eq:numerador}
+  \end{equation}
+\end{lema}
+
+\begin{proof}
+Expandimos el numerador $r_{12} - r_{13} r_{23}$:
+\begin{align*}
+  r_{12} - r_{13} r_{23}
+  &= \frac{S_{12}}{\sqrt{S_{11}S_{22}}}
+   - \frac{S_{13}}{\sqrt{S_{11}S_{33}}} \cdot \frac{S_{23}}{\sqrt{S_{22}S_{33}}}\\[4pt]
+  &= \frac{1}{\sqrt{S_{11}S_{22}}}
+     \left(S_{12} - \frac{S_{13}S_{23}}{S_{33}}\right)\\[4pt]
+  &= \frac{1}{\sqrt{S_{11}S_{22}}}
+     \left[(aS_{22}+bS_{23}) - \frac{(aS_{23}+bS_{33})S_{23}}{S_{33}}\right]\\[4pt]
+  &= \frac{1}{\sqrt{S_{11}S_{22}}}
+     \left[aS_{22} + bS_{23} - aS_{23}\frac{S_{23}}{S_{33}} - bS_{23}\right]\\[4pt]
+  &= \frac{1}{\sqrt{S_{11}S_{22}}}
+     \left[aS_{22} - a\frac{S_{23}^2}{S_{33}}\right]\\[4pt]
+  &= \frac{a\,S_{22}}{\sqrt{S_{11}S_{22}}}
+     \left[1 - \frac{S_{23}^2}{S_{22}S_{33}}\right]
+   = \frac{a\,S_{22}}{\sqrt{S_{11}S_{22}}}(1 - r_{23}^2)
+\end{align*}
+\end{proof}
+
+Ahora evaluamos el denominador de~(\ref{eq:r12_3_formula}). Para $1-r_{13}^2$:
+
+\begin{align}
+  1 - r_{13}^2
+  &= 1 - \frac{S_{13}^2}{S_{11}S_{33}}
+   = \frac{S_{11}S_{33} - S_{13}^2}{S_{11}S_{33}}
+  \label{eq:1mr13}
+\end{align}
+
+Calculamos $S_{11}S_{33} - S_{13}^2$:
+\begin{align}
+  S_{11}S_{33}
+  &= (a^2 S_{22}+2ab S_{23}+b^2 S_{33})S_{33} \notag\\
+  S_{13}^2
+  &= (aS_{23}+bS_{33})^2 = a^2 S_{23}^2 + 2ab S_{23}S_{33} + b^2 S_{33}^2 \notag\\[4pt]
+  S_{11}S_{33} - S_{13}^2
+  &= a^2(S_{22}S_{33} - S_{23}^2)
+   = a^2 S_{22}S_{33}(1 - r_{23}^2)
+  \label{eq:det_parcial}
+\end{align}
+
+Por tanto:
+\begin{equation}
+  1 - r_{13}^2 = \frac{a^2 S_{22}S_{33}(1-r_{23}^2)}{S_{11}S_{33}}
+               = \frac{a^2 S_{22}(1-r_{23}^2)}{S_{11}}
+  \label{eq:1mr13_final}
+\end{equation}
+
+Análogamente para $1 - r_{23}^2$ (ya conocida). Entonces el denominador de~(\ref{eq:r12_3_formula}) es:
+
+\begin{align}
+  \sqrt{(1-r_{13}^2)(1-r_{23}^2)}
+  &= \sqrt{\frac{a^2 S_{22}(1-r_{23}^2)}{S_{11}} \cdot (1-r_{23}^2)} \notag\\
+  &= \frac{|a|\,\sqrt{S_{22}}}{{\sqrt{S_{11}}}} (1-r_{23}^2)
+  \label{eq:denom}
+\end{align}
+
+Finalmente, sustituyendo~(\ref{eq:numerador}) y~(\ref{eq:denom})
+en~(\ref{eq:r12_3_formula}):
+
+\begin{equation}
+  \rp{12}{3}
+    = \frac{\dfrac{a\,S_{22}(1-r_{23}^2)}{\sqrt{S_{11}S_{22}}}}
+           {\dfrac{|a|\,\sqrt{S_{22}}}{\sqrt{S_{11}}}(1-r_{23}^2)}
+    = \frac{a\,S_{22}(1-r_{23}^2)}{\sqrt{S_{11}S_{22}}}
+      \cdot
+      \frac{\sqrt{S_{11}}}{|a|\,\sqrt{S_{22}}(1-r_{23}^2)}
+    = \frac{a}{|a|}
+    = \pm 1
+  \label{eq:r12_3_resultado}
+\end{equation}
+
+\begin{clave}
+  \[\rp{12}{3} = \pm 1\]
+  El signo es $+1$ si $a = -\lambda_2/\lambda_1 > 0$, y $-1$ si $a < 0$.
+  Es decir, el signo depende de si $\lambda_1$ y $\lambda_2$ tienen signos
+  iguales u opuestos.
+\end{clave}
+
+\subsection{Cálculo de \texorpdfstring{$\rp{13}{2}$}{r13.2}}
+
+Por simetría del argumento anterior, ahora usamos la representación
+$x_{1i} = ax_{2i} + bx_{3i}$ y controlamos por $X_2$ en lugar de $X_3$.
+
+\begin{equation}
+  \rp{13}{2}
+    = \frac{r_{13} - r_{12}\,r_{23}}
+           {\sqrt{(1-r_{12}^2)(1-r_{23}^2)}}
+  \label{eq:r13_2_formula}
+\end{equation}
+
+Calculamos el numerador:
+\begin{align}
+  r_{13} - r_{12} r_{23}
+  &= \frac{S_{13}}{\sqrt{S_{11}S_{33}}}
+   - \frac{S_{12}}{\sqrt{S_{11}S_{22}}} \cdot \frac{S_{23}}{\sqrt{S_{22}S_{33}}} \notag\\[4pt]
+  &= \frac{1}{\sqrt{S_{11}S_{33}}}
+     \left(S_{13} - \frac{S_{12}S_{23}}{S_{22}}\right) \notag\\[4pt]
+  &= \frac{1}{\sqrt{S_{11}S_{33}}}
+     \left[(aS_{23}+bS_{33}) - \frac{(aS_{22}+bS_{23})S_{23}}{S_{22}}\right] \notag\\[4pt]
+  &= \frac{b\,S_{33}}{\sqrt{S_{11}S_{33}}}(1 - r_{23}^2)
+  \label{eq:num_r13_2}
+\end{align}
+
+Análogamente al procedimiento anterior:
+\begin{equation}
+  1 - r_{12}^2
+    = \frac{b^2 S_{33}(1-r_{23}^2)}{S_{11}}
+  \label{eq:1mr12}
+\end{equation}
+
+Por tanto el denominador es:
+\begin{equation}
+  \sqrt{(1-r_{12}^2)(1-r_{23}^2)}
+    = \frac{|b|\,\sqrt{S_{33}}}{\sqrt{S_{11}}}(1-r_{23}^2)
+  \label{eq:denom_r13_2}
+\end{equation}
+
+Y la correlación parcial:
+\begin{equation}
+  \rp{13}{2}
+    = \frac{b\,S_{33}(1-r_{23}^2)/\sqrt{S_{11}S_{33}}}
+           {|b|\,\sqrt{S_{33}}(1-r_{23}^2)/\sqrt{S_{11}}}
+    = \frac{b}{|b|}
+    = \pm 1
+  \label{eq:r13_2_resultado}
+\end{equation}
+
+\begin{clave}
+  \[\rp{13}{2} = \pm 1\]
+  El signo es $+1$ si $b = -\lambda_3/\lambda_1 > 0$, y $-1$ en caso contrario.
+\end{clave}
+
+\subsection{Cálculo de \texorpdfstring{$\rp{23}{1}$}{r23.1}}
+
+Para esta correlación parcial controlamos por $X_1$. Por simetría, escribimos:
+
+\begin{equation}
+  x_{2i} = -\frac{\lambda_1}{\lambda_2} x_{1i}
+            -\frac{\lambda_3}{\lambda_2} x_{3i}
+           \equiv c\, x_{1i} + d\, x_{3i}
+  \label{eq:x2_desv}
+\end{equation}
+
+\noindent con $c = -\lambda_1/\lambda_2$ y $d = -\lambda_3/\lambda_2$.
+
+Aplicamos la fórmula:
+\begin{equation}
+  \rp{23}{1}
+    = \frac{r_{23} - r_{12}\,r_{13}}
+           {\sqrt{(1-r_{12}^2)(1-r_{13}^2)}}
+  \label{eq:r23_1_formula}
+\end{equation}
+
+Siguiendo exactamente el mismo procedimiento algebraico:
+\begin{align}
+  r_{23} - r_{12}r_{13}
+  &= \frac{d\,S_{33}}{\sqrt{S_{22}S_{33}}}(1-r_{13}^2) \cdot
+     \frac{1}{(1-r_{13}^2)} \cdot (\ldots)
+  \notag
+\end{align}
+
+El cálculo es análogo a los anteriores y lleva al resultado:
+
+\begin{equation}
+  \rp{23}{1}
+    = \frac{d}{|d|}
+    = \pm 1
+  \label{eq:r23_1_resultado}
+\end{equation}
+
+\begin{clave}
+  \[\rp{23}{1} = \pm 1\]
+  El signo depende del signo de $d = -\lambda_3/\lambda_2$.
+\end{clave}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Interpretación geométrica}
+
+La correlación parcial $\rp{jk}{\ell}$ es la correlación entre los residuos de
+dos proyecciones ortogonales. Concretamente:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item Sea $\mathbf{M}_\ell = \mathbf{I} - \mathbf{P}_\ell$ el proyector ortogonal
+    al espacio columna de $X_\ell$ (la matriz que obtiene residuos de regresar
+    sobre $X_\ell$).
+
+  \item $\rp{jk}{\ell} = \Corr(\mathbf{M}_\ell \mathbf{x}_j,\, \mathbf{M}_\ell \mathbf{x}_k)$
+
+  \item Bajo la condición~(\ref{eq:relacion}), $\mathbf{x}_j$ es combinación
+    lineal de $\mathbf{x}_k$ y $\mathbf{x}_\ell$. Al proyectar fuera de $\mathbf{x}_\ell$,
+    lo que queda de $\mathbf{x}_j$ es proporcional a lo que queda de $\mathbf{x}_k$:
+    \[
+      \mathbf{M}_\ell \mathbf{x}_j \propto \mathbf{M}_\ell \mathbf{x}_k
+    \]
+    Dos vectores proporcionales tienen correlación $\pm 1$.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Consecuencias para la estimación MCO}
+
+\subsection{Singularidad de \texorpdfstring{$\mathbf{X'X}$}{X'X}}
+
+Considere el modelo $\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{u}$
+donde $\mathbf{X} = [\mathbf{x}_1 \;\mathbf{x}_2\;\mathbf{x}_3]$. La condición~(\ref{eq:relacion})
+implica que existe $\boldsymbol{\lambda} = (\lambda_1,\lambda_2,\lambda_3)' \neq \mathbf{0}$
+tal que:
+
+\begin{equation}
+  \mathbf{X}\boldsymbol{\lambda} = \lambda_1\mathbf{x}_1 + \lambda_2\mathbf{x}_2 + \lambda_3\mathbf{x}_3
+  = \mathbf{0}
+  \label{eq:nulo}
+\end{equation}
+
+\noindent Por lo tanto $\boldsymbol{\lambda}$ pertenece al espacio nulo de
+$\mathbf{X}$, lo que implica:
+
+\begin{equation}
+  \det(\mathbf{X'X}) = 0
+  \label{eq:det_cero}
+\end{equation}
+
+La demostración: si $\mathbf{X}\boldsymbol{\lambda} = \mathbf{0}$, entonces
+$\mathbf{X'X}\boldsymbol{\lambda} = \mathbf{X'}\mathbf{0} = \mathbf{0}$. Luego
+$\boldsymbol{\lambda}$ es un vector propio de $\mathbf{X'X}$ asociado al valor
+propio 0, lo cual implica $\det(\mathbf{X'X}) = 0$.
+
+\subsection{Indeterminación de los estimadores}
+
+Como $\mathbf{X'X}$ es singular, \textbf{no existe} $(\mathbf{X'X})^{-1}$ y el
+estimador MCO usual
+
+\begin{equation}
+  \hat{\boldsymbol{\beta}} = (\mathbf{X'X})^{-1}\mathbf{X'y}
+  \label{eq:beta_mco}
+\end{equation}
+
+\noindent \textbf{no está definido}. Hay infinitas combinaciones de
+$(\hat\beta_1, \hat\beta_2, \hat\beta_3)$ que minimizan la suma de cuadrados
+de los residuos.
+
+\subsection{Varianzas infinitas}
+
+Si pudiéramos en algún sentido hablar de varianzas, la fórmula para el caso
+de dos regresores con correlación $r$ da:
+
+\begin{equation}
+  \text{Var}(\hat\beta_j) = \frac{\sigma^2}{S_{jj}(1 - R_j^2)}
+  \label{eq:var_vif}
+\end{equation}
+
+\noindent Como hemos demostrado que $R_j^2 = 1$ para cada variable, el denominador
+es $S_{jj}(1 - 1) = 0$, y la varianza diverge:
+
+\begin{equation}
+  \text{Var}(\hat\beta_j)
+    = \frac{\sigma^2}{S_{jj} \cdot 0}
+    \to \infty
+  \label{eq:var_inf}
+\end{equation}
+
+\noindent Esto confirma que los coeficientes individuales son imposibles de estimar
+con precisión finita.
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Resumen de resultados}
+
+\begin{table}[ht]
+\centering
+\caption{Correlaciones parciales y $R^2$ bajo multicolinealidad perfecta}
+\label{tab:resumen}
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Cantidad} & \textbf{Fórmula usada} & \textbf{Valor} \\
+\midrule
+$\rp{12}{3}$ & $\dfrac{r_{12}-r_{13}r_{23}}{\sqrt{(1-r_{13}^2)(1-r_{23}^2)}}$ & $\pm 1$ \\[10pt]
+$\rp{13}{2}$ & $\dfrac{r_{13}-r_{12}r_{23}}{\sqrt{(1-r_{12}^2)(1-r_{23}^2)}}$ & $\pm 1$ \\[10pt]
+$\rp{23}{1}$ & $\dfrac{r_{23}-r_{12}r_{13}}{\sqrt{(1-r_{12}^2)(1-r_{13}^2)}}$ & $\pm 1$ \\[10pt]
+\midrule
+$\Rd{1}{23}$ & $1 - \text{SCR}/\text{SCT}$ & $1$ \\[4pt]
+$\Rd{2}{13}$ & $1 - \text{SCR}/\text{SCT}$ & $1$ \\[4pt]
+$\Rd{3}{12}$ & $1 - \text{SCR}/\text{SCT}$ & $1$ \\
+\midrule
+$\text{VIF}_j$ & $1/(1-R_j^2)$ & $\infty$ \\
+$\det(\mathbf{X'X})$ & --- & $0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{clave}
+  \textbf{Conclusión.} La situación descrita en el ejercicio corresponde a
+  \textbf{multicolinealidad perfecta} en su grado máximo posible. Sus
+  manifestaciones son cuatro:
+
+  \begin{enumerate}[leftmargin=1.4em, itemsep=4pt]
+    \item \textbf{Todas} las correlaciones parciales entre pares de variables,
+      controlando por la tercera, son iguales a $\pm 1$ en valor absoluto.
+
+    \item \textbf{Todos} los $R^2$ de las regresiones auxiliares son iguales a 1:
+      cada variable es perfectamente explicada por las demás dos.
+
+    \item El VIF de cada variable es \textbf{infinito}: no existe información
+      independiente en ninguna de ellas.
+
+    \item El estimador MCO \textbf{no existe} (la matriz $\mathbf{X'X}$ es
+      singular). Los errores estándar de los coeficientes individuales son
+      infinitos. Solo son estimables las combinaciones lineales de parámetros
+      que son ortogonales al vector de colinealidad $\boldsymbol{\lambda}$.
+  \end{enumerate}
+\end{clave}
+
+% ══════════════════════════════════════════════════════════════════════════
+\appendix
+
+\section{Apéndice A: Demostración del Lema~\ref{lema1} mediante álgebra de Frisch-Waugh}
+
+El teorema de Frisch-Waugh-Lovell (FWL) establece que, en la regresión de $\mathbf{y}$
+sobre $[\mathbf{X}_1\;\mathbf{X}_2]$, el vector de coeficientes de $\mathbf{X}_2$
+es idéntico al de la regresión de $\mathbf{M}_1\mathbf{y}$ sobre
+$\mathbf{M}_1\mathbf{X}_2$, donde $\mathbf{M}_1 = \mathbf{I} - \mathbf{X}_1(\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1'$.
+
+Aplicado a la correlación parcial: $\rp{12}{3}$ es la correlación entre
+$\mathbf{M}_3\mathbf{x}_1$ y $\mathbf{M}_3\mathbf{x}_2$. Dado que
+$\mathbf{x}_1 = a\mathbf{x}_2 + b\mathbf{x}_3$:
+
+\begin{equation}
+  \mathbf{M}_3\mathbf{x}_1
+    = a\,\mathbf{M}_3\mathbf{x}_2 + b\,\mathbf{M}_3\mathbf{x}_3
+    = a\,\mathbf{M}_3\mathbf{x}_2 + b\,\mathbf{0}
+    = a\,\mathbf{M}_3\mathbf{x}_2
+  \label{eq:fwl}
+\end{equation}
+
+\noindent porque $\mathbf{M}_3\mathbf{x}_3 = \mathbf{0}$ (proyectar sobre el
+complemento del espacio de $\mathbf{x}_3$ aniquila a $\mathbf{x}_3$). Por tanto
+$\mathbf{M}_3\mathbf{x}_1$ y $\mathbf{M}_3\mathbf{x}_2$ son proporcionales con
+constante $a$, y su correlación es exactamente $\text{signo}(a) = \pm 1$.
+
+\section{Apéndice B: Factor de inflación de varianza y número de condición}
+
+\subsection{VIF a partir de $R^2$ auxiliar}
+
+En la regresión múltiple general, la varianza del $j$-ésimo coeficiente MCO es:
+
+\begin{equation}
+  \text{Var}(\hat\beta_j) = \frac{\sigma^2}{S_{jj}}\cdot\frac{1}{1-R_j^2}
+  \label{eq:var_vif_general}
+\end{equation}
+
+\noindent El factor $\text{VIF}_j = 1/(1-R_j^2)$ cuantifica el multiplicador de
+la varianza respecto al caso ideal de ortogonalidad ($R_j^2 = 0$, VIF$=1$).
+Bajo multicolinealidad perfecta, $R_j^2 = 1$ y VIF$_j = \infty$.
+
+\subsection{Número de condición}
+
+El \textbf{número de condición} de $\mathbf{X'X}$ (o de su versión estandarizada)
+es:
+\begin{equation}
+  \kappa = \sqrt{\frac{\lambda_{\max}(\mathbf{X'X})}{\lambda_{\min}(\mathbf{X'X})}}
+  \label{eq:kappa}
+\end{equation}
+
+\noindent Bajo multicolinealidad perfecta, $\lambda_{\min} = 0$, por lo que
+$\kappa \to \infty$. En la práctica, $\kappa > 30$ ya indica colinealidad severa.
+
+\section{Apéndice C: Generalización a $k$ variables}
+
+\begin{prop}
+  Si $k$ variables satisfacen $\sum_{j=1}^k \lambda_j X_{ji} = 0$ para todo $i$
+  (con $\boldsymbol{\lambda} \neq \mathbf{0}$), entonces:
+  \begin{enumerate}[label=(\roman*), itemsep=3pt]
+    \item $R^2$ de la regresión de cualquier $X_j$ sobre las demás $k-1$
+      variables es igual a~1.
+    \item Toda correlación parcial entre dos variables, controlando por
+      cualquier subconjunto de las restantes, tiene valor absoluto~1.
+    \item La matriz $\mathbf{X'X}$ de dimensión $k\times k$ tiene rango
+      a lo sumo $k-1$ (al menos un valor propio es 0).
+    \item El estimador MCO $(\mathbf{X'X})^{-1}\mathbf{X'y}$ no existe.
+  \end{enumerate}
+\end{prop}
+
+\vspace{18pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los resultados de este ejercicio son puramente
+algebraicos: no requieren supuestos distribucionales sobre los errores.
+La multicolinealidad perfecta es una propiedad de los datos
+($\mathbf{X}$), no del proceso generador de~$\mathbf{y}$.}
+
+\end{document}
