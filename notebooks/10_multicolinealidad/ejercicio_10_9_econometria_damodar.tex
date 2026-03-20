@@ -1,0 +1,464 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.9}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Funcion de Produccion Cobb-Douglas,}\\[6pt]
+  {\LARGE\bfseries Multicolinealidad y Sesgo de Especificacion}\\[12pt]
+  {\large\itshape Sector manufacturero de los 50 estados de EE.UU., 2005}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.9 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Correlacion entre insumos, decision de omision y naturaleza del sesgo resultante}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Contexto.}\quad
+El ejemplo del capitulo~7 ajusta una funcion de produccion Cobb-Douglas para
+el sector manufacturero de los 50 estados y el Distrito de Columbia de
+Estados Unidos en 2005. En su forma logaritmica lineal, el modelo es:
+
+\begin{equation}
+  \ln Q_i = \beta_1 + \beta_2 \ln L_i + \beta_3 \ln K_i + u_i
+  \label{eq:cobb_douglas}
+\end{equation}
+
+\noindent donde $Q_i$ es el valor del producto manufacturero del estado $i$,
+$L_i$ es el numero de empleados (insumo trabajo) y $K_i$ es el stock de
+capital utilizado. Los resultados reportados en~(7.9.4) muestran que tanto
+$\hat\beta_2$ como $\hat\beta_3$ son estadisticamente significativos de forma
+individual.
+
+\section{El modelo Cobb-Douglas y sus supuestos}
+
+\subsection{Forma funcional y propiedades}
+
+La funcion Cobb-Douglas en su forma general es:
+\begin{equation}
+  Q_i = A \cdot L_i^{\beta_2} \cdot K_i^{\beta_3} \cdot e^{u_i}
+  \label{eq:cd_nivel}
+\end{equation}
+Tomando logaritmos naturales se obtiene el modelo lineal~(\ref{eq:cobb_douglas}).
+Los parametros tienen interpretacion directa:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item $\beta_2 = \partial \ln Q / \partial \ln L$: elasticidad de la produccion
+    respecto al trabajo (incremento porcentual en $Q$ ante un incremento del
+    $1\%$ en $L$, manteniendo $K$ constante).
+  \item $\beta_3 = \partial \ln Q / \partial \ln K$: elasticidad de la produccion
+    respecto al capital.
+  \item $\beta_2 + \beta_3$: rendimientos a escala. Si $> 1$, rendimientos
+    crecientes; $= 1$, constantes; $< 1$, decrecientes.
+\end{itemize}
+
+\subsection{Estructura de los datos de corte transversal estatal}
+
+Los datos son de corte transversal ($n = 51$): una observacion por estado.
+A diferencia de las series de tiempo, aqui la variacion proviene de diferencias
+\emph{estructurales} entre estados: algunos tienen sectores manufactureros
+grandes (Ohio, Michigan, Texas) y otros pequenos. Esta variacion es la que
+permite identificar los parametros, pero tambien genera la correlacion entre
+$\ln L$ y $\ln K$ que se analiza a continuacion.
+
+\section{Inciso (a): correlacion entre trabajo y capital}
+
+\subsection{Por que se espera alta correlacion}
+
+En datos de produccion por unidad geografica (estados, paises, industrias),
+el trabajo y el capital tienden a moverse juntos por tres razones:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item \textbf{Efecto escala}: los estados con mayor actividad manufacturera
+    emplean mas trabajadores \emph{y} mas capital simultaneamente. Un estado
+    con un sector manufacturero diez veces mayor que otro tendera a tener
+    mas de ambos insumos. La variacion en el tamano del sector domina la
+    variacion en las intensidades relativas de uso de los factores.
+
+  \item \textbf{Complementariedad tecnologica}: en muchos procesos industriales
+    el capital (maquinaria, equipos) requiere trabajadores para operarlo.
+    La relacion capital-trabajo $K/L$ es relativamente estable dentro de
+    una misma industria, lo que implica que $\ln K$ y $\ln L$ son
+    aproximadamente proporcionales:
+    \begin{equation}
+      \ln K_i \approx c + \ln L_i + \varepsilon_i
+      \label{eq:proporc}
+    \end{equation}
+    con $\varepsilon_i$ de varianza pequena relativa a la varianza de
+    $\ln L_i$.
+
+  \item \textbf{Homogeneidad industrial}: los 51 estados pertenecen al mismo
+    pais con acceso a tecnologias similares. La funcion de produccion es
+    aproximadamente la misma en todos. Esto implica relaciones
+    capital-trabajo parecidas entre estados, lo que refuerza la correlacion.
+\end{enumerate}
+
+\subsection{Medicion de la correlacion}
+
+El coeficiente de correlacion entre los logaritmos de los insumos es:
+\begin{equation}
+  r_{LK} = \frac{\sum (\ln L_i - \overline{\ln L})(\ln K_i - \overline{\ln K})}
+                {\sqrt{\sum (\ln L_i - \overline{\ln L})^2
+                       \sum (\ln K_i - \overline{\ln K})^2}}
+  \label{eq:corr_LK}
+\end{equation}
+
+En aplicaciones tipicas de funciones de produccion con datos de corte transversal,
+$r_{LK}$ suele estar en el rango $0.85$--$0.98$. El VIF correspondiente es:
+\begin{equation}
+  \text{VIF}(\ln L) = \text{VIF}(\ln K) = \frac{1}{1 - r_{LK}^2}
+  \label{eq:VIF_LK}
+\end{equation}
+
+Para $r_{LK} = 0.95$: $\text{VIF} = 1/(1 - 0.9025) = 10.3$, que ya supera
+el umbral convencional de colinealidad severa. Para $r_{LK} = 0.99$:
+$\text{VIF} = 50$.
+
+\subsection{La paradoja de la significancia individual}
+
+A pesar de la alta correlacion esperada, el enunciado indica que ambos
+coeficientes son estadisticamente significativos. Esto es posible
+—aunque infrecuente bajo colinealidad severa— cuando:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item El tamano muestral ($n = 51$) es suficientemente grande para que la
+    variacion muestral de $\ln L$ con $\ln K$ aproximadamente constante
+    sea informativa.
+  \item Los errores estandar, aunque inflados por el VIF, no son tan grandes
+    como para borrar la significancia de coeficientes que son economicamente
+    grandes (elasticidades del orden de $0.5$--$0.7$).
+\end{enumerate}
+
+La relacion entre el estadistico $t$ y el VIF es:
+\begin{equation}
+  t_j = \frac{\hat\beta_j}{\hat\sigma / \sqrt{S_{jj}}} \cdot \frac{1}{\sqrt{\text{VIF}_j}}
+  \label{eq:t_vif}
+\end{equation}
+Con elasticidades grandes y varianza residual razonable, el $t$ puede ser
+significativo incluso con VIF$> 10$.
+
+\begin{clave}
+  La respuesta al inciso~(a) es: \textbf{si, se espera alta correlacion} entre
+  $\ln L$ y $\ln K$ en datos de produccion estatal, por efecto escala y
+  complementariedad tecnologica. Sin embargo, la significancia individual de
+  ambos coeficientes indica que los datos tienen suficiente variacion
+  independiente para identificar los efectos separados, aunque con precision
+  reducida respecto al caso ideal de ortogonalidad.
+\end{clave}
+
+\section{Inciso (b): ¿eliminar la variable trabajo?}
+
+\subsection{Respuesta}
+
+\textbf{No}. Eliminar $\ln L$ del modelo es incorrecto por razones teoricas
+y econometricas que se detallan a continuacion.
+
+\subsection{Razon 1: fundamento teorico inamovible}
+
+La funcion de produccion Cobb-Douglas postula que la produccion depende
+\emph{conjuntamente} del trabajo y el capital:
+\begin{equation}
+  Q = f(L, K)
+  \label{eq:produccion}
+\end{equation}
+Esta especificacion no es una convencion estadistica: refleja la realidad
+tecnologica de que el producto surge de la combinacion de ambos factores.
+Eliminar el trabajo equivale a asumir $\beta_2 = 0$, es decir, que los
+trabajadores no contribuyen a la produccion. Esto contradice la evidencia
+empirica universal.
+
+\subsection{Razon 2: los coeficientes son individualmente significativos}
+
+El criterio correcto para eliminar una variable de un modelo es la
+\emph{irrelevancia estadistica y teorica}, no la colinealidad. La presencia
+de multicolinealidad no es una razon valida para omitir variables relevantes.
+Gujarati (2010) es explicito en este punto: la multicolinealidad es un
+``problema de los datos'', no del modelo; el remedio no es alterar la
+especificacion teorica.
+
+Si $\hat\beta_2$ es significativo, el test $t$ rechaza $H_0: \beta_2 = 0$,
+lo que significa que los datos contienen evidencia de que el trabajo tiene
+un efecto sobre la produccion separable del capital. Ignorar esta evidencia
+es una decision metodologica incorrecta.
+
+\subsection{Razon 3: costo de la omision (sesgo)}
+
+Omitir $\ln L$ introduce un sesgo sistematico en $\hat\beta_3$. Este sesgo
+se deriva en detalle en el inciso~(c).
+
+\begin{clave}
+  La respuesta al inciso~(b) es: \textbf{no se debe eliminar el trabajo}.
+  La colinealidad entre regresores relevantes no justifica la omision de
+  ninguno de ellos. El modelo debe mantenerse completo porque ambos insumos
+  son teoricamente esenciales y empiricamente significativos.
+\end{clave}
+
+\section{Inciso (c): naturaleza del sesgo de especificacion}
+
+\subsection{Tipo de sesgo}
+
+Al estimar el modelo reducido:
+\begin{equation}
+  \ln Q_i = \alpha_1 + \alpha_3 \ln K_i + v_i
+  \label{eq:reducido}
+\end{equation}
+omitiendo $\ln L_i$, se incurre en \textbf{sesgo por variable omitida}
+(specification bias u omitted variable bias). Este es uno de los sesgos
+de especificacion catalogados por Ramsey (1969) y discutidos en el
+capitulo~13 de Gujarati.
+
+\subsection{Derivacion formal del sesgo}
+
+El verdadero modelo es~(\ref{eq:cobb_douglas}). Sea $b_{LK}$ el coeficiente
+de la regresion auxiliar de $\ln L$ sobre $\ln K$:
+\begin{equation}
+  b_{LK} = \frac{\sum \ell_i k_i}{\sum k_i^2}
+  \label{eq:b_LK}
+\end{equation}
+donde $\ell_i = \ln L_i - \overline{\ln L}$ y $k_i = \ln K_i - \overline{\ln K}$.
+
+El estimador MCO $\hat\alpha_3$ del modelo reducido~(\ref{eq:reducido}) es:
+\begin{equation}
+  \hat\alpha_3 = \frac{\sum k_i \ln Q_i}{\sum k_i^2}
+  \label{eq:alpha3}
+\end{equation}
+
+Sustituyendo el verdadero modelo en~(\ref{eq:alpha3}):
+\begin{align}
+  \hat\alpha_3
+  &= \frac{\sum k_i (\beta_1 + \beta_2 \ln L_i + \beta_3 \ln K_i + u_i)}
+          {\sum k_i^2}
+  \notag\\[4pt]
+  &= \beta_2 \cdot \frac{\sum k_i \ell_i}{\sum k_i^2}
+   + \beta_3 \cdot \frac{\sum k_i^2}{\sum k_i^2}
+   + \frac{\sum k_i u_i}{\sum k_i^2}
+  \notag\\[4pt]
+  &= \beta_2 b_{LK} + \beta_3 + \frac{\sum k_i u_i}{\sum k_i^2}
+  \label{eq:alpha3_descomp}
+\end{align}
+
+Tomando esperanza (bajo exogeneidad de $\ln K$):
+\begin{equation}
+  \boxed{
+    \E[\hat\alpha_3] = \beta_3 + \underbrace{\beta_2 \cdot b_{LK}}_{\text{sesgo}}
+  }
+  \label{eq:sesgo}
+\end{equation}
+
+\subsection{Signo y magnitud del sesgo}
+
+Para determinar el signo del sesgo $\beta_2 \cdot b_{LK}$:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item \textbf{Signo de $\beta_2$}: la elasticidad del producto respecto
+    al trabajo es positiva ($\beta_2 > 0$): mas trabajadores implica mas
+    produccion, manteniendo el capital constante. En aplicaciones empiricas
+    tipicas, $\hat\beta_2 \approx 0.5$--$0.7$.
+
+  \item \textbf{Signo de $b_{LK}$}: el coeficiente de la regresion de
+    $\ln L$ sobre $\ln K$ es positivo ($b_{LK} > 0$) porque los estados
+    con mas capital tambien tienen mas trabajadores (efecto escala). Dado
+    que la correlacion $r_{LK} > 0$, se tiene:
+    \begin{equation}
+      b_{LK} = r_{LK} \cdot \frac{s_{\ln L}}{s_{\ln K}} > 0
+      \label{eq:b_LK_corr}
+    \end{equation}
+    donde $s_{\ln L}$ y $s_{\ln K}$ son las desviaciones estandar muestrales.
+\end{enumerate}
+
+Por tanto, el sesgo es:
+\begin{equation}
+  \text{Sesgo} = \beta_2 \cdot b_{LK} > 0
+  \label{eq:sesgo_positivo}
+\end{equation}
+
+El estimador del coeficiente del capital en el modelo reducido \textbf{sobreestima}
+la verdadera elasticidad del capital:
+\begin{equation}
+  \E[\hat\alpha_3] = \beta_3 + \beta_2 b_{LK} > \beta_3
+  \label{eq:sobreestimacion}
+\end{equation}
+
+\subsection{Interpretacion economica del sesgo}
+
+Cuando omitimos $\ln L$, el coeficiente del capital $\hat\alpha_3$
+``absorbe'' parte del efecto del trabajo. Al aumentar $\ln K$, los
+datos muestran que $\ln L$ tambien aumenta (porque $b_{LK} > 0$);
+ese incremento en $\ln L$ eleva la produccion con elasticidad $\beta_2$.
+Pero el modelo reducido no puede separar estas dos contribuciones y
+se las atribuye enteramente al capital. Por eso $\hat\alpha_3 > \beta_3$.
+
+\subsection{Ilustracion numerica}
+
+Suponga que los verdaderos parametros y la regresion auxiliar son:
+\begin{align}
+  \hat\beta_2 &= 0.60 \quad \text{(elasticidad del trabajo)}\\
+  \hat\beta_3 &= 0.40 \quad \text{(elasticidad del capital)}\\
+  b_{LK}      &= 0.80 \quad \text{(pendiente de } \ln L \text{ sobre } \ln K\text{)}
+\end{align}
+
+El sesgo es:
+\begin{equation}
+  \text{Sesgo} = 0.60 \times 0.80 = 0.48
+  \label{eq:sesgo_num}
+\end{equation}
+
+El modelo reducido estimaria:
+\begin{equation}
+  \E[\hat\alpha_3] = 0.40 + 0.48 = 0.88
+  \label{eq:alpha3_num}
+\end{equation}
+
+Es decir, el coeficiente del capital casi se duplica por el sesgo: en vez
+de $0.40$, se obtendria $0.88$. Esta distorsion conduciria a conclusiones
+erroneas sobre la productividad marginal del capital y los rendimientos
+a escala del sector manufacturero.
+
+\subsection{Consecuencias adicionales sobre la inferencia}
+
+Ademas del sesgo en el coeficiente, omitir $\ln L$ tiene consecuencias
+para la varianza estimada del error:
+
+\begin{equation}
+  \sigma_v^2 = \Var(u_i + \beta_2 \ln L_i) = \sigma_u^2 + \beta_2^2 \sigma_{\ln L}^2
+  \label{eq:var_error_reducido}
+\end{equation}
+
+La varianza del error del modelo reducido es mayor que la del completo
+($\sigma_v^2 > \sigma_u^2$), lo que infla los errores estandar de $\hat\alpha_3$
+y deteriora la precision de la inferencia. Las pruebas $t$ y $F$ del modelo
+reducido no son validas para el verdadero parametro $\beta_3$.
+
+\begin{clave}
+  \textbf{Sesgo de especificacion — resumen:}
+  \begin{enumerate}[leftmargin=1.4em, itemsep=4pt]
+    \item \textbf{Tipo}: sesgo por variable omitida (subajuste del modelo).
+    \item \textbf{Formula}: $\E[\hat\alpha_3] = \beta_3 + \beta_2 b_{LK}$.
+    \item \textbf{Signo}: positivo, porque $\beta_2 > 0$ y $b_{LK} > 0$.
+      El coeficiente del capital se sobreestima.
+    \item \textbf{Magnitud}: proporcional al efecto real del trabajo omitido
+      ($\beta_2$) y a la correlacion entre capital y trabajo ($b_{LK}$).
+    \item \textbf{Consecuencia adicional}: la varianza del error del modelo
+      reducido es mayor, deteriorando la precision de toda la inferencia.
+  \end{enumerate}
+\end{clave}
+
+\section{Diagnostico y conclusion practica}
+
+El ejercicio ilustra la tension entre dos problemas:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=5pt]
+  \item \textbf{Mantener el modelo completo}: estimadores insesgados pero
+    con errores estandar inflados por la colinealidad entre $\ln L$ y $\ln K$.
+    Sin embargo, como ambos coeficientes son significativos, la colinealidad
+    no impide la inferencia en este caso.
+
+  \item \textbf{Reducir el modelo}: errores estandar menores para el
+    coeficiente del capital, pero el estimador es sesgado. El sesgo
+    $\beta_2 b_{LK} \approx 0.48$ es mucho mayor que cualquier reduccion
+    razonable del error estandar. La precision ganada no compensa el sesgo
+    introducido.
+\end{itemize}
+
+La decision correcta es mantener el modelo completo~(\ref{eq:cobb_douglas}).
+Si la multicolinealidad genera errores estandar inaceptablemente grandes,
+los remedios adecuados son agregar datos, imponer restricciones teoricas
+(como $\beta_2 + \beta_3 = 1$ para rendimientos constantes a escala) o
+usar estimadores con sesgo controlado como la regresion Ridge, no omitir
+variables teoricamente relevantes.
+
+\appendix
+
+\section{Condicion de Ramsey para sesgo de especificacion}
+
+Ramsey (1969) mostro que el sesgo de especificacion por omision de variables
+relevantes puede detectarse con el test RESET (\textit{Regression Equation
+Specification Error Test}). El procedimiento es:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item Estimar el modelo reducido y obtener los valores ajustados $\hat Q_i$.
+  \item Regresar los residuos $\hat v_i$ sobre potencias de $\hat Q_i$:
+    $\hat v_i = \gamma_1 \hat Q_i^2 + \gamma_2 \hat Q_i^3 + \epsilon_i$.
+  \item Contrastar $H_0: \gamma_1 = \gamma_2 = 0$ con un test $F$.
+    Un rechazo indica mala especificacion del modelo.
+\end{enumerate}
+
+\section{Restriccion de rendimientos constantes a escala}
+
+Si se impone la restriccion teorica $\beta_2 + \beta_3 = 1$
+(rendimientos constantes a escala), el modelo~(\ref{eq:cobb_douglas}) puede
+reescribirse como:
+\begin{equation}
+  \ln Q_i - \ln K_i = \beta_1 + \beta_2(\ln L_i - \ln K_i) + u_i
+  \label{eq:rcs}
+\end{equation}
+
+En~(\ref{eq:rcs}) el unico regresor es $\ln(L_i/K_i)$, la
+intensidad de trabajo. Este regresor no sufre la colinealidad del par
+$(\ln L, \ln K)$ porque es la \emph{razon} entre ellos, y su variacion
+no esta dominada por el efecto escala. La restriccion de rendimientos
+constantes elimina simultaneamente la colinealidad y el sesgo de omision,
+al costo de imponer una restriccion que debe ser contrastada empiricamente.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los valores numericos de la ilustracion
+son hipoteticos y sirven solo para cuantificar la magnitud tipica del sesgo.
+Los valores exactos dependen de los datos del capitulo~7 de Gujarati~(2010).
+La formula del sesgo $\E[\hat\alpha_3] = \beta_3 + \beta_2 b_{LK}$ es exacta
+en muestras finitas bajo los supuestos clasicos de MCO.}
+
+\end{document}
