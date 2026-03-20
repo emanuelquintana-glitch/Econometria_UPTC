@@ -1,0 +1,575 @@
+\documentclass[12pt, letterpaper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+% ── Geometría ─────────────────────────────────────────────────────────────
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+% ── Encabezado ────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría \textperiodcentered{} Gujarati --- Ejercicio 10.5}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ── Titulos de seccion ─────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+% ── Entornos ──────────────────────────────────────────────────────────────
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+% ── Comandos ──────────────────────────────────────────────────────────────
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Corr}{\operatorname{Corr}}
+
+% ─────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Modelos de Rezago Distribuido}\\[6pt]
+  {\LARGE\bfseries y Multicolinealidad en Series de Tiempo}\\[12pt]
+  {\large\itshape Diagnostico, consecuencias y metodos de correccion}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.5 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Derivaciones completas: Koyck, Almon y primeras diferencias}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{El modelo.}\quad
+El modelo de rezago distribuido finito de orden 4 postula que el consumo
+$Y_t$ en el periodo $t$ depende del ingreso corriente y de los cuatro periodos
+anteriores:
+
+\begin{equation}
+  Y_t = \beta_1 + \beta_2 X_t + \beta_3 X_{t-1} + \beta_4 X_{t-2}
+        + \beta_5 X_{t-3} + \beta_6 X_{t-4} + u_t
+  \label{eq:modelo}
+\end{equation}
+
+\noindent donde $Y$ es el gasto de consumo, $X$ es el ingreso disponible y $t$
+indexa el tiempo (trimestral). La interpretacion economica es que los hogares
+ajustan su consumo de forma gradual ante cambios en el ingreso: el efecto total
+de una variacion en $X$ se distribuye a lo largo de cinco periodos.
+
+\medskip
+\noindent\textbf{Parametros de interes:}
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item $\beta_2$: efecto de impacto (impact multiplier) --- cambio inmediato en
+    $Y$ ante un cambio unitario en $X_t$.
+  \item $\beta_2 + \beta_3 + \cdots + \beta_6$: multiplicador de largo plazo
+    (long-run multiplier) --- efecto acumulado total de un cambio permanente.
+  \item $\beta_3, \ldots, \beta_6$: efectos rezagados en $t-1$ hasta $t-4$.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Inciso (a): Multicolinealidad esperada}
+
+\subsection{Respuesta}
+
+\textbf{Si}. En modelos de rezago distribuido con datos de series de tiempo
+economicas, la multicolinealidad severa es practicamente inevitable. El argumento
+formal se desarrolla a continuacion.
+
+\subsection{Autocorrelacion de series economicas como fuente de colinealidad}
+
+Una serie es \textbf{estacionaria en covarianza} si:
+\begin{align}
+  \E[X_t] &= \mu \quad \text{(media constante)}\\
+  \Var(X_t) &= \sigma^2_X \quad \text{(varianza constante)}\\
+  \Cov(X_t, X_{t-s}) &= \gamma_s \quad \text{(covarianza que solo depende del rezago } s\text{)}
+\end{align}
+
+La \textbf{funcion de autocorrelacion} (FAC) en el rezago $s$ es:
+\begin{equation}
+  \rho_s = \frac{\Cov(X_t, X_{t-s})}{\Var(X_t)} = \frac{\gamma_s}{\sigma^2_X}
+  \label{eq:autocorr}
+\end{equation}
+
+Para series de ingreso trimestral es comun que $\rho_1 > 0.9$, lo que significa
+que $X_t, X_{t-1}, X_{t-2}, X_{t-3}, X_{t-4}$ estan altamente correlacionadas
+entre si.
+
+\subsection{Estructura de la matriz de correlaciones}
+
+La matriz de correlaciones entre los regresores de~( \ref{eq:modelo} ) tiene la
+estructura simetrica de Toeplitz:
+
+\begin{equation}
+  \mathbf{R} =
+  \begin{pmatrix}
+    1      & \rho_1  & \rho_2  & \rho_3  & \rho_4  \\
+    \rho_1 & 1       & \rho_1  & \rho_2  & \rho_3  \\
+    \rho_2 & \rho_1  & 1       & \rho_1  & \rho_2  \\
+    \rho_3 & \rho_2  & \rho_1  & 1       & \rho_1  \\
+    \rho_4 & \rho_3  & \rho_2  & \rho_1  & 1
+  \end{pmatrix}
+  \label{eq:matriz_R}
+\end{equation}
+
+\noindent La entrada $(j,k)$ es $\rho_{|j-k|}$. Si $\rho_1 \to 1$, todas las
+entradas fuera de la diagonal se aproximan a~1, la matriz se aproxima a
+$\mathbf{1}\mathbf{1}'$ (singular) y $\det(\mathbf{R}) \to 0$.
+
+\subsection{Cuantificacion: VIF en funcion de la autocorrelacion}
+
+En el caso simplificado de dos regresores $X_t$ y $X_{t-1}$ con correlacion
+$\rho_1$, el $R^2$ auxiliar es $\rho_1^2$ y por tanto:
+
+\begin{equation}
+  \text{VIF}(X_t) = \frac{1}{1 - \rho_1^2}
+  \label{eq:VIF_rho}
+\end{equation}
+
+\begin{table}[ht]
+\centering
+\caption{VIF como funcion de la autocorrelacion $\rho_1$ (dos rezagos)}
+\label{tab:VIF}
+\small
+\begin{tabular}{cccc}
+\toprule
+$\rho_1$ & $\rho_1^2$ & $1 - \rho_1^2$ & VIF \\
+\midrule
+0.50 & 0.250 & 0.750 & 1.33 \\
+0.70 & 0.490 & 0.510 & 1.96 \\
+0.80 & 0.640 & 0.360 & 2.78 \\
+0.90 & 0.810 & 0.190 & 5.26 \\
+0.95 & 0.903 & 0.098 & 10.2 \\
+0.99 & 0.980 & 0.020 & 50.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Con cinco regresores, los VIF son aun mayores porque cada $X_{t-s}$
+esta correlacionado con \emph{todos} los demas rezagos simultaneamente.
+
+\subsection{Consecuencias practicas}
+
+Bajo multicolinealidad severa en~(\ref{eq:modelo}):
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item \textbf{Estimadores inestables}: pequenas variaciones en la muestra
+    producen cambios grandes en $\hat\beta_3, \ldots, \hat\beta_6$.
+
+  \item \textbf{Errores estandar inflados}: la varianza de cada $\hat\beta_j$
+    escala con $\text{VIF}_j$, reduciendo los estadisticos $t$:
+    \begin{equation}
+      \Var(\hat\beta_j) = \frac{\sigma^2}{S_{jj}(1 - R_j^2)} = \sigma^2 \cdot
+      \frac{\text{VIF}_j}{S_{jj}}
+      \label{eq:var_vif}
+    \end{equation}
+
+  \item \textbf{Signos incorrectos}: es posible obtener $\hat\beta_4 < 0$
+    (el ingreso de hace dos periodos \emph{reduce} el consumo), lo cual carece
+    de sentido economico. La colinealidad impide separar el efecto individual
+    de cada rezago.
+
+  \item \textbf{Alto $R^2$ con estadisticos $t$ no significativos}: el ajuste
+    global es bueno (el ingreso en sus rezagos explica bien el consumo) pero
+    ningun coeficiente individual supera el umbral de significancia.
+\end{enumerate}
+
+\begin{clave}
+  Con $\rho_1 > 0.9$ y cinco rezagos de la misma variable, los VIF superan
+  10 para todos los coeficientes. Las estimaciones individuales de
+  $\hat\beta_3, \ldots, \hat\beta_6$ son practicamente inutiles para inferencia.
+\end{clave}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Inciso (b): Metodos de correccion}
+
+\subsection{Transformacion de Koyck}
+
+\subsubsection{Supuesto central}
+
+Koyck propone que los coeficientes de los rezagos declinan geometricamente:
+\begin{equation}
+  \beta_{s+2} = \beta_2 \lambda^s, \qquad s = 0, 1, 2, \ldots
+  \qquad 0 < \lambda < 1
+  \label{eq:koyck_supuesto}
+\end{equation}
+
+El modelo de rezago infinito bajo este supuesto es:
+\begin{equation}
+  Y_t = \beta_1 + \beta_2 \sum_{s=0}^{\infty} \lambda^s X_{t-s} + u_t
+  \label{eq:koyck_infinito}
+\end{equation}
+
+\subsubsection{Derivacion algebraica}
+
+Rezagamos~(\ref{eq:koyck_infinito}) un periodo y multiplicamos por $\lambda$:
+\begin{equation}
+  \lambda Y_{t-1} = \lambda\beta_1 + \beta_2\lambda \sum_{s=0}^{\infty}\lambda^s X_{t-1-s} + \lambda u_{t-1}
+  \label{eq:koyck_rezagado}
+\end{equation}
+
+Restando~(\ref{eq:koyck_rezagado}) de~(\ref{eq:koyck_infinito}):
+\begin{align}
+  Y_t - \lambda Y_{t-1}
+  &= \beta_1(1-\lambda)
+     + \beta_2\left(\sum_{s=0}^{\infty}\lambda^s X_{t-s}
+     - \lambda\sum_{s=0}^{\infty}\lambda^s X_{t-1-s}\right)
+     + u_t - \lambda u_{t-1}
+  \label{eq:koyck_resta1}
+\end{align}
+
+Expandimos la diferencia de sumas:
+\begin{align}
+  \sum_{s=0}^{\infty}\lambda^s X_{t-s}
+  - \lambda\sum_{s=0}^{\infty}\lambda^s X_{t-1-s}
+  &= X_t + \sum_{s=1}^{\infty}\lambda^s X_{t-s}
+   - \sum_{s=1}^{\infty}\lambda^s X_{t-s} = X_t
+  \label{eq:cancelacion}
+\end{align}
+
+Los terminos en $X_{t-s}$ para $s \geq 1$ se cancelan exactamente. Sustituyendo:
+\begin{equation}
+  \boxed{
+    Y_t = \underbrace{\beta_1(1-\lambda)}_{\alpha_0}
+          + \underbrace{\beta_2}_{\alpha_1} X_t
+          + \underbrace{\lambda}_{\alpha_2} Y_{t-1}
+          + v_t
+  }
+  \label{eq:koyck_final}
+\end{equation}
+donde $v_t = u_t - \lambda u_{t-1}$ es un error de media movil de orden~1
+(MA(1)). El modelo tiene ahora \textbf{solo tres parametros} en lugar de seis.
+
+\subsubsection{Recuperacion de parametros}
+
+Dados $\hat\alpha_0, \hat\alpha_1, \hat\alpha_2$:
+\begin{align}
+  \hat\beta_2 &= \hat\alpha_1\\
+  \hat\lambda &= \hat\alpha_2\\
+  \hat\beta_1 &= \frac{\hat\alpha_0}{1-\hat\alpha_2}
+\end{align}
+
+El \textbf{multiplicador de largo plazo} es:
+\begin{equation}
+  M_{\infty} = \frac{\hat\beta_2}{1-\hat\lambda} = \frac{\hat\alpha_1}{1-\hat\alpha_2}
+  \label{eq:mult_LP}
+\end{equation}
+
+\subsubsection{Problema econometrico}
+
+La transformacion introduce $Y_{t-1}$ como regresor y $v_t = u_t - \lambda u_{t-1}$
+como error. Si $u_t$ es autocorrelacionado, $Y_{t-1}$ y $v_t$ estaran
+correlacionados, haciendo a MCO \textbf{inconsistente}. La solucion correcta
+es usar variables instrumentales (VI) o minimos cuadrados en dos etapas (MC2E).
+
+\subsection{Rezagos distribuidos polinomiales: metodo de Almon}
+
+\subsubsection{Supuesto central}
+
+En lugar del decaimiento geometrico de Koyck, Almon supone que los coeficientes
+$\beta_2, \ldots, \beta_6$ siguen un \textbf{polinomio de grado $p$} en el
+indice del rezago $s$:
+
+\begin{equation}
+  \beta_{s+2} = a_0 + a_1 s + a_2 s^2 + \cdots + a_p s^p,
+  \qquad s = 0, 1, 2, 3, 4
+  \label{eq:almon_supuesto}
+\end{equation}
+
+\subsubsection{Derivacion de las variables transformadas}
+
+Sustituyendo~(\ref{eq:almon_supuesto}) en~(\ref{eq:modelo}):
+\begin{align}
+  Y_t
+  &= \beta_1 + \sum_{s=0}^{4}\beta_{s+2} X_{t-s} + u_t \notag\\
+  &= \beta_1 + \sum_{s=0}^{4}\left(\sum_{j=0}^{p} a_j s^j\right) X_{t-s} + u_t \notag\\
+  &= \beta_1 + \sum_{j=0}^{p} a_j \underbrace{\left(\sum_{s=0}^{4} s^j X_{t-s}\right)}_{Z_{jt}} + u_t
+  \label{eq:almon_derivacion}
+\end{align}
+
+Para $p = 2$ las variables transformadas son:
+\begin{align}
+  Z_{0t} &= X_t + X_{t-1} + X_{t-2} + X_{t-3} + X_{t-4}
+  \label{eq:Z0}\\
+  Z_{1t} &= 0\cdot X_t + 1\cdot X_{t-1} + 2\cdot X_{t-2} + 3\cdot X_{t-3} + 4\cdot X_{t-4}
+  \label{eq:Z1}\\
+  Z_{2t} &= 0\cdot X_t + 1\cdot X_{t-1} + 4\cdot X_{t-2} + 9\cdot X_{t-3} + 16\cdot X_{t-4}
+  \label{eq:Z2}
+\end{align}
+
+El modelo estimable es:
+\begin{equation}
+  \boxed{Y_t = \beta_1 + a_0 Z_{0t} + a_1 Z_{1t} + a_2 Z_{2t} + u_t}
+  \label{eq:almon_final}
+\end{equation}
+
+\noindent con \textbf{tres parametros} ($a_0, a_1, a_2$) en lugar de seis.
+
+\subsubsection{Recuperacion de los coeficientes originales}
+
+Dados $\hat a_0, \hat a_1, \hat a_2$:
+\begin{align}
+  \hat\beta_2 &= \hat a_0 \label{eq:rec0}\\
+  \hat\beta_3 &= \hat a_0 + \hat a_1 + \hat a_2 \label{eq:rec1}\\
+  \hat\beta_4 &= \hat a_0 + 2\hat a_1 + 4\hat a_2 \label{eq:rec2}\\
+  \hat\beta_5 &= \hat a_0 + 3\hat a_1 + 9\hat a_2 \label{eq:rec3}\\
+  \hat\beta_6 &= \hat a_0 + 4\hat a_1 + 16\hat a_2 \label{eq:rec4}
+\end{align}
+
+En forma matricial, $\hat{\boldsymbol{\beta}}_{2:6} = \mathbf{P}\hat{\mathbf{a}}$ con:
+\begin{equation}
+  \mathbf{P} =
+  \begin{pmatrix}
+    1 & 0 & 0 \\ 1 & 1 & 1 \\ 1 & 2 & 4 \\ 1 & 3 & 9 \\ 1 & 4 & 16
+  \end{pmatrix}
+  \label{eq:almon_P}
+\end{equation}
+
+\subsubsection{Comparacion con Koyck}
+
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Flexibilidad}: el polinomio acomoda perfiles no monotonas
+    (efecto maximo en $t-2$, decreciente despues).
+  \item \textbf{Sin endogeneidad}: no se introduce $Y_{t-1}$.
+  \item \textbf{Eleccion del grado}: $p$ debe ser menor que el numero de
+    rezagos. Para 4 rezagos, $p=4$ recupera exactamente MCO sin restriccion
+    (sin ganancia). Se elige $p$ por AIC.
+\end{itemize}
+
+\subsection{Primeras diferencias}
+
+Si la colinealidad proviene de una tendencia estocastica comun (series
+integradas I(1)), la transformacion en primeras diferencias puede eliminarla.
+Definiendo $\Delta X_t = X_t - X_{t-1}$:
+
+\begin{equation}
+  \Delta Y_t = \beta_2 \Delta X_t + \beta_3 \Delta X_{t-1}
+               + \beta_4 \Delta X_{t-2} + \beta_5 \Delta X_{t-3}
+               + \beta_6 \Delta X_{t-4} + \Delta u_t
+  \label{eq:diferencias}
+\end{equation}
+
+\subsubsection{Por que las diferencias tienen menor correlacion}
+
+Sea $X_t = \phi X_{t-1} + \varepsilon_t$ con $|\phi| < 1$ (AR(1)). La
+correlacion entre diferencias consecutivas es:
+
+\begin{equation}
+  \rho_{\Delta,1}
+    = \frac{\Cov(\Delta X_t, \Delta X_{t-1})}{\Var(\Delta X_t)}
+    = \frac{-\phi}{1 + \phi^2}
+  \label{eq:corr_diff}
+\end{equation}
+
+Para $\phi = 0.9$: $\rho_{\Delta,1} = -0.9/1.81 \approx -0.497$. Las
+diferencias tienen correlacion negativa de magnitud mucho menor que la
+correlacion positiva $\rho_1 = 0.9$ en niveles.
+
+\subsubsection{Limitacion}
+
+Si las series estan cointegradas, el modelo en diferencias omite el
+mecanismo de correccion de error:
+\begin{equation}
+  \Delta Y_t = \alpha(Y_{t-1} - \hat\mu X_{t-1})
+               + \sum_{s=0}^{4}\beta_{s+2}\Delta X_{t-s} + u_t
+  \label{eq:mce}
+\end{equation}
+perdiendo informacion de largo plazo.
+
+\subsection{Simplificacion secuencial (ad hoc)}
+
+Se elimina secuencialmente el regresor con menor estadistico $t$ hasta que
+todos sean significativos. Este metodo adolece de \textbf{sesgo por pretesting}:
+si $\beta_6 \neq 0$ pero su $t$ es pequeno (por colinealidad, no por nulidad),
+eliminarlo introduce sesgo por variable omitida:
+
+\begin{equation}
+  \E[\hat\beta_j^{\text{red}}]
+    = \beta_j + \sum_{k \notin \text{modelo}} \beta_k \cdot \gamma_{kj}
+  \label{eq:sesgo_omision}
+\end{equation}
+
+Con colinealidad alta, $\gamma_{kj}$ puede ser grande, amplificando el sesgo.
+\textbf{No se recomienda para inferencia formal.}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Comparacion de metodos}
+
+\begin{table}[ht]
+\centering
+\caption{Comparacion de metodos para multicolinealidad en rezago distribuido}
+\label{tab:comparacion}
+\small
+\begin{tabular}{p{2.4cm}p{3.8cm}p{3.8cm}p{2.6cm}}
+\toprule
+\textbf{Metodo} & \textbf{Ventajas} & \textbf{Desventajas} & \textbf{Cuando usar} \\
+\midrule
+Koyck &
+Parsimonia (3 parametros); multiplicador LP directo &
+Endogeneidad de $Y_{t-1}$; decaimiento monotono forzado &
+Ajuste dinamico rapido \\
+\midrule
+Almon (PDL) &
+Flexible; sin endogeneidad; grado controlable &
+Eleccion de $p$ arbitraria &
+Efecto diferido con pico interior \\
+\midrule
+Primeras diferencias &
+Elimina tendencia &
+Pierde relacion de largo plazo &
+Series I(1) sin cointergracion \\
+\midrule
+Ad hoc &
+Facil de implementar &
+Sesgo por pretesting &
+Solo exploracion inicial \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Sintesis}
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item La multicolinealidad es \textbf{esperada y severa} en~(\ref{eq:modelo})
+    porque el ingreso trimestral tiene autocorrelacion tipicamente mayor a
+    $0.9$, produciendo VIF superiores a 10.
+
+  \item El metodo preferido es \textbf{Almon} cuando el perfil de rezagos es
+    no monotono, y \textbf{Koyck} (con correccion por endogeneidad via VI)
+    cuando se espera decaimiento geometrico.
+
+  \item Las \textbf{primeras diferencias} son apropiadas solo si las series
+    son I(1) y no cointegradas.
+
+  \item La \textbf{simplificacion ad hoc} puede usarse como diagnostico
+    inicial pero nunca para inferencia formal.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════
+\appendix
+
+\section{Derivacion completa de la transformacion de Koyck}
+
+Partimos de:
+\begin{equation}
+  Y_t = \mu + \beta\sum_{s=0}^{\infty}\lambda^s X_{t-s} + u_t
+  \label{eq:kA}
+\end{equation}
+
+Rezagamos y multiplicamos por $\lambda$:
+\begin{equation}
+  \lambda Y_{t-1} = \lambda\mu + \beta\lambda\sum_{s=0}^{\infty}\lambda^s X_{t-1-s} + \lambda u_{t-1}
+  \label{eq:kB}
+\end{equation}
+
+Restando (\ref{eq:kB}) de (\ref{eq:kA}) y expandiendo:
+\begin{align}
+  Y_t - \lambda Y_{t-1}
+  &= \mu(1-\lambda) + \beta\left(X_t
+     + \sum_{s=1}^{\infty}\lambda^s X_{t-s}
+     - \sum_{s=1}^{\infty}\lambda^s X_{t-s}\right)
+     + u_t - \lambda u_{t-1} \notag\\
+  &= \mu(1-\lambda) + \beta X_t + v_t
+\end{align}
+
+Despejando $Y_t$:
+\begin{equation}
+  Y_t = \mu(1-\lambda) + \beta X_t + \lambda Y_{t-1} + v_t \qquad \square
+\end{equation}
+
+\section{Construccion matricial de las variables de Almon}
+
+Para $p=2$ y cuatro rezagos, la relacion entre los $Z_{jt}$ y los rezagos de
+$X$ es:
+
+\begin{equation}
+  \begin{pmatrix} Z_{0t} \\ Z_{1t} \\ Z_{2t} \end{pmatrix}
+  =
+  \begin{pmatrix}
+    1 & 1 & 1 & 1 & 1 \\
+    0 & 1 & 2 & 3 & 4 \\
+    0 & 1 & 4 & 9 & 16
+  \end{pmatrix}
+  \begin{pmatrix} X_t \\ X_{t-1} \\ X_{t-2} \\ X_{t-3} \\ X_{t-4} \end{pmatrix}
+  = \mathbf{P}'\,\mathbf{x}_t
+\end{equation}
+
+La estimacion por MCO de $\mathbf{a}$ en el modelo transformado equivale a
+la estimacion restringida de $\boldsymbol{\beta}$ bajo la restriccion de que
+los coeficientes caigan sobre el polinomio~(\ref{eq:almon_supuesto}).
+
+\section{Perfil tipico de coeficientes}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=9cm, height=5cm,
+  xlabel={Rezago $s$},
+  ylabel={Coeficiente $\hat\beta_{s+2}$},
+  xtick={0,1,2,3,4},
+  xticklabels={$t$, $t{-}1$, $t{-}2$, $t{-}3$, $t{-}4$},
+  ymin=-0.05, ymax=0.55,
+  grid=major, grid style={dashed, black!20},
+  axis lines=left,
+  legend pos=north east,
+  legend style={font=\small},
+  label style={font=\small},
+  tick label style={font=\small},
+]
+\addplot[mark=square*, black, thick, dashed]
+  coordinates {(0,0.50)(1,0.30)(2,0.18)(3,0.11)(4,0.06)};
+\addlegendentry{Koyck ($\lambda=0.6$)}
+\addplot[mark=*, black, thick]
+  coordinates {(0,0.10)(1,0.28)(2,0.38)(3,0.30)(4,0.14)};
+\addlegendentry{Almon cuadratico}
+\end{axis}
+\end{tikzpicture}
+\caption{Koyck: decaimiento monotono. Almon: permite pico en $t-2$.}
+\end{figure}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los valores numericos de las figuras son
+ilustrativos. El modelo de Koyck con $Y_{t-1}$ requiere estimacion por VI o
+MC2E para ser consistente en presencia de autocorrelacion serial en $u_t$.}
+
+\end{document}
