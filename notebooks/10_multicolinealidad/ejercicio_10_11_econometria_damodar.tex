@@ -1,0 +1,480 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 10.11}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Regresion por Pasos:}\\[6pt]
+  {\LARGE\bfseries Seleccion de Variables, Multicolinealidad}\\[6pt]
+  {\LARGE\bfseries y sus Problemas Formales}\\[12pt]
+  {\large\itshape Por que los procedimientos mecanicos de seleccion son inadecuados}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~10.11 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Analisis formal: sesgo por pretesting, no monotonía de la SCE,
+  inflacion del error tipo I y alternativas validas}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento.}\quad
+La \textbf{regresion por pasos} (\textit{stepwise regression}) es un
+procedimiento automatico de seleccion de variables que opera de dos formas:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item \textbf{Hacia delante} (\textit{forward}): se parte del modelo vacio
+    y se agrega una variable a la vez, eligiendo en cada paso la que mas
+    incrementa la SCE, siempre que el estadistico $F$ correspondiente supere
+    un umbral predefinido.
+  \item \textbf{Hacia atras} (\textit{backward}): se parte del modelo completo
+    con todas las variables disponibles y se elimina una a la vez, comenzando
+    por la de menor contribucion marginal a la SCE, hasta que todas las
+    variables restantes sean significativas segun la prueba $F$.
+\end{itemize}
+
+\noindent Se pregunta si estos procedimientos son recomendables a la luz
+de lo que se sabe sobre multicolinealidad.
+
+\noindent\textbf{Respuesta directa: no se recomiendan}, por razones formales
+que se desarrollan a continuacion.
+
+\section{La logica de la regresion por pasos: criterio de la SCE}
+
+\subsection{El estadistico $F$ incremental}
+
+En cada paso del procedimiento hacia delante, se evalua si agregar la
+variable $X_j$ mejora significativamente el ajuste. El estadistico $F$
+incremental compara el modelo sin $X_j$ (restringido, con $R^2_R$) contra
+el modelo con $X_j$ (no restringido, con $R^2_{NR}$):
+
+\begin{equation}
+  F^* = \frac{(R^2_{NR} - R^2_R)/1}{(1 - R^2_{NR})/(n - k)}
+  \label{eq:F_increm}
+\end{equation}
+
+Si $F^* > F_c$ (valor critico al nivel $\alpha$), $X_j$ se incluye. Este
+estadistico es equivalente al cuadrado del estadistico $t$ individual de
+$X_j$ en el modelo que ya incluye las demas variables. El procedimiento es
+entonces secuencial: cada decision depende del conjunto de variables que
+ya estan en el modelo.
+
+\subsection{La SCE como criterio de seleccion}
+
+La suma de cuadrados explicada (SCE) del modelo con $k$ regresores es:
+
+\begin{equation}
+  \text{SCE}_k = \sum_{i=1}^n (\hat Y_i - \bar Y)^2
+  \label{eq:SCE}
+\end{equation}
+
+Agregar cualquier variable al modelo nunca puede reducir la SCE, porque
+MCO minimiza la suma de cuadrados residual y la SCE es su complemento.
+Por tanto:
+
+\begin{equation}
+  \text{SCE}_{k+1} \geq \text{SCE}_k \quad \text{siempre}
+  \label{eq:monotonia_SCE}
+\end{equation}
+
+El procedimiento por pasos elige las variables que maximizan el incremento
+marginal en la SCE en cada paso. El problema es que bajo multicolinealidad,
+este criterio depende criticamente del orden de entrada, como se demuestra
+a continuacion.
+
+\section{Problema 1: dependencia del orden y arbitrariedad}
+
+\subsection{Demostracion de la no unicidad del resultado}
+
+Sea un modelo con tres variables candidatas: $X_2$, $X_3$ y $X_4$, donde
+$r_{23}$ es alta. La contribucion marginal de $X_3$ al agregar al modelo
+que ya contiene $X_2$ es:
+
+\begin{equation}
+  \Delta\text{SCE}(X_3 | X_2)
+    = \text{SCE}(X_2, X_3) - \text{SCE}(X_2)
+  \label{eq:delta_SCE_cond}
+\end{equation}
+
+Pero si en cambio se agrega $X_3$ primero y luego se evalua $X_2$:
+
+\begin{equation}
+  \Delta\text{SCE}(X_2 | X_3)
+    = \text{SCE}(X_2, X_3) - \text{SCE}(X_3)
+  \label{eq:delta_SCE_cond2}
+\end{equation}
+
+En general, $\Delta\text{SCE}(X_3 | X_2) \neq \Delta\text{SCE}(X_3)$
+porque el efecto marginal de $X_3$ cambia segun que otras variables esten
+ya en el modelo. Con colinealidad alta ($r_{23} \approx 1$), la contribucion
+marginal de $X_3$ dado $X_2$ es casi cero (ambas explican casi lo mismo),
+mientras que la contribucion marginal de $X_3$ sin $X_2$ puede ser grande.
+
+\subsection{Implicacion para la seleccion de modelos}
+
+Suponga que se tienen dos posibles modelos equivalentes en ajuste:
+
+\begin{align}
+  \text{Modelo A:} \quad Y &= \beta_1 + \beta_2 X_2 + u \\
+  \text{Modelo B:} \quad Y &= \gamma_1 + \gamma_3 X_3 + v
+\end{align}
+
+con $r_{23} = 0.98$ y $R^2_A \approx R^2_B$. El procedimiento hacia delante
+elegira uno u otro dependiendo unicamente de cual explique marginalmente
+un poco mas en el primer paso, aunque ambos sean virtualmente equivalentes
+en ajuste y en contenido informativo. La eleccion es arbitraria y no tiene
+ningun respaldo teorico.
+
+\begin{clave}
+  Bajo multicolinealidad, la contribucion marginal de una variable a la
+  SCE depende criticamente del conjunto de variables ya incluidas. El resultado
+  del procedimiento por pasos varia con el orden de entrada o salida,
+  produciendo selecciones arbitrarias de modelos.
+\end{clave}
+
+\section{Problema 2: inflacion del error tipo I por pruebas multiples}
+
+\subsection{El problema del pretesting}
+
+Cuando se realizan $m$ pruebas de hipotesis secuenciales sobre los mismos
+datos, el nivel de significancia nominal $\alpha$ de cada prueba individual
+ya no refleja la probabilidad real de cometer un error tipo~I en el proceso
+total. Si cada prueba tiene nivel $\alpha$, la probabilidad de cometer al
+menos un error tipo~I en $m$ pruebas independientes es:
+
+\begin{equation}
+  P(\text{al menos un error tipo I}) = 1 - (1-\alpha)^m
+  \label{eq:bonferroni}
+\end{equation}
+
+Para $\alpha = 0.05$ y $m = 10$ variables candidatas:
+
+\begin{equation}
+  1 - (1-0.05)^{10} = 1 - 0.5987 \approx 0.40
+  \label{eq:tipo1_10}
+\end{equation}
+
+Con nivel nominal del $5\%$ por prueba, la probabilidad real de incluir al
+menos una variable irrelevante en 10 pasos es del $40\%$.
+
+\subsection{Distribucion del estadistico bajo seleccion}
+
+El estadistico $t$ del $j$-esimo coeficiente en el modelo final seleccionado
+por el procedimiento por pasos \textbf{no sigue la distribucion $t$ de Student}
+con los grados de libertad habituales. La razon es que el modelo fue elegido
+precisamente porque los estadisticos $t$ superaron un umbral: los $t$ del
+modelo seleccionado estan condicionados a haber sido seleccionados, lo que
+sesga su distribucion hacia valores grandes:
+
+\begin{equation}
+  \E[|t_j| \,|\, \text{variable seleccionada}] > \E[|t_j|]
+  \label{eq:t_sesgado}
+\end{equation}
+
+Esto invalida la inferencia estandar: los errores estandar, intervalos de
+confianza y p-valores del modelo final son anticonservativos.
+
+\subsection{El problema del data mining}
+
+Buscar el ``mejor'' modelo entre todos los subconjuntos posibles de $k$
+variables candidatas implica evaluar hasta $2^k - 1$ modelos. Para $k = 10$:
+$2^{10} - 1 = 1023$ modelos. Cada uno es una prueba implicita de hipotesis.
+La probabilidad de encontrar un modelo con $R^2$ alto por pura casualidad
+—incluso si todas las variables son irrelevantes— es alta. Este fenomeno
+se denomina \textbf{sobreajuste por seleccion} (\textit{selection overfitting}).
+
+\begin{clave}
+  Los procedimientos por pasos realizan multiples pruebas de hipotesis sobre
+  los mismos datos. El nivel nominal $\alpha$ no refleja la probabilidad real
+  de error tipo~I, que puede superar el $40\%$ con 10 variables candidatas.
+  La inferencia del modelo seleccionado es invalida.
+\end{clave}
+
+\section{Problema 3: sesgo por variable omitida bajo multicolinealidad}
+
+\subsection{Mecanismo del sesgo}
+
+Si una variable teoricamente relevante $X_j$ esta altamente correlacionada
+con otras variables ya en el modelo, su contribucion marginal a la SCE es
+pequena, pues las otras variables ya ``explican'' gran parte de su variacion.
+En el procedimiento hacia delante, $X_j$ puede no ser seleccionada aunque
+$\beta_j \neq 0$. En el procedimiento hacia atras, puede ser eliminada
+porque su estadistico $t$ no es significativo (inflado por colinealidad).
+
+La formula del sesgo por variable omitida (derivada en ejercicios anteriores)
+se aplica aqui de forma directa:
+
+\begin{equation}
+  \E[\hat\beta_{\text{red},j}] = \beta_j + \sum_{k \notin \mathcal{M}} \beta_k b_{jk}
+  \label{eq:sesgo_omision}
+\end{equation}
+
+donde $\mathcal{M}$ es el conjunto de variables omitidas y $b_{jk}$ son los
+coeficientes de las regresiones auxiliares de las variables omitidas sobre
+las incluidas. Bajo colinealidad, $b_{jk}$ es grande, amplificando el sesgo.
+
+\subsection{Paradoja: eliminacion de variables porque su $t$ es pequeno por colinealidad}
+
+La colinealidad infla los errores estandar de todos los regresores
+correlacionados, reduciendo sus estadisticos $t$:
+
+\begin{equation}
+  t_j = \frac{\hat\beta_j}{\text{ee}(\hat\beta_j)}
+       = \frac{\hat\beta_j}{\hat\sigma/\sqrt{S_{jj}}} \cdot \frac{1}{\sqrt{\text{VIF}_j}}
+  \label{eq:t_VIF}
+\end{equation}
+
+Con VIF$_j$ alto, $t_j$ puede ser pequeno aunque $\beta_j \neq 0$. El
+procedimiento por pasos interpretaria esto como evidencia de que $X_j$ es
+irrelevante y la eliminaria, cuando en realidad es la colinealidad la que
+impide detectar su efecto. El resultado es la omision de variables relevantes
+y el sesgo de sus coeficientes en las variables que permanecen.
+
+\begin{clave}
+  En presencia de multicolinealidad, los procedimientos por pasos tienden a
+  eliminar variables teoricamente relevantes porque su efecto individual no
+  es detectado por la prueba $F$ o $t$, introduciendo sesgo por variable omitida.
+\end{clave}
+
+\section{Problema 4: inestabilidad de los coeficientes}
+
+Cuando la multicolinealidad es severa, el estimador MCO es numericamente
+inestable: pequenas perturbaciones en los datos producen cambios grandes
+en los coeficientes. La adicion o eliminacion de una variable en el
+procedimiento por pasos puede desencadenar cambios drasticos en todos los
+demas coeficientes del modelo:
+
+\begin{equation}
+  \frac{\partial \hat\beta_j}{\partial X_{ki}}
+  \propto [(\mathbf{X'X})^{-1}]_{jk}
+  \label{eq:sensibilidad}
+\end{equation}
+
+Con $\det(\mathbf{X'X}) \approx 0$, los elementos de $(\mathbf{X'X})^{-1}$
+son grandes y la sensibilidad es extrema. El modelo seleccionado en una
+muestra puede ser muy diferente del que se seleccionaria en una muestra
+ligeramente diferente del mismo fenomeno.
+
+\section{Alternativas recomendadas}
+
+Dado que los procedimientos mecanicos son inadecuados, se presentan las
+alternativas metodologicamente correctas.
+
+\subsection{Especificacion teorica del modelo}
+
+La especificacion debe basarse en la teoria economica, no en criterios
+estadisticos. Un modelo con $k$ variables relevantes es preferible a uno
+con $k' < k$ variables aunque el segundo tenga menor varianza de estimacion,
+porque el primero es insesgado y el segundo no.
+
+\subsection{Criterios de informacion penalizados}
+
+Los criterios de informacion penalizan la complejidad del modelo y son
+apropiados para comparar modelos con diferente numero de parametros:
+
+\begin{align}
+  \text{AIC} &= -2\ell(\hat{\boldsymbol\beta}) + 2k
+  \label{eq:AIC}\\
+  \text{BIC} &= -2\ell(\hat{\boldsymbol\beta}) + k\ln n
+  \label{eq:BIC}
+\end{align}
+
+donde $\ell$ es el logaritmo de la verosimilitud maximizada y $k$ es el
+numero de parametros. El BIC penaliza mas que el AIC y tiende a seleccionar
+modelos mas parsimoniosos. A diferencia del procedimiento por pasos, estos
+criterios comparan modelos \emph{globalmente} sin sesgo de pretesting.
+
+\subsection{Validacion cruzada}
+
+Para evitar el sobreajuste, se puede usar validacion cruzada (\textit{cross-validation}):
+dividir la muestra en subconjuntos de entrenamiento y prueba, estimar el
+modelo en el subconjunto de entrenamiento y evaluar su ajuste en el de prueba.
+El modelo que minimiza el error de prediccion fuera de muestra es preferido.
+
+\subsection{Regularizacion: regresion Ridge y LASSO}
+
+Los metodos de regularizacion encogen los coeficientes hacia cero de forma
+controlada, resolviendo simultaneamente el problema de multicolinealidad y
+la seleccion de variables:
+
+\begin{align}
+  \hat{\boldsymbol\beta}^{\text{Ridge}} &= \arg\min_{\boldsymbol\beta}
+    \left\{ \sum_i (Y_i - \mathbf{x}_i'\boldsymbol\beta)^2
+            + \lambda \sum_j \beta_j^2 \right\}
+  \label{eq:Ridge}\\
+  \hat{\boldsymbol\beta}^{\text{LASSO}} &= \arg\min_{\boldsymbol\beta}
+    \left\{ \sum_i (Y_i - \mathbf{x}_i'\boldsymbol\beta)^2
+            + \lambda \sum_j |\beta_j| \right\}
+  \label{eq:LASSO}
+\end{align}
+
+El LASSO produce soluciones con coeficientes exactamente iguales a cero
+para variables irrelevantes (seleccion automatica) pero con fundamento
+estadistico riguroso, sin los problemas de pretesting del procedimiento
+por pasos.
+
+\section{Sintesis: cuadro comparativo}
+
+\begin{table}[ht]
+\centering
+\caption{Comparacion de metodos de seleccion de variables}
+\label{tab:comparacion}
+\small
+\begin{tabular}{p{3.5cm} p{3.5cm} p{3.5cm} p{3cm}}
+\toprule
+\textbf{Criterio}
+  & \textbf{Regresion por pasos}
+  & \textbf{AIC/BIC}
+  & \textbf{LASSO} \\
+\midrule
+Sesgo por pretesting
+  & Alto (pruebas multiples)
+  & Bajo (comparacion global)
+  & Ninguno \\[4pt]
+Efecto de la colinealidad
+  & Elimina variables relevantes
+  & Penaliza complejidad; no resuelve colinealidad
+  & Encoge coeficientes; maneja colinealidad \\[4pt]
+Unicidad del resultado
+  & No: depende del orden
+  & Si: criterio unico
+  & Si: para $\lambda$ fijo \\[4pt]
+Validez de inferencia
+  & Invalida (distribucion $t$ sesgada)
+  & Valida si se escoge correctamente
+  & Requiere inferencia post-seleccion \\[4pt]
+Base teorica
+  & Ninguna: puramente mecanico
+  & Teoria de la informacion
+  & Teoria estadistica de regularizacion \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{clave}
+  \textbf{Conclusion.} La regresion por pasos \textbf{no se recomienda} en
+  econometria aplicada, especialmente bajo multicolinealidad, por cuatro
+  razones formales: (1) el resultado depende arbitrariamente del orden de
+  entrada o salida; (2) la realizacion de multiples pruebas de hipotesis
+  secuenciales infla el error tipo~I hasta valores del 40\% o mas; (3) las
+  variables relevantes pueden ser eliminadas porque la colinealidad reduce
+  sus estadisticos $t$, introduciendo sesgo por variable omitida; (4) los
+  coeficientes del modelo seleccionado son inestables y la inferencia
+  estandar es invalida. Las alternativas correctas son: especificacion
+  teorica previa, criterios AIC/BIC, validacion cruzada y metodos de
+  regularizacion como Ridge o LASSO.
+\end{clave}
+
+\appendix
+
+\section{Demostracion de la inflacion del error tipo I bajo seleccion secuencial}
+
+Sean $m$ variables candidatas independientes (para simplificar). La hipotesis
+nula para cada una es $H_{0j}: \beta_j = 0$. La probabilidad de no cometer
+un error tipo~I en ninguna de las $m$ pruebas es:
+
+\begin{equation}
+  P(\text{ningun error tipo I}) = (1-\alpha)^m
+  \label{eq:no_error}
+\end{equation}
+
+Por tanto, la probabilidad de cometer al menos un error tipo~I es:
+
+\begin{equation}
+  \alpha_{\text{exp}} = 1 - (1-\alpha)^m
+  \label{eq:alpha_exp}
+\end{equation}
+
+Esta es la \textbf{tasa de error familiar} (\textit{familywise error rate},
+FWER). Para controlarla al nivel $\alpha$ se debe usar la correccion de
+Bonferroni: realizar cada prueba al nivel $\alpha/m$, de modo que:
+
+\begin{equation}
+  \alpha_{\text{exp}} \leq 1 - \left(1 - \frac{\alpha}{m}\right)^m \approx \alpha
+  \label{eq:bonferroni_corr}
+\end{equation}
+
+El procedimiento por pasos no aplica ninguna correccion de este tipo, lo que
+hace que su FWER sea sistematicamente superior al nivel nominal. Los p-valores
+reportados en el modelo final deben interpretarse con extrema cautela.
+
+\section{No monotonia de las contribuciones marginales bajo colinealidad}
+
+Sea el modelo verdadero $Y = \beta_2 X_2 + \beta_3 X_3 + u$ con $r_{23} = r$.
+La contribucion marginal de $X_3$ dado $X_2$ es:
+
+\begin{equation}
+  \Delta R^2(X_3|X_2)
+    = \frac{r_{Y,X_3\cdot X_2}^2 (1 - R^2_{Y,X_2})}{1}
+  \label{eq:delta_R2}
+\end{equation}
+
+donde $r_{Y,X_3 \cdot X_2}$ es la correlacion parcial de $Y$ con $X_3$
+dado $X_2$. Esta correlacion parcial puede ser muy diferente de la correlacion
+simple $r_{Y,X_3}$ cuando $r_{23}$ es alta, incluso si $\beta_3 \neq 0$.
+Con $r_{23} \approx 1$, la correlacion parcial tiende a cero y $X_3$ no sera
+seleccionada en el segundo paso, aunque sea relevante. Esta es la manifestacion
+formal de por que el orden importa.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} La critica a los metodos de regresion por pasos
+esta bien documentada en la literatura econometrica y estadistica. Hocking (1976),
+Derksen y Keselman (1992) y Harrell (2001) documentan empiricamente las altas
+tasas de inclusion de variables irrelevantes y exclusion de variables relevantes
+bajo estos procedimientos. Para seleccion formal de variables con control del
+error tipo~I, se recomienda el procedimiento de Benjamini-Hochberg (1995) para
+controlar la tasa de falsos descubrimientos (\textit{False Discovery Rate}).}
+
+\end{document}
