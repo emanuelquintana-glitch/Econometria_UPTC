@@ -1,0 +1,430 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 11.6}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Modelo de Consumo de Hanushek y Jackson:}\\[6pt]
+  {\LARGE\bfseries Heteroscedasticidad Proporcional al PNB,}\\[6pt]
+  {\LARGE\bfseries Transformacion MCP y Comparabilidad del $R^2$}\\[12pt]
+  {\large\itshape Justificacion del supuesto de varianza, comparacion de errores estandar}\\
+  {\large\itshape y limitaciones de la comparacion de coeficientes de determinacion}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~11.6 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con derivacion de la transformacion MCP, analisis de eficiencia
+  y demostracion de no comparabilidad del $R^2$}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Contexto.}\quad
+Hanushek y Jackson estiman el siguiente modelo de consumo agregado:
+\begin{equation}
+  C_t = \beta_1 + \beta_2 \text{PNB}_t + \beta_3 D_t + u_t
+  \tag{1}\label{eq:original}
+\end{equation}
+donde $C_t$ es el gasto agregado de consumo privado, $\text{PNB}_t$ es el
+Producto Nacional Bruto y $D_t$ son los gastos de defensa nacional, todos en
+el ano $t$. El objetivo es estudiar el efecto del gasto de defensa sobre el
+consumo privado. Los autores postulan:
+\begin{equation}
+  \sigma_t^2 = \sigma^2 (\text{PNB}_t)^2
+  \label{eq:heterosc}
+\end{equation}
+y transforman el modelo para obtener:
+\begin{equation}
+  \frac{C_t}{\text{PNB}_t}
+    = \beta_1 \cdot \frac{1}{\text{PNB}_t}
+    + \beta_2
+    + \beta_3 \cdot \frac{D_t}{\text{PNB}_t}
+    + \frac{u_t}{\text{PNB}_t}
+  \tag{2}\label{eq:transformado}
+\end{equation}
+
+\noindent Los resultados empiricos (1946--1975) son:
+
+\begin{align}
+  \hat C_t
+    &= 26.19 + 0.6248\,\text{PNB}_t - 0.4398\,D_t
+  \notag\\
+    &\quad (2.73) \quad\;\; (0.0060) \qquad\;\; (0.0736)
+  \notag\\
+    &\quad R^2 = 0.999
+  \tag{1'}\label{eq:result1}
+\end{align}
+
+\begin{align}
+  \widehat{C_t/\text{PNB}_t}
+    &= 25.92 \cdot (1/\text{PNB}_t) + 0.6246 - 0.4315 \cdot (D_t/\text{PNB}_t)
+  \notag\\
+    &\quad (2.22) \qquad\qquad\;\;\; (0.0068) \quad\;\;\; (0.0597)
+  \notag\\
+    &\quad R^2 = 0.875
+  \tag{2'}\label{eq:result2}
+\end{align}
+
+\section{Inciso (a): supuesto de heteroscedasticidad y su justificacion}
+
+\subsection{El supuesto}
+
+Los autores postulan que la varianza condicional del error es proporcional
+al cuadrado del PNB:
+\begin{equation}
+  \Var(u_t \mid \text{PNB}_t) = \sigma_t^2 = \sigma^2 (\text{PNB}_t)^2
+  \label{eq:supuesto_var}
+\end{equation}
+
+Esto implica que la desviacion estandar del error es \emph{proporcional al nivel
+del PNB}:
+\begin{equation}
+  \text{ee}(u_t) = \sigma_t = \sigma \cdot \text{PNB}_t
+  \label{eq:desv_estandar}
+\end{equation}
+
+\subsection{Derivacion de la transformacion}
+
+El supuesto~(\ref{eq:supuesto_var}) motiva el uso de pesos $w_t = 1/\sigma_t^2 = 1/[\sigma^2(\text{PNB}_t)^2]$.
+En Minimos Cuadrados Ponderados, dividir por la raiz cuadrada del peso equivale
+a dividir cada termino por $\sigma_t = \sigma\,\text{PNB}_t$. Dividiendo
+la ecuacion~(\ref{eq:original}) entre $\text{PNB}_t$:
+
+\begin{equation}
+  \frac{C_t}{\text{PNB}_t}
+    = \beta_1 \cdot \frac{1}{\text{PNB}_t}
+    + \beta_2
+    + \beta_3 \cdot \frac{D_t}{\text{PNB}_t}
+    + \frac{u_t}{\text{PNB}_t}
+  \label{eq:derivacion}
+\end{equation}
+
+El nuevo error $v_t = u_t/\text{PNB}_t$ tiene varianza:
+\begin{equation}
+  \Var(v_t)
+    = \Var\!\left(\frac{u_t}{\text{PNB}_t}\right)
+    = \frac{1}{(\text{PNB}_t)^2} \cdot \sigma^2 (\text{PNB}_t)^2
+    = \sigma^2
+  \label{eq:var_vt}
+\end{equation}
+
+La varianza de $v_t$ es constante: el error transformado es \textbf{homoscedastico}.
+Aplicar MCO a~(\ref{eq:derivacion}) es equivalente a aplicar MCP con pesos
+$w_t = 1/(\text{PNB}_t)^2$ a~(\ref{eq:original}).
+
+\subsection{Justificacion economica del supuesto}
+
+El supuesto $\sigma_t^2 \propto (\text{PNB}_t)^2$ tiene sentido economico por
+tres razones:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=5pt]
+  \item \textbf{Escala de la economia}: las economias grandes (alto PNB) tienen
+    mayor complejidad y diversidad sectorial. Los errores de prediccion del
+    consumo agregado son naturalmente mayores en terminos absolutos cuando la
+    economia es mas grande.
+
+  \item \textbf{Proporcionalidad del error}: es razonable suponer que la
+    magnitud del error de prediccion guarda proporcion con el nivel de la
+    actividad economica, igual que el error porcentual es aproximadamente
+    constante.
+
+  \item \textbf{Evidencia empirica}: en modelos de consumo y presupuestos,
+    los errores en terminos absolutos suelen crecer con la escala.
+    El supuesto $\sigma \propto X$ es el mas comun en econometria aplicada
+    (caso $p = 1$ en la familia $\sigma_i \propto X_i^p$).
+\end{enumerate}
+
+\begin{clave}
+  El supuesto $\sigma_t^2 = \sigma^2(\text{PNB}_t)^2$ implica que la desviacion
+  estandar del error crece linealmente con el PNB. Al dividir por $\text{PNB}_t$,
+  el nuevo error $v_t = u_t/\text{PNB}_t$ tiene varianza constante $\sigma^2$,
+  restaurando la homoscedasticidad y las propiedades MELI del estimador.
+\end{clave}
+
+\section{Inciso (b): comparacion de resultados y efecto de la transformacion}
+
+\subsection{Tabla comparativa de errores estandar}
+
+\begin{table}[ht]
+\centering
+\caption{Comparacion de coeficientes y errores estandar: modelos (1) y (2)}
+\label{tab:comparacion}
+\small
+\begin{tabular}{lccccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{Modelo (1): MCO}}
+& \multicolumn{2}{c}{\textbf{Modelo (2): MCP}}
+& \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Parametro}
+  & \textbf{Estimado}
+  & \textbf{ee}
+  & \textbf{Estimado}
+  & \textbf{ee}
+  & \textbf{Cambio en ee} \\
+\midrule
+$\beta_1$ (intercepto / coef. de $1/\text{PNB}$)
+  & $26.19$ & $(2.73)$
+  & $25.92$ & $(2.22)$
+  & $\downarrow$ Redujo 18.7\% \\[4pt]
+$\beta_2$ (coef. del PNB / intercepto)
+  & $0.6248$ & $(0.0060)$
+  & $0.6246$ & $(0.0068)$
+  & $\uparrow$ Aumento 13.3\% \\[4pt]
+$\beta_3$ (coef. de $D_t$ / coef. de $D/\text{PNB}$)
+  & $-0.4398$ & $(0.0736)$
+  & $-0.4315$ & $(0.0597)$
+  & $\downarrow$ Redujo 18.9\% \\
+\midrule
+$R^2$ & \multicolumn{2}{c}{$0.999$} & \multicolumn{2}{c}{$0.875$} & No comparable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analisis de los cambios en los errores estandar}
+
+Los resultados muestran un patron mixto:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=5pt]
+  \item \textbf{$\beta_1$}: el error estandar baja de $2.73$ a $2.22$, una
+    reduccion del $18.7\%$. Esto indica que la estimacion del intercepto
+    (ahora el coeficiente de $1/\text{PNB}_t$) gana precision con la
+    correccion de heteroscedasticidad.
+
+  \item \textbf{$\beta_2$}: el error estandar aumenta ligeramente de $0.0060$
+    a $0.0068$ (aumento del $13.3\%$). Esto ocurre porque $\beta_2$ pasa de
+    ser la pendiente del PNB a ser el \emph{intercepto} del modelo transformado.
+    El intercepto del modelo transformado se estima con menos precision porque
+    hay menos variacion independiente una vez que se descuenta el efecto escala.
+
+  \item \textbf{$\beta_3$}: el error estandar baja de $0.0736$ a $0.0597$,
+    una reduccion del $18.9\%$. Esta es la mejora mas relevante para el objetivo
+    del estudio (efecto del gasto de defensa sobre el consumo).
+\end{itemize}
+
+\subsection{¿Mejoro la transformacion?}
+
+\textbf{Si, en el sentido que importa}. La pregunta correcta no es si todos
+los errores estandar disminuyeron, sino si la transformacion produce
+estimadores mas confiables. La respuesta es afirmativa por tres razones:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=5pt]
+  \item \textbf{Los errores estandar del modelo (1) son invalidos}: bajo
+    heteroscedasticidad, los errores estandar MCO ordinarios son estimadores
+    sesgados de la verdadera varianza de los coeficientes. Las pruebas $t$ y
+    $F$ del modelo (1) no siguen sus distribuciones nominales, por lo que la
+    inferencia es invalida.
+
+  \item \textbf{Los errores estandar del modelo (2) son validos}: al aplicar
+    MCP con los pesos correctos $w_t = 1/(\text{PNB}_t)^2$, el error
+    transformado $v_t$ es homoscedastico y los estimadores son MELI.
+    Los errores estandar del modelo (2) son estimadores consistentes de la
+    verdadera precision.
+
+  \item \textbf{Los coeficientes son casi identicos}: los valores estimados
+    de $\beta_1$, $\beta_2$ y $\beta_3$ cambian muy poco entre los modelos
+    (26.19 vs 25.92; 0.6248 vs 0.6246; --0.4398 vs --0.4315), lo que es
+    coherente con la teoria: bajo heteroscedasticidad, MCO es insesgado pero
+    ineficiente. La diferencia esta en la precision, no en el valor central.
+\end{enumerate}
+
+\begin{clave}
+  La transformacion MCP mejora la eficiencia de los estimadores ($\beta_1$ y
+  $\beta_3$ ganan precision) y, sobre todo, produce errores estandar validos
+  para inferencia estadistica. El ligero aumento en el error estandar de
+  $\beta_2$ es un costo menor frente a la ganancia de validez de toda la
+  inferencia.
+\end{clave}
+
+\section{Inciso (c): comparabilidad de los valores de $R^2$}
+
+\subsection{Respuesta}
+
+\textbf{No}, los valores $R^2 = 0.999$ del modelo (1) y $R^2 = 0.875$ del
+modelo (2) \textbf{no son comparables directamente}.
+
+\subsection{Razon tecnica}
+
+El $R^2$ se define como:
+\begin{equation}
+  R^2 = 1 - \frac{\text{SCR}}{\text{SCT}}
+      = 1 - \frac{\sum(Y_t - \hat Y_t)^2}{\sum(Y_t - \bar Y)^2}
+  \label{eq:R2}
+\end{equation}
+
+Las variables dependientes de los dos modelos son diferentes:
+\begin{align}
+  \text{Modelo (1):} \quad Y_t &= C_t
+    \quad \Rightarrow \quad
+    \text{SCT}_1 = \sum_t (C_t - \bar C)^2
+  \label{eq:SCT1}\\[4pt]
+  \text{Modelo (2):} \quad Y_t &= C_t/\text{PNB}_t
+    \quad \Rightarrow \quad
+    \text{SCT}_2 = \sum_t \!\left(\frac{C_t}{\text{PNB}_t} - \overline{C/\text{PNB}}\right)^{\!2}
+  \label{eq:SCT2}
+\end{align}
+
+Como $\text{SCT}_1 \neq \text{SCT}_2$, los dos $R^2$ miden fracciones de
+totales completamente distintos:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item $R^2_1 = 0.999$: el modelo (1) explica el $99.9\%$ de la variacion
+    del consumo total $C_t$ en niveles absolutos.
+  \item $R^2_2 = 0.875$: el modelo (2) explica el $87.5\%$ de la variacion
+    de la \emph{razon} consumo/PNB.
+\end{itemize}
+
+El alto $R^2$ del modelo (1) no significa que sea ``mejor'' que el modelo (2).
+Se debe en gran parte a que $C_t$ y $\text{PNB}_t$ tienen tendencias temporales
+comunes (ambos crecen en el tiempo), lo que infla mecanicamente el $R^2$. Al
+dividir por $\text{PNB}_t$, se elimina la tendencia comun y el $R^2$ baja porque
+se esta explicando la variacion residual de la razon $C/\text{PNB}$, que es
+mucho menor.
+
+\subsection{Consecuencia practica}
+
+La reduccion del $R^2$ de $0.999$ a $0.875$ al pasar al modelo transformado
+\emph{no indica deterioro del ajuste}. Indica simplemente que se esta midiendo
+el ajuste sobre una variable diferente (la razon en lugar del nivel). Para
+comparar los ajustes de los dos modelos sobre la misma variable $C_t$ habria
+que calcular el $R^2$ del modelo (2) \emph{retransformado a niveles}, lo que
+requiere multiplicar las predicciones de $C_t/\text{PNB}_t$ por $\text{PNB}_t$.
+
+\begin{clave}
+  Los $R^2$ de los modelos (1) y (2) \textbf{no son comparables}: el primero
+  mide el ajuste sobre $C_t$, el segundo sobre $C_t/\text{PNB}_t$. La caida
+  de $0.999$ a $0.875$ no indica peor ajuste; refleja que la razon $C/\text{PNB}$
+  tiene menos variacion que el nivel $C_t$, lo cual hace que el $R^2$ sea
+  inevitablemente menor sobre la variable transformada.
+\end{clave}
+
+\section{Sintesis}
+
+\begin{table}[ht]
+\centering
+\caption{Resumen comparativo de los modelos (1) y (2)}
+\label{tab:sintesis}
+\small
+\begin{tabular}{p{3.5cm} p{5cm} p{5cm}}
+\toprule
+\textbf{Aspecto}
+  & \textbf{Modelo (1): MCO sobre $C_t$}
+  & \textbf{Modelo (2): MCP sobre $C_t/\text{PNB}_t$} \\
+\midrule
+Supuesto de varianza
+  & Implicitamente homoscedastico
+  & $\Var(u_t) = \sigma^2(\text{PNB}_t)^2$ \\[4pt]
+Validez de errores est.
+  & Invalidos si hay heteroscedasticidad
+  & Validos: MCP produce estimadores MELI \\[4pt]
+Error est. de $\beta_1$
+  & $2.73$
+  & $2.22$ (mas preciso) \\[4pt]
+Error est. de $\beta_2$
+  & $0.0060$
+  & $0.0068$ (ligeramente menos preciso) \\[4pt]
+Error est. de $\beta_3$
+  & $0.0736$
+  & $0.0597$ (mas preciso) \\[4pt]
+$R^2$
+  & $0.999$ (sobre $C_t$)
+  & $0.875$ (sobre $C_t/\text{PNB}_t$) \\[4pt]
+Comparabilidad $R^2$
+  & \multicolumn{2}{c}{No comparables: variables dependientes distintas} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Verificacion: homoscedasticidad del error transformado}
+
+El error del modelo (2) es $v_t = u_t/\text{PNB}_t$. Su varianza condicional es:
+\begin{equation}
+  \Var(v_t \mid \text{PNB}_t)
+    = \frac{1}{(\text{PNB}_t)^2} \Var(u_t \mid \text{PNB}_t)
+    = \frac{\sigma^2(\text{PNB}_t)^2}{(\text{PNB}_t)^2}
+    = \sigma^2
+  \label{eq:homosc_vt}
+\end{equation}
+
+La varianza de $v_t$ no depende de $t$: el error transformado es homoscedastico.
+Por tanto, MCO aplicado al modelo~(\ref{eq:transformado}) produce estimadores
+MELI de $\beta_1$, $\beta_2$ y $\beta_3$.
+
+\section{Calculo del $R^2$ retransformado}
+
+Para comparar el ajuste de ambos modelos sobre $C_t$, se deben obtener las
+predicciones del modelo (2) en niveles:
+\begin{equation}
+  \hat C_t^{(2)} = \hat\beta_1 + \hat\beta_2\,\text{PNB}_t + \hat\beta_3\,D_t
+\end{equation}
+donde los $\hat\beta_j$ son los coeficientes estimados en el modelo (2).
+El $R^2$ retransformado es entonces:
+\begin{equation}
+  R^2_{\text{retrans}} = 1 - \frac{\sum_t(C_t - \hat C_t^{(2)})^2}{\sum_t(C_t - \bar C)^2}
+\end{equation}
+
+Este $R^2$ si seria comparable con $R^2_1 = 0.999$. En la practica suelen
+ser muy similares cuando ambos modelos estan bien especificados, confirmando
+que la caida de $R^2$ al transformar es un artefacto del cambio de variable
+dependiente y no una degradacion real del ajuste.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los datos de Hanushek y Jackson (1977) cubren
+el periodo 1946--1975. El estudio original busca cuantificar el efecto
+``crowding-out'' del gasto de defensa sobre el consumo privado. El coeficiente
+$\hat\beta_3 \approx -0.44$ indica que un aumento de \$1 en gasto de defensa
+reduce el consumo privado en aproximadamente \$0.44, manteniendo el PNB
+constante.}
+
+\end{document}
