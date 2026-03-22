@@ -1,3 +1,5 @@
+ENV["GKSwstype"] = "nul"   # fuerza GR a escribir al disco sin ventana
+
 using LinearAlgebra
 using StatsPlots
 using Pkg
@@ -129,5 +131,5 @@ plot!(fig,
     plot_titlefontcolor = negro,
 )
 
-savefig(fig, "/mnt/user-data/outputs/ejercicio_11_6_grafico.png")
+savefig(fig, "ejercicio_11_6_grafico.png")
 println("✓ Gráfico guardado en ejercicio_11_6_grafico.png")
