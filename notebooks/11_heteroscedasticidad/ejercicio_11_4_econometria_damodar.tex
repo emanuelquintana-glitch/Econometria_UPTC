@@ -1,0 +1,409 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 11.4}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Modelos Logaritmicos, Distribucion Log-Normal}\\[6pt]
+  {\LARGE\bfseries y Propiedades del Termino de Perturbacion}\\[12pt]
+  {\large\itshape Distribucion de $u_i$, desigualdad de Jensen y correccion del intercepto}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~11.4 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con derivacion de la funcion generadora de momentos log-normal,
+  demostracion de Jensen y reparametrizacion del intercepto}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento.}\quad
+Considere el modelo de potencia:
+\begin{equation}
+  Y_i = \beta_1 X_i^{\beta_2} u_i
+  \tag{1}\label{eq:nivel}
+\end{equation}
+que al tomar logaritmos naturales se convierte en:
+\begin{equation}
+  \ln Y_i = \ln\beta_1 + \beta_2 \ln X_i + \ln u_i
+  \tag{2}\label{eq:log}
+\end{equation}
+
+Definiendo $\alpha_1 = \ln\beta_1$ y $\varepsilon_i = \ln u_i$, el modelo es:
+\begin{equation}
+  \ln Y_i = \alpha_1 + \beta_2 \ln X_i + \varepsilon_i
+  \label{eq:log_v2}
+\end{equation}
+
+Para que MCO sea aplicable a~( \ref{eq:log_v2} ), se necesita $\E[\varepsilon_i] = \E[\ln u_i] = 0$.
+Se analizan las implicaciones de este supuesto.
+
+\section{Inciso (a): distribucion de $u_i$ si $\E(\ln u_i) = 0$}
+
+\subsection{Planteamiento}
+
+Se supone que $\varepsilon_i = \ln u_i$ tiene media cero:
+\begin{equation}
+  \E[\ln u_i] = 0
+  \label{eq:cond_a}
+\end{equation}
+
+¿Que distribucion debe seguir $u_i$?
+
+\subsection{Distribucion log-normal}
+
+Si se impone ademas que $\varepsilon_i = \ln u_i$ sigue una distribucion normal:
+\begin{equation}
+  \ln u_i \sim \mathcal{N}(0, \sigma^2)
+  \label{eq:lognormal_cond}
+\end{equation}
+entonces $u_i$ sigue una \textbf{distribucion log-normal} con parametros
+$\mu = 0$ y $\sigma^2$. La funcion de densidad de probabilidad de $u_i$ es:
+\begin{equation}
+  f_{u_i}(x) = \frac{1}{x\sigma\sqrt{2\pi}} \exp\!\left(-\frac{(\ln x)^2}{2\sigma^2}\right),
+  \qquad x > 0
+  \label{eq:fdp_lognormal}
+\end{equation}
+
+\subsection{Momentos de la distribucion log-normal}
+
+Los momentos de $u_i$ se derivan de la funcion generadora de momentos (FGM)
+de la distribucion normal. Si $Z = \ln u_i \sim \mathcal{N}(\mu, \sigma^2)$, entonces
+$u_i = e^Z$ y:
+
+\begin{equation}
+  \E[u_i^r] = \E[e^{rZ}] = e^{r\mu + r^2\sigma^2/2}
+  \label{eq:momentos_lognormal}
+\end{equation}
+
+Para el primer momento ($r = 1$) con $\mu = 0$:
+\begin{equation}
+  \E[u_i] = e^{0 + \sigma^2/2} = e^{\sigma^2/2} > 1
+  \label{eq:media_u}
+\end{equation}
+
+Para el segundo momento ($r = 2$) con $\mu = 0$:
+\begin{equation}
+  \E[u_i^2] = e^{2\sigma^2}
+  \label{eq:mom2_u}
+\end{equation}
+
+La varianza es:
+\begin{equation}
+  \Var(u_i) = \E[u_i^2] - [\E[u_i]]^2
+            = e^{2\sigma^2} - e^{\sigma^2}
+            = e^{\sigma^2}(e^{\sigma^2} - 1)
+  \label{eq:var_u}
+\end{equation}
+
+\subsection{Consecuencias}
+
+Bajo~(\ref{eq:lognormal_cond}), aunque $\E[\ln u_i] = 0$, la media del error
+en niveles \emph{no es uno sino}:
+\begin{equation}
+  \E[u_i] = e^{\sigma^2/2} \neq 1 \quad \text{(a menos que } \sigma^2 = 0\text{)}
+  \label{eq:media_u_no_uno}
+\end{equation}
+
+Esto implica que el modelo en niveles~(\ref{eq:nivel}) \textbf{no cumple}
+$\E[u_i] = 1$ (condicion que garantizaria que el error tenga media cero en
+la escala multiplicativa). La transformacion logaritmica y la condicion de media
+cero en logaritmos son compatibles con la log-normalidad, pero implican que
+la media del error en niveles es $> 1$.
+
+\begin{clave}
+  Si $\E[\ln u_i] = 0$ y se asume normalidad de $\ln u_i$, entonces $u_i$
+  sigue una distribucion \textbf{log-normal} con parametros $(0, \sigma^2)$.
+  Su media es $\E[u_i] = e^{\sigma^2/2} > 1$ y su varianza es
+  $e^{\sigma^2}(e^{\sigma^2}-1)$.
+\end{clave}
+
+\section{Inciso (b): ¿es $\E(\ln u_i) = 0$ si $\E(u_i) = 1$?}
+
+\subsection{Respuesta}
+
+\textbf{No}. Si $\E(u_i) = 1$, entonces $\E(\ln u_i) < 0$.
+
+\subsection{Demostracion mediante la desigualdad de Jensen}
+
+La funcion logaritmo $g(x) = \ln x$ es \textbf{estrictamente cóncava}
+para $x > 0$: su segunda derivada es $g''(x) = -1/x^2 < 0$.
+
+\begin{lema}[Desigualdad de Jensen para funciones concavas]
+  Si $g$ es estrictamente concava y $X$ es una variable aleatoria no degenerada
+  (con varianza positiva), entonces:
+  \begin{equation}
+    \E[g(X)] < g(\E[X])
+    \label{eq:Jensen}
+  \end{equation}
+\end{lema}
+
+Aplicando~(\ref{eq:Jensen}) con $g(x) = \ln x$ y $X = u_i$, bajo el supuesto
+de que $u_i$ no es constante ($\Var(u_i) > 0$):
+\begin{equation}
+  \E[\ln u_i] < \ln \E[u_i]
+  \label{eq:Jensen_aplicado}
+\end{equation}
+
+Si $\E[u_i] = 1$:
+\begin{equation}
+  \E[\ln u_i] < \ln 1 = 0
+  \label{eq:Jensen_resultado}
+\end{equation}
+
+Por lo tanto, $\E[\ln u_i] < 0$: la media del logaritmo del error es
+\textbf{estrictamente negativa} cuando la media del error en niveles es~1.
+
+\subsection{Cuantificacion del sesgo bajo log-normalidad}
+
+Si $u_i \sim \text{Log-Normal}(\mu, \sigma^2)$ (es decir, $\ln u_i \sim \mathcal{N}(\mu, \sigma^2)$),
+la condicion $\E[u_i] = 1$ implica:
+\begin{equation}
+  e^{\mu + \sigma^2/2} = 1 \quad \Rightarrow \quad \mu = -\frac{\sigma^2}{2}
+  \label{eq:mu_condicion}
+\end{equation}
+
+Por tanto, bajo la condicion $\E[u_i] = 1$:
+\begin{equation}
+  \E[\ln u_i] = \mu = -\frac{\sigma^2}{2} < 0
+  \label{eq:media_lnu_negativa}
+\end{equation}
+
+La magnitud del sesgo ($\sigma^2/2$) aumenta con la varianza del logaritmo
+del error. Para varianzas pequenas el sesgo es pequeno, pero para distribuciones
+dispersas puede ser sustancial.
+
+\subsection{Intuicion geometrica}
+
+La desigualdad de Jensen se puede ilustrar graficamente. La funcion $\ln x$
+es cóncava: la recta que une dos puntos cualesquiera de la curva queda por
+debajo de la curva. El valor esperado de $\ln u_i$ (que es un promedio ponderado
+de $\ln u_i$) queda por debajo del logaritmo del valor esperado $\ln\E[u_i]$.
+En el caso extremo donde $u_i$ es constante ($\Var(u_i) = 0$), la igualdad
+se cumple: $\E[\ln u_i] = \ln \E[u_i]$.
+
+\begin{clave}
+  Por la desigualdad de Jensen aplicada a la funcion cóncava $\ln(\cdot)$:
+  \[
+    \E[\ln u_i] < \ln \E[u_i] = \ln 1 = 0
+  \]
+  La media del logaritmo del error es \textbf{estrictamente negativa} cuando
+  $\E[u_i] = 1$. Cuantificadamente: $\E[\ln u_i] = -\sigma^2/2$ bajo log-normalidad.
+\end{clave}
+
+\section{Inciso (c): como hacer que $\E(\ln u_i) = 0$}
+
+\subsection{Planteamiento del problema}
+
+Suponga que $\E[\ln u_i] = w \neq 0$ (donde $w < 0$ por el resultado del
+inciso (b) si $\E[u_i] = 1$). El modelo logaritmico~(\ref{eq:log}) es:
+\begin{equation}
+  \ln Y_i = \ln\beta_1 + \beta_2 \ln X_i + \underbrace{\ln u_i}_{=\,w + v_i}
+  \label{eq:problema}
+\end{equation}
+
+\subsection{Reparametrizacion mediante absorcion en el intercepto}
+
+Se define un nuevo termino de error centrado:
+\begin{equation}
+  v_i = \ln u_i - w = \ln u_i - \E[\ln u_i]
+  \label{eq:vi_def}
+\end{equation}
+
+Por construccion:
+\begin{equation}
+  \E[v_i] = \E[\ln u_i] - w = w - w = 0
+  \label{eq:vi_media_cero}
+\end{equation}
+
+Sustituyendo $\ln u_i = w + v_i$ en~(\ref{eq:problema}):
+\begin{align}
+  \ln Y_i
+  &= \ln\beta_1 + \beta_2 \ln X_i + w + v_i
+  \notag\\
+  &= \underbrace{(\ln\beta_1 + w)}_{\displaystyle\alpha_1^*}
+   + \beta_2 \ln X_i + v_i
+  \label{eq:modelo_corregido}
+\end{align}
+
+El modelo~(\ref{eq:modelo_corregido}) cumple ahora $\E[v_i] = 0$ y puede
+estimarse por MCO. El nuevo intercepto $\alpha_1^* = \ln\beta_1 + w$ absorbe
+el componente no nulo de la media del error.
+
+\subsection{Recuperacion del parametro original $\beta_1$}
+
+Una vez estimado $\hat\alpha_1^*$, el parametro $\beta_1$ del modelo en
+niveles~(\ref{eq:nivel}) se recupera como:
+\begin{equation}
+  \hat\beta_1 = e^{\hat\alpha_1^* - w} = e^{\hat\alpha_1^*} \cdot e^{-w}
+  \label{eq:beta1_recuperado}
+\end{equation}
+
+Sin embargo, para aplicar~(\ref{eq:beta1_recuperado}) se necesita conocer $w$.
+Si $w$ es desconocido (como suele ocurrir en la practica), se estima mediante:
+\begin{equation}
+  \hat w = \frac{1}{n}\sum_{i=1}^n \ln\hat u_i
+  \label{eq:w_estimado}
+\end{equation}
+donde $\ln\hat u_i = \ln Y_i - \hat\alpha_1^* - \hat\beta_2 \ln X_i$ son
+los residuos del modelo logaritmico. Nótese que si MCO se aplica correctamente
+con un intercepto libre, las condiciones normales garantizan que la suma de
+residuos es cero, por lo que $\hat w \equiv 0$ en el modelo estimado.
+
+\subsection{Interpretacion alternativa}
+
+La reparametrizacion muestra que el intercepto estimado $\hat\alpha_1^*$
+no corresponde directamente a $\ln\hat\beta_1$, sino a $\ln\hat\beta_1 + w$.
+Si se desea recuperar $\beta_1$ a partir del intercepto estimado, se necesita
+aplicar la correccion de sesgo:
+\begin{equation}
+  \hat\beta_1^{\text{corregido}}
+    = e^{\hat\alpha_1^*} \cdot e^{-\hat w}
+    = e^{\hat\alpha_1^*}
+      \cdot \exp\!\left(-\frac{\hat\sigma^2}{2}\right)
+  \label{eq:beta1_corregido}
+\end{equation}
+donde $\hat\sigma^2$ es el estimador de la varianza de $\ln u_i$ bajo log-normalidad.
+Esta correccion es conocida como \textbf{correccion de sesgo de Goldberger} (1968).
+
+\begin{clave}
+  Si $\E[\ln u_i] = w \neq 0$, se redefine $v_i = \ln u_i - w$, que satisface
+  $\E[v_i] = 0$. El modelo transformado es:
+  \[
+    \ln Y_i = (\ln\beta_1 + w) + \beta_2 \ln X_i + v_i
+  \]
+  El nuevo intercepto $\alpha_1^* = \ln\beta_1 + w$ absorbe la media no nula
+  del error. La pendiente $\beta_2$ no se afecta. Para recuperar $\beta_1$
+  se debe aplicar la correccion $\hat\beta_1 = e^{\hat\alpha_1^*} \cdot e^{-\hat\sigma^2/2}$
+  bajo log-normalidad.
+\end{clave}
+
+\section{Sintesis: propiedades de los modelos logaritmicos}
+
+\begin{table}[ht]
+\centering
+\caption{Resumen de las propiedades del termino de error en modelos log-log}
+\label{tab:resumen}
+\small
+\begin{tabular}{p{4cm} p{5cm} p{4.5cm}}
+\toprule
+\textbf{Supuesto} & \textbf{Consecuencia} & \textbf{Implicacion practica} \\
+\midrule
+$\ln u_i \sim \mathcal{N}(0, \sigma^2)$
+  & $u_i \sim \text{Log-Normal}(0, \sigma^2)$; $\E[u_i] = e^{\sigma^2/2} > 1$
+  & MCO sobre modelo log es valido si el intercepto es libre \\[6pt]
+$\E[u_i] = 1$ (modelo multiplicativo)
+  & $\E[\ln u_i] = -\sigma^2/2 < 0$ por desigualdad de Jensen
+  & El intercepto del modelo log esta sesgado hacia abajo \\[6pt]
+$\E[\ln u_i] = w \neq 0$
+  & Redefine $v_i = \ln u_i - w$; $\E[v_i] = 0$
+  & El intercepto absorbe $w$; la pendiente $\beta_2$ no se sesga \\[6pt]
+Recuperacion de $\beta_1$
+  & $\hat\beta_1 = e^{\hat\alpha_1^* - \hat w}$
+  & Requiere correccion de sesgo de Goldberger (1968) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Demostracion de la desigualdad de Jensen para $\ln(\cdot)$}
+
+Sea $g(x) = \ln x$ para $x > 0$. Expansion de Taylor de segundo orden alrededor
+de $\mu = \E[u_i]$:
+\begin{equation}
+  \ln u_i \approx \ln\mu + \frac{u_i - \mu}{\mu} - \frac{(u_i - \mu)^2}{2\mu^2}
+  \label{eq:taylor_ln}
+\end{equation}
+Tomando esperanza:
+\begin{equation}
+  \E[\ln u_i]
+    \approx \ln\mu + 0 - \frac{\Var(u_i)}{2\mu^2}
+    = \ln\E[u_i] - \frac{\Var(u_i)}{2[\E[u_i]]^2}
+  \label{eq:jensen_taylor}
+\end{equation}
+Como $\Var(u_i) > 0$ y $[\E[u_i]]^2 > 0$, el segundo termino es negativo, confirmando
+$\E[\ln u_i] < \ln\E[u_i]$. Bajo log-normalidad con $\mu = e^{\mu_0 + \sigma^2/2}$
+(media de la log-normal) y $\E[u_i] = 1$ (es decir, $\mu_0 = -\sigma^2/2$):
+\begin{equation}
+  \E[\ln u_i] = \mu_0 = -\frac{\sigma^2}{2}
+  \label{eq:resultado_exacto}
+\end{equation}
+Este resultado es exacto (no una aproximacion) bajo log-normalidad.
+
+\section{Correccion de sesgo de Goldberger (1968)}
+
+En el modelo multiplicativo $Y_i = \beta_1 X_i^{\beta_2} u_i$ con
+$u_i \sim \text{Log-Normal}$ tal que $\E[u_i] = 1$ (condicion de media uno),
+el predictor MCO del logaritmo $\widehat{\ln Y_i} = \hat\alpha_1^* + \hat\beta_2 \ln X_i$
+subestima sistematicamente $\E[\ln Y_i | X_i]$. El predictor correcto de $Y_i$
+(no de $\ln Y_i$) es:
+
+\begin{equation}
+  \hat Y_i = e^{\hat\alpha_1^* + \hat\beta_2\ln X_i} \cdot e^{\hat\sigma^2/2}
+  \label{eq:predictor_Goldberger}
+\end{equation}
+
+El factor $e^{\hat\sigma^2/2}$ es la correccion de Goldberger: sin el, el
+predictor $e^{\hat\alpha_1^* + \hat\beta_2\ln X_i}$ subestima $\E[Y_i | X_i]$
+en el factor $e^{-\hat\sigma^2/2}$.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} El problema del sesgo al retransformar predicciones
+logaritmicas a escala original es comun en econometria aplicada. Ademas de la
+correccion de Goldberger para el caso log-normal, existen correcciones mas
+generales (Duan, 1983) que no requieren suponer una distribucion especifica para
+$u_i$. En la practica, muchos aplicadores ignoran este sesgo, lo que puede producir
+predicciones significativamente subestimadas cuando $\hat\sigma^2$ es grande.}
+
+\end{document}
