@@ -1,0 +1,404 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 11.5}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\newtheorem{lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\sw}{\sum w_i}
+\newcommand{\swx}{\sum w_i X_i}
+\newcommand{\swy}{\sum w_i Y_i}
+\newcommand{\swxy}{\sum w_i X_i Y_i}
+\newcommand{\swxx}{\sum w_i X_i^2}
+\newcommand{\Ybar}{\bar{Y}^*}
+\newcommand{\Xbar}{\bar{X}^*}
+\newcommand{\ystar}{y_i^*}
+\newcommand{\xstar}{x_i^*}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Minimos Cuadrados Ponderados:}\\[6pt]
+  {\LARGE\bfseries Representacion en Desviaciones respecto}\\[6pt]
+  {\LARGE\bfseries a las Medias Ponderadas}\\[12pt]
+  {\large\itshape Demostracion completa de las ecuaciones (11.3.8) y (11.3.9)}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~11.5 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con manipulacion algebraica paso a paso, lemas auxiliares
+  y verificacion de la varianza}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento.}\quad
+Considere el modelo de regresion simple con heteroscedasticidad:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_i + u_i,
+  \qquad \E[u_i^2] = \sigma_i^2
+  \label{eq:modelo}
+\end{equation}
+El estimador de Minimos Cuadrados Ponderados (MCP) con pesos $w_i = 1/\sigma_i^2$
+es, segun la ecuacion (11.3.8) de Gujarati:
+\begin{equation}
+  \hat\beta_2^* = \frac{(\sw)(\swxy) - (\swx)(\swy)}{(\sw)(\swxx) - (\swx)^2}
+  \label{eq:beta2_original}
+\end{equation}
+con varianza (ecuacion 11.3.9):
+\begin{equation}
+  \Var(\hat\beta_2^*) = \frac{\sw}{(\sw)(\swxx) - (\swx)^2}
+  \label{eq:var_original}
+\end{equation}
+
+Se pide mostrar que estas expresiones pueden reescribirse como:
+\begin{align}
+  \hat\beta_2^* &= \frac{\sum w_i \ystar \xstar}{\sum w_i (\xstar)^2}
+  \label{eq:beta2_nuevo}\\[6pt]
+  \Var(\hat\beta_2^*) &= \frac{1}{\sum w_i (\xstar)^2}
+  \label{eq:var_nuevo}
+\end{align}
+donde las desviaciones y medias ponderadas se definen como:
+\begin{align}
+  \Ybar &= \frac{\swy}{\sw}, \qquad \Xbar = \frac{\swx}{\sw}
+  \label{eq:medias_pond}\\[6pt]
+  \ystar &= Y_i - \Ybar, \qquad \xstar = X_i - \Xbar
+  \label{eq:desviaciones}
+\end{align}
+
+\section{Lemas auxiliares}
+
+Antes de la demostracion principal, establecemos tres lemas que simplifican el
+algebra.
+
+\begin{lema}
+\label{lema1}
+$\displaystyle\sum w_i \xstar = 0$
+\end{lema}
+\begin{proof}
+\begin{equation}
+  \sum w_i \xstar = \sum w_i(X_i - \Xbar)
+               = \swx - \Xbar \sw
+               = \swx - \frac{\swx}{\sw}\cdot\sw
+               = \swx - \swx = 0 \qquad\square
+\end{equation}
+\end{proof}
+
+\begin{lema}
+\label{lema2}
+$\displaystyle\sum w_i \ystar = 0$
+\end{lema}
+\begin{proof}
+Analogamente al Lema~\ref{lema1}:
+$\sum w_i \ystar = \swy - \Ybar\sw = \swy - \swy = 0$. \hfill$\square$
+\end{proof}
+
+\begin{lema}
+\label{lema3}
+$\displaystyle\sum w_i (\xstar)^2 = \swxx - \frac{(\swx)^2}{\sw}
+ = \frac{(\sw)(\swxx) - (\swx)^2}{\sw}$
+\end{lema}
+\begin{proof}
+\begin{align}
+  \sum w_i(\xstar)^2
+  &= \sum w_i(X_i - \Xbar)^2
+   = \sum w_i\bigl(X_i^2 - 2X_i\Xbar + (\Xbar)^2\bigr)
+  \notag\\
+  &= \swxx - 2\Xbar\swx + (\Xbar)^2\sw
+  \notag\\
+  &= \swxx - 2\cdot\frac{\swx}{\sw}\cdot\swx + \frac{(\swx)^2}{(\sw)^2}\cdot\sw
+  \notag\\
+  &= \swxx - 2\frac{(\swx)^2}{\sw} + \frac{(\swx)^2}{\sw}
+  \notag\\
+  &= \swxx - \frac{(\swx)^2}{\sw}
+   = \frac{(\sw)(\swxx) - (\swx)^2}{\sw}
+  \label{eq:lema3_resultado}
+  \qquad\square
+\end{align}
+\end{proof}
+
+\section{Demostracion de \texorpdfstring{$\hat\beta_2^* = \sum w_i \ystar \xstar / \sum w_i (\xstar)^2$}{beta2*}}
+
+\subsection{Desarrollo del numerador}
+
+Expandimos $\sum w_i \ystar \xstar$ usando las definiciones~(\ref{eq:desviaciones}):
+
+\begin{align}
+  \sum w_i \ystar \xstar
+  &= \sum w_i (Y_i - \Ybar)(X_i - \Xbar)
+  \notag\\
+  &= \sum w_i\bigl[Y_i X_i - Y_i\Xbar - X_i\Ybar + \Ybar\Xbar\bigr]
+  \notag\\
+  &= \swxy
+   - \Xbar\swy
+   - \Ybar\swx
+   + \Ybar\Xbar\sw
+  \label{eq:num_paso1}
+\end{align}
+
+Sustituyendo $\Xbar = \swx/\sw$ y $\Ybar = \swy/\sw$ en~(\ref{eq:num_paso1}):
+
+\begin{align}
+  &= \swxy
+   - \frac{\swx}{\sw}\cdot\swy
+   - \frac{\swy}{\sw}\cdot\swx
+   + \frac{\swy}{\sw}\cdot\frac{\swx}{\sw}\cdot\sw
+  \notag\\
+  &= \swxy
+   - \frac{(\swx)(\swy)}{\sw}
+   - \frac{(\swy)(\swx)}{\sw}
+   + \frac{(\swy)(\swx)}{\sw}
+  \notag\\
+  &= \swxy - \frac{(\swx)(\swy)}{\sw}
+  \label{eq:num_resultado}
+\end{align}
+
+Multiplicando y dividiendo por $\sw$:
+
+\begin{equation}
+  \sum w_i \ystar \xstar
+    = \frac{(\sw)(\swxy) - (\swx)(\swy)}{\sw}
+  \label{eq:num_final}
+\end{equation}
+
+\subsection{Denominador}
+
+Por el Lema~\ref{lema3}:
+\begin{equation}
+  \sum w_i(\xstar)^2
+    = \frac{(\sw)(\swxx) - (\swx)^2}{\sw}
+  \label{eq:den_final}
+\end{equation}
+
+\subsection{Cociente}
+
+Dividiendo~(\ref{eq:num_final}) entre~(\ref{eq:den_final}):
+
+\begin{equation}
+  \frac{\sum w_i \ystar \xstar}{\sum w_i(\xstar)^2}
+    = \frac{\displaystyle\frac{(\sw)(\swxy) - (\swx)(\swy)}{\sw}}
+           {\displaystyle\frac{(\sw)(\swxx) - (\swx)^2}{\sw}}
+    = \frac{(\sw)(\swxy) - (\swx)(\swy)}{(\sw)(\swxx) - (\swx)^2}
+  \label{eq:cociente}
+\end{equation}
+
+El factor $1/\sw$ se cancela en numerador y denominador. La expresion resultante
+es exactamente la ecuacion~(\ref{eq:beta2_original}). Por tanto:
+
+\begin{equation}
+  \boxed{
+    \hat\beta_2^* = \frac{\sum w_i \ystar \xstar}{\sum w_i(\xstar)^2}
+  }
+  \label{eq:beta2_demostrado}
+\end{equation}
+
+\hfill$\square$
+
+\section{Demostracion de \texorpdfstring{$\Var(\hat\beta_2^*) = 1/\sum w_i(\xstar)^2$}{var(beta2*)}}
+
+\subsection{Punto de partida}
+
+La varianza original~(\ref{eq:var_original}) es:
+\begin{equation}
+  \Var(\hat\beta_2^*) = \frac{\sw}{(\sw)(\swxx) - (\swx)^2}
+  \label{eq:var_punto_partida}
+\end{equation}
+
+\subsection{Conexion con el denominador del Lema~\ref{lema3}}
+
+Del Lema~\ref{lema3}:
+\begin{equation}
+  \sum w_i(\xstar)^2 = \frac{(\sw)(\swxx) - (\swx)^2}{\sw}
+  \label{eq:lema3_rep}
+\end{equation}
+
+Despejando el denominador de~(\ref{eq:var_punto_partida}):
+\begin{equation}
+  (\sw)(\swxx) - (\swx)^2 = \sw \cdot \sum w_i(\xstar)^2
+  \label{eq:despeje}
+\end{equation}
+
+\subsection{Sustitucion}
+
+Sustituyendo~(\ref{eq:despeje}) en~(\ref{eq:var_punto_partida}):
+\begin{equation}
+  \Var(\hat\beta_2^*)
+    = \frac{\sw}{\sw \cdot \sum w_i(\xstar)^2}
+    = \frac{1}{\sum w_i(\xstar)^2}
+  \label{eq:var_final}
+\end{equation}
+
+El factor $\sw$ se cancela en numerador y denominador:
+
+\begin{equation}
+  \boxed{
+    \Var(\hat\beta_2^*) = \frac{1}{\sum w_i(\xstar)^2}
+  }
+  \label{eq:var_demostrada}
+\end{equation}
+
+\hfill$\square$
+
+\section{Interpretacion de los resultados}
+
+\subsection{Analogia con MCO ordinario}
+
+Comparando los resultados obtenidos con los estimadores MCO ordinarios en
+desviaciones:
+
+\begin{center}
+\small
+\begin{tabular}{p{4.5cm} p{5cm} p{4.5cm}}
+\toprule
+\textbf{Cantidad}
+  & \textbf{MCO ordinario}
+  & \textbf{MCP (ponderado)} \\
+\midrule
+Pendiente
+  & $\hat\beta_2 = \dfrac{\sum y_i x_i}{\sum x_i^2}$
+  & $\hat\beta_2^* = \dfrac{\sum w_i \ystar \xstar}{\sum w_i (\xstar)^2}$ \\[10pt]
+Varianza
+  & $\Var(\hat\beta_2) = \dfrac{\sigma^2}{\sum x_i^2}$
+  & $\Var(\hat\beta_2^*) = \dfrac{1}{\sum w_i (\xstar)^2}$ \\[10pt]
+Medias usadas
+  & $\bar Y = \sum Y_i/n$, $\bar X = \sum X_i/n$
+  & $\Ybar = \sum w_i Y_i/\sum w_i$, $\Xbar = \sum w_i X_i/\sum w_i$ \\[6pt]
+Desviaciones
+  & $y_i = Y_i - \bar Y$, $x_i = X_i - \bar X$
+  & $\ystar = Y_i - \Ybar$, $\xstar = X_i - \Xbar$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{6pt}
+
+La estructura es completamente analoga: MCP es equivalente a MCO aplicado a
+variables expresadas en desviaciones respecto a sus \emph{medias ponderadas},
+donde las ponderaciones son $w_i = 1/\sigma_i^2$.
+
+\subsection{Interpretacion de la varianza}
+
+La varianza del estimador MCP es inversamente proporcional a la suma ponderada
+de cuadrados de las desviaciones de $X$:
+\begin{equation}
+  \Var(\hat\beta_2^*) = \frac{1}{\sum w_i (\xstar)^2}
+\end{equation}
+
+Cuando las observaciones con mayor varianza del error (menor $w_i$) tienen
+valores de $X$ alejados de la media, reciben menos peso, lo que es correcto
+econometricamente: las observaciones ``ruidosas'' contribuyen menos a la
+estimacion.
+
+\subsection{Eficiencia del estimador MCP}
+
+El estimador MCP es MELI (Mejor Estimador Lineal Insesgado) bajo heteroscedasticidad.
+Esto se puede ver comparando su varianza con la del estimador MCO ordinario
+aplicado al mismo modelo:
+
+\begin{equation}
+  \Var(\hat\beta_2^{\text{MCO}})
+    = \frac{\sum w_i^2 (\xstar)^2}{\left[\sum w_i(\xstar)^2\right]^2}
+    \cdot \frac{1}{w_i^2}
+  \geq \frac{1}{\sum w_i(\xstar)^2}
+    = \Var(\hat\beta_2^*)
+  \label{eq:eficiencia}
+\end{equation}
+
+Por la desigualdad de Cauchy-Schwarz:
+$\left[\sum w_i(\xstar)^2\right]^2 \leq \sum w_i(\xstar)^4 \cdot n$,
+lo que confirma que MCP tiene menor o igual varianza que MCO bajo heteroscedasticidad.
+
+\begin{clave}
+  \textbf{Resultado fundamental.} El estimador MCP de la pendiente y su varianza:
+  \[
+    \hat\beta_2^* = \frac{\sum w_i \ystar \xstar}{\sum w_i (\xstar)^2},
+    \qquad
+    \Var(\hat\beta_2^*) = \frac{1}{\sum w_i (\xstar)^2}
+  \]
+  son algebraicamente identicos a las expresiones originales~(\ref{eq:beta2_original})
+  y~(\ref{eq:var_original}). La representacion en desviaciones ponderadas hace
+  explicita la analogia con MCO ordinario y muestra que MCP es equivalente a
+  aplicar MCO con observaciones reescaladas por $\sqrt{w_i}$.
+\end{clave}
+
+\appendix
+
+\section{Verificacion: propiedad de suma cero de las desviaciones ponderadas}
+
+Una propiedad clave que subyace a todo el desarrollo es que las desviaciones
+ponderadas suman cero:
+\begin{align}
+  \sum w_i \xstar &= 0 \quad \text{(Lema~\ref{lema1})} \label{eq:prop1}\\
+  \sum w_i \ystar &= 0 \quad \text{(Lema~\ref{lema2})} \label{eq:prop2}
+\end{align}
+
+Estas propiedades son el analogo ponderado de la propiedad MCO ordinaria
+$\sum x_i = \sum y_i = 0$. Garantizan que las condiciones normales del problema
+MCP se reducen al sistema estudiado.
+
+\section{Relacion entre MCP y MCO sobre datos transformados}
+
+Si se define $Y_i^+ = \sqrt{w_i} Y_i$, $X_i^+ = \sqrt{w_i} X_i$ y
+$\mathbf{1}_i^+ = \sqrt{w_i}$, entonces aplicar MCO ordinario al modelo
+transformado:
+\begin{equation}
+  Y_i^+ = \beta_1 \mathbf{1}_i^+ + \beta_2 X_i^+ + u_i^+
+\end{equation}
+produce exactamente los estimadores MCP $\hat\beta_1^*$ y $\hat\beta_2^*$.
+El error transformado $u_i^+ = u_i/\sqrt{\sigma_i^2}$ tiene varianza constante~1,
+lo que restaura la homoscedasticidad y permite que MCO sea MELI sobre los
+datos transformados.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Las ecuaciones~(\ref{eq:beta2_demostrado}) y~(\ref{eq:var_demostrada})
+son las formas computacionalmente mas convenientes del estimador MCP. La
+expresion en desviaciones ponderadas hace explicita la analogia estructural
+con MCO y facilita la intuicion sobre como cada observacion contribuye
+ponderadamente a la estimacion de la pendiente.}
+
+\end{document}
