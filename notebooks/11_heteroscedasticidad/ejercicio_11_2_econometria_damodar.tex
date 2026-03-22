@@ -1,0 +1,452 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 11.2}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Regresion de Salarios sobre Empleados:}\\[6pt]
+  {\LARGE\bfseries Heteroscedasticidad, Transformacion WLS}\\[6pt]
+  {\LARGE\bfseries y Comparabilidad de $R^2$}\\[12pt]
+  {\large\itshape Derivacion completa de la transformacion, supuesto de varianza}\\
+  {\large\itshape y limitaciones de la comparacion de coeficientes de determinacion}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~11.2 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con algebra de MCP, demostracion de homoscedasticidad del error transformado
+  y geometria del $R^2$}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Datos del problema.}\quad
+Se dispone de una muestra de $n = 30$ empresas con los siguientes resultados:
+
+\begin{align}
+  \hat W_i &= 7.5 + 0.009\, N_i
+  \tag{1}\label{eq:reg1}\\
+  &\quad t: \text{n.a.} \quad (16.10) \qquad R^2 = 0.90 \notag\\[8pt]
+  \widehat{W_i/N_i} &= 0.008 + 7.8\,(1/N_i)
+  \tag{2}\label{eq:reg2}\\
+  &\quad t: (14.43) \quad (76.58) \qquad R^2 = 0.99 \notag
+\end{align}
+
+donde $W_i$ es el salario promedio en dolares y $N_i$ es el numero de empleados
+de la empresa $i$.
+
+\section{Inciso (a): interpretacion de las dos regresiones}
+
+\subsection{Modelo (1): regresion lineal en niveles}
+
+El modelo subyacente de~( \ref{eq:reg1} ) es:
+\begin{equation}
+  W_i = \beta_1 + \beta_2 N_i + u_i
+  \label{eq:modelo1}
+\end{equation}
+
+\begin{itemize}[leftmargin=1.6em, itemsep=5pt]
+  \item \textbf{Intercepto $\hat\beta_1 = 7.5$}: Es el salario promedio estimado cuando
+    $N_i = 0$. En sentido estricto no tiene interpretacion economica directa
+    (una empresa no puede tener cero empleados), pero captura el efecto promedio de
+    variables omitidas del modelo.
+
+  \item \textbf{Pendiente $\hat\beta_2 = 0.009$}: Por cada empleado adicional, el
+    salario promedio de la empresa aumenta en \$0.009. Equivalentemente, por cada
+    1\,000 empleados adicionales el salario medio sube \$9. El estadistico $t$
+    asociado es $16.10$, lo que indica que el coeficiente es altamente significativo.
+
+  \item \textbf{$R^2 = 0.90$}: El numero de empleados explica el $90\%$ de la
+    variacion del salario promedio entre empresas.
+\end{itemize}
+
+\subsection{Modelo (2): regresion en forma transformada}
+
+El modelo subyacente de~(\ref{eq:reg2}) es:
+\begin{equation}
+  \frac{W_i}{N_i} = \alpha_1 + \alpha_2 \frac{1}{N_i} + v_i
+  \label{eq:modelo2}
+\end{equation}
+
+\begin{itemize}[leftmargin=1.6em, itemsep=5pt]
+  \item \textbf{Variable dependiente $W_i/N_i$}: es el salario total promedio
+    \emph{por empleado} de la empresa $i$. Mide la remuneracion unitaria.
+
+  \item \textbf{Regresor $1/N_i$}: es el reciproco del tamano de la empresa.
+    Valores grandes de $1/N_i$ corresponden a empresas pequenas y vice-versa.
+
+  \item \textbf{Intercepto $\hat\alpha_1 = 0.008$}: cuando $1/N_i \to 0$ (empresa
+    muy grande, $N_i \to \infty$), el salario por empleado converge a \$0.008.
+    Es el salario por empleado de largo plazo a medida que la empresa crece.
+
+  \item \textbf{Pendiente $\hat\alpha_2 = 7.8$}: empresas mas pequenas (mayor
+    $1/N_i$) tienen mayor salario por empleado. Cada unidad adicional de $1/N_i$
+    agrega \$7.8 al salario unitario. Ambos estadisticos $t$ (14.43 y 76.58)
+    son altamente significativos.
+
+  \item \textbf{$R^2 = 0.99$}: el modelo (2) explica el 99\% de la variacion de
+    $W/N$, un ajuste casi perfecto.
+\end{itemize}
+
+\begin{clave}
+  El modelo (1) analiza como varia el salario total entre empresas de distinto
+  tamano. El modelo (2) analiza como varia el salario por empleado, lo que
+  permite comparar empresas en terminos de remuneracion unitaria.
+\end{clave}
+
+\section{Inciso (b): supuesto del autor y heteroscedasticidad}
+
+\subsection{La transformacion de (1) a (2)}
+
+El paso de~(\ref{eq:modelo1}) a~(\ref{eq:modelo2}) se obtiene dividiendo cada
+termino de~(\ref{eq:modelo1}) entre $N_i$:
+\begin{equation}
+  \frac{W_i}{N_i} = \frac{\beta_1}{N_i} + \beta_2 + \frac{u_i}{N_i}
+  \label{eq:division}
+\end{equation}
+Reordenando:
+\begin{equation}
+  \frac{W_i}{N_i} = \beta_2 + \beta_1 \cdot \frac{1}{N_i} + v_i,
+  \qquad v_i = \frac{u_i}{N_i}
+  \label{eq:transformado}
+\end{equation}
+
+Nótese que los roles de $\beta_1$ y $\beta_2$ se intercambian: el intercepto del
+modelo original ($\beta_1$) se convierte en la pendiente del modelo transformado
+(coeficiente de $1/N_i$), y la pendiente original ($\beta_2$) se convierte en el
+intercepto del modelo transformado.
+
+\subsection{El supuesto de heteroscedasticidad implicito}
+
+La transformacion~(\ref{eq:division}) es una tecnica de \textbf{Minimos Cuadrados
+Ponderados (MCP)} que el autor utiliza para corregir heteroscedasticidad. El
+supuesto implicito sobre la estructura de la varianza del error es:
+
+\begin{equation}
+  \Var(u_i) = \sigma^2 N_i^2
+  \label{eq:supuesto_heterosc}
+\end{equation}
+
+Es decir, la varianza del error en la ecuacion original es proporcional al
+cuadrado del numero de empleados. Esto tiene sentido economico: empresas mas
+grandes tienen mayor diversidad interna en sus estructuras salariales, por lo que
+la variacion alrededor de la relacion media es mayor para empresas con muchos
+empleados.
+
+\subsection{Verificacion: el error transformado es homoscedastico}
+
+Bajo el supuesto~(\ref{eq:supuesto_heterosc}), la varianza del error transformado
+$v_i = u_i/N_i$ es:
+\begin{equation}
+  \Var(v_i) = \Var\left(\frac{u_i}{N_i}\right)
+            = \frac{1}{N_i^2}\Var(u_i)
+            = \frac{1}{N_i^2} \cdot \sigma^2 N_i^2
+            = \sigma^2
+  \label{eq:homosc_vi}
+\end{equation}
+
+La varianza de $v_i$ es constante e igual a $\sigma^2$: el error transformado
+es \textbf{homoscedastico}. Por ello, aplicar MCO a~(\ref{eq:transformado}) es
+equivalente a aplicar MCP a~(\ref{eq:modelo1}) con pesos $w_i = 1/N_i^2$.
+Los estimadores resultantes son MELI (eficientes) bajo el supuesto~(\ref{eq:supuesto_heterosc}).
+
+\subsection{Evidencia de que al autor le preocupaba la heteroscedasticidad}
+
+Se sabe que al autor le preocupaba la heteroscedasticidad por dos razones:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item La transformacion division por $N_i$ es una tecnica remedial clasica
+    cuando se sospecha que $\Var(u_i) \propto N_i^2$. No habria razon para
+    aplicarla si no se sospechara varianza no constante.
+
+  \item El modelo (2) tiene $R^2 = 0.99$ frente al $0.90$ del modelo (1),
+    y los estadisticos $t$ del modelo (2) son mucho mas grandes (76.58 vs 16.10),
+    lo cual es consistente con la ganancia de eficiencia que se obtiene al
+    corregir la heteroscedasticidad.
+\end{enumerate}
+
+\begin{clave}
+  El supuesto de heteroscedasticidad es $\Var(u_i) = \sigma^2 N_i^2$. Al dividir
+  por $N_i$, el error transformado $v_i = u_i/N_i$ tiene varianza constante
+  $\sigma^2$, restaurando las propiedades MELI de los estimadores MCO aplicados
+  al modelo transformado.
+\end{clave}
+
+\section{Inciso (c): relacion entre pendientes e interceptos de los dos modelos}
+
+\subsection{Relacion algebraica exacta}
+
+Comparando el modelo original~(\ref{eq:modelo1}) con el transformado~(\ref{eq:transformado}):
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parametro} & \textbf{Modelo (1)} & \textbf{Modelo (2)} \\
+\midrule
+Intercepto & $\beta_1$ & $\alpha_1 = \beta_2$ \\
+Pendiente  & $\beta_2$ & $\alpha_2 = \beta_1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{6pt}
+
+Es decir, \textbf{el intercepto del modelo (1) se convierte en la pendiente del
+modelo (2), y la pendiente del modelo (1) se convierte en el intercepto del
+modelo (2)}. La relacion exacta es:
+
+\begin{align}
+  \hat\alpha_2^{(2)} &= \hat\beta_1^{(1)} \quad \text{(intercepto de (1) = pendiente de (2))}
+  \label{eq:rel1}\\
+  \hat\alpha_1^{(2)} &= \hat\beta_2^{(1)} \quad \text{(pendiente de (1) = intercepto de (2))}
+  \label{eq:rel2}
+\end{align}
+
+\subsection{Valores numericos y discrepancia}
+
+\begin{center}
+\small
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Modelo (1) [MCO]} & \textbf{Modelo (2) [MCP]} \\
+\midrule
+$\hat\beta_1$ (intercepto) & $7.5$ & --- \\
+$\hat\beta_2$ (pendiente)  & $0.009$ & --- \\
+$\hat\alpha_2$ (pendiente de $1/N$) & --- & $7.8$ \\
+$\hat\alpha_1$ (intercepto) & --- & $0.008$ \\
+\midrule
+\multicolumn{3}{l}{Comparacion: $7.5 \approx 7.8$ y $0.009 \approx 0.008$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{6pt}
+
+Los valores son aproximadamente iguales pero no identicos ($7.5 \neq 7.8$,
+$0.009 \neq 0.008$). La discrepancia ocurre porque:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item El modelo (1) se estima por MCO ordinario, que asume homoscedasticidad
+    y asigna igual peso a todas las observaciones.
+  \item El modelo (2) se estima por MCO sobre las variables transformadas, lo
+    que es equivalente a MCP con pesos $w_i = 1/N_i^2$. Las empresas grandes
+    (mayor $N_i$) reciben menor peso, lo que cambia los estimadores.
+\end{enumerate}
+
+Si el supuesto~(\ref{eq:supuesto_heterosc}) es correcto, los estimadores del
+modelo (2) son mas eficientes que los del modelo (1), por lo que las estimaciones
+de (2) son mas precisas aunque difieran numericamente de las de (1).
+
+\begin{clave}
+  Algebraicamente: pendiente de (2) $= \hat\alpha_2 \approx \hat\beta_1$ y
+  intercepto de (2) $= \hat\alpha_1 \approx \hat\beta_2$. La pequena discrepancia
+  numerica refleja la diferente ponderacion de las observaciones en MCO vs MCP.
+\end{clave}
+
+\section{Inciso (d): ¿se pueden comparar los $R^2$ de los dos modelos?}
+
+\subsection{Respuesta}
+
+\textbf{No}, los $R^2$ de los dos modelos \textbf{no son comparables directamente}.
+
+\subsection{Razon tecnica}
+
+El $R^2$ se define como la proporcion de la variacion total de la variable
+dependiente que es explicada por el modelo:
+\begin{equation}
+  R^2 = 1 - \frac{\text{SCR}}{\text{SCT}}
+      = 1 - \frac{\sum_i (Y_i - \hat Y_i)^2}{\sum_i (Y_i - \bar Y)^2}
+  \label{eq:R2_def}
+\end{equation}
+
+Las variables dependientes de los dos modelos son distintas:
+\begin{align}
+  \text{Modelo (1):} \quad &Y = W_i \quad \Rightarrow \quad \text{SCT}_1 = \sum(W_i - \bar W)^2\\
+  \text{Modelo (2):} \quad &Y = W_i/N_i \quad \Rightarrow \quad \text{SCT}_2 = \sum(W_i/N_i - \overline{W/N})^2
+\end{align}
+
+Como SCT$_1 \neq$ SCT$_2$, los valores de $R^2$ de los dos modelos miden
+fracciones de totales completamente distintos. Concretamente:
+
+\begin{itemize}[leftmargin=1.6em, itemsep=4pt]
+  \item $R^2_1 = 0.90$ dice que el modelo (1) explica el 90\% de la variacion de
+    los salarios medios totales $W_i$.
+  \item $R^2_2 = 0.99$ dice que el modelo (2) explica el 99\% de la variacion de
+    los salarios por empleado $W_i/N_i$.
+\end{itemize}
+
+Que $R^2_2 > R^2_1$ no implica que el modelo (2) sea ``mejor'' en algun sentido
+absoluto: simplemente explica una proporcion mayor de una variable que ha sido
+escalada de forma diferente. Un $R^2 = 0.99$ en la regresion de $W/N$ no puede
+compararse con un $R^2 = 0.90$ en la regresion de $W$ del mismo modo que no
+tendria sentido comparar el $R^2$ de una regresion en dolares con el $R^2$ de
+la misma regresion en centavos.
+
+\subsection{Condicion formal de no comparabilidad}
+
+Una condicion suficiente para que dos $R^2$ sean comparables es que las
+variables dependientes sean identicas (o al menos que sean transformaciones
+monotónicas que preserven los ordenes de magnitud). Formalmente, si
+$Y^{(1)} \neq Y^{(2)}$, entonces:
+\begin{equation}
+  R^2_1 - R^2_2
+    = \frac{\text{SCR}_2}{\text{SCT}_2} - \frac{\text{SCR}_1}{\text{SCT}_1}
+  \label{eq:dif_R2}
+\end{equation}
+no tiene interpretacion directa porque los denominadores son incomensurables.
+
+\begin{clave}
+  Los $R^2$ de los dos modelos \textbf{no son comparables} porque las variables
+  dependientes son diferentes ($W$ vs $W/N$). El $R^2$ mide la fraccion de la
+  variacion de su propia variable dependiente que el modelo explica; como esas
+  variaciones totales son distintas, los cocientes no son comparables entre si.
+\end{clave}
+
+\section{Sintesis}
+
+\begin{table}[ht]
+\centering
+\caption{Comparacion entre los modelos (1) y (2)}
+\label{tab:comparacion}
+\small
+\begin{tabular}{p{3.5cm} p{5cm} p{5cm}}
+\toprule
+\textbf{Aspecto}
+  & \textbf{Modelo (1): $W = \beta_1 + \beta_2 N + u$}
+  & \textbf{Modelo (2): $W/N = \alpha_1 + \alpha_2/N + v$} \\
+\midrule
+Variable dependiente
+  & Salario total promedio $W$
+  & Salario por empleado $W/N$ \\[4pt]
+Regresor
+  & Numero de empleados $N$
+  & Reciproco del tamano $1/N$ \\[4pt]
+Metodo de estimacion
+  & MCO ordinario
+  & MCO sobre datos transformados (= MCP) \\[4pt]
+Supuesto de varianza
+  & Homoscedasticidad $\Var(u_i) = \sigma^2$
+  & Heteroscedasticidad $\Var(u_i) = \sigma^2 N_i^2$ \\[4pt]
+Eficiencia estimadores
+  & MELI solo bajo homoscedasticidad
+  & MELI bajo $\Var(u_i) = \sigma^2 N_i^2$ \\[4pt]
+$R^2$
+  & $0.90$ (variacion de $W$)
+  & $0.99$ (variacion de $W/N$) \\[4pt]
+Comparabilidad de $R^2$
+  & \multicolumn{2}{c}{No comparables (variables dependientes distintas)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+
+\section{Demostracion de que MCP con pesos $1/N_i^2$ es equivalente a MCO sobre las variables transformadas}
+
+En el modelo de MCP se minimiza la suma ponderada:
+\begin{equation}
+  \min_{\beta_1,\beta_2} \sum_i w_i (W_i - \beta_1 - \beta_2 N_i)^2,
+  \qquad w_i = \frac{1}{N_i^2}
+  \label{eq:MCP}
+\end{equation}
+
+Multiplicando y dividiendo por $N_i$ dentro del cuadrado:
+\begin{equation}
+  \sum_i \frac{1}{N_i^2}(W_i - \beta_1 - \beta_2 N_i)^2
+  = \sum_i \left(\frac{W_i}{N_i} - \frac{\beta_1}{N_i} - \beta_2\right)^2
+  \label{eq:MCP_equiv}
+\end{equation}
+
+Definiendo $Y_i^* = W_i/N_i$, $X_i^* = 1/N_i$ y $\alpha_1 = \beta_2$, $\alpha_2 = \beta_1$:
+\begin{equation}
+  \sum_i (Y_i^* - \alpha_1 - \alpha_2 X_i^*)^2
+  \label{eq:MCO_transformado}
+\end{equation}
+
+Minimizar~(\ref{eq:MCO_transformado}) por MCO ordinario es exactamente
+equivalente a minimizar~(\ref{eq:MCP}). Los estimadores MCO de $\alpha_1$ y
+$\alpha_2$ son los mismos que los estimadores MCP de $\beta_2$ y $\beta_1$,
+respectivamente. Esto confirma la relacion algebrica del inciso~(c).
+
+\section{Generalidad del supuesto de varianza proporcional}
+
+El supuesto $\Var(u_i) = \sigma^2 N_i^2$ es un caso particular del supuesto
+general $\Var(u_i) = \sigma^2 X_i^{2p}$. Para distintos valores de $p$:
+
+\begin{center}
+\small
+\begin{tabular}{cll}
+\toprule
+$p$ & $\Var(u_i)$ & Transformacion para homoscedasticidad \\
+\midrule
+$0$ & $\sigma^2$ (homoscedastico) & Sin transformacion \\
+$1/2$ & $\sigma^2 X_i$ & Dividir por $\sqrt{X_i}$ \\
+$1$ & $\sigma^2 X_i^2$ & Dividir por $X_i$ (caso del ejercicio) \\
+$3/2$ & $\sigma^2 X_i^3$ & Dividir por $X_i^{3/2}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent En el ejercicio, el autor elige $p = 1$ (dividir por $N_i$), lo que
+implica el supuesto $\Var(u_i) = \sigma^2 N_i^2$. Si el supuesto real fuera
+$\Var(u_i) = \sigma^2 N_i$, la transformacion correcta seria dividir por
+$\sqrt{N_i}$, produciendo un modelo diferente.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} La no comparabilidad de los $R^2$ es un punto
+tecnico importante en econometria aplicada. Siempre que se compare el ajuste
+de modelos con distintas variables dependientes (niveles vs logaritmos, totales
+vs per capita, etc.), el $R^2$ convencional no es un criterio valido de
+comparacion. En esos casos se usan criterios alternativos como el AIC, el BIC,
+o el $R^2$ de Theil ajustado para transformaciones.}
+
+\end{document}

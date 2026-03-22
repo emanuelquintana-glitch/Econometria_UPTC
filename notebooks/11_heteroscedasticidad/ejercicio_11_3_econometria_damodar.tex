@@ -1,0 +1,425 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 11.3}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposicion}
+\theoremstyle{remark}
+\newtheorem{obs}{Observacion}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Modelos No Lineales en los Parametros:}\\[6pt]
+  {\LARGE\bfseries MCO, Minimos Cuadrados No Lineales}\\[6pt]
+  {\LARGE\bfseries y Metodos de Estimacion Alternativos}\\[12pt]
+  {\large\itshape Por que MCO falla y como estimar modelos con raices}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~11.3 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Con derivacion de las ecuaciones normales no lineales, algoritmo de Gauss-Newton
+  y comparacion de metodos}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{Planteamiento.}\quad
+Se proponen dos modelos donde la variable dependiente es el valor absoluto de
+los residuos MCO ($|\hat u_i|$) como proxy de la desviacion estandar condicional:
+
+\begin{align}
+  |\hat u_i| &= \sqrt{\beta_1 + \beta_2 X_i} + v_i
+  \tag{I}\label{eq:modelo1}\\[4pt]
+  |\hat u_i| &= \sqrt{\beta_1 + \beta_2 X_i^2} + v_i
+  \tag{II}\label{eq:modelo2}
+\end{align}
+
+\noindent Se pregunta si se pueden estimar los parametros $\beta_1$ y $\beta_2$
+por MCO y, si no, que metodos alternativos existen.
+
+\section{Inciso (a): ¿puede MCO estimar estos modelos?}
+
+\subsection{Respuesta}
+
+\textbf{No}. El metodo de MCO no puede aplicarse directamente a
+los modelos~(\ref{eq:modelo1}) y~(\ref{eq:modelo2}) porque ambos son
+\textbf{no lineales en los parametros}.
+
+\subsection{Condicion de linealidad en los parametros}
+
+MCO minimiza la suma de cuadrados residuales:
+\begin{equation}
+  S(\boldsymbol\beta) = \sum_{i=1}^n v_i^2 = \sum_{i=1}^n [Y_i - f(X_i; \boldsymbol\beta)]^2
+  \label{eq:SCR}
+\end{equation}
+
+Para que MCO produzca ecuaciones normales \emph{lineales} en $\boldsymbol\beta$
+(y por tanto tenga solucion analitica explicita), la funcion $f$ debe ser
+lineal en los parametros:
+\begin{equation}
+  f(X_i; \boldsymbol\beta) = \beta_1 g_1(X_i) + \beta_2 g_2(X_i) + \cdots
+  \label{eq:lineal_param}
+\end{equation}
+para algunas funciones $g_j$ de los datos. En este caso las derivadas parciales:
+\begin{equation}
+  \frac{\partial f}{\partial \beta_j} = g_j(X_i)
+  \label{eq:deriv_lineal}
+\end{equation}
+no dependen de los parametros, y las ecuaciones normales
+$\partial S/\partial \beta_j = 0$ forman un sistema lineal resoluble
+analitica­mente.
+
+\subsection{Por que los modelos (I) y (II) violan esta condicion}
+
+En el modelo~(\ref{eq:modelo1}), la funcion de regresion es:
+\begin{equation}
+  f(X_i; \beta_1, \beta_2) = \sqrt{\beta_1 + \beta_2 X_i}
+  = (\beta_1 + \beta_2 X_i)^{1/2}
+  \label{eq:f_modelo1}
+\end{equation}
+
+Las derivadas parciales respecto a los parametros son:
+\begin{align}
+  \frac{\partial f}{\partial \beta_1}
+    &= \frac{1}{2}(\beta_1 + \beta_2 X_i)^{-1/2}
+    = \frac{1}{2\sqrt{\beta_1 + \beta_2 X_i}}
+  \label{eq:df_db1}\\[6pt]
+  \frac{\partial f}{\partial \beta_2}
+    &= \frac{X_i}{2}(\beta_1 + \beta_2 X_i)^{-1/2}
+    = \frac{X_i}{2\sqrt{\beta_1 + \beta_2 X_i}}
+  \label{eq:df_db2}
+\end{align}
+
+Ambas derivadas dependen de los propios parametros $\beta_1$ y $\beta_2$, lo que
+hace que las ecuaciones normales:
+\begin{equation}
+  \frac{\partial S}{\partial \beta_j}
+    = -2\sum_i v_i \frac{\partial f}{\partial \beta_j}
+    = -2\sum_i [|\hat u_i| - \sqrt{\beta_1 + \beta_2 X_i}]
+      \cdot \frac{\partial f}{\partial \beta_j}
+    = 0
+  \label{eq:ec_normales}
+\end{equation}
+sean \textbf{no lineales} en $\beta_1$ y $\beta_2$. No hay solucion analitica
+cerrada; MCO ordinario no puede resolver este sistema.
+
+\subsection{Sustitucion cuadratica: ¿resuelve el problema?}
+
+Una tentacion es elevar al cuadrado ambos lados de~(\ref{eq:modelo1}):
+\begin{equation}
+  |\hat u_i|^2 = \hat u_i^2 = \beta_1 + \beta_2 X_i + w_i
+  \label{eq:cuadrado}
+\end{equation}
+donde $w_i = v_i^2 + 2v_i\sqrt{\beta_1 + \beta_2 X_i}$. El lado izquierdo
+$\hat u_i^2$ es observable y el modelo en~(\ref{eq:cuadrado}) es \emph{lineal}
+en $\beta_1$ y $\beta_2$. Sin embargo, el nuevo termino de error $w_i$ es
+heterosc­edastico y correlacionado con los regresores, por lo que MCO sobre
+la version cuadrada no produce estimadores MELI. Es un atajo que introduce
+problemas de estimacion.
+
+\begin{clave}
+  MCO no puede estimar los modelos~(\ref{eq:modelo1}) y~(\ref{eq:modelo2}) porque
+  son no lineales en los parametros: las ecuaciones normales resultantes son
+  no lineales en $\beta_1$ y $\beta_2$ y no tienen solucion analitica cerrada.
+\end{clave}
+
+\section{Inciso (b): metodos de estimacion alternativos}
+
+\subsection{Metodo formal 1: Minimos Cuadrados No Lineales (MCNL)}
+
+El metodo de \textbf{Minimos Cuadrados No Lineales} (NLLS, \textit{Nonlinear
+Least Squares}) generaliza MCO al caso de modelos no lineales en los parametros.
+El problema de minimizacion es el mismo:
+\begin{equation}
+  \hat{\boldsymbol\beta}^{\text{MCNL}}
+    = \arg\min_{\boldsymbol\beta} S(\boldsymbol\beta)
+    = \arg\min_{\boldsymbol\beta} \sum_i [|\hat u_i| - f(X_i; \boldsymbol\beta)]^2
+  \label{eq:MCNL}
+\end{equation}
+pero ahora $f$ es no lineal en $\boldsymbol\beta$. La diferencia es que la
+solucion se obtiene \emph{iterativamente} en lugar de analiticamente.
+
+\subsubsection{Propiedades asintóticas del estimador MCNL}
+
+Bajo condiciones de regularidad, el estimador MCNL es:
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Consistente}: $\hat{\boldsymbol\beta}^{\text{MCNL}} \xrightarrow{p} \boldsymbol\beta_0$
+  \item \textbf{Asintóticamente normal}: $\sqrt{n}(\hat{\boldsymbol\beta}^{\text{MCNL}} - \boldsymbol\beta_0)
+    \xrightarrow{d} \mathcal{N}(\mathbf{0}, \mathbf{V})$
+  \item \textbf{Asintóticamente eficiente} dentro de la clase de estimadores
+    de momentos bajo homoscedasticidad.
+\end{itemize}
+
+La matriz de varianzas asintótica es:
+\begin{equation}
+  \mathbf{V} = \sigma^2 \left(\mathbf{F}'\mathbf{F}\right)^{-1}
+  \label{eq:var_MCNL}
+\end{equation}
+donde $\mathbf{F}$ es la matriz de derivadas parciales evaluadas en
+$\hat{\boldsymbol\beta}^{\text{MCNL}}$:
+\begin{equation}
+  F_{ij} = \left.\frac{\partial f(X_i; \boldsymbol\beta)}{\partial \beta_j}\right|_{\boldsymbol\beta = \hat{\boldsymbol\beta}}
+  \label{eq:F_matrix}
+\end{equation}
+
+\subsection{Metodo formal 2: algoritmo de Gauss-Newton}
+
+El algoritmo de \textbf{Gauss-Newton} es el procedimiento iterativo mas comun
+para MCNL. La idea es linealizar $f$ en cada iteracion mediante una expansion
+de Taylor de primer orden alrededor del valor actual $\boldsymbol\beta^{(k)}$:
+
+\begin{equation}
+  f(X_i; \boldsymbol\beta)
+    \approx f(X_i; \boldsymbol\beta^{(k)})
+    + \sum_j \left.\frac{\partial f}{\partial \beta_j}\right|_{\boldsymbol\beta^{(k)}}
+      (\beta_j - \beta_j^{(k)})
+  \label{eq:taylor}
+\end{equation}
+
+Definiendo:
+\begin{align}
+  \tilde Y_i^{(k)} &= |\hat u_i| - f(X_i; \boldsymbol\beta^{(k)})
+    + \sum_j F_{ij}^{(k)} \beta_j^{(k)}
+  \label{eq:Ytilde}\\
+  \tilde X_{ij}^{(k)} &= F_{ij}^{(k)} = \left.\frac{\partial f}{\partial \beta_j}\right|_{\boldsymbol\beta^{(k)}}
+  \label{eq:Xtilde}
+\end{align}
+
+La actualizacion en la iteracion $k+1$ se obtiene por MCO de
+$\tilde Y_i^{(k)}$ sobre $\tilde X_{ij}^{(k)}$:
+
+\begin{equation}
+  \boldsymbol\beta^{(k+1)}
+    = \boldsymbol\beta^{(k)}
+    + \left[(\tilde{\mathbf{X}}^{(k)})'\tilde{\mathbf{X}}^{(k)}\right]^{-1}
+      (\tilde{\mathbf{X}}^{(k)})' \tilde{\mathbf{Y}}^{(k)}
+  \label{eq:GN_update}
+\end{equation}
+
+El algoritmo se repite hasta convergencia: $\|\boldsymbol\beta^{(k+1)} - \boldsymbol\beta^{(k)}\| < \varepsilon$
+para algun criterio de tolerancia $\varepsilon$.
+
+\subsubsection{Aplicacion al modelo (I)}
+
+Para el modelo~(\ref{eq:modelo1}), las derivadas~(\ref{eq:df_db1}) y~(\ref{eq:df_db2})
+evaludas en $\boldsymbol\beta^{(k)}$ son:
+\begin{align}
+  \tilde X_{i1}^{(k)} &= \frac{1}{2\sqrt{\beta_1^{(k)} + \beta_2^{(k)} X_i}}
+  \label{eq:GN_X1}\\
+  \tilde X_{i2}^{(k)} &= \frac{X_i}{2\sqrt{\beta_1^{(k)} + \beta_2^{(k)} X_i}}
+  \label{eq:GN_X2}
+\end{align}
+
+Estas son funciones de los datos observados y de los valores actuales de los
+parametros. En cada iteracion se recalculan y se aplica MCO sobre las
+variables pseudo-lineales $(\tilde Y^{(k)}, \tilde X_1^{(k)}, \tilde X_2^{(k)})$.
+
+\subsection{Metodo formal 3: Newton-Raphson y Marquardt}
+
+El algoritmo de \textbf{Newton-Raphson} usa la matriz Hessiana de $S(\boldsymbol\beta)$
+para la actualizacion:
+\begin{equation}
+  \boldsymbol\beta^{(k+1)}
+    = \boldsymbol\beta^{(k)}
+    - \left[\mathbf{H}^{(k)}\right]^{-1} \mathbf{g}^{(k)}
+  \label{eq:NR}
+\end{equation}
+donde $\mathbf{g}^{(k)} = \nabla_{\boldsymbol\beta} S(\boldsymbol\beta^{(k)})$
+es el gradiente y $\mathbf{H}^{(k)} = \nabla^2_{\boldsymbol\beta} S(\boldsymbol\beta^{(k)})$
+es la Hessiana. Es mas rapido que Gauss-Newton cerca del maximo pero requiere
+calcular segundas derivadas.
+
+El algoritmo de \textbf{Marquardt} (o Levenberg-Marquardt) combina
+Gauss-Newton y descenso de gradiente:
+\begin{equation}
+  \boldsymbol\beta^{(k+1)}
+    = \boldsymbol\beta^{(k)}
+    + \left[(\tilde{\mathbf{X}}^{(k)})'\tilde{\mathbf{X}}^{(k)}
+            + \mu^{(k)}\mathbf{I}\right]^{-1}
+      (\tilde{\mathbf{X}}^{(k)})' \tilde{\mathbf{Y}}^{(k)}
+  \label{eq:Marquardt}
+\end{equation}
+donde $\mu^{(k)} \geq 0$ es un parametro de amortiguacion. Para $\mu^{(k)} = 0$
+se recupera Gauss-Newton; para $\mu^{(k)} \to \infty$ se obtiene descenso de
+gradiente. Este metodo es mas robusto que Gauss-Newton puro y es el estandar
+en la mayoria de los paquetes de software.
+
+\subsection{Metodo formal 4: Maxima Verosimilitud (MV)}
+
+Bajo el supuesto de que $v_i \sim \mathcal{N}(0, \sigma^2)$, la funcion de
+log-verosimilitud para el modelo~(\ref{eq:modelo1}) es:
+\begin{equation}
+  \ell(\boldsymbol\beta, \sigma^2)
+    = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln\sigma^2
+    - \frac{1}{2\sigma^2}\sum_i [|\hat u_i| - \sqrt{\beta_1 + \beta_2 X_i}]^2
+  \label{eq:loglik}
+\end{equation}
+
+Maximizar~(\ref{eq:loglik}) respecto a $\boldsymbol\beta$ es equivalente a
+minimizar $S(\boldsymbol\beta)$ en~(\ref{eq:MCNL}): los estimadores MV y MCNL
+coinciden bajo normalidad. Los estimadores MV tienen propiedades asintóticas
+optimas (consistencia, normalidad asintótica, eficiencia asintótica).
+
+\subsection{Metodo informal: busqueda en grilla (prueba y error)}
+
+Un metodo informal es la \textbf{busqueda en grilla} (\textit{grid search}):
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item Definir una rejilla de valores candidatos para $(\beta_1, \beta_2)$, por
+    ejemplo $\beta_1 \in \{0.1, 0.2, \ldots, 2.0\}$ y $\beta_2 \in \{0.01, 0.02, \ldots, 0.5\}$.
+  \item Para cada par $(\beta_1, \beta_2)$ de la rejilla, calcular:
+    \begin{equation}
+      S(\beta_1, \beta_2) = \sum_i [|\hat u_i| - \sqrt{\beta_1 + \beta_2 X_i}]^2
+    \end{equation}
+  \item Seleccionar el par que minimiza $S(\beta_1, \beta_2)$.
+  \item Refinar la busqueda alrededor del minimo encontrado con una grilla
+    mas fina.
+\end{enumerate}
+
+Este metodo es computacionalmente intensivo pero conceptualmente simple. No
+garantiza encontrar el minimo global si la funcion $S$ tiene multiples minimos
+locales, y es impractico en alta dimension.
+
+\subsection{Comparacion de metodos}
+
+\begin{table}[ht]
+\centering
+\caption{Comparacion de metodos para estimar modelos no lineales en los parametros}
+\label{tab:metodos}
+\small
+\begin{tabular}{p{3.2cm} p{3.5cm} p{3.5cm} p{3cm}}
+\toprule
+\textbf{Metodo} & \textbf{Ventajas} & \textbf{Desventajas} & \textbf{Cuando usar} \\
+\midrule
+MCNL / Gauss-Newton
+  & Solucion sistematica; propiedades asintóticas conocidas
+  & Requiere valores iniciales; puede no converger
+  & Estandar para modelos no lineales \\[4pt]
+Marquardt
+  & Mas robusto que G-N; converge en mas casos
+  & Ligeramente mas costoso computacionalmente
+  & Cuando G-N falla \\[4pt]
+Maxima Verosimilitud
+  & Optimo asintóticamente bajo normalidad
+  & Requiere supuesto distribucional; mas complejo
+  & Cuando se conoce la distribucion de $v_i$ \\[4pt]
+Busqueda en grilla
+  & Simple; no requiere derivadas; encuentra mínimo global si la grilla es fina
+  & Lenta; imprecisa; no escala a muchos parametros
+  & Diagnostico inicial; pocos parametros \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{clave}
+  El metodo recomendado es MCNL implementado mediante el algoritmo de
+  Marquardt, disponible en la mayoria de los paquetes econometricos (Stata:
+  \texttt{nl}; R: \texttt{nls}; Python: \texttt{scipy.optimize.curve\_fit}).
+  Se necesitan valores iniciales razonables para los parametros; una busqueda
+  en grilla puede servir como punto de partida.
+\end{clave}
+
+\appendix
+
+\section{Derivacion de las ecuaciones normales del MCNL para el modelo (I)}
+
+Para el modelo~(\ref{eq:modelo1}), las condiciones de primer orden
+$\partial S/\partial \beta_j = 0$ son:
+
+\begin{align}
+  \frac{\partial S}{\partial \beta_1}
+    &= -2\sum_i [|\hat u_i| - (\beta_1 + \beta_2 X_i)^{1/2}]
+       \cdot \frac{1}{2(\beta_1 + \beta_2 X_i)^{1/2}}
+    = 0
+  \label{eq:FOC1}\\[6pt]
+  \frac{\partial S}{\partial \beta_2}
+    &= -2\sum_i [|\hat u_i| - (\beta_1 + \beta_2 X_i)^{1/2}]
+       \cdot \frac{X_i}{2(\beta_1 + \beta_2 X_i)^{1/2}}
+    = 0
+  \label{eq:FOC2}
+\end{align}
+
+Simplificando:
+\begin{align}
+  \sum_i \frac{|\hat u_i|}{(\beta_1 + \beta_2 X_i)^{1/2}}
+    &= \sum_i 1 = n
+  \label{eq:FOC1_simp}\\[6pt]
+  \sum_i \frac{X_i |\hat u_i|}{(\beta_1 + \beta_2 X_i)^{1/2}}
+    &= \sum_i X_i
+  \label{eq:FOC2_simp}
+\end{align}
+
+Las ecuaciones~(\ref{eq:FOC1_simp}) y~(\ref{eq:FOC2_simp}) son claramente no
+lineales en $\beta_1$ y $\beta_2$ (los parametros aparecen dentro de la raiz
+cuadrada en el denominador). No hay expresion algebraica cerrada para su
+solucion: confirma que MCO ordinario no es aplicable.
+
+\section{Valores iniciales para el algoritmo iterativo}
+
+Una estrategia practica para obtener valores iniciales $(\beta_1^{(0)}, \beta_2^{(0)})$:
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item Elevar al cuadrado el modelo~(\ref{eq:modelo1}): $\hat u_i^2 \approx \beta_1 + \beta_2 X_i$
+    (ignorando el termino de error).
+  \item Estimar esta regresion lineal por MCO.
+  \item Usar los estimadores MCO como valores iniciales para el algoritmo MCNL.
+\end{enumerate}
+
+Este procedimiento de dos pasos proporciona valores iniciales razonables sin
+garantizar eficiencia, pero acelera la convergencia del algoritmo iterativo.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los modelos~(\ref{eq:modelo1}) y~(\ref{eq:modelo2})
+aparecen en el contexto del diagnostico de heteroscedasticidad: se postulan como
+modelos para la desviacion estandar condicional $\sigma_i = \E[|u_i|]$ en funcion
+de $X_i$. Si se prefiere modelar la varianza en lugar de la desviacion, el modelo
+cuadratico $\hat u_i^2 = \beta_1 + \beta_2 X_i + w_i$ es lineal en los parametros
+y puede estimarse directamente por MCO, aunque $w_i$ no es homoscedastico. Esta
+es la base de la prueba de Breusch-Pagan (1979).}
+
+\end{document}
