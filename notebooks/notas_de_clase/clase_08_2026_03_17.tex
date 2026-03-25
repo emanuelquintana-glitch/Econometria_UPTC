@@ -1,416 +1,1266 @@
-\documentclass[12pt]{article}
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================
+%  PAQUETES ESENCIALES
+% ============================================================
 \usepackage[utf8]{inputenc}
-\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% Matemáticas
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% Gráficos y figuras
 \usepackage{graphicx}
-\usepackage{geometry}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{pgfplotstable}
+\usetikzlibrary{arrows.meta, decorations.pathmorphing, patterns,
+                intersections, calc, shapes.geometric, positioning,
+                decorations.markings, fit, backgrounds}
+
+% Diseño y layout
+\usepackage[
+  top=2.5cm, bottom=2.5cm,
+  left=3cm,  right=2.5cm,
+  headheight=15pt
+]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{tocloft}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{emptypage}
+\usepackage{float}
+
+% Tablas y listas
 \usepackage{booktabs}
 \usepackage{array}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{fancyhdr}
-\usepackage{setspace}
-\pgfplotsset{compat=1.18}
-\geometry{margin=1in}
-\setstretch{1.15}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{enumitem}
+
+% Cajas y entornos destacados
+\usepackage[most]{tcolorbox}
+\usepackage{mdframed}
+
+% Referencias y bibliografía
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% Líneas decorativas
+\usepackage{soul}
+\usepackage{ulem}
+
+% ============================================================
+%  PALETA MONOCROMÁTICA (negro / grises / blanco)
+% ============================================================
+\definecolor{negro}{RGB}{0,0,0}
+\definecolor{grisOscuro}{RGB}{40,40,40}
+\definecolor{grisMedio}{RGB}{100,100,100}
+\definecolor{grisClaro}{RGB}{200,200,200}
+\definecolor{grisPalido}{RGB}{235,235,235}
+\definecolor{blanco}{RGB}{255,255,255}
+
+% ============================================================
+%  HYPERREF (monocromático)
+% ============================================================
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = negro,
+  citecolor  = negro,
+  urlcolor   = negro,
+  pdftitle   = {Notas de Econometría: Autocorrelación},
+  pdfauthor  = {Basado en Wooldridge y Gujarati},
+  pdfsubject = {Econometría},
+  pdfkeywords= {autocorrelación, MCO, Durbin-Watson, MCG}
+}
+
+% ============================================================
+%  TIPOGRAFÍA DE SECCIONES
+% ============================================================
+\titleformat{\section}
+  {\large\bfseries\color{negro}}
+  {\thesection.}{0.6em}{}
+  [\vspace{2pt}\titlerule\vspace{4pt}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{grisOscuro}}
+  {\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\itshape\color{grisMedio}}
+  {\thesubsubsection.}{0.5em}{}
+
+\titlespacing{\section}{0pt}{18pt}{8pt}
+\titlespacing{\subsection}{0pt}{12pt}{4pt}
+\titlespacing{\subsubsection}{0pt}{8pt}{2pt}
+
+% ============================================================
+%  CABECERA Y PIE DE PÁGINA
+% ============================================================
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\nouppercase{\leftmark}}
-\fancyhead[R]{Autocorrelación}
-\fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.2pt}
+\fancyhead[L]{\small\textit{Econometría — Autocorrelación}}
+\fancyhead[R]{\small\textit{Wooldridge \& Gujarati}}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[R]{\small\textit{Martes 17/03/2026}}
 
-\title{\textbf{Notas de Econometría} \\ \large Autocorrelación: Teoría, Detección y Corrección \\ \normalsize Basado en Wooldridge (2019) y Gujarati \& Porter (2010)}
-\author{Clase: 17 de marzo de 2026}
-\date{}
+% ============================================================
+%  ENTORNOS PERSONALIZADOS (tcolorbox monocromáticos)
+% ============================================================
+\tcbuselibrary{skins, breakable}
 
+\newtcolorbox{definicion}[1][]{
+  enhanced, breakable,
+  colback=grisPalido, colframe=negro,
+  boxrule=0.8pt, arc=0pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries\small,
+  title={Definición: #1},
+  #1
+}
+
+\newtcolorbox{teorema}[1][]{
+  enhanced, breakable,
+  colback=blanco, colframe=negro,
+  boxrule=1pt, arc=0pt,
+  borderline west={3pt}{0pt}{negro},
+  left=8pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries\small,
+  title={#1}
+}
+
+\newtcolorbox{advertencia}{
+  enhanced, breakable,
+  colback=grisPalido, colframe=grisMedio,
+  boxrule=0.6pt, arc=0pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+}
+
+\newtcolorbox{nota}{
+  enhanced, breakable,
+  colback=blanco, colframe=grisClaro,
+  boxrule=0.5pt, arc=0pt,
+  borderline west={2pt}{0pt}{grisMedio},
+  left=8pt, right=6pt, top=3pt, bottom=3pt,
+  fonttitle=\itshape\small,
+}
+
+% ============================================================
+%  TEOREMAS Y PROPOSICIONES
+% ============================================================
+\theoremstyle{definition}
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{corol}{Corolario}[section]
+\newtheorem{ejemplo}{Ejemplo}[section]
+\theoremstyle{remark}
+\newtheorem{obs}{Observación}[section]
+
+% ============================================================
+%  TABLA DE CONTENIDOS (formato limpio)
+% ============================================================
+\renewcommand{\cftsecfont}{\bfseries}
+\renewcommand{\cftsecpagefont}{\bfseries}
+\renewcommand{\cftsubsecfont}{\normalfont}
+\setlength{\cftbeforesecskip}{4pt}
+
+% ============================================================
+%  INTERLINEADO
+% ============================================================
+\setstretch{1.25}
+
+% ============================================================
+%  DOCUMENTO
+% ============================================================
 \begin{document}
 
-\maketitle
-\thispagestyle{empty}
+% ------------------------------------------------------------
+%  PORTADA
+% ------------------------------------------------------------
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+
+  {\Large\bfseries UNIVERSIDAD — FACULTAD DE ECONOMÍA\par}
+  \vspace{0.4cm}
+  \noindent\rule{\textwidth}{1.2pt}
+  \vspace{0.8cm}
+
+  {\LARGE\bfseries NOTAS DE ECONOMETRÍA\par}
+  \vspace{0.5cm}
+  {\huge\bfseries Autocorrelación\par}
+  \vspace{0.3cm}
+  {\large\itshape Capítulo 12 — Gujarati \& Porter (2010)\par}
+  \vspace{0.3cm}
+  {\normalsize Complementado con Wooldridge (2016)\par}
+
+  \vspace{1.2cm}
+  \noindent\rule{\textwidth}{0.4pt}
+  \vspace{1cm}
+
+  \begin{minipage}{0.85\textwidth}
+    \centering
+    \itshape
+    ``Si se viola el supuesto de no autocorrelación, los estimadores MCO
+    son todavía insesgados y consistentes, pero ya no son eficientes;
+    la inferencia basada en MCO puede ser gravemente engañosa.''\\[4pt]
+    \upshape\small — Gujarati \& Porter, \textit{Econometría}, 5.ª ed., p.~415
+  \end{minipage}
+
+  \vspace{1.2cm}
+  \noindent\rule{\textwidth}{0.4pt}
+  \vspace{0.8cm}
+
+  {\normalsize
+    \begin{tabular}{rl}
+      \textbf{Clase:}    & Martes 17 de marzo de 2026 \\[4pt]
+      \textbf{Fuentes:}  & Gujarati \& Porter (2010), cap.~12 \\
+                         & Wooldridge (2016), cap.~12 \\[4pt]
+      \textbf{Temas:}    & Supuestos Gauss-Markov, causas, consecuencias,\\
+                         & detección (Durbin-Watson) y corrección (MCG)
+    \end{tabular}
+  }
+
+  \vfill
+  {\small\textit{Documento de uso académico — compilado con \LaTeX{}}}
+\end{titlepage}
+
+% ------------------------------------------------------------
+%  TABLA DE CONTENIDOS
+% ------------------------------------------------------------
 \newpage
-\setcounter{page}{1}
 \tableofcontents
 \newpage
 
-\section{Introducción}
-En el modelo clásico de regresión lineal, uno de los supuestos fundamentales de Gauss-Markov es la ausencia de correlación entre los términos de error para diferentes observaciones. Formalmente,
+% ============================================================
+%  SECCIÓN 1 — SUPUESTO DE NO AUTOCORRELACIÓN
+% ============================================================
+\section{Supuesto de No Autocorrelación en el MCLR}
+\label{sec:supuesto}
+
+El \textbf{Modelo Clásico de Regresión Lineal (MCLR)} descansa sobre seis
+supuestos conocidos como condiciones de \textit{Gauss-Markov}. Uno de los
+más frecuentemente violados en datos de series de tiempo es el
+\textbf{supuesto de no autocorrelación}.
+
+\begin{definicion}[No Autocorrelación]
+  Dado el modelo de regresión lineal
+  \begin{equation}
+    Y_t = \beta_1 + \beta_2 X_t + u_t, \quad t = 1,2,\ldots,T,
+    \label{eq:modelo-basico}
+  \end{equation}
+  se requiere que los términos de error no estén correlacionados entre
+  observaciones distintas:
+  \begin{equation}
+    \operatorname{Cov}(u_i, u_j) = E(u_i u_j) = 0, \quad i \neq j.
+    \label{eq:supuesto-no-auto}
+  \end{equation}
+  Equivalentemente, en notación matricial: $E(\mathbf{u}\mathbf{u}') =
+  \sigma^2 \mathbf{I}_n$.
+\end{definicion}
+
+\begin{advertencia}
+  \textbf{Importancia del supuesto.}  Si \eqref{eq:supuesto-no-auto} se
+  cumple, los estimadores MCO son \textit{BLUE} (Best Linear Unbiased
+  Estimators) según el Teorema de Gauss-Markov.  Si se viola, los MCO
+  siguen siendo insesgados y consistentes, pero \emph{dejan de ser
+  eficientes} y los errores estándar son sesgados (generalmente subestimados),
+  lo que invalida la inferencia estadística.
+\end{advertencia}
+
+\subsection{Representación Matricial Completa}
+
+Para el modelo matricial $\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} +
+\mathbf{u}$, la estructura de la matriz de varianzas-covarianzas de los
+errores bajo autocorrelación es:
+
 \begin{equation}
-    \text{Cov}(u_i, u_j) = \mathbb{E}[u_i u_j] = 0 \quad \forall i \neq j.
+  E(\mathbf{u}\mathbf{u}') = \sigma^2\boldsymbol{\Omega} =
+  \sigma^2
+  \begin{pmatrix}
+    1      & \rho   & \rho^2 & \cdots & \rho^{T-1} \\
+    \rho   & 1      & \rho   & \cdots & \rho^{T-2} \\
+    \rho^2 & \rho   & 1      & \cdots & \rho^{T-3} \\
+    \vdots &        & \ddots &        & \vdots      \\
+    \rho^{T-1} & \cdots & & & 1
+  \end{pmatrix},
+  \label{eq:omega}
 \end{equation}
-Cuando este supuesto se viola, se dice que existe \textbf{autocorrelación} (o correlación serial). La presencia de autocorrelación es particularmente frecuente en datos de series temporales, aunque también puede aparecer en datos de corte transversal (autocorrelación espacial) y en datos de panel.
 
-El objetivo de estas notas es analizar las causas, consecuencias, métodos de detección y corrección de la autocorrelación, manteniendo un enfoque riguroso y aplicado.
+donde $\rho$ es el coeficiente de autocorrelación de primer orden y
+$|\rho| < 1$ para que el proceso sea estacionario. Bajo el supuesto de
+no autocorrelación se tiene $\boldsymbol{\Omega} = \mathbf{I}_n$.
 
-\section{Naturaleza de la autocorrelación}
-La autocorrelación puede modelarse mediante distintos procesos estocásticos. El más común es el proceso autorregresivo de orden uno, denotado AR(1):
-\begin{equation}
-    u_t = \rho u_{t-1} + \varepsilon_t, \quad |\rho| < 1,
-\end{equation}
-donde $\varepsilon_t$ es ruido blanco con media cero y varianza constante $\sigma^2_{\varepsilon}$. El parámetro $\rho$ mide la intensidad y dirección de la correlación:
-\begin{itemize}
-    \item $\rho > 0$: autocorrelación positiva (valores cercanos de $u_t$ tienden a tener el mismo signo).
-    \item $\rho < 0$: autocorrelación negativa (alternancia de signos).
-    \item $\rho = 0$: ausencia de autocorrelación.
-\end{itemize}
+% ============================================================
+%  SECCIÓN 2 — NATURALEZA DE LA AUTOCORRELACIÓN
+% ============================================================
+\section{Naturaleza de la Autocorrelación}
+\label{sec:naturaleza}
 
-Para procesos de orden superior, AR(p), la autocorrelación se extiende a rezagos mayores.
+La autocorrelación ocurre cuando el término de error en un periodo está
+correlacionado con el término de error en otro periodo.
 
-\section{Causas de la autocorrelación en los errores}
-\subsection{Inercia o tendencia común}
-En series de tiempo, las variables económicas suelen mostrar trayectorias suaves (PIB, inflación, desempleo). Esta inercia se transmite a los residuos si el modelo no captura completamente la dinámica subyacente.
+\subsection{Clasificación según el Tipo de Datos}
 
-\subsection{Sesgo de especificación: omisión de variables relevantes}
-Cuando una variable relevante con comportamiento sistemático queda excluida del modelo, su efecto es absorbido por el término de error, generando autocorrelación. Por ejemplo, si se estima
-\[
-    I_t = \beta_1 + \beta_2 \text{Ingreso}_t + \beta_3 \text{Impuestos}_t + u_t
-\]
-pero la verdadera relación incluye la tasa de interés $r_t$, entonces $u_t$ contendrá $\alpha_4 r_t$ y, si $r_t$ está correlacionada en el tiempo, también lo estará $u_t$.
-
-\subsection{Omisión de variables rezagadas (efectos dinámicos)}
-Ignorar que el pasado influye en el presente produce autocorrelación. Un ejemplo clásico es la oferta agrícola:
-\begin{align*}
-    \text{Incorrecto:} & \quad S_t = \beta_1 + \beta_2 P_t - \beta_3 C_t + u_t \\
-    \text{Correcto:} & \quad S_t = \beta_1 + \beta_2 P_{t-1} - \beta_3 C_{t-1} + u_t,
-\end{align*}
-donde $P_t$ es el precio y $C_t$ los costos de producción. La decisión de siembra depende de precios y costos pasados, no de los contemporáneos.
-
-\subsection{Transformación de datos}
-El uso de primeras diferencias para eliminar tendencias o para corregir colinealidad puede inducir autocorrelación en los errores transformados si el proceso original ya era ruido blanco.
-
-\subsection{Manipulación de datos}
-Procedimientos como interpolación o suavizamiento de datos faltantes introducen dependencia artificial entre observaciones consecutivas.
-
-\subsection{Fenómeno de la telaraña (cobweb phenomenon)}
-En mercados agrícolas, la oferta reacciona al precio del periodo anterior con un retraso, generando un ciclo de ajuste que se refleja en residuos correlacionados.
-
-\section{Consecuencias de ignorar la autocorrelación}
-Si se aplica MCO a pesar de existir autocorrelación, se producen los siguientes efectos:
-\begin{enumerate}
-    \item Los estimadores MCO siguen siendo insesgados y consistentes, pero dejan de ser eficientes (no son MELI).
-    \item La matriz de varianzas-covarianzas estimada por MCO es sesgada, por lo que los errores estándar son incorrectos.
-    \item Los contrastes $t$ y $F$ pierden validez, aumentando el riesgo de conclusiones erróneas.
-    \item Las predicciones no son óptimas (mayor varianza).
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=2em, itemsep=6pt]
+  \item \textbf{Corte transversal:} La correlación se manifiesta en el
+        \emph{espacio} (autocorrelación espacial). Ejemplo: el PIB de un
+        departamento influye en el de los departamentos vecinos.
+  \item \textbf{Series de tiempo:} La correlación se extiende a través
+        de \emph{periodos cronológicos}. Es la forma más común y estudiada.
+  \item \textbf{Datos de panel:} Combina ambas dimensiones: variación
+        temporal y transversal.
 \end{enumerate}
 
-\section{Detección de la autocorrelación}
-\subsection{Métodos gráficos}
-Un primer paso es examinar los residuos $e_t$ frente al tiempo. La Figura \ref{fig:residuos_ar1} muestra un patrón típico de autocorrelación positiva generado a partir de un proceso AR(1) con $\rho = 0.8$. Se observa que los residuos se mantienen por encima o por debajo de cero durante períodos prolongados, evidenciando la persistencia.
+\subsection{Proceso Autorregresivo de Primer Orden AR(1)}
 
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=12cm,
-    height=6cm,
-    xlabel={$t$ (índice de tiempo)},
-    ylabel={$e_t$ (residuos MCO)},
-    axis lines=center,
-    grid=major,
-    grid style={dashed,gray!50},
-    xtick={0,10,20,30,40,50},
-    ytick={-2,-1,0,1,2},
-    title={Residuos con autocorrelación positiva AR(1), $\rho = 0.8$},
-    legend pos=north east,
-]
-\addplot+[black, thick, mark=none, smooth] coordinates {
-    (0,0.2) (1,0.6) (2,1.0) (3,1.1) (4,1.2) (5,1.0) (6,0.8) (7,0.5) (8,0.3)
-    (9,0.1) (10,-0.1) (11,-0.4) (12,-0.7) (13,-0.9) (14,-1.0) (15,-0.8) (16,-0.5)
-    (17,-0.2) (18,0.0) (19,0.3) (20,0.5) (21,0.7) (22,0.9) (23,0.8) (24,0.6)
-    (25,0.4) (26,0.1) (27,-0.2) (28,-0.5) (29,-0.7) (30,-0.9) (31,-0.6) (32,-0.3)
-    (33,0.0) (34,0.2) (35,0.4) (36,0.6) (37,0.5) (38,0.3) (39,0.1) (40,-0.2)
-    (41,-0.4) (42,-0.6) (43,-0.5) (44,-0.3) (45,-0.1) (46,0.1) (47,0.2) (48,0.4)
-    (49,0.5) (50,0.3)
-};
-\addplot[black, dashed, thick, domain=0:50, samples=2] {0};
-\legend{$e_t$, $e_t = 0$}
-\end{axis}
-\end{tikzpicture}
-\caption{Residuos de un modelo estimado por MCO cuando el verdadero proceso de error es AR(1) con $\rho=0.8$. La línea punteada representa la media cero. La persistencia de los residuos por encima y por debajo de cero indica autocorrelación positiva.}
-\label{fig:residuos_ar1}
-\end{figure}
+El esquema más utilizado para modelar la autocorrelación es el
+\textbf{proceso AR(1)}:
 
-Otra herramienta gráfica fundamental es el correlograma (función de autocorrelación muestral, ACF). La Figura \ref{fig:acf} muestra las autocorrelaciones muestrales $r_k$ para los primeros 10 rezagos junto con bandas de confianza al 95\% bajo la hipótesis nula de ruido blanco. Las barras que exceden las bandas indican autocorrelación significativa en ese rezago. En este ejemplo, los rezagos 1 a 4 son significativos, y el decaimiento gradual es característico de un proceso AR(1).
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=12cm,
-    height=6cm,
-    xlabel={Rezago $k$},
-    ylabel={Autocorrelación muestral $r_k$},
-    ybar,
-    bar width=0.2cm,
-    xtick={1,2,3,4,5,6,7,8,9,10},
-    ytick={-0.5,0,0.5,1},
-    ymin=-0.6, ymax=1,
-    legend pos=north east,
-    title={Correlograma de residuos (modelo AR(1) con $\rho=0.8$)},
-    nodes near coords,
-    nodes near coords style={anchor=south, yshift=4pt, font=\tiny},
-    every node near coord/.append style={font=\tiny}
-]
-\addplot[black, fill=gray!50] coordinates {
-    (1,0.85) (2,0.72) (3,0.58) (4,0.44) (5,0.31) (6,0.19) (7,0.10) (8,0.03) (9,-0.02) (10,-0.05)
-};
-\addplot[black, dashed, domain=1:10, samples=2] {0.2};
-\addplot[black, dashed, domain=1:10, samples=2] {-0.2};
-\legend{$r_k$, Bandas 95\%}
-\end{axis}
-\end{tikzpicture}
-\caption{Función de autocorrelación muestral (ACF) de los residuos. Las bandas horizontales punteadas representan los límites de significación al 95\% bajo la hipótesis de ruido blanco ($\pm 1.96/\sqrt{T}$, con $T=50$). Las barras que sobresalen indican autocorrelación significativa. El decaimiento gradual es típico de un proceso AR(1).}
-\label{fig:acf}
-\end{figure}
-
-\subsection{Contraste de Durbin-Watson}
-El estadístico de Durbin-Watson se define como
 \begin{equation}
-    d = \frac{\sum_{t=2}^{T} (e_t - e_{t-1})^2}{\sum_{t=1}^{T} e_t^2},
+  u_t = \rho\, u_{t-1} + \varepsilon_t, \quad
+  |\rho| < 1, \quad
+  \varepsilon_t \sim \text{iid}\bigl(0,\,\sigma_\varepsilon^2\bigr),
+  \label{eq:AR1}
 \end{equation}
-y aproximadamente $d \approx 2(1-\hat{\rho})$, donde $\hat{\rho}$ es el coeficiente de autocorrelación de primer orden estimado. La Figura \ref{fig:durbin} ilustra las regiones de decisión para un contraste bilateral al 5\% de significación, con valores críticos $d_L$ y $d_U$ que dependen del número de observaciones y de variables explicativas.
 
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}[scale=1]
-\draw[->] (0,0) -- (10,0) node[right] {$d$};
-\draw[thick] (0,0.2) -- (0,-0.2) node[below] {0};
-\draw[thick] (2,0.2) -- (2,-0.2) node[below] {$d_L$};
-\draw[thick] (3,0.2) -- (3,-0.2) node[below] {$d_U$};
-\draw[thick] (6,0.2) -- (6,-0.2) node[below] {$4-d_U$};
-\draw[thick] (7,0.2) -- (7,-0.2) node[below] {$4-d_L$};
-\draw[thick] (10,0.2) -- (10,-0.2) node[below] {4};
-\draw[<->] (0,0.5) -- (2,0.5) node[midway,above] {Autocorr. positiva};
-\draw[<->] (2,0.5) -- (3,0.5) node[midway,above] {Indecisión};
-\draw[<->] (3,0.5) -- (6,0.5) node[midway,above] {No autocorr.};
-\draw[<->] (6,0.5) -- (7,0.5) node[midway,above] {Indecisión};
-\draw[<->] (7,0.5) -- (10,0.5) node[midway,above] {Autocorr. negativa};
-\node at (1.5, -0.8) {Rechazar $H_0$};
-\node at (2.5, -0.8) {Región};
-\node at (4.5, -0.8) {Aceptar $H_0$};
-\node at (6.5, -0.8) {Región};
-\node at (8.5, -0.8) {Rechazar $H_0$};
-\end{tikzpicture}
-\caption{Regiones de decisión para el estadístico de Durbin-Watson. $d_L$ y $d_U$ son los valores críticos inferior y superior que dependen del tamaño muestral $T$ y del número de regresores $k$ (sin incluir el término constante). Si $d < d_L$ se rechaza la hipótesis nula de no autocorrelación en favor de autocorrelación positiva; si $d > 4-d_L$ se rechaza en favor de autocorrelación negativa.}
-\label{fig:durbin}
+donde $\rho$ es el \emph{coeficiente de autocorrelación de primer orden}.
+A partir de \eqref{eq:AR1} se obtienen las propiedades:
+
+\begin{align}
+  E(u_t)           &= 0, \label{eq:media-cero}\\
+  \operatorname{Var}(u_t) &= \frac{\sigma_\varepsilon^2}{1-\rho^2},
+                            \label{eq:varianza-u}\\
+  \operatorname{Cov}(u_t, u_{t-k}) &= \rho^k \cdot
+                            \frac{\sigma_\varepsilon^2}{1-\rho^2}.
+                            \label{eq:cov-k}
+\end{align}
+
+\begin{nota}
+  La autocorrelación de orden $k$ se define como
+  $\rho_k = \rho^k$. Para $\rho > 0$ todos los $\rho_k > 0$
+  (autocorrelación positiva); para $\rho < 0$ los $\rho_k$ alternan
+  de signo (autocorrelación negativa).
+\end{nota}
+
+% ============================================================
+%  FIGURA 12.1 — Patrones de autocorrelación (5 paneles)
+% ============================================================
+\subsection{Patrones Típicos de los Residuos}
+\label{subsec:patrones}
+
+La \textbf{Figura \ref{fig:patrones}} reproduce los cinco patrones de
+autocorrelación y no autocorrelación presentados en Gujarati \& Porter
+(cap.~12, figura~12.1). La identificación visual de estos patrones es
+el primer paso diagnóstico.
+
+\begin{figure}[H]
+  \centering
+
+  % ---- ROW 1: paneles (a) y (b) ----
+  \begin{tikzpicture}[scale=0.85,
+      axis/.style={->, >=Stealth, thick},
+      dot/.style={circle, fill=negro, inner sep=1.2pt},
+    ]
+    % ===== Panel (a) — Autocorrelación positiva (serie suave) =====
+    \begin{scope}[xshift=0cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.5) -- (0,1.6)  node[above]{\footnotesize $\hat{u}_t$};
+      \node[left, font=\scriptsize] at (0,0) {$0$};
+      % sinusoide positiva
+      \draw[thick, domain=0.1:5.5, smooth, variable=\x]
+        plot(\x, {1.1*sin(deg(1.2*\x))});
+      \foreach \x in {0.3,0.6,0.9,1.2,1.5,1.8,2.1,2.4,2.7,3.0,
+                      3.3,3.6,3.9,4.2,4.5,4.8,5.1,5.4}
+        \node[dot] at (\x, {1.1*sin(deg(1.2*\x))}) {};
+      \node[below, font=\footnotesize] at (2.7,-1.7) {$(a)$ Autocorrelación positiva};
+    \end{scope}
+
+    % ===== Panel (b) — Autocorrelación negativa (zigzag) =====
+    \begin{scope}[xshift=7cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.5) -- (0,1.6)  node[above]{\footnotesize $\hat{u}_t$};
+      \node[left, font=\scriptsize] at (0,0) {$0$};
+      % zigzag
+      \foreach \i in {0,...,10}{
+        \pgfmathsetmacro{\xx}{0.4+0.48*\i}
+        \pgfmathsetmacro{\yy}{1.1*((-1)^\i)}
+        \node[dot] at (\xx,\yy) {};
+      }
+      \draw[thick]
+        (0.4,1.1) -- (0.88,-1.1) -- (1.36,1.1) -- (1.84,-1.1) --
+        (2.32,1.1) -- (2.80,-1.1) -- (3.28,1.1) -- (3.76,-1.1) --
+        (4.24,1.1) -- (4.72,-1.1) -- (5.20,1.1);
+      \node[below, font=\footnotesize] at (2.7,-1.7) {$(b)$ Autocorrelación negativa};
+    \end{scope}
+  \end{tikzpicture}
+
+  \vspace{0.6cm}
+
+  % ---- ROW 2: paneles (c) y (d) ----
+  \begin{tikzpicture}[scale=0.85,
+      axis/.style={->, >=Stealth, thick},
+      dot/.style={circle, fill=negro, inner sep=1.2pt},
+    ]
+    % ===== Panel (c) — Sin autocorrelación (aleatorio) =====
+    \begin{scope}[xshift=0cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.5) -- (0,1.6)  node[above]{\footnotesize $\hat{u}_t$};
+      \node[left, font=\scriptsize] at (0,0) {$0$};
+      \foreach \x/\y in {
+        0.3/0.7, 0.7/-0.4, 1.1/1.0, 1.5/-0.8, 1.9/0.3,
+        2.3/0.9, 2.7/-1.1, 3.1/0.5, 3.5/-0.3, 3.9/1.2,
+        4.3/-0.6, 4.7/0.8, 5.1/-0.9, 5.5/0.4}
+        \node[dot] at (\x,\y) {};
+      \node[below, font=\footnotesize] at (2.7,-1.7) {$(c)$ Sin autocorrelación};
+    \end{scope}
+
+    % ===== Panel (d) — Autocorrelación positiva (errores crecientes) =====
+    \begin{scope}[xshift=7cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.5) -- (0,1.6)  node[above]{\footnotesize $\hat{u}_t$};
+      \node[left, font=\scriptsize] at (0,0) {$0$};
+      \draw[thick, domain=0.1:5.4, smooth, variable=\x]
+        plot(\x, {0.65*sin(deg(0.9*\x))+0.15*\x*sin(deg(2.5*\x))});
+      \foreach \x in {0.3,0.7,1.1,1.5,1.9,2.3,2.7,3.1,3.5,3.9,4.3,4.7,5.1}
+        \node[dot] at (\x, {0.65*sin(deg(0.9*\x))+0.15*\x*sin(deg(2.5*\x))}) {};
+      \node[below, font=\footnotesize] at (2.7,-1.7) {$(d)$ Autocorr.\ con varianza creciente};
+    \end{scope}
+  \end{tikzpicture}
+
+  \vspace{0.6cm}
+
+  % ---- ROW 3: panel (e) centrado ----
+  \begin{tikzpicture}[scale=0.85,
+      axis/.style={->, >=Stealth, thick},
+      dot/.style={circle, fill=negro, inner sep=1.2pt},
+    ]
+    \begin{scope}[xshift=3.5cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.5) -- (0,1.6)  node[above]{\footnotesize $\hat{u}_t$};
+      \node[left, font=\scriptsize] at (0,0) {$0$};
+      \foreach \x/\y in {
+        0.4/0.1, 0.8/0.1, 1.2/0.05, 1.6/-0.05, 2.0/0.1,
+        2.4/-0.1, 2.8/0.1, 3.2/-0.05, 3.6/0.1, 4.0/0.0,
+        4.4/0.1, 4.8/-0.1, 5.2/0.1}
+        \node[dot] at (\x,\y) {};
+      \node[below, font=\footnotesize] at (2.7,-1.7) {$(e)$ Casi sin autocorrelación (ruido blanco)};
+    \end{scope}
+  \end{tikzpicture}
+
+  \caption{Patrones de autocorrelación y no autocorrelación en los
+    residuos (Gujarati \& Porter, figura~12.1). Los paneles~$(a)$ y~$(b)$
+    ilustran autocorrelación positiva y negativa en series de tiempo;
+    $(c)$ muestra el patrón ideal; $(d)$ combina autocorrelación y
+    heterocedasticidad; $(e)$ corresponde al ruido blanco.}
+  \label{fig:patrones}
 \end{figure}
 
-\subsection{Contraste de Breusch-Godfrey (LM)}
-A diferencia de Durbin-Watson, la prueba de Multiplicador de Lagrange (LM) permite detectar autocorrelación de orden superior ($AR(p)$) y es válida incluso si existen variables dependientes rezagadas ($Y_{t-1}$).
+% ============================================================
+%  FIGURA 12.2 — Sesgo por forma funcional incorrecta
+% ============================================================
+\subsection{Sesgo de Especificación: Forma Funcional Incorrecta}
+\label{subsec:sesgo-func}
 
-\textbf{Procedimiento:}
-\begin{enumerate}
-    \item Estimar el modelo original por MCO y obtener los residuos $\hat{u}_t$.
-    \item Correr la regresión auxiliar:
-    \begin{equation}
-        \hat{u}_t = \alpha_1 + \alpha_2 X_t + \rho_1 \hat{u}_{t-1} + \rho_2 \hat{u}_{t-2} + \dots + \rho_p \hat{u}_{t-p} + \varepsilon_t
-    \end{equation}
-    \item Probar la hipótesis nula $H_0: \rho_1 = \rho_2 = \dots = \rho_p = 0$.
-    \item El estadístico de prueba es $(n-p)R^2 \sim \chi^2_p$.
+Un caso importante de \emph{falsa} autocorrelación surge cuando la
+\textbf{forma funcional del modelo es incorrecta} (Gujarati \& Porter,
+figura~12.2). Si la verdadera relación es curvilínea pero se estima una
+recta, los residuos mostrarán un patrón sistemático.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[scale=1.0,
+      axis/.style={->, >=Stealth, thick},
+      dot/.style={circle, fill=negro, inner sep=1.5pt},
+    ]
+    \draw[axis] (-0.3,0) -- (7.5,0) node[right]{\footnotesize Producción};
+    \draw[axis] (0,-0.3) -- (0,5.5)
+      node[above, align=center, font=\footnotesize]
+      {Costo marginal\\de producción};
+    \node[left, font=\scriptsize] at (0,0) {$0$};
+
+    % Curva U verdadera (costos marginales en U)
+    \draw[thick, domain=0.5:7.0, smooth, variable=\x]
+      plot(\x, {0.25*(\x-3.5)^2 + 0.9});
+
+    % Recta MCO ajustada (pendiente positiva, pasa entre los datos)
+    \draw[thick, dashed, domain=0.5:7.0]
+      plot(\x, {0.38*\x + 0.3})
+      node[right, font=\footnotesize]{$B$};
+    \node[below right, font=\footnotesize] at (1.2, 0.76) {$A$};
+
+    % Puntos de datos alrededor de la curva U
+    \foreach \x/\yd in {
+      0.6/2.5, 0.9/2.1, 1.2/1.8, 1.5/1.5, 1.8/1.3, 2.1/1.1,
+      2.4/1.0, 2.7/0.95, 3.0/0.92, 3.3/0.94, 3.6/1.0,
+      3.9/1.1, 4.2/1.3, 4.5/1.6, 4.8/2.0, 5.1/2.5,
+      5.4/3.1, 5.7/3.8, 6.0/4.5, 6.3/5.2}
+      \node[dot] at (\x, \yd) {};
+
+    \node[below, font=\footnotesize] at (3.5,-0.5)
+      {\itshape Sesgo de especificación: forma funcional incorrecta};
+  \end{tikzpicture}
+  \caption{Figura~12.2 de Gujarati \& Porter. Ajustar una recta $AB$
+    a datos que siguen una relación cuadrática genera residuos con
+    patrón sistemático (+, +, −, −, +, +), simulando autocorrelación
+    cuando en realidad el problema es de \emph{forma funcional incorrecta}.}
+  \label{fig:sesgo-func}
+\end{figure}
+
+% ============================================================
+%  FIGURA 12.3 — Autocorrelación positiva y negativa (scatter u_t vs u_{t-1})
+% ============================================================
+\subsection{Diagramas de Dispersión $\hat{u}_t$ vs.\ $\hat{u}_{t-1}$}
+\label{subsec:scatter}
+
+La \textbf{Figura \ref{fig:scatter}} (Gujarati \& Porter, figura~12.3)
+muestra los diagramas de dispersión que permiten diagnosticar visualmente
+la autocorrelación al graficar el residuo actual contra el residuo
+rezagado un periodo.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[scale=0.9,
+      axis/.style={->, >=Stealth, thick},
+      dot/.style={circle, fill=negro, inner sep=1.3pt},
+    ]
+    % ===== Panel superior izquierdo: serie temporal positiva =====
+    \begin{scope}[xshift=0cm, yshift=5cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.6) -- (0,1.8) node[above]{\footnotesize $u_t$};
+      \node[left,font=\scriptsize] at (0,0) {$0$};
+      \draw[thick, domain=0.1:5.5, smooth, variable=\x]
+        plot(\x, {1.2*sin(deg(1.15*\x))});
+      \foreach \x in {0.3,0.7,1.1,1.5,1.9,2.3,2.7,3.1,3.5,3.9,4.3,4.7,5.1,5.5}
+        \node[dot] at (\x, {1.2*sin(deg(1.15*\x))}) {};
+    \end{scope}
+
+    % ===== Panel superior derecho: scatter positivo =====
+    \begin{scope}[xshift=7.5cm, yshift=5cm]
+      \draw[axis] (-1.8,0) -- (1.9,0) node[right]{\footnotesize $u_{t-1}$};
+      \draw[axis] (0,-1.8) -- (0,1.8) node[above]{\footnotesize $u_t$};
+      \node[below left,font=\scriptsize] at (0,0) {$0$};
+      % nube de puntos diagonal positiva
+      \foreach \x/\y in {
+        -1.5/-1.3, -1.3/-1.1, -1.1/-1.0, -0.9/-0.7, -0.7/-0.6,
+        -0.5/-0.4, -0.3/-0.2,  0.0/0.1,  0.2/0.3,   0.4/0.5,
+         0.6/0.7,  0.8/0.9,  1.0/1.1,  1.2/1.3,  1.4/1.5}
+        \node[dot] at (\x,\y) {};
+      % elipse orientada positivamente
+      \draw[thick] (0,0) ellipse [x radius=1.5, y radius=0.55,
+        rotate around={45:(0,0)}];
+    \end{scope}
+
+    % Etiqueta panel a)
+    \node[font=\footnotesize\itshape] at (3,-1.0) {$a)$};
+
+    % ===== Panel inferior izquierdo: serie temporal negativa =====
+    \begin{scope}[xshift=0cm, yshift=0cm]
+      \draw[axis] (-0.2,0) -- (5.8,0) node[right]{\footnotesize Tiempo};
+      \draw[axis] (0,-1.6) -- (0,1.8) node[above]{\footnotesize $u_t$};
+      \node[left,font=\scriptsize] at (0,0) {$0$};
+      \foreach \i in {0,...,12}{
+        \pgfmathsetmacro{\xx}{0.4+0.42*\i}
+        \pgfmathsetmacro{\yy}{1.2*((-1)^\i)}
+        \node[dot] at (\xx,\yy) {};
+      }
+      \draw[thick]
+        (0.4,1.2) -- (0.82,-1.2) -- (1.24,1.2) -- (1.66,-1.2) --
+        (2.08,1.2) -- (2.50,-1.2) -- (2.92,1.2) -- (3.34,-1.2) --
+        (3.76,1.2) -- (4.18,-1.2) -- (4.60,1.2) -- (5.02,-1.2) -- (5.44,1.2);
+    \end{scope}
+
+    % ===== Panel inferior derecho: scatter negativo =====
+    \begin{scope}[xshift=7.5cm, yshift=0cm]
+      \draw[axis] (-1.8,0) -- (1.9,0) node[right]{\footnotesize $u_{t-1}$};
+      \draw[axis] (0,-1.8) -- (0,1.8) node[above]{\footnotesize $u_t$};
+      \node[below left,font=\scriptsize] at (0,0) {$0$};
+      % nube de puntos diagonal negativa
+      \foreach \x/\y in {
+        -1.5/1.3, -1.3/1.1, -1.1/1.0, -0.9/0.7, -0.7/0.6,
+        -0.5/0.4, -0.3/0.2,  0.0/-0.1, 0.2/-0.3, 0.4/-0.5,
+         0.6/-0.7, 0.8/-0.9, 1.0/-1.1, 1.2/-1.3, 1.4/-1.5}
+        \node[dot] at (\x,\y) {};
+      % elipse orientada negativamente
+      \draw[thick] (0,0) ellipse [x radius=1.5, y radius=0.55,
+        rotate around={-45:(0,0)}];
+    \end{scope}
+
+    % Etiqueta panel b)
+    \node[font=\footnotesize\itshape] at (3,-6.1) {$b)$};
+
+  \end{tikzpicture}
+  \caption{Figura~12.3 de Gujarati \& Porter. Izquierda: serie temporal
+    de los residuos. Derecha: diagrama de dispersión $\hat{u}_t$ contra
+    $\hat{u}_{t-1}$. Panel~$a)$: autocorrelación \emph{positiva} (elipse
+    orientada noreste-suroeste). Panel~$b)$: autocorrelación \emph{negativa}
+    (elipse orientada noroeste-sureste).}
+  \label{fig:scatter}
+\end{figure}
+
+% ============================================================
+%  SECCIÓN 3 — CAUSAS DE LA AUTOCORRELACIÓN
+% ============================================================
+\section{Causas de la Autocorrelación}
+\label{sec:causas}
+
+\subsection{Inercia o Tendencia Común}
+
+Las series macroeconómicas (PIB, consumo, inversión) presentan
+\textbf{inercia}: el valor presente depende del valor pasado. Formalmente,
+si $X_t$ tiene componente autorregresivo, esto se transmite al error $u_t$
+a través de la dinámica del modelo. En periodos cortos (diario, semanal,
+mensual), los cambios tienden a ser graduales, no aleatorios.
+
+\subsection{Sesgo de Especificación: Omisión de Variables Relevantes}
+
+Si se omite una variable $Z_t$ que evoluciona sistemáticamente en el tiempo,
+su efecto queda absorbido por el término de error, generando autocorrelación.
+
+\begin{ejemplo}[Inversión con variable omitida]
+  Suponga la función de inversión real:
+  \begin{align}
+    \text{(Modelo incorrecto)}\quad
+    I_t &= \beta_1 + \beta_2\,\text{Ingreso}_t
+           + \beta_3\,\text{Impuestos}_t + u_t, \label{eq:inversion-mal}\\
+    \text{(Modelo correcto)}\quad
+    I_t &= \alpha_1 + \alpha_2\,\text{Ingreso}_t
+           + \alpha_3\,\text{Impuestos}_t
+           + \alpha_4\,\text{TasaInterés}_t + v_t. \label{eq:inversion-bien}
+  \end{align}
+  En \eqref{eq:inversion-mal}, $u_t = \alpha_4\,\text{TasaInterés}_t + v_t$.
+  Como la tasa de interés sigue un proceso persistente,
+  $\operatorname{Cov}(u_t, u_{t-1}) \neq 0$.
+\end{ejemplo}
+
+\subsection{Omisión de Efectos Dinámicos (Variables Rezagadas)}
+
+En muchos fenómenos económicos, el pasado determina el presente.
+
+\begin{ejemplo}[Oferta agrícola]
+  El agricultor decide cuánto sembrar en función del precio
+  \emph{anterior}, no del actual:
+  \begin{align*}
+    \text{(Incorrecto)}\quad
+    S_t &= \beta_1 + \beta_2 P_t - \beta_3 C_t + u_t,\\
+    \text{(Correcto)}\quad
+    S_t &= \beta_1 + \beta_2 P_{t-1} - \beta_3 C_{t-1} + u_t,
+  \end{align*}
+  donde $P_t$ es el precio y $C_t$ el costo de producción. Omitir el
+  rezago introduce autocorrelación como artefacto.
+\end{ejemplo}
+
+\subsection{Transformación de Datos: Primeras Diferencias}
+
+Para eliminar tendencias estocásticas o reducir multicolinealidad, se
+trabaja en primeras diferencias:
+$\Delta Y_t = Y_t - Y_{t-1}$. Si el modelo original tenía $u_t \sim
+\text{MA}(1)$, la diferenciación puede inducir autocorrelación de
+primer orden en los nuevos errores.
+
+\subsection{Manipulación de los Datos (Interpolación/Extrapolación)}
+
+Completar datos faltantes mediante interpolación lineal o cúbica
+introduce \emph{dependencia artificial} entre observaciones contiguas,
+pues los valores imputados son combinaciones lineales de observaciones
+vecinas.
+
+\subsection{Fenómeno de la Telaraña (\textit{Cobweb Phenomenon})}
+
+En mercados como el agrícola o ganadero, la oferta reacciona con un
+rezago de un periodo completo al precio vigente:
+\begin{equation}
+  Q_t^S = f(P_{t-1}), \quad Q_t^D = g(P_t), \quad
+  Q_t^S = Q_t^D.
+  \label{eq:telarana}
+\end{equation}
+El ciclo oferta-precio genera una estructura de error correlacionada
+que se transmite al modelo econométrico.
+
+\subsection{Sesgo de Especificación: Forma Funcional Incorrecta}
+
+Como se ilustró en la Figura~\ref{fig:sesgo-func}: ajustar una función
+lineal a datos con relación cuadrática genera residuos con patrón
+sistemático que parece autocorrelación, pero es en realidad un problema
+de \emph{mala especificación}.
+
+% ============================================================
+%  SECCIÓN 4 — CONSECUENCIAS DE LA AUTOCORRELACIÓN
+% ============================================================
+\section{Consecuencias de Ignorar la Autocorrelación}
+\label{sec:consecuencias}
+
+\begin{teorema}[Propiedades de MCO bajo autocorrelación AR(1)]
+  Si $u_t = \rho\, u_{t-1} + \varepsilon_t$ con $|\rho|<1$ y se
+  utiliza MCO para estimar $\boldsymbol{\hat\beta}$:
+  \begin{enumerate}[label=\textbf{(\alph*)}, itemsep=4pt]
+    \item $\boldsymbol{\hat\beta}$ sigue siendo \textbf{insesgado}:
+          $E(\boldsymbol{\hat\beta}) = \boldsymbol{\beta}$.
+    \item $\boldsymbol{\hat\beta}$ sigue siendo \textbf{consistente}.
+    \item $\boldsymbol{\hat\beta}$ \textbf{no} es eficiente; existe un
+          estimador lineal insesgado con menor varianza (MCG).
+    \item La matriz $\operatorname{Var}(\boldsymbol{\hat\beta}_{MCO})$
+          estimada por $s^2(\mathbf{X}'\mathbf{X})^{-1}$ está
+          \textbf{sesgada} (generalmente subestima la varianza real).
+    \item Las pruebas $t$, $F$ y los intervalos de confianza son
+          \textbf{inválidos}.
+  \end{enumerate}
+\end{teorema}
+
+\subsection{Varianza Real del Estimador MCO bajo AR(1)}
+
+Para el modelo simple $Y_t = \beta_1 + \beta_2 X_t + u_t$ con
+$u_t = \rho\, u_{t-1} + \varepsilon_t$, la verdadera varianza del
+estimador de la pendiente es:
+
+\begin{equation}
+  \operatorname{Var}(\hat\beta_2^{MCO})
+  = \frac{\sigma^2}{\sum x_t^2}
+    \left[
+      1 + 2\rho \frac{\sum_{t=2}^{T} x_t x_{t-1}}{\sum x_t^2}
+        + 2\rho^2 \frac{\sum_{t=3}^{T} x_t x_{t-2}}{\sum x_t^2}
+        + \cdots
+    \right],
+  \label{eq:var-real}
+\end{equation}
+
+donde $x_t = X_t - \bar{X}$. El término entre corchetes puede ser
+considerablemente mayor que 1 cuando $\rho > 0$ y $X_t$ es una serie
+creciente, lo que implica que la varianza \emph{estimada} por MCO
+subestima la verdadera.
+
+% ============================================================
+%  FIGURA 12.4 — Intervalos de confianza MCO vs MCG
+% ============================================================
+\subsection{Intervalos de Confianza: MCO vs.\ MCG}
+\label{subsec:ic}
+
+La \textbf{Figura \ref{fig:intervalos}} (Gujarati \& Porter, figura~12.4)
+ilustra las consecuencias prácticas: el intervalo de confianza MCO al
+95\% es \emph{más estrecho} que el correcto (MCG), lo que lleva a
+rechazar falsamente $H_0: \beta_2 = 0$.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[scale=1.0,
+      axis/.style={->, >=Stealth, thick},
+    ]
+    % Eje horizontal
+    \draw[axis] (-4.5,0) -- (4.5,0) node[right]{\footnotesize $\hat\beta_2$};
+    % Curva normal (distribución de muestreo)
+    \draw[very thick, domain=-4:4, smooth, variable=\x]
+      plot(\x, {3.2*exp(-0.5*\x*\x)});
+
+    % Punto b_2 (estimación particular)
+    \node[circle, fill=negro, inner sep=2pt, label={below:\footnotesize $b_2$}]
+      at (1.6,0) {};
+
+    % Valor hipotético H_0: beta_2 = 0
+    \node[circle, fill=grisMedio, inner sep=2pt,
+          label={above right:\footnotesize $H_0:\beta_2=0$}] at (0,3.2) {};
+    \draw[dashed, thick] (0,0) -- (0,3.5) node[above]{\footnotesize $\hat\beta_2=0$};
+
+    % Intervalo MCG (correcto, más amplio)
+    \draw[{|[width=4pt]}-{|[width=4pt]}, very thick]
+      (-2.6,0.4) -- (2.6,0.4);
+    \node[font=\footnotesize, below] at (0,0.22) {Intervalo al 95\% de MCG};
+    \node[font=\scriptsize] at (-2.6,0.7) {\footnotesize$\longleftarrow$};
+    \node[font=\scriptsize] at ( 2.6,0.7) {\footnotesize$\longrightarrow$};
+
+    % Intervalo MCO (sesgado, más estrecho)
+    \draw[{|[width=4pt]}-{|[width=4pt]}, thick, dashed]
+      (-1.2,-0.5) -- (1.2,-0.5);
+    \node[font=\footnotesize, below] at (0,-0.65) {Intervalo al 95\% de MCO};
+
+    % Anotación "región de rechazo"
+    \draw[->, thick, gray] (3.2, 2.0) node[right, font=\footnotesize]
+      {$b_2$ cae fuera del IC de MCG} -- (1.7, 0.05);
+
+    % Anotación "b_2 dentro del IC de MCO"
+    \draw[->, thick, gray, dashed] (-3.2, -1.5)
+      node[left, align=right, font=\footnotesize]
+        {$b_2$ cae \emph{dentro}\\del IC de MCO} -- (1.55, -0.55);
+
+  \end{tikzpicture}
+  \caption{Figura~12.4 de Gujarati \& Porter. Distribución muestral de
+    $\hat\beta_2$ bajo $H_0:\beta_2 = 0$. El estimador particular $b_2$
+    cae \emph{dentro} del IC de MCO (incorrecto) pero \emph{fuera}
+    del IC de MCG (correcto). Conclusión: \textbf{MCO acepta} falsamente
+    $H_0$; \textbf{MCG rechaza} correctamente $H_0$.}
+  \label{fig:intervalos}
+\end{figure}
+
+\begin{advertencia}
+  \textbf{Mensaje central.} Para establecer intervalos de confianza
+  y probar hipótesis en presencia de autocorrelación, debe utilizarse
+  el \textbf{Método de Mínimos Cuadrados Generalizados (MCG)}, no MCO,
+  aunque los estimadores derivados de MCO sean insesgados y consistentes.
+  (Véase Gujarati \& Porter, secc.~12.11.)
+\end{advertencia}
+
+% ============================================================
+%  SECCIÓN 5 — DETECCIÓN DE LA AUTOCORRELACIÓN
+% ============================================================
+\section{Detección de la Autocorrelación}
+\label{sec:deteccion}
+
+\subsection{Inspección Gráfica de los Residuos}
+
+El análisis gráfico es el primer paso. Se grafica $\hat{u}_t$ contra:
+\begin{enumerate}[label=\textbf{(\alph*)}, itemsep=3pt]
+  \item el tiempo $t$,
+  \item el valor rezagado $\hat{u}_{t-1}$,
+  \item los valores ajustados $\hat{Y}_t$.
 \end{enumerate}
+Los patrones descritos en la Figura~\ref{fig:patrones} son el diagnóstico
+visual de referencia.
 
-\section{Medidas remediales: corrección de la autocorrelación}
-Si se confirma la existencia de autocorrelación pura (no debida a sesgo de especificación), existen dos caminos principales:
+\subsection{Test de Durbin-Watson}
+\label{subsec:dw}
 
-\subsection{Mínimos cuadrados generalizados (MCG)}
-Si conocemos la estructura de la autocorrelación (ej. un modelo $AR(1)$ con $\rho$ conocido), transformamos las variables para que el error sea ruido blanco.
+Es el test más utilizado para detectar autocorrelación de \textbf{primer
+orden} en residuos de modelos estimados por MCO.
 
-\textbf{Transformación de Cochrane-Orcutt:}
-Se define un nuevo modelo transformado:
+\subsubsection{Estadístico}
+
 \begin{equation}
-    Y^*_t = \beta_1^* + \beta_2 X^*_t + \varepsilon_t
+  d = \frac{\displaystyle\sum_{t=2}^{T}(\hat{u}_t - \hat{u}_{t-1})^2}
+           {\displaystyle\sum_{t=1}^{T}\hat{u}_t^2}
+  \label{eq:dw}
 \end{equation}
-Donde:
-\begin{itemize}
-    \item $Y^*_t = Y_t - \rho Y_{t-1}$
-    \item $X^*_t = X_t - \rho X_{t-1}$
-    \item $\beta_1^* = \beta_1(1-\rho)$
-\end{itemize}
-Este estimador es \textbf{MELI} (Mejor Estimador Lineal Insesgado).
 
-\subsection{Errores estándar robustos (Newey-West)}
-Si no queremos transformar el modelo o no conocemos la forma exacta de la autocorrelación, usamos el método de \textbf{HAC} (Heteroscedasticity and Autocorrelation Consistent).
-\begin{itemize}
-    \item Los coeficientes $\hat{\beta}$ siguen siendo los de MCO.
-    \item Se corrigen las desviaciones estándar para que las pruebas $t$ y $F$ sean válidas.
-    \item Es la opción preferida en software moderno (Stata, R, Python) para muestras grandes.
-\end{itemize}
+\subsubsection{Relación con $\hat\rho$}
 
-\subsection{Resumen comparativo de pruebas}
-\begin{table}[h]
-\centering
-\caption{Comparación de pruebas de autocorrelación}
-\label{tab:comparacion}
-\begin{tabular}{lll}
-\toprule
-\textbf{Prueba} & \textbf{Ventajas} & \textbf{Limitaciones} \\
-\midrule
-Durbin-Watson & Fácil de calcular, muy común. & Solo AR(1), no admite $Y_{t-1}$. \\
-Test de Rachas & No paramétrico (no requiere Normalidad). & Menos potente estadísticamente. \\
-Breusch-Godfrey & Admite órdenes superiores y rezagos. & Requiere muestras grandes. \\
-\bottomrule
-\end{tabular}
+Expandiendo \eqref{eq:dw} y usando la aproximación
+$\hat\rho \approx \frac{\sum_{t=2}^T \hat u_t \hat u_{t-1}}
+                       {\sum_{t=1}^T \hat u_t^2}$:
+
+\begin{equation}
+  d \approx 2(1 - \hat\rho).
+  \label{eq:dw-rho}
+\end{equation}
+
+Por tanto:
+
+\begin{table}[H]
+  \centering
+  \caption{Relación entre el estadístico $d$ de Durbin-Watson y
+           el grado de autocorrelación.}
+  \label{tab:dw-valores}
+  \begin{tabular}{ccc}
+    \toprule
+    $\hat\rho$ & $d \approx 2(1-\hat\rho)$ & Interpretación \\
+    \midrule
+    $+1$       & $0$                        & Autocorrelación positiva perfecta \\
+    $+0.5$     & $1$                        & Autocorrelación positiva fuerte \\
+    $0$        & $2$                        & Sin autocorrelación \\
+    $-0.5$     & $3$                        & Autocorrelación negativa fuerte \\
+    $-1$       & $4$                        & Autocorrelación negativa perfecta \\
+    \bottomrule
+  \end{tabular}
 \end{table}
 
-\section{Ilustraciones gráficas adicionales}
-A continuación se presentan tres gráficos detallados que complementan el análisis de la autocorrelación.
+\subsubsection{Regla de Decisión}
 
-\subsection{Patrones de residuos: autocorrelación positiva vs. negativa}
-La Figura \ref{fig:patrones} muestra dos patrones extremos: (a) autocorrelación positiva, donde los residuos consecutivos tienden a tener el mismo signo, generando rachas largas; (b) autocorrelación negativa, donde los residuos alternan signo sistemáticamente. Ambos casos violan el supuesto de independencia.
+Sea $d_L$ y $d_U$ los valores críticos inferior y superior de las
+tablas de Durbin-Watson para un nivel de significancia $\alpha$,
+tamaño de muestra $n$ y número de regresores $k$:
 
-\begin{figure}[h]
-\centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=\textwidth,
-    height=5cm,
-    xlabel={$t$},
-    ylabel={$e_t$},
-    axis lines=center,
-    grid=major,
-    grid style={dashed,gray!50},
-    ymin=-1.5, ymax=1.5,
-    xmin=0, xmax=20,
-    title={(a) Autocorrelación positiva}
-]
-\addplot[only marks, mark=*, mark size=1.5pt, black] coordinates {
-    (1,0.4) (2,0.8) (3,1.1) (4,0.9) (5,0.6) (6,0.1) (7,-0.4) (8,-0.8) (9,-1.1) (10,-0.9)
-    (11,-0.5) (12,0.1) (13,0.6) (14,1.0) (15,1.1) (16,0.7) (17,0.2) (18,-0.3) (19,-0.7) (20,-1.0)
-};
-\addplot[black, dashed, thick, domain=0:20, samples=2] {0};
-\end{axis}
-\end{tikzpicture}
-\end{subfigure}
-\hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=\textwidth,
-    height=5cm,
-    xlabel={$t$},
-    ylabel={$e_t$},
-    axis lines=center,
-    grid=major,
-    grid style={dashed,gray!50},
-    ymin=-1.5, ymax=1.5,
-    xmin=0, xmax=20,
-    title={(b) Autocorrelación negativa}
-]
-\addplot[only marks, mark=*, mark size=1.5pt, black] coordinates {
-    (1,0.8) (2,-0.7) (3,0.9) (4,-1.1) (5,0.6) (6,-0.9) (7,1.1) (8,-0.8) (9,0.7) (10,-1.2)
-    (11,0.5) (12,-0.6) (13,0.9) (14,-1.0) (15,0.4) (16,-0.7) (17,1.0) (18,-0.8) (19,0.3) (20,-0.9)
-};
-\addplot[black, dashed, thick, domain=0:20, samples=2] {0};
-\end{axis}
-\end{tikzpicture}
-\end{subfigure}
-\caption{Patrones de residuos que indican autocorrelación: (a) rachas largas del mismo signo sugieren autocorrelación positiva; (b) alternancia sistemática de signos sugiere autocorrelación negativa. La línea punteada representa la media cero.}
-\label{fig:patrones}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[scale=1.1,
+      axis/.style={->, >=Stealth, thick},
+    ]
+    % Eje
+    \draw[thick] (0,0) -- (8,0);
+    \draw[thick] (0,-0.15) -- (0,0.15);
+    \draw[thick] (8,-0.15) -- (8,0.15);
+    % Marcas
+    \foreach \x/\lb in {0/0, 2/\small$d_L$, 3.5/\small$d_U$,
+                         4.5/\small$4-d_U$, 6/\small$4-d_L$, 8/4}{
+      \draw[thick] (\x,-0.15) -- (\x,0.15);
+      \node[below, font=\small] at (\x,-0.15) {$\lb$};
+    }
+    % Zonas sombreadas
+    \fill[pattern=north east lines, pattern color=grisOscuro]
+      (0,0) rectangle (2,0.5);
+    \fill[grisPalido] (2,0) rectangle (3.5,0.5);
+    \fill[white]      (3.5,0) rectangle (4.5,0.5);
+    \fill[grisPalido] (4.5,0) rectangle (6,0.5);
+    \fill[pattern=north east lines, pattern color=grisOscuro]
+      (6,0) rectangle (8,0.5);
+    % Etiquetas de zona
+    \node[font=\scriptsize, align=center] at (1.0, 0.7)
+      {Rechazar $H_0$\\(autocorr.\\\emph{positiva})};
+    \node[font=\scriptsize, align=center] at (2.75, 0.7)
+      {Zona de\\indecisión};
+    \node[font=\scriptsize, align=center] at (4.0, 0.7)
+      {No rechazar $H_0$\\(sin autocorr.)};
+    \node[font=\scriptsize, align=center] at (5.25, 0.7)
+      {Zona de\\indecisión};
+    \node[font=\scriptsize, align=center] at (7.0, 0.7)
+      {Rechazar $H_0$\\(autocorr.\\\emph{negativa})};
+  \end{tikzpicture}
+  \caption{Regla de decisión del test de Durbin-Watson.
+    $H_0$: no hay autocorrelación ($\rho = 0$).}
+  \label{fig:dw-decision}
 \end{figure}
 
-\subsection{Sesgo de especificación: modelo lineal vs. verdadero cuadrático}
-La Figura \ref{fig:especificacion} ilustra cómo la omisión de un término cuadrático genera residuos con un patrón sistemático. En el panel superior se muestra la nube de puntos de la relación verdadera (con forma de U) junto con la recta de regresión lineal estimada. El panel inferior muestra los residuos resultantes, que presentan una clara forma parabólica, violando el supuesto de media cero condicional y generando autocorrelación espuria.
+\subsubsection{Limitaciones del Test DW}
 
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=12cm,
-    height=6cm,
-    xlabel={$X$ (producción)},
-    ylabel={$Y$ (costo marginal)},
-    axis lines=left,
-    grid=major,
-    grid style={dashed,gray!50},
-    ymin=0, ymax=10,
-    xmin=0, xmax=10,
-    title={Relación verdadera (curva en U) y ajuste lineal}
-]
-\addplot[only marks, mark=*, mark size=1.2pt, black!70] {0.4*(x-5)^2 + 2 + 0.5*rand};
-\addplot[domain=1:9, thick, black] {0.5*x + 3.5};
-\addplot[domain=1:9, dashed, thick, black] {0.4*(x-5)^2 + 2};
-\legend{Datos observados, Regresión lineal (mal especificada), Relación verdadera}
-\end{axis}
-\end{tikzpicture}
-\vspace{0.5cm}
-\begin{tikzpicture}
-\begin{axis}[
-    width=12cm,
-    height=4cm,
-    xlabel={$X$},
-    ylabel={Residuos $e$},
-    axis lines=center,
-    grid=major,
-    grid style={dashed,gray!50},
-    ymin=-2, ymax=2,
-    xmin=0, xmax=10,
-    title={Residuos del modelo lineal: patrón parabólico}
-]
-\addplot[only marks, mark=*, mark size=1.2pt, black!70] coordinates {
-    (1, -0.5) (1.5, -1.2) (2, -1.6) (2.5, -1.9) (3, -1.8) (3.5, -1.5) (4, -1.0) (4.5, -0.3)
-    (5, 0.5) (5.5, 1.3) (6, 1.7) (6.5, 1.9) (7, 1.6) (7.5, 1.0) (8, 0.4) (8.5, -0.2) (9, -0.9)
-};
-\addplot[domain=1:9, dashed, thick, black] {0.2*(x-5)^2 - 0.5};
-\end{axis}
-\end{tikzpicture}
-\caption{Consecuencias de la omisión de una variable cuadrática. Superior: la verdadera relación es $Y=0.4(X-5)^2+2$ (curva en U), pero se ajusta un modelo lineal $Y=\beta_1+\beta_2X+u$. Inferior: los residuos muestran un patrón sistemático que indica mala especificación y puede inducir autocorrelación espuria.}
-\label{fig:especificacion}
+\begin{enumerate}[label=\textbf{\arabic*.}, itemsep=4pt]
+  \item Solo detecta autocorrelación de \textbf{primer orden}.
+  \item No es válido cuando el modelo incluye valores rezagados de $Y_t$
+        como regresor (\textbf{modelos dinámicos}).
+  \item Existe una \textbf{zona de indecisión} $[d_L, d_U]$ y
+        $[4-d_U, 4-d_L]$.
+  \item Los valores críticos dependen de la matriz $\mathbf{X}$.
+\end{enumerate}
+
+\subsection{Test de Breusch-Godfrey (LM)}
+
+Supera las limitaciones del DW al permitir probar autocorrelación de
+\textbf{orden arbitrario} $p$. El procedimiento es:
+
+\begin{enumerate}[label=\textbf{Paso \arabic*.}, leftmargin=3em, itemsep=5pt]
+  \item Estimar el modelo por MCO y obtener $\hat{u}_t$.
+  \item Regresar $\hat{u}_t$ sobre $\mathbf{x}_t$ (regresores originales)
+        y los rezagos $\hat{u}_{t-1}, \hat{u}_{t-2}, \ldots, \hat{u}_{t-p}$.
+  \item El estadístico LM es:
+        \begin{equation}
+          LM = (T - p)\,R^2 \xrightarrow{H_0} \chi^2(p).
+          \label{eq:bg-lm}
+        \end{equation}
+  \item Rechazar $H_0$ (no autocorrelación de orden $p$) si
+        $LM > \chi^2_{\alpha,p}$.
+\end{enumerate}
+
+% ============================================================
+%  SECCIÓN 6 — ESTIMACIÓN POR MCO IGNORANDO AUTOCORRELACIÓN
+% ============================================================
+\section{Estimación por MCO Ignorando la Autocorrelación}
+\label{sec:estimacion-mco}
+
+Si se ignora la autocorrelación y se aplica MCO al modelo
+$\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{u}$ con
+$E(\mathbf{u}\mathbf{u}') = \sigma^2\boldsymbol{\Omega} \neq
+\sigma^2\mathbf{I}$:
+
+\begin{align}
+  \boldsymbol{\hat\beta}_{MCO}
+    &= (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y},
+       \label{eq:beta-mco}\\
+  E(\boldsymbol{\hat\beta}_{MCO})
+    &= \boldsymbol{\beta}, \label{eq:insesgado}\\
+  \operatorname{Var}(\boldsymbol{\hat\beta}_{MCO})
+    &= \sigma^2(\mathbf{X}'\mathbf{X})^{-1}
+       \mathbf{X}'\boldsymbol{\Omega}\mathbf{X}
+       (\mathbf{X}'\mathbf{X})^{-1}. \label{eq:var-verdadera}
+\end{align}
+
+MCO \emph{estima} la varianza con $\widehat{\operatorname{Var}} =
+s^2(\mathbf{X}'\mathbf{X})^{-1}$, que es \textbf{incorrecta} cuando
+$\boldsymbol{\Omega} \neq \mathbf{I}$.
+
+% ============================================================
+%  SECCIÓN 7 — CORRECCIÓN: MÍNIMOS CUADRADOS GENERALIZADOS
+% ============================================================
+\section{Corrección: Mínimos Cuadrados Generalizados (MCG)}
+\label{sec:mcg}
+
+\subsection{MCG Exactos}
+
+Si $\boldsymbol{\Omega}$ es conocida, el estimador MCG es:
+
+\begin{equation}
+  \boldsymbol{\hat\beta}_{MCG}
+    = (\mathbf{X}'\boldsymbol{\Omega}^{-1}\mathbf{X})^{-1}
+      \mathbf{X}'\boldsymbol{\Omega}^{-1}\mathbf{Y},
+  \label{eq:mcg}
+\end{equation}
+
+con varianza:
+
+\begin{equation}
+  \operatorname{Var}(\boldsymbol{\hat\beta}_{MCG})
+    = \sigma^2 (\mathbf{X}'\boldsymbol{\Omega}^{-1}\mathbf{X})^{-1}.
+  \label{eq:var-mcg}
+\end{equation}
+
+Por el Teorema de Aitken, $\boldsymbol{\hat\beta}_{MCG}$ es BLUE.
+
+\subsection{Transformación de Prais-Winsten}
+
+En la práctica, $\rho$ es desconocido. El procedimiento estándar
+transforma las variables para eliminar la autocorrelación.
+
+Para el modelo $Y_t = \beta_1 + \beta_2 X_t + u_t$ con $u_t = \rho
+u_{t-1} + \varepsilon_t$:
+
+\begin{align}
+  Y_t^* &= Y_t - \rho\, Y_{t-1}, \label{eq:yt-star}\\
+  X_t^* &= X_t - \rho\, X_{t-1}, \label{eq:xt-star}
+\end{align}
+
+lo que da el \textbf{modelo transformado}:
+
+\begin{equation}
+  Y_t^* = \beta_1^*(1-\rho) + \beta_2 X_t^* + \varepsilon_t,
+  \label{eq:modelo-transformado}
+\end{equation}
+
+donde $\varepsilon_t \sim \text{iid}(0,\sigma_\varepsilon^2)$.
+Se aplica MCO a \eqref{eq:modelo-transformado} (estimación válida).
+
+\begin{nota}
+  La observación inicial $t = 1$ se trata como $Y_1^* =
+  \sqrt{1-\rho^2}\,Y_1$ (transformación de \textbf{Prais-Winsten}),
+  conservando la eficiencia asintótica. Si se descarta la primera
+  observación se habla de \textbf{transformación de Cochrane-Orcutt}.
+\end{nota}
+
+\subsection{Estimación Iterativa de Cochrane-Orcutt}
+
+\begin{enumerate}[label=\textbf{Paso \arabic*.}, leftmargin=3em, itemsep=6pt]
+  \item Estimar el modelo original por MCO; obtener $\{\hat u_t\}$.
+  \item Estimar $\hat\rho$ mediante la regresión auxiliar:
+        \begin{equation}
+          \hat u_t = \hat\rho\,\hat u_{t-1} + v_t.
+          \label{eq:rho-auxiliar}
+        \end{equation}
+  \item Construir las variables transformadas usando \eqref{eq:yt-star}
+        y \eqref{eq:xt-star}.
+  \item Estimar \eqref{eq:modelo-transformado} por MCO para obtener
+        nuevos $\hat\beta$.
+  \item Regresar al Paso~1 con los nuevos residuos. Repetir hasta
+        convergencia ($|\hat\rho^{(k+1)} - \hat\rho^{(k)}| < \epsilon$).
+\end{enumerate}
+
+\subsection{Errores Estándar Robustos de Newey-West}
+
+Cuando la forma de $\boldsymbol{\Omega}$ es desconocida o se sospecha
+de heterocedasticidad y autocorrelación simultánea, se utilizan los
+\textbf{errores estándar HAC} (Heteroskedasticity and Autocorrelation
+Consistent) de Newey-West:
+
+\begin{equation}
+  \widehat{\operatorname{Var}}_{NW}(\boldsymbol{\hat\beta}_{MCO})
+    = (\mathbf{X}'\mathbf{X})^{-1} \hat{\mathbf{S}} (\mathbf{X}'\mathbf{X})^{-1},
+  \label{eq:nw}
+\end{equation}
+
+donde $\hat{\mathbf{S}} = \hat\sigma_0 + \sum_{j=1}^{m}
+w_j (\hat\sigma_j + \hat\sigma_j')$, con $w_j = 1 - j/(m+1)$
+(pesos de Bartlett) y $\hat\sigma_j = T^{-1}\sum_{t=j+1}^T
+\hat u_t \hat u_{t-j} \mathbf{x}_t \mathbf{x}_{t-j}'$.
+
+% ============================================================
+%  SECCIÓN 8 — RESUMEN ESQUEMÁTICO
+% ============================================================
+\section{Resumen Esquemático del Procedimiento}
+\label{sec:resumen}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+      node distance=0.9cm and 1.8cm,
+      box/.style={
+        rectangle, draw=negro, thick,
+        minimum width=4.8cm, minimum height=0.8cm,
+        text centered, font=\small, fill=grisPalido
+      },
+      decision/.style={
+        diamond, draw=negro, thick, aspect=2.5,
+        minimum width=5cm, minimum height=0.8cm,
+        text centered, font=\small, fill=blanco
+      },
+      arrow/.style={->, >=Stealth, thick},
+    ]
+    \node[box]        (A) {Especificar modelo teórico};
+    \node[box, below=of A] (B) {Estimar por MCO};
+    \node[box, below=of B] (C) {Analizar residuos $\hat u_t$};
+    \node[decision, below=of C] (D) {¿Autocorrelación?};
+    \node[box, below=of D, fill=blanco] (E) {Inferencia válida con MCO};
+    \node[box, right=3.5cm of D, fill=grisPalido] (F)
+      {Identificar causa};
+    \node[box, below=of F] (G) {¿Mala especificación?};
+    \node[box, below=of G] (H) {Reformular modelo};
+    \node[box, below=0.9cm of H] (I)
+      {Aplicar MCG / Prais-Winsten\\o errores Newey-West};
+    \node[box, below=of I, fill=blanco] (J) {Inferencia válida};
+
+    \draw[arrow] (A) -- (B);
+    \draw[arrow] (B) -- (C);
+    \draw[arrow] (C) -- (D);
+    \draw[arrow] (D) -- node[left,font=\scriptsize]{No} (E);
+    \draw[arrow] (D) -- node[above,font=\scriptsize]{Sí} (F);
+    \draw[arrow] (F) -- (G);
+    \draw[arrow] (G) -- node[left,font=\scriptsize]{Sí} (H);
+    \draw[arrow] (H.south) -- ++(0,-0.3) -| (B.east);
+    \draw[arrow] (G.south) -- node[right,font=\scriptsize]{No}(I);
+    \draw[arrow] (I) -- (J);
+  \end{tikzpicture}
+  \caption{Diagrama de flujo para el tratamiento de la autocorrelación
+    en un modelo de regresión lineal.}
+  \label{fig:flujo}
 \end{figure}
 
-\subsection{Comparación de intervalos de confianza: MCO vs. MCG}
-La Figura \ref{fig:intervalos} muestra las distribuciones del estimador $\hat{\beta}_2$ bajo dos escenarios: (i) cuando se utiliza MCO ignorando autocorrelación, y (ii) cuando se aplica MCG con la transformación correcta. Bajo MCO, la varianza está sobreestimada, generando intervalos de confianza más amplios de lo necesario (menor precisión). En cambio, MCG produce estimadores eficientes (mínima varianza) y, por lo tanto, intervalos más estrechos, mejorando la potencia de las pruebas de hipótesis.
+% ============================================================
+%  SECCIÓN 9 — TABLA COMPARATIVA MCO vs MCG
+% ============================================================
+\section{Comparación: MCO vs.\ MCG bajo Autocorrelación}
+\label{sec:comparacion}
 
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=12cm,
-    height=6cm,
-    axis lines=left,
-    xtick={0},
-    xticklabels={0},
-    ytick=\empty,
-    xmin=-5, xmax=6,
-    ymin=0, ymax=1,
-    xlabel={$\hat{\beta}_2$},
-    ylabel={Densidad},
-    title={Distribuciones de $\hat{\beta}_2$ bajo MCO (ignorando autocorrelación) y MCG (corrección)},
-    legend pos=north west
-]
-\addplot[domain=-5:5, samples=100, thick, black] {exp(-x^2/8)/sqrt(8*pi)};
-\addplot[domain=-5:5, samples=100, thick, dashed, black] {exp(-x^2/2)/sqrt(2*pi)};
-\draw[<->, thick, black] (axis cs:-3.5,0.1) -- (axis cs:3.5,0.1) node[midway,below] {IC 95\% MCO};
-\draw[<->, thick, dashed] (axis cs:-1.8,0.25) -- (axis cs:1.8,0.25) node[midway,above] {IC 95\% MCG};
-\legend{MCO, MCG}
-\end{axis}
-\end{tikzpicture}
-\caption{Comparación de la distribución de $\hat{\beta}_2$ cuando los errores siguen un proceso AR(1) con $\rho=0.8$. La curva continua (MCO) tiene mayor varianza, lo que conduce a intervalos de confianza más anchos. La curva punteada (MCG) es más eficiente (menor varianza) y sus intervalos de confianza son más estrechos, reflejando una estimación más precisa.}
-\label{fig:intervalos}
-\end{figure}
+\begin{table}[H]
+  \centering
+  \caption{Propiedades de los estimadores MCO y MCG
+           cuando existe autocorrelación AR(1).}
+  \label{tab:comparacion}
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Propiedad} & \textbf{MCO} & \textbf{MCG} \\
+    \midrule
+    Insesgado          & \checkmark   & \checkmark \\
+    Consistente        & \checkmark   & \checkmark \\
+    Eficiente (BLUE)   & $\times$     & \checkmark \\
+    Var.\ estimada correcta & $\times$ & \checkmark \\
+    Pruebas $t$ y $F$ válidas & $\times$ & \checkmark \\
+    Requiere conocer $\rho$   & No   & Sí (o estimarlo) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-\section{Ejemplo ilustrativo}
-Supongamos un modelo de demanda de dinero:
-\[
-    M_t = \beta_1 + \beta_2 \text{PIB}_t + \beta_3 r_t + u_t,
-\]
-con datos trimestrales. Al estimar por MCO se obtiene $d = 0.45$, indicando fuerte autocorrelación positiva. Se aplica el procedimiento de Cochrane-Orcutt, obteniendo $\hat{\rho}=0.78$ y coeficientes corregidos. Las pruebas de Breusch-Godfrey para rezagos 1 a 4 confirman la mejora.
+% ============================================================
+%  SECCIÓN 10 — EJEMPLO NUMÉRICO ILUSTRATIVO
+% ============================================================
+\section{Ejemplo Numérico: Función de Consumo}
+\label{sec:ejemplo-numerico}
 
+Considere la estimación de la función de consumo para una economía:
+\begin{equation}
+  C_t = \beta_1 + \beta_2\,Y_t^D + u_t, \quad t = 1,\ldots,20,
+  \label{eq:consumo}
+\end{equation}
+donde $C_t$ es consumo agregado e $Y_t^D$ es ingreso disponible.
+
+\begin{ejemplo}[Diagnóstico DW]
+  Suponga que MCO arroja: $\hat d = 0.95$, $n = 20$, $k = 1$.
+  De las tablas DW con $\alpha = 5\%$: $d_L = 1.20$, $d_U = 1.41$.
+  Como $\hat d = 0.95 < d_L = 1.20$, se \textbf{rechaza $H_0$} de no
+  autocorrelación positiva. Se procede con Cochrane-Orcutt:
+  \begin{enumerate}[label=\textbf{\arabic*.}, itemsep=3pt]
+    \item Regresar $\hat u_t$ sobre $\hat u_{t-1}$:
+          $\hat\rho = 0.48$ (con $p < 0.05$).
+    \item Transformar: $C_t^* = C_t - 0.48\,C_{t-1}$,
+          $Y_t^{D*} = Y_t^D - 0.48\,Y_{t-1}^D$.
+    \item Re-estimar por MCO; nuevo $\hat d = 2.08 \approx 2$
+          (no se rechaza $H_0$).
+  \end{enumerate}
+\end{ejemplo}
+
+% ============================================================
+%  SECCIÓN 11 — AUTOCORRELACIÓN DE ORDEN SUPERIOR
+% ============================================================
+\section{Autocorrelación de Orden Superior: AR($p$)}
+\label{sec:orden-superior}
+
+En series con frecuencia trimestral o mensual, la autocorrelación puede
+ser estacional. El proceso AR($p$) generaliza \eqref{eq:AR1}:
+
+\begin{equation}
+  u_t = \rho_1 u_{t-1} + \rho_2 u_{t-2} + \cdots + \rho_p u_{t-p}
+        + \varepsilon_t.
+  \label{eq:ARp}
+\end{equation}
+
+Para datos trimestrales, es común encontrar $\rho_4 \neq 0$
+(componente estacional); para mensuales, $\rho_{12} \neq 0$.
+El test de Breusch-Godfrey con $p = 4$ o $p = 12$ detecta
+esta estructura.
+
+% ============================================================
+%  SECCIÓN 12 — AUTOCORRELACIÓN ESPACIAL (MENCIÓN)
+% ============================================================
+\section{Autocorrelación Espacial en Datos de Corte Transversal}
+\label{sec:espacial}
+
+En datos de corte transversal (departamentos, municipios, países),
+la autocorrelación se manifiesta en el \emph{espacio}:
+\begin{equation}
+  u_i = \lambda \sum_{j \neq i} w_{ij}\,u_j + \varepsilon_i,
+  \label{eq:autocorr-espacial}
+\end{equation}
+donde $w_{ij}$ son los pesos espaciales (e.g., inverso de la distancia
+entre las unidades $i$ y $j$) y $\lambda$ es el coeficiente de
+autocorrelación espacial. El test análogo al DW para el caso espacial
+es el \textbf{estadístico $I$ de Moran}.
+
+% ============================================================
+%  CONCLUSIONES
+% ============================================================
 \section{Conclusiones}
-La autocorrelación es un problema frecuente en econometría que invalida los procedimientos de inferencia estándar. Su detección debe basarse en pruebas formales como Durbin-Watson o Breusch-Godfrey, complementadas con análisis gráfico. Las estrategias de corrección incluyen transformaciones GLS, métodos iterativos y el uso de errores estándar robustos. Una correcta especificación del modelo (incluyendo variables dinámicas) previene en gran medida su aparición.
+\label{sec:conclusiones}
 
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=2em, itemsep=6pt]
+  \item La autocorrelación viola el supuesto de Gauss-Markov
+        $E(\mathbf{u}\mathbf{u}') = \sigma^2\mathbf{I}$, aunque
+        preserva la insesgadez y consistencia de MCO.
+  \item La principal consecuencia práctica es que los errores estándar
+        de MCO son sesgados, invalidando toda la inferencia estadística.
+  \item El diagnóstico visual (gráficos de residuos) combinado con el
+        test de Durbin-Watson o Breusch-Godfrey es el procedimiento
+        estándar.
+  \item La corrección mediante MCG (Cochrane-Orcutt o Prais-Winsten)
+        o mediante errores HAC de Newey-West restaura la validez de la
+        inferencia.
+  \item En la práctica, la autocorrelación puede ser síntoma de
+        \emph{mala especificación}: omisión de variables, forma funcional
+        incorrecta o dinámica no modelada. La solución correcta es
+        \emph{reformular el modelo}, no solo aplicar una corrección mecánica.
+\end{enumerate}
+
+% ============================================================
+%  REFERENCIAS
+% ============================================================
 \newpage
-
 \begin{thebibliography}{9}
-\bibitem{wooldridge} Wooldridge, J. M. (2019). \textit{Introducción a la econometría: un enfoque moderno}. Cengage Learning.
-\bibitem{gujarati} Gujarati, D. N., \& Porter, D. C. (2010). \textit{Econometría}. McGraw-Hill.
+  \bibitem{gujarati2010}
+    Gujarati, D.~N., \& Porter, D.~C. (2010).
+    \textit{Econometría} (5.ª ed.).
+    McGraw-Hill.
+
+  \bibitem{wooldridge2016}
+    Wooldridge, J.~M. (2016).
+    \textit{Introductory Econometrics: A Modern Approach} (6.ª ed.).
+    Cengage Learning.
+
+  \bibitem{greene2018}
+    Greene, W.~H. (2018).
+    \textit{Econometric Analysis} (8.ª ed.).
+    Pearson.
+
+  \bibitem{hayashi2000}
+    Hayashi, F. (2000).
+    \textit{Econometrics}.
+    Princeton University Press.
+
+  \bibitem{newey1987}
+    Newey, W.~K., \& West, K.~D. (1987).
+    A simple, positive semi-definite, heteroskedasticity and
+    autocorrelation consistent covariance matrix.
+    \textit{Econometrica}, 55(3), 703--708.
 \end{thebibliography}
 
 \end{document}
