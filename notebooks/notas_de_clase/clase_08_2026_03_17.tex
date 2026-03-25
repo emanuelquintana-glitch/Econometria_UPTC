@@ -1,0 +1,232 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\pgfplotsset{compat=1.18}
+\geometry{margin=1in}
+\setstretch{1.15}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{Autocorrelación}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\title{\textbf{Notas de Econometría} \\ \large Autocorrelación: Teoría, Detección y Corrección \\ \normalsize Basado en Wooldridge (2019) y Gujarati \& Porter (2010)}
+\author{Clase: 17 de marzo de 2026}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\setcounter{page}{1}
+\tableofcontents
+
+\newpage
+
+\section{Introducción}
+En el modelo clásico de regresión lineal, uno de los supuestos fundamentales de Gauss-Markov es la ausencia de correlación entre los términos de error para diferentes observaciones. Formalmente,
+\begin{equation}
+    \text{Cov}(u_i, u_j) = \mathbb{E}[u_i u_j] = 0 \quad \forall i \neq j.
+\end{equation}
+Cuando este supuesto se viola, se dice que existe \textbf{autocorrelación} (o correlación serial). La presencia de autocorrelación es particularmente frecuente en datos de series temporales, aunque también puede aparecer en datos de corte transversal (autocorrelación espacial) y en datos de panel.
+
+El objetivo de estas notas es analizar las causas, consecuencias, métodos de detección y corrección de la autocorrelación, manteniendo un enfoque riguroso y aplicado.
+
+\section{Naturaleza de la autocorrelación}
+La autocorrelación puede modelarse mediante distintos procesos estocásticos. El más común es el proceso autorregresivo de orden uno, denotado AR(1):
+\begin{equation}
+    u_t = \rho u_{t-1} + \varepsilon_t, \quad |\rho| < 1,
+\end{equation}
+donde $\varepsilon_t$ es ruido blanco con media cero y varianza constante $\sigma^2_{\varepsilon}$. El parámetro $\rho$ mide la intensidad y dirección de la correlación:
+\begin{itemize}
+    \item $\rho > 0$: autocorrelación positiva (valores cercanos de $u_t$ tienden a tener el mismo signo).
+    \item $\rho < 0$: autocorrelación negativa (alternancia de signos).
+    \item $\rho = 0$: ausencia de autocorrelación.
+\end{itemize}
+
+Para procesos de orden superior, AR(p), la autocorrelación se extiende a rezagos mayores.
+
+\section{Causas de la autocorrelación en los errores}
+\subsection{Inercia o tendencia común}
+En series de tiempo, las variables económicas suelen mostrar trayectorias suaves (PIB, inflación, desempleo). Esta inercia se transmite a los residuos si el modelo no captura completamente la dinámica subyacente.
+
+\subsection{Sesgo de especificación: omisión de variables relevantes}
+Cuando una variable relevante con comportamiento sistemático queda excluida del modelo, su efecto es absorbido por el término de error, generando autocorrelación. Por ejemplo, si se estima
+\[
+    I_t = \beta_1 + \beta_2 \text{Ingreso}_t + \beta_3 \text{Impuestos}_t + u_t
+\]
+pero la verdadera relación incluye la tasa de interés $r_t$, entonces $u_t$ contendrá $\alpha_4 r_t$ y, si $r_t$ está correlacionada en el tiempo, también lo estará $u_t$.
+
+\subsection{Omisión de variables rezagadas (efectos dinámicos)}
+Ignorar que el pasado influye en el presente produce autocorrelación. Un ejemplo clásico es la oferta agrícola:
+\begin{align*}
+    \text{Incorrecto:} & \quad S_t = \beta_1 + \beta_2 P_t - \beta_3 C_t + u_t \\
+    \text{Correcto:} & \quad S_t = \beta_1 + \beta_2 P_{t-1} - \beta_3 C_{t-1} + u_t,
+\end{align*}
+donde $P_t$ es el precio y $C_t$ los costos de producción. La decisión de siembra depende de precios y costos pasados, no de los contemporáneos.
+
+\subsection{Transformación de datos}
+El uso de primeras diferencias para eliminar tendencias o para corregir colinealidad puede inducir autocorrelación en los errores transformados si el proceso original ya era ruido blanco.
+
+\subsection{Manipulación de datos}
+Procedimientos como interpolación o suavizamiento de datos faltantes introducen dependencia artificial entre observaciones consecutivas.
+
+\subsection{Fenómeno de la telaraña (cobweb phenomenon)}
+En mercados agrícolas, la oferta reacciona al precio del periodo anterior con un retraso, generando un ciclo de ajuste que se refleja en residuos correlacionados.
+
+\section{Consecuencias de ignorar la autocorrelación}
+Si se aplica MCO a pesar de existir autocorrelación, se producen los siguientes efectos:
+\begin{enumerate}
+    \item Los estimadores MCO siguen siendo insesgados y consistentes, pero dejan de ser eficientes (no son MELI).
+    \item La matriz de varianzas-covarianzas estimada por MCO es sesgada, por lo que los errores estándar son incorrectos.
+    \item Los contrastes $t$ y $F$ pierden validez, aumentando el riesgo de conclusiones erróneas.
+    \item Las predicciones no son óptimas (mayor varianza).
+\end{enumerate}
+
+\section{Detección de la autocorrelación}
+\subsection{Métodos gráficos}
+Un primer paso es examinar los residuos $e_t$ frente al tiempo o frente a $e_{t-1}$. En la Figura \ref{fig:residuos} se muestran patrones típicos.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm,
+    height=6cm,
+    xlabel=$t$,
+    ylabel=$e_t$,
+    axis lines=center,
+    grid=major,
+    grid style={dashed,gray!50},
+    xtick={0,10,20,30,40,50},
+    ytick={-2,-1,0,1,2},
+    title={Residuos con autocorrelación positiva (AR(1), $\rho=0.7$)}
+]
+\addplot+[black, thick, mark=none, smooth] coordinates {
+    (0,0.2) (1,0.6) (2,1.0) (3,1.1) (4,1.2) (5,1.0) (6,0.8) (7,0.5) (8,0.3)
+    (9,0.1) (10,-0.1) (11,-0.4) (12,-0.7) (13,-0.9) (14,-1.0) (15,-0.8) (16,-0.5)
+    (17,-0.2) (18,0.0) (19,0.3) (20,0.5) (21,0.7) (22,0.9) (23,0.8) (24,0.6)
+    (25,0.4) (26,0.1) (27,-0.2) (28,-0.5) (29,-0.7) (30,-0.9) (31,-0.6) (32,-0.3)
+    (33,0.0) (34,0.2) (35,0.4) (36,0.6) (37,0.5) (38,0.3) (39,0.1) (40,-0.2)
+    (41,-0.4) (42,-0.6) (43,-0.5) (44,-0.3) (45,-0.1) (46,0.1) (47,0.2) (48,0.4)
+    (49,0.5) (50,0.3)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Patrón de residuos que sugiere autocorrelación positiva.}
+\label{fig:residuos}
+\end{figure}
+
+También es útil el correlograma, que muestra las autocorrelaciones muestrales $r_k$ para distintos rezagos $k$.
+
+\subsection{Contraste de Durbin-Watson}
+Es el test más conocido para detectar autocorrelación AR(1). El estadístico es
+\begin{equation}
+    d = \frac{\sum_{t=2}^{T} (e_t - e_{t-1})^2}{\sum_{t=1}^{T} e_t^2}.
+\end{equation}
+Se cumple que $d \approx 2(1-\hat{\rho})$, donde $\hat{\rho}$ es la estimación de $\rho$ en $e_t = \rho e_{t-1} + v_t$. Los valores de $d$ se interpretan mediante una región de indecisión, como se muestra en la Figura \ref{fig:durbin}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=0.9]
+\draw[->] (0,0) -- (10,0) node[right] {$d$};
+\draw[thick] (0,0.2) -- (0,-0.2) node[below] {0};
+\draw[thick] (2,0.2) -- (2,-0.2) node[below] {$d_L$};
+\draw[thick] (3,0.2) -- (3,-0.2) node[below] {$d_U$};
+\draw[thick] (6,0.2) -- (6,-0.2) node[below] {$4-d_U$};
+\draw[thick] (7,0.2) -- (7,-0.2) node[below] {$4-d_L$};
+\draw[thick] (10,0.2) -- (10,-0.2) node[below] {4};
+\draw[<->] (0,0.5) -- (2,0.5) node[midway,above] {Autocorr. positiva};
+\draw[<->] (2,0.5) -- (3,0.5) node[midway,above] {Indecisión};
+\draw[<->] (3,0.5) -- (6,0.5) node[midway,above] {No autocorr.};
+\draw[<->] (6,0.5) -- (7,0.5) node[midway,above] {Indecisión};
+\draw[<->] (7,0.5) -- (10,0.5) node[midway,above] {Autocorr. negativa};
+\end{tikzpicture}
+\caption{Regiones de decisión para el estadístico de Durbin-Watson.}
+\label{fig:durbin}
+\end{figure}
+
+\subsection{Contraste de Breusch-Godfrey (LM)}
+Permite detectar autocorrelación de orden superior. Consiste en estimar la regresión auxiliar
+\[
+    e_t = \gamma_1 e_{t-1} + \gamma_2 e_{t-2} + \dots + \gamma_p e_{t-p} + \mathbf{x}_t'\boldsymbol{\delta} + \nu_t,
+\]
+y contrastar la hipótesis nula $\gamma_1 = \gamma_2 = \dots = \gamma_p = 0$ mediante el estadístico $LM = (T-p)R^2 \sim \chi^2_p$.
+
+\section{Corrección de la autocorrelación}
+\subsection{Modelo con autocorrelación conocida (Mínimos cuadrados generalizados)}
+Si se conoce el proceso AR(1) con $\rho$ conocido, se aplica la transformación de Prais-Winsten:
+\[
+    y_t^* = y_t - \rho y_{t-1}, \quad x_t^* = x_t - \rho x_{t-1},
+\]
+para $t=2,\dots,T$, y para la primera observación se usa $y_1^* = \sqrt{1-\rho^2}\,y_1$, $x_1^* = \sqrt{1-\rho^2}\,x_1$.
+
+\subsection{Modelo con autocorrelación desconocida}
+\subsubsection{Procedimiento de Cochrane-Orcutt}
+Se estima $\hat{\rho}$ a partir de los residuos MCO, se transforman las variables, se reestima por MCO y se itera hasta convergencia. Una variante es el método de Prais-Winsten, que conserva la primera observación para mejorar la eficiencia en muestras pequeñas.
+
+\subsubsection{Errores estándar robustos (Newey-West)}
+Cuando el interés principal es la inferencia sobre los coeficientes, se pueden utilizar estimadores de la matriz de varianzas-covarianzas consistentes ante autocorrelación y heterocedasticidad (HAC). El estimador de Newey-West es ampliamente empleado:
+\[
+    \widehat{\text{Var}}(\hat{\boldsymbol{\beta}}) = (\mathbf{X}'\mathbf{X})^{-1} \hat{\mathbf{S}} (\mathbf{X}'\mathbf{X})^{-1},
+\]
+donde $\hat{\mathbf{S}}$ incorpora ponderaciones de las autocovarianzas muestrales hasta un rezago máximo.
+
+\section{Ejemplo ilustrativo}
+Supongamos un modelo de demanda de dinero:
+\[
+    M_t = \beta_1 + \beta_2 \text{PIB}_t + \beta_3 r_t + u_t,
+\]
+con datos trimestrales. Al estimar por MCO se obtiene $d = 0.45$, indicando fuerte autocorrelación positiva. Se aplica el procedimiento de Cochrane-Orcutt, obteniendo $\hat{\rho}=0.78$ y coeficientes corregidos. La Figura \ref{fig:acf} muestra el correlograma de los residuos antes y después de la corrección.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm,
+    height=6cm,
+    xlabel=Rezago,
+    ylabel=Autocorrelación,
+    ybar,
+    bar width=0.2cm,
+    xtick={1,2,3,4,5,6,7,8,9,10},
+    ytick={-0.5,0,0.5,1},
+    ymin=-0.6, ymax=1,
+    legend pos=north east,
+    title={Correlograma de residuos (modelo original)}
+]
+\addplot[black, fill=black!30] coordinates {
+    (1,0.85) (2,0.72) (3,0.58) (4,0.44) (5,0.31) (6,0.19) (7,0.10) (8,0.03) (9,-0.02) (10,-0.05)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Autocorrelaciones muestrales que decaen lentamente, típicas de un proceso AR(1) con $\rho$ cercano a 0.8.}
+\label{fig:acf}
+\end{figure}
+
+\section{Conclusiones}
+La autocorrelación es un problema frecuente en econometría que invalida los procedimientos de inferencia estándar. Su detección debe basarse en pruebas formales como Durbin-Watson o Breusch-Godfrey, complementadas con análisis gráfico. Las estrategias de corrección incluyen transformaciones GLS, métodos iterativos y el uso de errores estándar robustos. Una correcta especificación del modelo (incluyendo variables dinámicas) previene en gran medida su aparición.
+
+\begin{thebibliography}{9}
+\bibitem{wooldridge} Wooldridge, J. M. (2019). \textit{Introducción a la econometría: un enfoque moderno}. Cengage Learning.
+\bibitem{gujarati} Gujarati, D. N., \& Porter, D. C. (2010). \textit{Econometría}. McGraw-Hill.
+\end{thebibliography}
+
+\end{document}
