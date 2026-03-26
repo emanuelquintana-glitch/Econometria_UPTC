@@ -7,6 +7,13 @@
                      '(("article" "12pt" "a4paper")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("caption" "") ("subcaption" "") ("inputenc" "utf8") ("fontenc" "T1") ("babel" "spanish" "es-nodecimaldot" "es-noshorthands") ("lmodern" "") ("microtype" "") ("amsmath" "") ("amsfonts" "") ("amssymb" "") ("amsthm" "") ("mathtools" "") ("graphicx" "") ("tikz" "") ("pgfplots" "") ("pgfplotstable" "") ("geometry" "" "top=2.5cm" "bottom=2.5cm" "left=3cm" "right=2.5cm" "headheight=15pt") ("fancyhdr" "") ("titlesec" "") ("titletoc" "") ("tocloft" "") ("parskip" "") ("setspace" "") ("emptypage" "") ("float" "") ("booktabs" "") ("array" "") ("longtable" "") ("multirow" "") ("enumitem" "") ("tcolorbox" "most") ("mdframed" "") ("hyperref" "") ("cleveref" "") ("soul" "") ("ulem" "")))
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
     "article"
@@ -105,7 +112,7 @@
     "greene2018"
     "hayashi2000"
     "newey1987")
-   (LaTeX-add-environments
+   (LaTeX-add-amsthm-newtheorems
     "prop"
     "corol"
     "ejemplo"
@@ -116,6 +123,13 @@
     "grisMedio"
     "grisClaro"
     "grisPalido"
-    "blanco"))
+    "blanco")
+   (LaTeX-add-tcolorbox-newtcolorboxes
+    '("definicion" "1" "[" "")
+    '("teorema" "1" "[" "")
+    '("advertencia" "" "" "")
+    '("nota" "" "" ""))
+   (LaTeX-add-tcolorbox-tcbuselibraries
+    "skins, breakable"))
  :latex)
 
