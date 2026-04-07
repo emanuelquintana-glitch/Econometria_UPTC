@@ -7,6 +7,13 @@
                      '(("article" "12pt" "letterpaper")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("inputenc" "utf8") ("fontenc" "T1") ("babel" "spanish") ("geometry" "") ("amsmath" "") ("amssymb" "") ("amsthm" "") ("booktabs" "") ("array" "") ("microtype" "") ("setspace" "") ("parskip" "") ("titlesec" "") ("fancyhdr" "") ("enumitem" "") ("bm" "") ("mathtools" "") ("tcolorbox" "") ("hyperref" "")))
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
     "article"
@@ -59,9 +66,14 @@
     "eq:E_sigma2"
     "eq:E_sigma2_homosc"
     "eq:white_consistent")
-   (LaTeX-add-environments
+   (LaTeX-add-amsthm-newtheorems
     "prop"
     "lema"
-    "obs"))
+    "obs")
+   (LaTeX-add-tcolorbox-newtcolorboxes
+    '("verdict" "2" "" "")
+    '("clave" "" "" ""))
+   (LaTeX-add-tcolorbox-tcbuselibraries
+    "skins, breakable"))
  :latex)
 

@@ -1,0 +1,73 @@
+#+TITLE: Tareas y Entregables — Econometría UPTC
+#+AUTHOR: Emanuel
+#+STARTUP: indent
+#+STARTUP: logdone
+#+TODO: TODO IN-PROGRESS WAITING | DONE CANCELLED
+#+COLUMNS: %40ITEM %TODO %DEADLINE %TAGS
+
+* Talleres
+** DONE Taller 24/02/2026 — Multicolinealidad
+   CLOSED: [2026-02-24]
+   :PROPERTIES:
+   :ARCHIVO: notebooks/10_multicolinealidad/taller_24_02_2026.tex
+   :END:
+   - [X] Análisis VIF datos DANE
+   - [X] Ejercicios 10.3 al 10.13
+
+** DONE Taller 13/03/2026 — Heteroscedasticidad
+   CLOSED: [2026-03-13]
+   :PROPERTIES:
+   :ARCHIVO: notebooks/notas_de_clase/taller_13_03_2026/
+   :END:
+   - [X] Prueba de Glejser
+   - [X] Gráficos: rvfplot, lvr2plot, avplot
+   - [X] Análisis residuos
+
+** TODO Próximo taller
+   DEADLINE: <2026-04-20>
+   - [ ] Definir tema con el profesor
+   - [ ] Recopilar datos
+   - [ ] Análisis en R o Stata
+
+* Ejercicios del libro (Gujarati)
+** Cap 10 — Multicolinealidad
+   - [X] Ejercicio 10.3
+   - [X] Ejercicio 10.4
+   - [X] Ejercicio 10.5
+   - [X] Ejercicio 10.6
+   - [X] Ejercicio 10.7
+   - [X] Ejercicio 10.8
+   - [X] Ejercicio 10.9
+   - [X] Ejercicio 10.10
+   - [X] Ejercicio 10.11
+   - [X] Ejercicio 10.12
+   - [X] Ejercicio 10.13
+
+** Cap 11 — Heteroscedasticidad
+   - [X] Ejercicio 11.1
+   - [X] Ejercicio 11.2
+   - [X] Ejercicio 11.3
+   - [X] Ejercicio 11.4
+   - [X] Ejercicio 11.5
+   - [X] Ejercicio 11.6
+
+** Cap 12 — Autocorrelación
+   - [ ] Ejercicio 12.x (pendiente)
+
+* Notas técnicas y documentos
+** DONE Notas técnicas (LaTeX compilado)
+   CLOSED: [2026-03-17]
+   :PROPERTIES:
+   :ARCHIVO: notebooks/notas_de_clase/notas_tecnicas.pdf
+   :END:
+
+** IN-PROGRESS Notas clase 08 (2026-03-17)
+   :PROPERTIES:
+   :ARCHIVO: notebooks/notas_de_clase/clase_08_2026_03_17.md
+   :END:
+
+* Ideas y pendientes del proyecto
+** TODO Completar capítulos faltantes (12–22)
+** TODO Unificar estructura de notebooks por capítulo
+** TODO Agregar datos cap12, cap13 en data/raw/
+** TODO Revisar referencias.bib y completar entradas

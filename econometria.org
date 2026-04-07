@@ -1,0 +1,50 @@
+#+TITLE: Econometría UPTC — Índice Maestro
+#+AUTHOR: Emanuel
+#+DATE: 2026-04-06
+#+STARTUP: overview
+#+STARTUP: indent
+#+TODO: TODO IN-PROGRESS WAITING | DONE CANCELLED
+
+#+DESCRIPTION: Archivo raíz del sistema org. Enlaza todos los demás archivos.
+
+* Archivos del sistema
+  :PROPERTIES:
+  :VISIBILITY: children
+  :END:
+
+| Archivo                    | Descripción                            |
+|----------------------------+----------------------------------------|
+| [[file:tareas.org][tareas.org]]                 | TODOs, talleres, entregables           |
+| [[file:notas_clase.org][notas_clase.org]]            | Notas de cada sesión de clase          |
+| [[file:teoria.org][teoria.org]]                 | Teoría por capítulo (caps 1–22)        |
+| [[file:agenda_semestre.org][agenda_semestre.org]]        | Calendario, fechas importantes         |
+
+* Estado general del curso
+  :PROPERTIES:
+  :VISIBILITY: children
+  :END:
+
+** Capítulos cubiertos
+   - [X] Cap 01 — Naturaleza de la regresión
+   - [X] Cap 02 — Regresión dos variables (básico)
+   - [X] Cap 03 — Estimación dos variables
+   - [X] Cap 04 — Regresión normal
+   - [X] Cap 05 — Pruebas de hipótesis
+   - [X] Cap 06 — Extensiones regresión simple
+   - [X] Cap 07 — Regresión múltiple: estimación
+   - [X] Cap 08 — Regresión múltiple: inferencia
+   - [X] Cap 09 — Variables dicótomas
+   - [X] Cap 10 — Multicolinealidad
+   - [X] Cap 11 — Heteroscedasticidad
+   - [ ] Cap 12 — Autocorrelación
+   - [ ] Cap 13 — Modelado y diagnóstico
+   - [ ] Cap 14 — Regresión no lineal
+   - [ ] Cap 15 — Respuesta cualitativa
+   - [ ] Cap 16 — Datos de panel
+   - [ ] Cap 17 — Modelos dinámicos
+   - [ ] Cap 18–20 — Ecuaciones simultáneas
+   - [ ] Cap 21–22 — Series de tiempo
+
+** Resumen de avance
+   #+BEGIN: columnview :hlines 1 :id global
+   #+END:

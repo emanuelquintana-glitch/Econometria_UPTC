@@ -1,0 +1,38 @@
+#+TITLE: Agenda del Semestre — Econometría UPTC 2026
+#+AUTHOR: Emanuel
+#+STARTUP: indent
+#+STARTUP: fold
+
+* Fechas de clase (sesiones registradas)
+  - [2026-02-13 Fri] Clase 02 — Multicolinealidad intro
+  - [2026-02-18 Wed] Clase 03 — Multicolinealidad detección
+  - [2026-02-20 Fri] Clase 04 — Multicolinealidad remedios
+  - [2026-02-24 Tue] Taller multicolinealidad (entrega)
+  - [2026-02-27 Fri] Clase 05 — Transición heterosc.
+  - [2026-03-03 Mon] Clase 06 — Heteroscedasticidad
+  - [2026-03-06 Fri] Clase 07 — Pruebas formales
+  - [2026-03-13 Fri] Taller heteroscedasticidad (entrega)
+  - [2026-03-17 Mon] Clase 08 — MCG y corrección
+
+* Próximas fechas importantes
+** Clase 09 — Autocorrelación
+   SCHEDULED: <2026-04-07 Mon>
+
+** Parcial 2
+   DEADLINE: <2026-04-30>
+   - [ ] Repasar caps 10–12
+   - [ ] Revisar ejercicios resueltos
+   - [ ] Preparar cheatsheet
+
+** Entrega proyecto final
+   DEADLINE: <2026-06-10>
+   - [ ] Definir base de datos
+   - [ ] Propuesta de modelo
+   - [ ] Estimación y diagnóstico
+   - [ ] Redacción del informe
+
+* Recordatorios generales
+  - Datos del curso en =data/raw/= organizados por capítulo
+  - Scripts R en =scripts/r/=, Python en =scripts/python/=
+  - Compilar LaTeX con =make= desde la raíz del proyecto
+  - Bibliografía en =notebooks/notas_de_clase/referencias.bib=

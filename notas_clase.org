@@ -1,0 +1,58 @@
+#+TITLE: Notas de Clase — Econometría UPTC 2026
+#+AUTHOR: Emanuel
+#+STARTUP: fold
+#+STARTUP: indent
+
+* Clase 02 — 2026-02-13
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_02_2026_02_13.md
+  :TEMA:    Multicolinealidad (introducción)
+  :END:
+
+  Resumen de la clase aquí. Ver archivo markdown enlazado.
+
+* Clase 03 — 2026-02-18
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_03_2026_02_18.md
+  :TEMA:    Multicolinealidad (consecuencias y detección)
+  :END:
+
+* Clase 04 — 2026-02-20
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_04_2026_02_20.md
+  :TEMA:    Multicolinealidad (remedios)
+  :END:
+
+* Clase 05 — 2026-02-27
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_05_2026_02_27.md
+  :TEMA:    Transición a heteroscedasticidad
+  :END:
+
+* Clase 06 — 2026-03-03
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_06_2026_03_03.md
+  :TEMA:    Heteroscedasticidad: naturaleza y detección
+  :END:
+
+* Clase 07 — 2026-03-06
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_07_2026_03_06.md
+  :TEMA:    Heteroscedasticidad: pruebas formales
+  :END:
+
+* Clase 08 — 2026-03-17
+  :PROPERTIES:
+  :ARCHIVO: notebooks/notas_de_clase/clase_08_2026_03_17.md
+  :TEMA:    Heteroscedasticidad: corrección y MCG
+  :END:
+
+  [[file:../notebooks/notas_de_clase/clase_08_2026_03_17.md][Ver notas markdown]]
+  [[file:../notebooks/notas_de_clase/notas_clase_08_2026_03_17.pdf][Ver PDF compilado]]
+
+* Clase 09 — (próxima)
+  :PROPERTIES:
+  :TEMA:    Autocorrelación
+  :END:
+  - [ ] Tomar notas
+  - [ ] Completar ejercicios de práctica

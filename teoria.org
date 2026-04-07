@@ -1,0 +1,130 @@
+#+TITLE: Teoría por Capítulo — Gujarati & Porter
+#+AUTHOR: Emanuel
+#+STARTUP: fold
+#+STARTUP: indent
+
+* Parte I — Regresión de una sola ecuación
+
+** Cap 01 — Naturaleza de la regresión
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :ARCHIVO_TEX: notebooks/01_naturaleza_regresion/naturaleza_regresion.tex
+   :ARCHIVO_MD:  notebooks/01_naturaleza_regresion/capitulo_01.md
+   :END:
+   Conceptos: regresión vs causalidad, variable dependiente e independiente,
+   FRP vs FRM, estimación MCO básica.
+
+** Cap 02 — Regresión de dos variables (básico)
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+** Cap 03 — Estimación de dos variables
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+** Cap 04 — Regresión normal
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+** Cap 05 — Pruebas de hipótesis
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+** Cap 06 — Extensiones de la regresión simple
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+* Parte II — Regresión múltiple
+
+** Cap 07 — Regresión múltiple: estimación
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+** Cap 08 — Regresión múltiple: inferencia
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :ARCHIVO_MD: notebooks/notas_de_clase/clase_08_2026_03_17.md
+   :END:
+
+** Cap 09 — Variables dicótomas
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :END:
+
+* Parte III — Violaciones a los supuestos MCO
+
+** Cap 10 — Multicolinealidad
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :ARCHIVO_TEX: notebooks/10_multicolinealidad/multicolinealidad_teoria.tex
+   :ARCHIVO_MD:  notebooks/10_multicolinealidad/capitulo_10.md
+   :END:
+
+   Conceptos clave:
+   - Multicolinealidad perfecta vs imperfecta
+   - Consecuencias sobre estimadores MCO
+   - Detección: VIF, índice de condición, tolerancia
+   - Remedios: más datos, combinación de variables, ridge regression
+
+** Cap 11 — Heteroscedasticidad
+   :PROPERTIES:
+   :ESTADO:  COMPLETO
+   :ARCHIVO_TEX: notebooks/11_heteroscedasticidad/capitulo_11.tex
+   :ARCHIVO_MD:  notebooks/11_heteroscedasticidad/capitulo_11.md
+   :END:
+
+   Conceptos clave:
+   - Definición: Var(u_i | X_i) ≠ σ²
+   - Consecuencias: MCO insesgado pero ineficiente (no MELI)
+   - Detección: Glejser, Breusch-Pagan, White, Park
+   - Corrección: MCG, errores estándar robustos (HC)
+
+** Cap 12 — Autocorrelación
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+   - [ ] Leer capítulo
+   - [ ] Redactar notas
+
+** Cap 13 — Modelado y diagnóstico
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+
+* Parte IV — Modelos avanzados
+
+** Cap 14 — Regresión no lineal
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+
+** Cap 15 — Respuesta cualitativa
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+
+** Cap 16 — Datos de panel
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+
+** Cap 17 — Modelos dinámicos
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+
+** Cap 18–20 — Ecuaciones simultáneas
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
+
+** Cap 21–22 — Series de tiempo
+   :PROPERTIES:
+   :ESTADO:  PENDIENTE
+   :END:
