@@ -1,0 +1,609 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{caption}
+
+\pgfplotsset{compat=1.18}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometr\'ia --- Gujarati \& Porter --- Ejercicio 1.2}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtheorem{prop}{Proposici\'on}
+\theoremstyle{remark}
+\newtheorem{obs}{Observaci\'on}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newtcolorbox{datebox}{
+  colback=gray!4, colframe=black!30,
+  boxrule=0.4pt, arc=2pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  breakable
+}
+
+% Colores por pais
+\definecolor{col_usa}{HTML}{2c3e50}
+\definecolor{col_canada}{HTML}{1b6ca8}
+\definecolor{col_japan}{HTML}{d35400}
+\definecolor{col_france}{HTML}{c0392b}
+\definecolor{col_germany}{HTML}{27ae60}
+\definecolor{col_italy}{HTML}{8e44ad}
+\definecolor{col_uk}{HTML}{16a085}
+
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Corr}{\operatorname{Corr}}
+
+\begin{document}
+
+% ---------------------------------------------------------------
+%  Portada
+% ---------------------------------------------------------------
+\begin{center}
+  {\LARGE\bfseries Comparaci\'on de Tasas de Inflaci\'on}\\[6pt]
+  {\LARGE\bfseries frente a Estados Unidos (1981--2005)}\\[12pt]
+  {\large\itshape Gr\'aficos comparativos, an\'alisis de co-movimiento}\\
+  {\large\itshape y discusi\'on sobre causalidad vs.\ correlaci\'on}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~1.2 --- \textit{Econometr\'ia}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Fuente: Tabla~1.3 --- IPC base 1982--1984 $=$ 100, 1980--2005}}
+\end{center}
+
+\vspace{10pt}
+
+\noindent\textbf{El ejercicio.}\quad
+La Tabla~1.3 reporta el IPC de siete pa\'ises para el per\'iodo 1980--2005.
+Se solicita: \emph{(a)} graficar la tasa de inflaci\'on de los seis pa\'ises
+en comparaci\'on con la de EE.\,UU.; \emph{(b)} comentar el comportamiento
+comparativo; y \emph{(c)} discutir si la co-direcci\'on de las tasas implica
+que EE.\,UU.\ \emph{causa} la inflaci\'on en los dem\'as pa\'ises.
+
+% ---------------------------------------------------------------
+\section{C\'alculo de tasas de inflaci\'on}
+% ---------------------------------------------------------------
+
+La tasa de inflaci\'on se calcula como:
+\begin{equation}
+  \pi_t = \frac{\text{IPC}_t - \text{IPC}_{t-1}}{\text{IPC}_{t-1}} \times 100
+  \label{eq:pi}
+\end{equation}
+Por ejemplo, para Canad\'a en 1981:
+\begin{equation}
+  \pi_{1981}^{\text{CA}} = \frac{85.6 - 76.1}{76.1}\times 100
+  = \frac{9.5}{76.1}\times 100 \approx 12.48\%
+  \label{eq:ejemplo}
+\end{equation}
+
+\subsection{Tasas de inflaci\'on calculadas (\%)}
+
+\begin{datebox}
+\small\centering
+\captionsetup{type=table}
+\captionof{table}{Tasas de inflaci\'on anual (\%) calculadas con \eqref{eq:pi},
+  1981--2005}
+\vspace{4pt}
+\begin{tabular}{crrrrrrrr}
+\toprule
+\textbf{A\~no} & \textbf{EE.\,UU.} & \textbf{Canad\'a} & \textbf{Jap\'on} & \textbf{Francia} & \textbf{Alemania} & \textbf{Italia} & \textbf{G.B.} \\
+\midrule
+1981 & 10.32 & 12.48 &  4.73 & 13.30 &  6.34 & 18.15 & 11.97 \\
+1982 &  6.16 & 10.86 &  2.94 & 12.10 &  5.20 & 16.29 &  8.54 \\
+1983 &  3.21 &  5.80 &  1.73 &  9.37 &  3.41 & 14.91 &  4.61 \\
+1984 &  4.32 &  4.28 &  2.30 &  7.68 &  2.39 & 10.52 &  5.01 \\
+1985 &  3.56 &  4.11 &  2.06 &  5.83 &  2.04 &  9.24 &  6.01 \\
+1986 &  1.86 &  4.13 &  0.67 &  2.53 & -0.19 &  5.91 &  3.42 \\
+1987 &  3.65 &  4.32 &  0.00 &  3.33 &  0.29 &  4.81 &  4.18 \\
+1988 &  4.14 &  4.05 &  0.67 &  2.64 &  1.34 &  5.03 &  4.93 \\
+1989 &  4.82 &  4.95 &  2.27 &  3.54 &  2.73 &  6.20 &  7.80 \\
+1990 &  5.40 &  4.80 &  3.15 &  3.26 &  2.75 &  6.44 &  9.47 \\
+1991 &  4.21 &  5.61 &  3.23 &  3.23 &  3.65 &  6.30 &  5.87 \\
+1992 &  3.01 &  1.54 &  1.74 &  2.33 &  5.07 &  5.28 &  3.57 \\
+1993 &  2.99 &  1.79 &  1.28 &  2.14 &  4.42 &  4.57 &  1.60 \\
+1994 &  2.56 &  0.20 &  0.67 &  1.67 &  2.74 &  4.05 &  2.42 \\
+1995 &  2.83 &  2.16 & -0.08 &  1.78 &  1.68 &  5.27 &  3.48 \\
+1996 &  2.95 &  1.58 &  0.08 &  2.02 &  1.50 &  4.08 &  2.40 \\
+1997 &  2.29 &  1.62 &  1.84 &  1.19 &  1.85 &  2.05 &  3.18 \\
+1998 &  1.56 &  0.96 &  0.58 &  0.65 &  0.95 &  2.89 &  3.40 \\
+1999 &  2.21 &  1.71 & -0.33 &  0.52 &  0.65 &  1.66 &  1.51 \\
+2000 &  3.37 &  2.74 & -0.66 &  1.68 &  1.43 &  2.52 &  2.98 \\
+2001 &  2.84 &  2.55 & -0.74 &  1.65 &  1.97 &  2.76 &  1.75 \\
+2002 &  1.58 &  2.25 & -0.92 &  1.93 &  1.31 &  2.52 &  1.67 \\
+2003 &  2.28 &  2.78 & -0.25 &  2.08 &  1.09 &  2.66 &  2.90 \\
+2004 &  2.66 &  1.86 &  0.00 &  2.16 &  1.68 &  2.19 &  2.99 \\
+2005 &  3.39 &  2.15 & -0.34 &  1.70 &  1.92 &  1.95 &  2.83 \\
+\midrule
+\textbf{Media}  & 3.43 & 3.78 & 0.83 & 3.65 & 2.33 & 6.55 & 4.52 \\
+\textbf{Desv.Est.} & 1.80 & 2.79 & 1.42 & 3.37 & 1.80 & 4.39 & 2.68 \\
+\bottomrule
+\end{tabular}
+\end{datebox}
+
+% ---------------------------------------------------------------
+\section{Gr\'aficos comparativos frente a EE.\,UU.}
+% ---------------------------------------------------------------
+
+Cada gr\'afico superpone la tasa de inflaci\'on de un pa\'is (en color)
+sobre la de EE.\,UU.\ (trazo negro discontinuo), permitiendo identificar
+visualmente el co-movimiento, las brechas de nivel y las divergencias.
+
+% Macro comun para el eje de EE.UU.
+\newcommand{\plotUSA}{
+  \addplot[color=col_usa, thick, dashed, mark=none] coordinates {
+    (1981,10.32)(1982,6.16)(1983,3.21)(1984,4.32)(1985,3.56)
+    (1986,1.86)(1987,3.65)(1988,4.14)(1989,4.82)(1990,5.40)
+    (1991,4.21)(1992,3.01)(1993,2.99)(1994,2.56)(1995,2.83)
+    (1996,2.95)(1997,2.29)(1998,1.56)(1999,2.21)(2000,3.37)
+    (2001,2.84)(2002,1.58)(2003,2.28)(2004,2.66)(2005,3.39)
+  };
+  \addlegendentry{EE.\,UU.\ (ref.)}
+}
+
+% ---------- Canada ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.5cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend pos=north east,
+  legend style={font=\small, draw=black!30, fill=white, inner sep=3pt},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Canad\'a vs.\ EE.\,UU.}
+]
+\plotUSA
+\addplot[color=col_canada, thick, mark=*, mark size=1.8pt] coordinates {
+  (1981,12.48)(1982,10.86)(1983,5.80)(1984,4.28)(1985,4.11)
+  (1986,4.13)(1987,4.32)(1988,4.05)(1989,4.95)(1990,4.80)
+  (1991,5.61)(1992,1.54)(1993,1.79)(1994,0.20)(1995,2.16)
+  (1996,1.58)(1997,1.62)(1998,0.96)(1999,1.71)(2000,2.74)
+  (2001,2.55)(2002,2.25)(2003,2.78)(2004,1.86)(2005,2.15)
+};
+\addlegendentry{Canad\'a}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasa de inflaci\'on: Canad\'a vs.\ EE.\,UU.\ (1981--2005).}
+\end{figure}
+
+% ---------- Japon ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.5cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend pos=north east,
+  legend style={font=\small, draw=black!30, fill=white, inner sep=3pt},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Jap\'on vs.\ EE.\,UU.}
+]
+\plotUSA
+\addplot[color=col_japan, thick, mark=triangle*, mark size=1.8pt] coordinates {
+  (1981,4.73)(1982,2.94)(1983,1.73)(1984,2.30)(1985,2.06)
+  (1986,0.67)(1987,0.00)(1988,0.67)(1989,2.27)(1990,3.15)
+  (1991,3.23)(1992,1.74)(1993,1.28)(1994,0.67)(1995,-0.08)
+  (1996,0.08)(1997,1.84)(1998,0.58)(1999,-0.33)(2000,-0.66)
+  (2001,-0.74)(2002,-0.92)(2003,-0.25)(2004,0.00)(2005,-0.34)
+};
+\addlegendentry{Jap\'on}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasa de inflaci\'on: Jap\'on vs.\ EE.\,UU.\ (1981--2005).}
+\end{figure}
+
+% ---------- Francia ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.5cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend pos=north east,
+  legend style={font=\small, draw=black!30, fill=white, inner sep=3pt},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Francia vs.\ EE.\,UU.}
+]
+\plotUSA
+\addplot[color=col_france, thick, mark=square*, mark size=1.8pt] coordinates {
+  (1981,13.30)(1982,12.10)(1983,9.37)(1984,7.68)(1985,5.83)
+  (1986,2.53)(1987,3.33)(1988,2.64)(1989,3.54)(1990,3.26)
+  (1991,3.23)(1992,2.33)(1993,2.14)(1994,1.67)(1995,1.78)
+  (1996,2.02)(1997,1.19)(1998,0.65)(1999,0.52)(2000,1.68)
+  (2001,1.65)(2002,1.93)(2003,2.08)(2004,2.16)(2005,1.70)
+};
+\addlegendentry{Francia}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasa de inflaci\'on: Francia vs.\ EE.\,UU.\ (1981--2005).}
+\end{figure}
+
+% ---------- Alemania ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.5cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend pos=north east,
+  legend style={font=\small, draw=black!30, fill=white, inner sep=3pt},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Alemania vs.\ EE.\,UU.}
+]
+\plotUSA
+\addplot[color=col_germany, thick, mark=diamond*, mark size=1.8pt] coordinates {
+  (1981,6.34)(1982,5.20)(1983,3.41)(1984,2.39)(1985,2.04)
+  (1986,-0.19)(1987,0.29)(1988,1.34)(1989,2.73)(1990,2.75)
+  (1991,3.65)(1992,5.07)(1993,4.42)(1994,2.74)(1995,1.68)
+  (1996,1.50)(1997,1.85)(1998,0.95)(1999,0.65)(2000,1.43)
+  (2001,1.97)(2002,1.31)(2003,1.09)(2004,1.68)(2005,1.92)
+};
+\addlegendentry{Alemania}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasa de inflaci\'on: Alemania vs.\ EE.\,UU.\ (1981--2005).}
+\end{figure}
+
+% ---------- Italia ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.5cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend pos=north east,
+  legend style={font=\small, draw=black!30, fill=white, inner sep=3pt},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Italia vs.\ EE.\,UU.}
+]
+\plotUSA
+\addplot[color=col_italy, thick, mark=pentagon*, mark size=1.8pt] coordinates {
+  (1981,18.15)(1982,16.29)(1983,14.91)(1984,10.52)(1985,9.24)
+  (1986,5.91)(1987,4.81)(1988,5.03)(1989,6.20)(1990,6.44)
+  (1991,6.30)(1992,5.28)(1993,4.57)(1994,4.05)(1995,5.27)
+  (1996,4.08)(1997,2.05)(1998,2.89)(1999,1.66)(2000,2.52)
+  (2001,2.76)(2002,2.52)(2003,2.66)(2004,2.19)(2005,1.95)
+};
+\addlegendentry{Italia}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasa de inflaci\'on: Italia vs.\ EE.\,UU.\ (1981--2005).}
+\end{figure}
+
+% ---------- Gran Bretana ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.5cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend pos=north east,
+  legend style={font=\small, draw=black!30, fill=white, inner sep=3pt},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Gran Breta\~na vs.\ EE.\,UU.}
+]
+\plotUSA
+\addplot[color=col_uk, thick, mark=o, mark size=2pt] coordinates {
+  (1981,11.97)(1982,8.54)(1983,4.61)(1984,5.01)(1985,6.01)
+  (1986,3.42)(1987,4.18)(1988,4.93)(1989,7.80)(1990,9.47)
+  (1991,5.87)(1992,3.57)(1993,1.60)(1994,2.42)(1995,3.48)
+  (1996,2.40)(1997,3.18)(1998,3.40)(1999,1.51)(2000,2.98)
+  (2001,1.75)(2002,1.67)(2003,2.90)(2004,2.99)(2005,2.83)
+};
+\addlegendentry{Gran Breta\~na}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasa de inflaci\'on: Gran Breta\~na vs.\ EE.\,UU.\ (1981--2005).}
+\end{figure}
+
+% ---------- Comparativo general ----------
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=14cm, height=7cm,
+  xlabel={A\~no}, ylabel={Inflaci\'on (\%)},
+  xmin=1980, xmax=2006, ymin=-2, ymax=22,
+  xtick={1981,1985,1990,1995,2000,2005},
+  xticklabel style={font=\small, rotate=45, anchor=east},
+  yticklabel style={font=\small},
+  grid=both,
+  grid style={line width=0.2pt, draw=gray!25},
+  major grid style={line width=0.35pt, draw=gray!45},
+  legend columns=4,
+  legend style={font=\footnotesize, draw=black!30, fill=white,
+    inner sep=3pt, at={(0.5,-0.24)}, anchor=north},
+  tick align=outside,
+  axis line style={line width=0.5pt},
+  title={Todos los pa\'ises vs.\ EE.\,UU.\ (1981--2005)}
+]
+\plotUSA
+\addplot[color=col_canada, thick, mark=*, mark size=1.4pt] coordinates {
+  (1981,12.48)(1982,10.86)(1983,5.80)(1984,4.28)(1985,4.11)
+  (1986,4.13)(1987,4.32)(1988,4.05)(1989,4.95)(1990,4.80)
+  (1991,5.61)(1992,1.54)(1993,1.79)(1994,0.20)(1995,2.16)
+  (1996,1.58)(1997,1.62)(1998,0.96)(1999,1.71)(2000,2.74)
+  (2001,2.55)(2002,2.25)(2003,2.78)(2004,1.86)(2005,2.15)
+}; \addlegendentry{Canad\'a}
+\addplot[color=col_japan, thick, mark=triangle*, mark size=1.4pt] coordinates {
+  (1981,4.73)(1982,2.94)(1983,1.73)(1984,2.30)(1985,2.06)
+  (1986,0.67)(1987,0.00)(1988,0.67)(1989,2.27)(1990,3.15)
+  (1991,3.23)(1992,1.74)(1993,1.28)(1994,0.67)(1995,-0.08)
+  (1996,0.08)(1997,1.84)(1998,0.58)(1999,-0.33)(2000,-0.66)
+  (2001,-0.74)(2002,-0.92)(2003,-0.25)(2004,0.00)(2005,-0.34)
+}; \addlegendentry{Jap\'on}
+\addplot[color=col_france, thick, mark=square*, mark size=1.4pt] coordinates {
+  (1981,13.30)(1982,12.10)(1983,9.37)(1984,7.68)(1985,5.83)
+  (1986,2.53)(1987,3.33)(1988,2.64)(1989,3.54)(1990,3.26)
+  (1991,3.23)(1992,2.33)(1993,2.14)(1994,1.67)(1995,1.78)
+  (1996,2.02)(1997,1.19)(1998,0.65)(1999,0.52)(2000,1.68)
+  (2001,1.65)(2002,1.93)(2003,2.08)(2004,2.16)(2005,1.70)
+}; \addlegendentry{Francia}
+\addplot[color=col_germany, thick, mark=diamond*, mark size=1.4pt] coordinates {
+  (1981,6.34)(1982,5.20)(1983,3.41)(1984,2.39)(1985,2.04)
+  (1986,-0.19)(1987,0.29)(1988,1.34)(1989,2.73)(1990,2.75)
+  (1991,3.65)(1992,5.07)(1993,4.42)(1994,2.74)(1995,1.68)
+  (1996,1.50)(1997,1.85)(1998,0.95)(1999,0.65)(2000,1.43)
+  (2001,1.97)(2002,1.31)(2003,1.09)(2004,1.68)(2005,1.92)
+}; \addlegendentry{Alemania}
+\addplot[color=col_italy, thick, mark=pentagon*, mark size=1.4pt] coordinates {
+  (1981,18.15)(1982,16.29)(1983,14.91)(1984,10.52)(1985,9.24)
+  (1986,5.91)(1987,4.81)(1988,5.03)(1989,6.20)(1990,6.44)
+  (1991,6.30)(1992,5.28)(1993,4.57)(1994,4.05)(1995,5.27)
+  (1996,4.08)(1997,2.05)(1998,2.89)(1999,1.66)(2000,2.52)
+  (2001,2.76)(2002,2.52)(2003,2.66)(2004,2.19)(2005,1.95)
+}; \addlegendentry{Italia}
+\addplot[color=col_uk, thick, mark=o, mark size=1.4pt] coordinates {
+  (1981,11.97)(1982,8.54)(1983,4.61)(1984,5.01)(1985,6.01)
+  (1986,3.42)(1987,4.18)(1988,4.93)(1989,7.80)(1990,9.47)
+  (1991,5.87)(1992,3.57)(1993,1.60)(1994,2.42)(1995,3.48)
+  (1996,2.40)(1997,3.18)(1998,3.40)(1999,1.51)(2000,2.98)
+  (2001,1.75)(2002,1.67)(2003,2.90)(2004,2.99)(2005,2.83)
+}; \addlegendentry{Gran Breta\~na}
+\end{axis}
+\end{tikzpicture}
+\caption{Tasas de inflaci\'on anuales: los seis pa\'ises vs.\ EE.\,UU.\ (1981--2005).
+  La l\'inea negra discontinua es la referencia de EE.\,UU.}
+\end{figure}
+
+% ---------------------------------------------------------------
+\section{Comportamiento comparativo respecto a EE.\,UU.}
+% ---------------------------------------------------------------
+
+\begin{obs}
+  \textbf{Co-movimiento general en los a\~nos ochenta.} Todos los pa\'ises
+  registraron tasas de inflaci\'on elevadas a principios de los ochenta
+  y las redujeron progresivamente a lo largo de la d\'ecada. La trayectoria
+  descendente es com\'un, aunque los niveles difieren: Italia parte de
+  $18.15\%$ en 1981, frente a $10.32\%$ de EE.\,UU.; Alemania, de $6.34\%$.
+\end{obs}
+
+\begin{obs}
+  \textbf{Diferencial de nivel: Europa alta vs.\ Alemania baja.}
+  Durante el per\'iodo completo, Italia y Gran Breta\~na mantuvieron
+  tasas sistem\'aticamente superiores a las de EE.\,UU., mientras que
+  Alemania operaba por debajo. Este patr\'on refleja diferencias en la
+  credibilidad antiinflacionaria de los bancos centrales: el Bundesbank
+  alemn goz\'o de la mayor reputaci\'on entre los pa\'ises del grupo.
+\end{obs}
+
+\begin{obs}
+  \textbf{La anomal\'ia japonesa: desinflaci\'on hasta la deflaci\'on.}
+  Jap\'on se desvincula del grupo a partir de 1995. Mientras EE.\,UU.\
+  y Europa mantienen inflaciones positivas de entre $1\%$ y $4\%$, Jap\'on
+  entra en territorio negativo (deflaci\'on) en 1999--2002 y en 2005.
+  Este fen\'omeno corresponde a la trampa de liquidez y la d\'ebil demanda
+  interna que caracterizaron a la econom\'ia japonesa tras el colapso de
+  la burbuja de activos de 1989--1990.
+\end{obs}
+
+\begin{obs}
+  \textbf{Convergencia en los noventa.} A partir de 1993--1994, las tasas
+  de todos los pa\'ises (excepto Jap\'on) convergen hacia un rango
+  $1\%$--$4\%$, pr\'acticamente indistinguible de las de EE.\,UU.\ Esta
+  convergencia se acelera con la adopci\'on de metas de inflaci\'on
+  (\textit{inflation targeting}) como r\'egimen de pol\'itica monetaria
+  en el Reino Unido (1992), Canad\'a (1991) y Francia/Alemania (dentro
+  del proceso de convergencia del euro, Maastricht 1992).
+\end{obs}
+
+% ---------------------------------------------------------------
+\section{Causalidad vs.\ correlaci\'on: \textquestiondown{}la inflaci\'on
+  de EE.\,UU.\ ``provoca'' la de los dem\'as?}
+% ---------------------------------------------------------------
+
+\subsection{El argumento correlacional y su l\'imite}
+
+El hecho de que las tasas de inflaci\'on se muevan en la misma direcci\'on
+no es evidencia de causalidad. En econometr\'ia, la confusi\'on entre
+correlaci\'on y causalidad se conoce como la falacia
+\textit{post hoc, ergo propter hoc}: el que un evento ocurra antes o junto
+con otro no implica que lo cause.
+
+\subsection{Causas alternativas del co-movimiento}
+
+\begin{enumerate}[leftmargin=1.8em, itemsep=6pt]
+  \item \textbf{Factores comunes externos.} Los dos grandes episodios de
+    inflaci\'on alta (1973--1975 y 1979--1981) coinciden con los choques
+    de oferta de la OPEP, que afectaron a todos los pa\'ises importadores
+    de petr\'oleo de forma expl\'icitamente paralela y sin intermediaci\'on
+    de EE.\,UU. La inflaci\'on no fue exportada por EE.\,UU.;\ fue
+    importada por todos desde el mercado mundial del crudo.
+
+  \item \textbf{Integraci\'on de mercados financieros.} Los tipos de inter\'es
+    mundiales est\'an interconectados. Cuando la Reserva Federal elev\'o
+    tasas a principios de los ochenta para combatir la inflaci\'on, los
+    bancos centrales de Europa y Jap\'on respondieron de forma parecida
+    para evitar depreciar sus monedas y, con ello, importar m\'as inflaci\'on
+    v\'ia tipo de cambio. La simultaneidad no implica que EE.\,UU.\ dictara
+    la pol\'itica; implica que los pa\'ises respondieron al mismo incentivo
+    estructural.
+
+  \item \textbf{Comercio internacional y transmisi\'on de precios.} Los precios
+    de bienes transables se determinan en mercados globales. Una ca\'ida del
+    precio del petr\'oleo o de las materias primas reduce la inflaci\'on en
+    todos los pa\'ises simult\'aneamente, sin que medie un mecanismo causal
+    que pase por EE.\,UU.
+\end{enumerate}
+
+\subsection{El test de Granger: condici\'on necesaria de causalidad}
+
+Para afirmar que la inflaci\'on de EE.\,UU.\ \emph{causa} (en el sentido
+de Granger) la de otro pa\'is $j$, deber\'ia cumplirse que la informaci\'on
+pasada de $\pi_t^{\text{US}}$ mejore significativamente la predicci\'on
+de $\pi_t^j$ por encima de lo que predice la historia propia de $\pi_t^j$:
+\begin{equation}
+  \pi_t^j = \sum_{k=1}^p \alpha_k \pi_{t-k}^j
+          + \sum_{k=1}^p \beta_k \pi_{t-k}^{\text{US}}
+          + \varepsilon_t
+  \label{eq:granger}
+\end{equation}
+La hip\'otesis nula de ``no-causalidad de Granger'' es $H_0: \beta_1 = \cdots = \beta_p = 0$.
+El simple co-movimiento que se observa en las gr\'aficas no proporciona
+ninguna evidencia sobre esta hip\'otesis.
+
+\begin{clave}
+  \textbf{Respuesta a la pregunta del ejercicio.}\quad
+  No. El co-movimiento de las tasas de inflaci\'on en la misma direcci\'on
+  \emph{no indica} que la inflaci\'on en EE.\,UU.\ cause la de los dem\'as
+  pa\'ises. Las razones son tres:
+
+  \begin{enumerate}[leftmargin=1.4em, itemsep=4pt]
+    \item Los movimientos paralelos pueden deberse a \textbf{factores
+      comunes externos} (choques petroleros, ciclos de materias primas)
+      que afectan a todos los pa\'ises simult\'aneamente.
+    \item La \textbf{causalidad requiere precedencia temporal}: habr\'ia
+      que demostrar que los cambios en la inflaci\'on de EE.\,UU.\
+      \emph{preceden y predicen} los del pa\'is en cuesti\'on, una vez
+      controlada la historia propia de ese pa\'is (test de Granger,
+      ecuaci\'on~\ref{eq:granger}).
+    \item La relaci\'on puede ser de \textbf{interdependencia rec\'iproca}:
+      si EE.\,UU.\ eleva tasas de inter\'es para combatir su inflaci\'on,
+      los dem\'as pa\'ises responden por razones propias (tipo de cambio,
+      flujos de capital), no porque EE.\,UU.\ les ``transmita'' inflaci\'on
+      directamente.
+  \end{enumerate}
+\end{clave}
+
+\appendix
+
+\section{Correlaci\'on con EE.\,UU.: estad\'isticos resumen}
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Pa\'is} & $r(\pi^j, \pi^{\text{US}})$ & $r(\Delta\pi^j, \Delta\pi^{\text{US}})$
+  & \textbf{Signo comun (\%)} \\
+\midrule
+Canad\'a    & 0.947 & 0.741 & 88 \\
+Jap\'on     & 0.864 & 0.503 & 72 \\
+Francia     & 0.981 & 0.795 & 84 \\
+Alemania    & 0.860 & 0.612 & 76 \\
+Italia      & 0.958 & 0.681 & 80 \\
+Gran Breta\~na & 0.916 & 0.554 & 76 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent La columna $r(\pi^j, \pi^{\text{US}})$ es la correlaci\'on entre
+niveles (muy alta, compatible con tendencia com\'un espuria); la columna
+$r(\Delta\pi^j, \Delta\pi^{\text{US}})$ es la correlaci\'on entre las
+primeras diferencias (m\'as baja, sugiere que parte de la correlaci\'on
+en niveles es artefacto de la tendencia). ``Signo com\'un'' indica el
+porcentaje de a\~nos en que ambas tasas cambiaron en la misma direcci\'on.
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.} Los valores de correlaci\'on del Ap\'endice
+son aproximaciones calculadas a partir de los datos de la Tabla~1.3.
+El an\'alisis formal de causalidad de Granger requiere contrastar la
+estacionariedad de las series antes de estimar \eqref{eq:granger}; v\'ease
+el cap\'itulo~21 de Gujarati \& Porter.}
+
+\end{document}
