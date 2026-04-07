@@ -1,0 +1,244 @@
+#+TITLE: Capítulo 01 — Naturaleza de la Regresión: Ejercicios 1.1 y 1.2
+#+AUTHOR: Emanuel
+#+DATE: 2026-04-06
+#+STARTUP: indent
+#+STARTUP: fold
+#+PROPERTY: header-args:R :session *R-cap01* :results output :exports both
+#+TODO: TODO IN-PROGRESS | DONE
+
+* Meta del capítulo
+
+  Ejercicios 1.1 y 1.2 de Gujarati & Porter (5.ª ed.) sobre el IPC
+  y las tasas de inflación de siete países industrializados.
+
+  - Archivo LaTeX 1.1: [[file:ejercicio_1_1_gujarati.tex]]
+  - Archivo LaTeX 1.2: [[file:ejercicio_1_2_gujarati.tex]]
+  - Datos brutos: [[file:../data/raw/cap01/]]
+
+* DONE Ejercicio 1.1 — IPC 1973–1997
+  CLOSED: [2026-04-06]
+
+** Datos: Tabla 1.2 (IPC base 1982-1984 = 100)
+
+   #+NAME: ipc_tabla12
+   #+BEGIN_SRC R
+   ipc <- data.frame(
+     anio     = 1973:1997,
+     canada   = c(36.0,39.9,44.2,47.6,51.3,55.9,61.1,67.2,75.5,83.7,
+                  88.5,92.0,95.6,100.0,104.4,108.6,114.0,119.5,126.2,
+                  128.1,130.4,130.7,133.5,136.0,137.2),
+     francia  = c(30.6,34.7,38.8,42.6,46.7,51.0,56.5,64.2,72.7,81.4,
+                  89.1,95.7,101.3,106.7,111.0,114.6,119.7,123.5,127.6,
+                  131.3,133.7,135.4,138.3,139.7,140.5),
+     alemania = c(62.3,66.6,70.6,73.7,76.4,78.5,81.7,86.2,92.0,97.1,
+                  100.3,102.7,104.8,104.7,106.0,107.5,110.3,113.3,117.8,
+                  122.9,127.5,130.3,133.8,136.1,138.6),
+     italia   = c(20.4,24.4,28.6,33.4,39.8,44.8,51.7,62.8,75.2,87.7,
+                  100.8,108.7,118.1,129.5,138.9,149.1,161.6,177.1,194.6,
+                  209.1,223.7,233.0,246.4,257.5,264.9),
+     japon    = c(43.0,52.9,59.1,64.7,70.0,73.0,75.8,81.7,85.7,88.2,
+                  89.7,93.6,95.5,94.7,95.0,95.7,97.6,100.7,103.3,105.0,
+                  106.4,106.9,106.3,106.9,108.0),
+     ru       = c(24.2,28.1,34.9,40.6,47.0,50.8,57.7,67.9,75.9,84.4,
+                  87.9,92.0,97.6,101.9,107.1,115.1,125.1,135.0,143.1,
+                  148.3,151.5,154.4,160.4,165.4,170.6),
+     eeuu     = c(44.4,49.3,53.8,56.9,60.6,65.2,72.6,82.4,90.9,96.5,
+                  99.6,103.9,107.6,109.6,113.6,118.3,124.0,130.7,136.2,
+                  140.3,144.5,148.2,152.4,156.9,160.5)
+   )
+   head(ipc)
+   #+END_SRC
+
+** Función: calcular tasas de inflación
+
+   #+NAME: fn_inflacion
+   #+BEGIN_SRC R
+   tasa_inflacion <- function(serie) {
+     n <- length(serie)
+     c(NA, (serie[2:n] - serie[1:(n-1)]) / serie[1:(n-1)] * 100)
+   }
+
+   # Aplicar a todas las columnas de países
+   paises <- c("canada","francia","alemania","italia","japon","ru","eeuu")
+   inflacion <- ipc
+   for (p in paises) {
+     inflacion[[p]] <- tasa_inflacion(ipc[[p]])
+   }
+   inflacion <- inflacion[!is.na(inflacion$canada), ]  # quitar 1973
+   print(round(inflacion, 2))
+   #+END_SRC
+
+** Estadísticos de variabilidad
+
+   #+BEGIN_SRC R
+   variabilidad <- data.frame(
+     pais   = paises,
+     media  = sapply(paises, \(p) round(mean(inflacion[[p]], na.rm=TRUE), 2)),
+     desv   = sapply(paises, \(p) round(sd(inflacion[[p]],   na.rm=TRUE), 2)),
+     maximo = sapply(paises, \(p) round(max(inflacion[[p]],  na.rm=TRUE), 2))
+   )
+   variabilidad$cv <- round(variabilidad$desv / variabilidad$media * 100, 1)
+   print(variabilidad)
+   # Conclusión: Japón tiene el mayor CV; RU el mayor desvío absoluto
+   #+END_SRC
+
+** Gráfico comparativo (base R)
+
+   #+BEGIN_SRC R :results graphics file :file cap01_inflacion_1974_1997.png :width 900 :height 500
+   colores <- c(canada="#1b6ca8", francia="#c0392b", alemania="#27ae60",
+                italia="#8e44ad", japon="#d35400", ru="#16a085", eeuu="#2c3e50")
+   lty_vec <- c(rep(1,6), 2)  # EE.UU. discontinua
+
+   par(mar=c(4,4,2,8), xpd=TRUE, family="sans")
+   plot(inflacion$anio, inflacion$eeuu, type="l", lty=2, lwd=2,
+        col=colores["eeuu"], ylim=c(-2, 26), xlab="Año",
+        ylab="Tasa de inflación (%)", main="Inflación anual — siete países (1974–1997)")
+   grid(col="gray85", lty=1)
+   for (i in seq_along(paises[-7])) {
+     p <- paises[i]
+     lines(inflacion$anio, inflacion[[p]], col=colores[p], lwd=2, lty=1)
+   }
+   legend("right", inset=c(-0.22,0), legend=c("Canadá","Francia","Alemania",
+          "Italia","Japón","R.U.","EE.UU."),
+          col=colores, lwd=2, lty=lty_vec, bty="n", cex=0.85)
+   #+END_SRC
+
+** Conclusiones 1.1
+
+   1. *Dos picos inflacionarios*: 1974-1975 y 1979-1981 → choques OPEP.
+   2. *Tendencia a la baja desde 1982* → políticas monetarias contractivas.
+   3. *Convergencia en los 90* → rango 1%-4% para todos los países.
+   4. *País más variable*: Japón (CV = 147%) por su dependencia energética;
+      R.U. por el mayor desvío absoluto (pico de 24.2% en 1975).
+
+* DONE Ejercicio 1.2 — IPC 1980–2005 vs. EE.UU.
+  CLOSED: [2026-04-06]
+
+** Datos: Tabla 1.3
+
+   #+NAME: ipc_tabla13
+   #+BEGIN_SRC R
+   ipc2 <- data.frame(
+     anio     = 1980:2005,
+     eeuu     = c(82.4,90.9,96.5,99.6,103.9,107.6,109.6,113.6,118.3,
+                  124.0,130.7,136.2,140.3,144.5,148.2,152.4,156.9,160.5,
+                  163.0,166.6,172.2,177.1,179.9,184.0,188.9,195.3),
+     canada   = c(76.1,85.6,94.9,100.4,104.7,109.0,113.5,118.4,123.2,
+                  129.3,135.5,143.1,145.3,147.9,148.2,151.4,153.8,156.3,
+                  157.8,160.5,164.9,169.1,172.9,177.7,181.0,184.9),
+     japon    = c(91.0,95.3,98.1,99.8,102.1,104.2,104.9,104.9,105.6,
+                  108.0,111.4,115.0,117.0,118.5,119.3,119.2,119.3,121.5,
+                  122.2,121.8,121.0,120.1,119.0,118.7,118.7,118.3),
+     francia  = c(72.2,81.8,91.7,100.3,108.0,114.3,117.2,121.1,124.3,
+                  128.7,132.9,137.2,140.4,143.4,145.8,148.4,151.4,153.2,
+                  154.2,155.0,157.6,160.2,163.3,166.7,170.3,173.2),
+     alemania = c(86.7,92.2,97.0,100.3,102.7,104.8,104.6,104.9,106.3,
+                  109.2,112.2,116.3,122.2,127.6,131.1,133.3,135.3,137.8,
+                  139.1,140.0,142.0,144.8,146.7,148.3,150.8,153.7),
+     italia   = c(63.9,75.5,87.8,100.8,111.4,121.7,128.9,135.1,141.9,
+                  150.7,160.4,170.5,179.5,187.7,195.3,205.6,213.8,218.2,
+                  222.5,226.2,231.9,238.3,244.3,250.8,256.3,261.3),
+     gb       = c(78.5,87.9,95.4,99.8,104.8,111.1,114.9,119.7,125.6,
+                  135.4,148.2,156.9,162.7,165.3,169.3,175.2,179.4,185.1,
+                  191.4,194.3,200.1,203.6,207.0,213.0,219.4,225.6)
+   )
+   cat("Filas:", nrow(ipc2), "\n")
+   #+END_SRC
+
+** Calcular tasas de inflación (1.3)
+
+   #+BEGIN_SRC R
+   paises2 <- c("eeuu","canada","japon","francia","alemania","italia","gb")
+   inf2 <- ipc2
+   for (p in paises2) inf2[[p]] <- tasa_inflacion(ipc2[[p]])
+   inf2 <- inf2[!is.na(inf2$eeuu), ]  # desde 1981
+   print(round(inf2, 2))
+   #+END_SRC
+
+** Gráficos individuales: cada país vs. EE.UU.
+
+   #+BEGIN_SRC R :results graphics file :file cap01_comparativo_vs_eeuu.png :width 1000 :height 700
+   layout(matrix(1:6, nrow=2, byrow=TRUE))
+   otros   <- c("canada","japon","francia","alemania","italia","gb")
+   nombres <- c("Canadá","Japón","Francia","Alemania","Italia","Gran Bretaña")
+   colores2 <- c("#1b6ca8","#d35400","#c0392b","#27ae60","#8e44ad","#16a085")
+
+   for (i in seq_along(otros)) {
+     par(mar=c(3.5, 3.5, 2, 1))
+     plot(inf2$anio, inf2$eeuu, type="l", lty=2, lwd=2, col="#2c3e50",
+          ylim=c(-2, 20), xlab="", ylab="Inflación (%)",
+          main=paste0(nombres[i], " vs. EE.UU."), cex.main=0.95)
+     grid(col="gray88", lty=1)
+     lines(inf2$anio, inf2[[otros[i]]], col=colores2[i], lwd=2)
+     legend("topright", legend=c("EE.UU.", nombres[i]),
+            col=c("#2c3e50", colores2[i]), lwd=2, lty=c(2,1), bty="n", cex=0.8)
+   }
+   #+END_SRC
+
+** Correlación con EE.UU.
+
+   #+BEGIN_SRC R
+   correlaciones <- sapply(otros, function(p) {
+     cor(inf2$eeuu, inf2[[p]], use="complete.obs")
+   })
+   # Correlación en primeras diferencias (más informativa)
+   delta <- function(x) diff(x)
+   correlaciones_delta <- sapply(otros, function(p) {
+     cor(delta(inf2$eeuu), delta(inf2[[p]]), use="complete.obs")
+   })
+   resultado <- data.frame(
+     pais        = nombres,
+     r_niveles   = round(correlaciones, 3),
+     r_diferencias = round(correlaciones_delta, 3)
+   )
+   print(resultado)
+   #+END_SRC
+
+** Conclusiones 1.2
+
+   1. *Co-movimiento general*: todas las series descienden en paralelo
+      desde inicios de los 80 → factor externo común (OPEP, política
+      monetaria restrictiva).
+   2. *Diferencial de nivel*: Italia y G.B. sobre EE.UU.; Alemania y
+      Japón por debajo en casi todo el período.
+   3. *La anomalía japonesa*: deflación a partir de 1999-2002 →
+      trampa de liquidez tras el colapso de la burbuja de activos.
+   4. *Causalidad*: el co-movimiento NO implica que EE.UU. cause la
+      inflación del resto. Causas alternativas:
+      - Choques de oferta comunes (petróleo)
+      - Interdependencia financiera (tasas de interés)
+      - Comercio internacional de bienes transables
+      El test formal es el de causalidad de Granger (cap. 21).
+
+* Notas técnicas
+
+** Fórmula LaTeX de referencia
+
+   La tasa de inflación entre $t-1$ y $t$:
+   $$\pi_t = \frac{\text{IPC}_t - \text{IPC}_{t-1}}{\text{IPC}_{t-1}} \times 100$$
+
+   Aproximación logarítmica (válida para $\pi_t$ pequeño):
+   $$\pi_t \approx \left[\ln(\text{IPC}_t) - \ln(\text{IPC}_{t-1})\right] \times 100$$
+
+** Paquetes R utilizados
+
+   #+BEGIN_SRC R :eval no
+   # No se requieren paquetes adicionales para los cálculos básicos.
+   # Para gráficos más elaborados:
+   install.packages(c("ggplot2", "tidyr", "dplyr"))
+   #+END_SRC
+
+** Compilar los archivos LaTeX
+
+   #+BEGIN_SRC shell :eval no
+   cd notebooks/01_naturaleza_regresion/
+   pdflatex ejercicio_1_1_gujarati.tex
+   pdflatex ejercicio_1_1_gujarati.tex   # segunda pasada para pgfplots
+   pdflatex ejercicio_1_2_gujarati.tex
+   pdflatex ejercicio_1_2_gujarati.tex
+   #+END_SRC
+
+   O desde la raíz del proyecto con Make:
+   #+BEGIN_SRC shell :eval no
+   make cap01
+   #+END_SRC
