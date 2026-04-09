@@ -39,3 +39,5 @@ Este repositorio es una colección de proyectos, códigos y recursos enfocados e
 
 28 directories, 1 file
 ```
+
+Creado por Emanuel Quintana
