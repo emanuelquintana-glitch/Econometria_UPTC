@@ -2,3 +2,30 @@
 #+subtitle: Esta es una serie de notas del libro de damodargujarati para dar permitir una mayor comprension de loos conceptos y su aplicabilidad con codigo en rust julia python y r
 #+author: Emanuel Quintana Silva (Estudiante de la UPTC)
 #+date: <2026-04-10 Fri>
+
+## IDEA CENTRAL
+La autocorrelación se refiere a la correlación entre los términos de error en un modelo de regresión lineal, lo que puede ocurrir en datos de series de tiempo o transversales, y puede tener consecuencias importantes en la estimación y el análisis de los modelos.
+
+## DESARROLLO RIGUROSO
+La autocorrelación se puede definir como la correlación entre los términos de error en un modelo de regresión lineal. En un modelo de regresión lineal clásico, se asume que los términos de error son independientes y no correlacionados. Sin embargo, en la práctica, esto no siempre es cierto. La autocorrelación puede ocurrir en datos de series de tiempo, donde las observaciones sucesivas pueden estar relacionadas entre sí debido a la estructura temporal de los datos.
+
+La autocorrelación se puede medir utilizando la fórmula de la autocorrelación de Pearson:
+
+$$
+\rho_k = \frac{\sum_{t=1}^{n-k} (e_t - \bar{e})(e_{t+k} - \bar{e})}{\sum_{t=1}^{n} (e_t - \bar{e})^2}
+$$
+
+donde $e_t$ es el término de error en el tiempo $t$, $\bar{e}$ es la media de los términos de error y $k$ es el número de intervalos de tiempo entre las observaciones.
+
+La autocorrelación puede tener consecuencias importantes en la estimación y el análisis de los modelos. Por ejemplo, si los términos de error están correlacionados, la varianza de los coeficientes estimados puede ser mayor de lo que se espera, lo que puede llevar a conclusiones incorrectas sobre la significancia estadística de los coeficientes.
+
+## CONTEXTO DISCIPLINAR
+La autocorrelación es un concepto importante en la estadística y la economía, ya que se relaciona con la violación del supuesto de independencia de los términos de error en los modelos de regresión lineal. La autocorrelación se ha estudiado ampliamente en la literatura estadística y económica, y se han desarrollado varios métodos para detectar y corregir la autocorrelación en los datos.
+
+Algunos autores clave que han contribuido al estudio de la autocorrelación incluyen a Box y Jenkins, que desarrollaron el método de series de tiempo ARIMA para modelar la autocorrelación en los datos de series de tiempo. Otros autores, como Cochrane y Orcutt, han desarrollado métodos para corregir la autocorrelación en los modelos de regresión lineal.
+
+El debate actual en la literatura estadística y económica se centra en la importancia de la autocorrelación en la estimación y el análisis de los modelos, y en el desarrollo de nuevos métodos para detectar y corregir la autocorrelación en los datos.
+
+## PUNTOS CRITICOS
+- **Supuestos subyacentes**: La autocorrelación se basa en el supuesto de que los términos de error son estacionarios, es decir, que la media y la varianza de los términos de error son constantes en el tiempo.
+- **Limitaciones y casos borde**: La autocorrelación puede ser difícil de detectar en datos con una gran cantidad de ruido o con una estructura temporal compleja. En estos casos, es importante utilizar métodos robustos para detectar y corregir la autocorrelación. Además, la autocorrelación puede ser un problema en datos de series de tiempo con un número pequeño de observaciones, ya que la autocorrelación puede ser difícil de estimar de manera precisa en estos casos.
