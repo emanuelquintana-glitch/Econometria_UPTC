@@ -1,0 +1,4 @@
+#+title: Autocorrelacion: ¿que pasa si los terminos de error estan correlacionados?
+#+subtitle: Esta es una serie de notas del libro de damodargujarati para dar permitir una mayor comprension de loos conceptos y su aplicabilidad con codigo en rust julia python y r
+#+author: Emanuel Quintana Silva (Estudiante de la UPTC)
+#+date: <2026-04-10 Fri>
