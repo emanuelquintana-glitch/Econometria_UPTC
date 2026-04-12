@@ -64,3 +64,34 @@ La autocorrelación es un concepto importante en la econometría y la estadísti
 
 * Supuestos subyacentes: la autocorrelación se basa en el supuesto de que los términos de perturbación son independientes y no correlacionados. Sin embargo, si esta suposición no se cumple, los resultados pueden ser erróneos.
 * Limitaciones y casos borde: la autocorrelación puede ser difícil de detectar en series de tiempo con pocas observaciones o con patrones de autocorrelación complejos. En estos casos, es importante utilizar pruebas estadísticas y modelos de regresión lineal robustos para detectar y corregir la autocorrelación.
+
+#+TITLE: Explicación
+#+DATE: 2026-04-11 21:39
+
+## IDEA CENTRAL
+La autocorrelación en series de tiempo se refiere a la correlación entre los términos de perturbación en diferentes momentos, lo que puede afectar la validez de los estimadores y pruebas estadísticas en modelos de regresión lineal.
+
+## DESARROLLO RIGUROSO
+La autocorrelación se define como la correlación entre miembros de series de observaciones ordenadas en el tiempo. En el contexto de regresión, el modelo clásico de regresión lineal supone que no existe autocorrelación en las perturbaciones $u_i$, es decir, $cov(u_i, u_j | x_i, x_j) = E(u_i u_j) = 0$ para $i \neq j$. Esto significa que el término de perturbación relacionado con una observación cualquiera no recibe influencia del término de perturbación relacionado con cualquier otra observación.
+
+Sin embargo, si existe autocorrelación, entonces $E(u_i u_j) \neq 0$ para $i \neq j$. Esto puede ocurrir si la interrupción ocasionada por un evento en un momento afecta la producción o el comportamiento en un momento posterior. Por ejemplo, si tratamos con información trimestral de series de tiempo y hay una huelga laboral que afecta la producción en un trimestre, es posible que la producción del trimestre siguiente también se vea afectada.
+
+La autocorrelación se puede medir utilizando la función de autocorrelación, que se define como:
+
+$$
+\gamma(k) = \frac{cov(u_t, u_{t-k})}{\sigma^2}
+$$
+
+donde $k$ es el número de períodos de desfase y $\sigma^2$ es la varianza de los términos de perturbación.
+
+## CONTEXTO DISCIPLINAR
+La autocorrelación es un concepto importante en econometría y series de tiempo, ya que puede afectar la validez de los estimadores y pruebas estadísticas en modelos de regresión lineal. Autores como William H. Greene y Paul A. Rudd han tratado el tema de la autocorrelación en sus obras.
+
+En el contexto de la econometría, la autocorrelación se puede producir debido a various factores, como la persistencia de los efectos de un evento en el tiempo o la interacción entre variables económicas. Por ejemplo, si se analiza la relación entre la producción y los insumos, la autocorrelación puede ocurrir si la producción de un trimestre se ve afectada por la producción del trimestre anterior.
+
+## PUNTOS CRITICOS
+
+* **Supuestos subyacentes**: La autocorrelación puede ser un problema si se supone que los términos de perturbación son independientes y no autocorrelacionados.
+* **Limitaciones y casos borde**: La autocorrelación puede ser difícil de detectar en series de tiempo con pocos datos o con estructuras de dependencia complejas.
+* **Casos de autocorrelación**: La autocorrelación puede ocurrir en series de tiempo con estructuras de dependencia temporal, como la persistencia de los efectos de un evento en el tiempo o la interacción entre variables económicas.
+* **Remedios**: La autocorrelación se puede remediar utilizando técnicas como la transformación de los datos, la inclusión de variables adicionales en el modelo o la utilización de estimadores robustos.
