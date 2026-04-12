@@ -29,6 +29,3 @@ El debate actual en la literatura estadística y económica se centra en la impo
 ## PUNTOS CRITICOS
 - **Supuestos subyacentes**: La autocorrelación se basa en el supuesto de que los términos de error son estacionarios, es decir, que la media y la varianza de los términos de error son constantes en el tiempo.
 - **Limitaciones y casos borde**: La autocorrelación puede ser difícil de detectar en datos con una gran cantidad de ruido o con una estructura temporal compleja. En estos casos, es importante utilizar métodos robustos para detectar y corregir la autocorrelación. Además, la autocorrelación puede ser un problema en datos de series de tiempo con un número pequeño de observaciones, ya que la autocorrelación puede ser difícil de estimar de manera precisa en estos casos.
-
-
-identificacion y estudio
