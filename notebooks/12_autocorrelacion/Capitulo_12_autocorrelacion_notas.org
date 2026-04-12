@@ -29,3 +29,38 @@ El debate actual en la literatura estadística y económica se centra en la impo
 ## PUNTOS CRITICOS
 - **Supuestos subyacentes**: La autocorrelación se basa en el supuesto de que los términos de error son estacionarios, es decir, que la media y la varianza de los términos de error son constantes en el tiempo.
 - **Limitaciones y casos borde**: La autocorrelación puede ser difícil de detectar en datos con una gran cantidad de ruido o con una estructura temporal compleja. En estos casos, es importante utilizar métodos robustos para detectar y corregir la autocorrelación. Además, la autocorrelación puede ser un problema en datos de series de tiempo con un número pequeño de observaciones, ya que la autocorrelación puede ser difícil de estimar de manera precisa en estos casos.
+
+IDEA CENTRAL
+La autocorrelación se refiere a la correlación entre miembros de una serie de observaciones ordenadas en el tiempo o en el espacio, lo que puede afectar la validez de los estimadores y pruebas estadísticas en modelos de regresión lineal.
+
+## DESARROLLO RIGUROSO
+La autocorrelación se define como la correlación entre los términos de perturbación de una serie de observaciones, es decir, $cov(ui, uj | xi, xj) neq 0$. En el contexto de regresión lineal, se supone que no existe autocorrelación en las perturbaciones, es decir, $cov(ui, uj | xi, xj) = 0$. Sin embargo, si la autocorrelación está presente, los estimadores de MCO (método de los mínimos cuadrados ordinarios) pueden no ser eficientes y las pruebas estadísticas pueden no ser válidas.
+
+La autocorrelación se puede representar matemáticamente como:
+
+$$
+E(ui uj) neq 0
+$$
+
+donde $ui$ y $uj$ son los términos de perturbación en las observaciones $i$ y $j$, respectivamente.
+
+La autocorrelación puede ser de varios tipos, como:
+
+* Autocorrelación positiva: cuando el término de perturbación en una observación es positivamente correlacionado con el término de perturbación en la observación anterior o posterior.
+* Autocorrelación negativa: cuando el término de perturbación en una observación es negativamente correlacionado con el término de perturbación en la observación anterior o posterior.
+
+Para detectar la autocorrelación, se pueden utilizar pruebas estadísticas como la prueba de Durbin-Watson o la prueba de Ljung-Box.
+
+La autocorrelación puede ser causada por varios factores, como:
+
+* Efectos de temporada: cuando los patrones de la serie de tiempo son influenciados por factores estacionales.
+* Efectos de tendencia: cuando la serie de tiempo muestra una tendencia a lo largo del tiempo.
+* Efectos de rezago: cuando los eventos pasados influyen en los eventos presentes.
+
+## CONTEXTO DISCIPLINAR
+La autocorrelación es un concepto importante en la econometría y la estadística, ya que puede afectar la validez de los modelos de regresión lineal. Los autores clave en este campo son William H. Greene, Paul A. Rudd, Maurice G. Kendall y William R. Buckland, entre otros. La autocorrelación es un tema de debate actual en la economía y la estadística, ya que la presencia de autocorrelación puede llevar a conclusiones erróneas y a decisiones políticas inadecuadas.
+
+## PUNTOS CRITICOS
+
+* Supuestos subyacentes: la autocorrelación se basa en el supuesto de que los términos de perturbación son independientes y no correlacionados. Sin embargo, si esta suposición no se cumple, los resultados pueden ser erróneos.
+* Limitaciones y casos borde: la autocorrelación puede ser difícil de detectar en series de tiempo con pocas observaciones o con patrones de autocorrelación complejos. En estos casos, es importante utilizar pruebas estadísticas y modelos de regresión lineal robustos para detectar y corregir la autocorrelación.
