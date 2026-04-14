@@ -168,7 +168,7 @@ donde:
 | Autocorrelación en lag $s$       | $\rho_s = \rho^s$ (decrece geométricamente)                                         |
 | Condición de estacionariedad     | $|\rho| < 1$                                                                         |
 
-** ⚠️ Casos Especiales
+**  Casos Especiales
 
 | Valor de $\rho$  | Nombre                | Comportamiento                                   |
 |------------------+-----------------------+--------------------------------------------------|
@@ -178,7 +178,7 @@ donde:
 | $\rho = 1$       | Caminata aleatoria    | No estacionario, varianza → ∞                    |
 | $|\rho| > 1$     | Proceso explosivo     | Diverge — no existe en economía real             |
 
-** 💻 Simulación del AR(1) en los cuatro lenguajes
+**  Simulación del AR(1) en los cuatro lenguajes
 
 #+BEGIN_SRC python
 import numpy as np
