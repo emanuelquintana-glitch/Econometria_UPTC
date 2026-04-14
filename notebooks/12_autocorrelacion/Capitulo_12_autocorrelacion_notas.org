@@ -911,7 +911,7 @@ print(f"LM={lm_stat:.3f}, p-value={lm_p:.4f}")
 print("→ " + ("Evidencia de efectos ARCH" if lm_p < 0.05 else "Sin efectos ARCH"))
 #+END_SRC
 
-* 📋 Resumen y Guía de Referencia Rápida
+*  Resumen y Guía de Referencia Rápida
 :PROPERTIES:
 :CUSTOM_ID: sec-resumen
 :END:
@@ -974,7 +974,7 @@ print("→ " + ("Evidencia de efectos ARCH" if lm_p < 0.05 else "Sin efectos ARC
 
 #+BEGIN_SRC python
 # Verificación rápida: todos los conceptos del capítulo en acción
-print("✓ Capítulo 12 — Stack completo operativo:")
+print("Capítulo 12 — Stack completo operativo:")
 print("  Python  → statsmodels, arch, scipy")
 print("  R       → lmtest (dwtest, bgtest), sandwich (HAC)")
 print("  Julia   → Statistics, LinearAlgebra")
