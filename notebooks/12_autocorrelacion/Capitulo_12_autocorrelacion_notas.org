@@ -16,7 +16,7 @@
 — adaptado de Gujarati & Porter, 5ª ed.
 #+END_QUOTE
 
-* 🗺️ Mapa del Capítulo
+*  Mapa del Capítulo
 :PROPERTIES:
 :VISIBILITY: all
 :END:
