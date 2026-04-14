@@ -3,7 +3,7 @@
 #+author: Emanuel Quintana Silva (Estudiante de la UPTC)
 #+date: <2026-04-10 Fri>
 
-## IDEA CENTRAL
+## IDEA CENTRA
 La autocorrelación se refiere a la correlación entre los términos de error en un modelo de regresión lineal, lo que puede ocurrir en datos de series de tiempo o transversales, y puede tener consecuencias importantes en la estimación y el análisis de los modelos.
 
 ## DESARROLLO RIGUROSO
