@@ -962,7 +962,7 @@ print("→ " + ("Evidencia de efectos ARCH" if lm_p < 0.05 else "Sin efectos ARC
 - Rachas observadas $\ll E(R)$ → AC positiva fuerte
 - $\text{SE}_{HAC} \gg \text{SE}_{MCO}$ → Los SE estándar estaban subestimados
 
-* 🔗 Conexiones y Lecturas Complementarias
+* Conexiones y Lecturas Complementarias
 :PROPERTIES:
 :CUSTOM_ID: sec-conexiones
 :END:
