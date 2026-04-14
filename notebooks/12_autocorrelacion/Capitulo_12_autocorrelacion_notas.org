@@ -133,16 +133,16 @@ Entonces:
 
 ¡La diferenciación *crea* autocorrelación negativa de orden 1!
 
-** 🔗 Perspectiva Wooldridge (§12-1)
+**  Perspectiva Wooldridge (§12-1)
 
 Wooldridge distingue tres propiedades afectadas:
 
 | Propiedad        | ¿Afectada por autocorrelación? | Condición                             |
 |------------------+--------------------------------+---------------------------------------|
-| Insesgadez       | ❌ No                          | Requiere exogeneidad estricta         |
-| Consistencia     | ❌ No                          | Requiere exogeneidad contemporánea    |
-| Eficiencia/BLUE  | ✅ Sí — MCO ya no es BLUE     | Teorema de Gauss-Markov falla         |
-| Inferencia (t,F) | ✅ Sí — sesgadas               | Errores estándar son incorrectos      |
+| Insesgadez       |  No                          | Requiere exogeneidad estricta         |
+| Consistencia     |  No                          | Requiere exogeneidad contemporánea    |
+| Eficiencia/BLUE  |  Sí — MCO ya no es BLUE     | Teorema de Gauss-Markov falla         |
+| Inferencia (t,F) |  Sí — sesgadas               | Errores estándar son incorrectos      |
 
 * 12.2 El Esquema Autorregresivo AR(1)
 :PROPERTIES:
