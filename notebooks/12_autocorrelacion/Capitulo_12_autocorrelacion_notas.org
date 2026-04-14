@@ -267,7 +267,7 @@ fn main() {
 *Regla de oro:* MCO con autocorrelación da coeficientes insesgados pero inferencia inválida.
 #+END_QUOTE
 
-** 📐 Análisis detallado
+**  Análisis detallado
 
 *** Insesgadez (se conserva)
 Dado que $E(\hat{\beta}) = \beta + (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'E(\mathbf{u})$ y $E(\mathbf{u}) = \mathbf{0}$, la insesgadez depende solo de $E(\mathbf{u}) = \mathbf{0}$, no de la estructura de $\text{Cov}(\mathbf{u})$.
