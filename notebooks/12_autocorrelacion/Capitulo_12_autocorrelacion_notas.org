@@ -558,10 +558,10 @@ $H_0$: $\rho_1 = \rho_2 = \cdots = \rho_p = 0$
 
 | Característica              | Durbin-Watson | Breusch-Godfrey |
 |-----------------------------+---------------+-----------------|
-| Detecta AR(p) orden $p > 1$ | ❌ No         | ✅ Sí           |
-| Válido con $Y_{t-1}$        | ❌ No         | ✅ Sí           |
-| Válido con MA(q)            | ❌ No         | ✅ Sí           |
-| Muestra pequeña             | ✅ Mejor      | ⚠️ Asintótico  |
+| Detecta AR(p) orden $p > 1$ |  No         |  Sí           |
+| Válido con $Y_{t-1}$        |  No         |  Sí           |
+| Válido con MA(q)            |  No         |  Sí           |
+| Muestra pequeña             |  Mejor      |  Asintótico   |
 
 #+BEGIN_SRC R
 library(lmtest)
