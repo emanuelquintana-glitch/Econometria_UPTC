@@ -159,7 +159,7 @@ donde:
 - $\rho$: coeficiente de autocorrelación ($-1 < \rho < 1$ para estacionariedad)
 - $\varepsilon_t \sim \text{IID}(0, \sigma_\varepsilon^2)$: innovación (ruido blanco)
 
-** 📊 Propiedades del AR(1) Estacionario
+**  Propiedades del AR(1) Estacionario
 
 | Propiedad                        | Fórmula                                                                              |
 |----------------------------------+--------------------------------------------------------------------------------------|
