@@ -6,7 +6,7 @@
 ## IDEA CENTRL
 La autocorrelación se refiere a la correlación entre los términos de error en un modelo de regresión lineal, lo que puede ocurrir en datos de series de tiempo o transversales, y puede tener consecuencias importantes en la estimación y el análisis de los modelos.
 
-## DESARROLLO RIGUROSO
+## DESARROLLO RIGUROS
 La autocorrelación se puede definir como la correlación entre los términos de error en un modelo de regresión lineal. En un modelo de regresión lineal clásico, se asume que los términos de error son independientes y no correlacionados. Sin embargo, en la práctica, esto no siempre es cierto. La autocorrelación puede ocurrir en datos de series de tiempo, donde las observaciones sucesivas pueden estar relacionadas entre sí debido a la estructura temporal de los datos.
 
 La autocorrelación se puede medir utilizando la fórmula de la autocorrelación de Pearson:
