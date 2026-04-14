@@ -504,7 +504,7 @@ d \approx 2(1 - \hat{\rho}) \quad \Longrightarrow \quad \hat{\rho} \approx 1 - \
 | Indecisión (neg)   | $4-d_U \leq d \leq 4-d_L$ | Test no concluyente         |
 | AC negativa        | $4-d_L < d < 4$           | Rechazar $H_0$              |
 
-*** ⚠️ Supuestos críticos del DW
+**  Supuestos críticos del DW
 
 1. El modelo tiene intercepto
 2. Variables $X$ no estocásticas
