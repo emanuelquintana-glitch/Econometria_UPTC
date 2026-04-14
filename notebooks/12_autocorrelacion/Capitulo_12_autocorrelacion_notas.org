@@ -149,7 +149,7 @@ Wooldridge distingue tres propiedades afectadas:
 :CUSTOM_ID: sec-ar1
 :END:
 
-** 📐 Definición
+**  Definición
 
 \begin{equation}
 \boxed{u_t = \rho \, u_{t-1} + \varepsilon_t}
