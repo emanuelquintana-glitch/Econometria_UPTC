@@ -1,97 +1,987 @@
-#+title: Autocorrelacion: ¿que pasa si los terminos de error estan correlacionados?
-#+subtitle: Esta es una serie de notas del libro de damodargujarati para dar permitir una mayor comprension de loos conceptos y su aplicabilidad con codigo en rust julia python y r
-#+author: Emanuel Quintana Silva (Estudiante de la UPTC)
-#+date: <2026-04-10 Fri>
+;; -*- coding: utf-8 -*-
+#+TITLE: Capítulo 12 — Autocorrelación en Series de Tiempo
+#+SUBTITLE: Gujarati (Econometría Básica) ✦ Wooldridge (Introducción a la Econometría) — Notas Comparativas
+#+AUTHOR: Emanuel Quintana Silva · UPTC · Laboratorio de Datos
+#+DATE: @@latex:\today@@
+#+LANGUAGE: es
+#+OPTIONS: toc:3 num:t H:4 ^:{} ':t
+#+STARTUP: overview indent
+#+PROPERTY: header-args:python :session econ-py :results output :exports both
+#+PROPERTY: header-args:R      :session econ-R  :results output :exports both
+#+PROPERTY: header-args:julia  :session econ-jl :results output :exports both
+#+PROPERTY: header-args:rust   :results output  :exports both
 
-## IDEA CENTRL
-La autocorrelación se refiere a la correlación entre los términos de error en un modelo de regresión lineal, lo que puede ocurrir en datos de series de tiempo o transversales, y puede tener consecuencias importantes en la estimación y el análisis de los modelos.
+#+BEGIN_QUOTE
+/«La autocorrelación no es un pecado — es una señal. La pregunta real es: ¿señal de qué?»/
+— adaptado de Gujarati & Porter, 5ª ed.
+#+END_QUOTE
 
-## DESARROLLO RIGU
-La autocorrelación se puede definir como la correlación entre los términos de error en un modelo de regresión lineal. En un modelo de regresión lineal clásico, se asume que los términos de error son independientes y no correlacionados. Sin embargo, en la práctica, esto no siempre es cierto. La autocorrelación puede ocurrir en datos de series de tiempo, donde las observaciones sucesivas pueden estar relacionadas entre sí debido a la estructura temporal de los datos.
+* 🗺️ Mapa del Capítulo
+:PROPERTIES:
+:VISIBILITY: all
+:END:
 
-La autocorrelación se puede medir utilizando la fórmula de la autocorrelación de Pearson:
+| Sección | Gujarati                                        | Wooldridge                                         | Concepto Clave               |
+|---------+-------------------------------------------------+----------------------------------------------------+------------------------------|
+|    12.1 | Naturaleza del problema                         | Propiedades MCO con errores serialmente corr.      | ¿Qué es autocorrelación?     |
+|    12.2 | Esquema AR(1)                                   | —                                                  | Modelo autorregresivo        |
+|    12.3 | Consecuencias MCO bajo autocorrelación          | 12-1b Eficiencia e inferencia                      | Por qué falla MCO            |
+|    12.4 | Ejemplo hipotético (Monte Carlo)                | —                                                  | Evidencia empírica           |
+|    12.5 | Salarios y productividad EE.UU. 1959–1998       | —                                                  | Caso real                    |
+|    12.6 | Detección: gráfico, rachas, DW, BG              | 12-2 Pruebas de correlación serial                 | Cómo detectarla              |
+|    12.7 | Por qué usar pruebas                            | —                                                  | Diagnóstico                  |
+|    12.8 | Mala especificación vs. autocorrelación pura    | —                                                  | Distinguir causa raíz        |
+|    12.9 | MCG: DW, Cochrane-Orcutt, Prais-Winsten         | 12-3 Corrección con regresores exógenos            | Cómo corregirla              |
+|   12.10 | HAC / Newey-West                                | 12-5 Inferencia robusta HAC                        | Método moderno               |
+|   12.11 | MCO vs. MCG vs. NLLS                            | —                                                  | Cuándo usar qué              |
+|   12.12 | Pronóstico con errores autocorrelacionados      | —                                                  | Predicción                   |
 
-$$
-\rho_k = \frac{\sum_{t=1}^{n-k} (e_t - \bar{e})(e_{t+k} - \bar{e})}{\sum_{t=1}^{n} (e_t - \bar{e})^2}
-$$
+* 12.1 Naturaleza del Problema
+:PROPERTIES:
+:CUSTOM_ID: sec-naturaleza
+:END:
 
-donde $e_t$ es el término de error en el tiempo $t$, $\bar{e}$ es la media de los términos de error y $k$ es el número de intervalos de tiempo entre las observaciones.
+** 📐 Definición Formal
 
-La autocorrelación puede tener consecuencias importantes en la estimación y el análisis de los modelos. Por ejemplo, si los términos de error están correlacionados, la varianza de los coeficientes estimados puede ser mayor de lo que se espera, lo que puede llevar a conclusiones incorrectas sobre la significancia estadística de los coeficientes.
+El supuesto clásico #4 exige:
 
-## CONTEXTO DISCIPLINAR
-La autocorrelación es un concepto importante en la estadística y la economía, ya que se relaciona con la violación del supuesto de independencia de los términos de error en los modelos de regresión lineal. La autocorrelación se ha estudiado ampliamente en la literatura estadística y económica, y se han desarrollado varios métodos para detectar y corregir la autocorrelación en los datos.
+\begin{equation}
+\boxed{E(u_i \, u_j \mid \mathbf{X}) = 0 \quad \forall \; i \neq j}
+\end{equation}
 
-Algunos autores clave que han contribuido al estudio de la autocorrelación incluyen a Box y Jenkins, que desarrollaron el método de series de tiempo ARIMA para modelar la autocorrelación en los datos de series de tiempo. Otros autores, como Cochrane y Orcutt, han desarrollado métodos para corregir la autocorrelación en los modelos de regresión lineal.
+Cuando este supuesto se viola — es decir, cuando $E(u_i u_j) \neq 0$ — decimos que existe *autocorrelación* (o correlación serial).
 
-El debate actual en la literatura estadística y económica se centra en la importancia de la autocorrelación en la estimación y el análisis de los modelos, y en el desarrollo de nuevos métodos para detectar y corregir la autocorrelación en los datos.
+La matriz de varianza-covarianza del vector de errores bajo autocorrelación deja de ser $\sigma^2 \mathbf{I}_n$ y pasa a ser $\sigma^2 \mathbf{\Omega}$ con $\mathbf{\Omega} \neq \mathbf{I}$:
 
-## PUNTOS CRITICOS
-- **Supuestos subyacentes**: La autocorrelación se basa en el supuesto de que los términos de error son estacionarios, es decir, que la media y la varianza de los términos de error son constantes en el tiempo.
-- **Limitaciones y casos borde**: La autocorrelación puede ser difícil de detectar en datos con una gran cantidad de ruido o con una estructura temporal compleja. En estos casos, es importante utilizar métodos robustos para detectar y corregir la autocorrelación. Además, la autocorrelación puede ser un problema en datos de series de tiempo con un número pequeño de observaciones, ya que la autocorrelación puede ser difícil de estimar de manera precisa en estos casos.
+\begin{equation}
+E(\mathbf{u}\mathbf{u}') = \sigma^2\mathbf{\Omega} =
+\sigma^2 \begin{pmatrix}
+1 & \rho & \rho^2 & \cdots & \rho^{n-1} \\
+\rho & 1 & \rho & \cdots & \rho^{n-2} \\
+\vdots & & \ddots & & \vdots \\
+\rho^{n-1} & \cdots & & \rho & 1
+\end{pmatrix}
+\end{equation}
 
-IDEA CENTRAL
-La autocorrelación se refiere a la correlación entre miembros de una serie de observaciones ordenadas en el tiempo o en el espacio, lo que puede afectar la validez de los estimadores y pruebas estadísticas en modelos de regresión lineal.
+** 🔍 Causas Principales (Gujarati §12.1)
 
-## DESARROLLO RIGUROSO
-La autocorrelación se define como la correlación entre los términos de perturbación de una serie de observaciones, es decir, $cov(ui, uj | xi, xj) neq 0$. En el contexto de regresión lineal, se supone que no existe autocorrelación en las perturbaciones, es decir, $cov(ui, uj | xi, xj) = 0$. Sin embargo, si la autocorrelación está presente, los estimadores de MCO (método de los mínimos cuadrados ordinarios) pueden no ser eficientes y las pruebas estadísticas pueden no ser válidas.
+*** 1. Inercia o Lentitud de las Series Económicas
 
-La autocorrelación se puede representar matemáticamente como:
+Las series de tiempo (PIB, desempleo, inflación) exhiben *momentum* cíclico: un valor alto en $t$ predice un valor alto en $t+1$.
 
-$$
-E(ui uj) neq 0
-$$
+#+BEGIN_QUOTE
+*Ejemplo:* En fase expansiva del ciclo, $u_t > 0$ implica que probablemente $u_{t+1} > 0$ también.
+#+END_QUOTE
 
-donde $ui$ y $uj$ son los términos de perturbación en las observaciones $i$ y $j$, respectivamente.
+*** 2. Sesgo de Especificación: Variables Omitidas
 
-La autocorrelación puede ser de varios tipos, como:
+Si el modelo verdadero es:
+\begin{equation}
+Y_t = \beta_1 + \beta_2 X_{2t} + \beta_3 X_{3t} + u_t
+\end{equation}
 
-* Autocorrelación positiva: cuando el término de perturbación en una observación es positivamente correlacionado con el término de perturbación en la observación anterior o posterior.
-* Autocorrelación negativa: cuando el término de perturbación en una observación es negativamente correlacionado con el término de perturbación en la observación anterior o posterior.
+pero estimamos sin $X_3$:
+\begin{equation}
+Y_t = \alpha_1 + \alpha_2 X_{2t} + v_t, \quad \text{donde } v_t = \underbrace{\beta_3 X_{3t}}_{\text{variable omitida}} + u_t
+\end{equation}
 
-Para detectar la autocorrelación, se pueden utilizar pruebas estadísticas como la prueba de Durbin-Watson o la prueba de Ljung-Box.
+Si $X_{3t}$ tiene autocorrelación, $v_t$ la tendrá — pero es *autocorrelación inducida*, no pura.
 
-La autocorrelación puede ser causada por varios factores, como:
+*** 3. Forma Funcional Incorrecta
 
-* Efectos de temporada: cuando los patrones de la serie de tiempo son influenciados por factores estacionales.
-* Efectos de tendencia: cuando la serie de tiempo muestra una tendencia a lo largo del tiempo.
-* Efectos de rezago: cuando los eventos pasados influyen en los eventos presentes.
+Ajustar un modelo lineal a una relación cuadrática genera residuos con patrón sistemático:
 
-## CONTEXTO DISCIPLINAR
-La autocorrelación es un concepto importante en la econometría y la estadística, ya que puede afectar la validez de los modelos de regresión lineal. Los autores clave en este campo son William H. Greene, Paul A. Rudd, Maurice G. Kendall y William R. Buckland, entre otros. La autocorrelación es un tema de debate actual en la economía y la estadística, ya que la presencia de autocorrelación puede llevar a conclusiones erróneas y a decisiones políticas inadecuadas.
+\[
+\text{Verdadero:} \quad \text{Costo}_i = \beta_1 + \beta_2 Q_i + \beta_3 Q_i^2 + u_i
+\]
+\[
+\text{Ajustado:} \quad \text{Costo}_i = \alpha_1 + \alpha_2 Q_i + v_i
+\]
 
-## PUNTOS CRITICOS
+Los $v_i$ mostrarán un patrón de «arco» que parece autocorrelación positiva.
 
-* Supuestos subyacentes: la autocorrelación se basa en el supuesto de que los términos de perturbación son independientes y no correlacionados. Sin embargo, si esta suposición no se cumple, los resultados pueden ser erróneos.
-* Limitaciones y casos borde: la autocorrelación puede ser difícil de detectar en series de tiempo con pocas observaciones o con patrones de autocorrelación complejos. En estos casos, es importante utilizar pruebas estadísticas y modelos de regresión lineal robustos para detectar y corregir la autocorrelación.
+*** 4. Fenómeno de la Telaraña (Cobweb)
 
-#+TITLE: Explicación
-#+DATE: 2026-04-11 21:39
+En mercados agrícolas la oferta responde al precio con rezago:
+\begin{equation}
+\text{Oferta}_t = \beta_1 + \beta_2 P_{t-1} + u_t
+\end{equation}
 
-## IDEA CENTRAL
-La autocorrelación en series de tiempo se refiere a la correlación entre los términos de perturbación en diferentes momentos, lo que puede afectar la validez de los estimadores y pruebas estadísticas en modelos de regresión lineal.
+Si omitimos el rezago, el error $u_t$ capturará el efecto del precio pasado, creando dependencia serial.
 
-## DESARROLLO RIGUROSO
-La autocorrelación se define como la correlación entre miembros de series de observaciones ordenadas en el tiempo. En el contexto de regresión, el modelo clásico de regresión lineal supone que no existe autocorrelación en las perturbaciones $u_i$, es decir, $cov(u_i, u_j | x_i, x_j) = E(u_i u_j) = 0$ para $i \neq j$. Esto significa que el término de perturbación relacionado con una observación cualquiera no recibe influencia del término de perturbación relacionado con cualquier otra observación.
+*** 5. Rezagos y Variables Dependientes Rezagadas
 
-Sin embargo, si existe autocorrelación, entonces $E(u_i u_j) \neq 0$ para $i \neq j$. Esto puede ocurrir si la interrupción ocasionada por un evento en un momento afecta la producción o el comportamiento en un momento posterior. Por ejemplo, si tratamos con información trimestral de series de tiempo y hay una huelga laboral que afecta la producción en un trimestre, es posible que la producción del trimestre siguiente también se vea afectada.
+Modelo de consumo con hábitos:
+\begin{equation}
+C_t = \beta_1 + \beta_2 Y_t + \beta_3 C_{t-1} + u_t
+\end{equation}
 
-La autocorrelación se puede medir utilizando la función de autocorrelación, que se define como:
+Si se omite $C_{t-1}$, el error absorbe su influencia y muestra autocorrelación.
 
-$$
-\gamma(k) = \frac{cov(u_t, u_{t-k})}{\sigma^2}
-$$
+*** 6. Manipulación y Transformación de Datos
 
-donde $k$ es el número de períodos de desfase y $\sigma^2$ es la varianza de los términos de perturbación.
+Promediar datos mensuales para obtener cifras trimestrales introduce suavizamiento artificial. Más formalmente, si $u_t$ es ruido blanco y tomamos primeras diferencias:
 
-## CONTEXTO DISCIPLINAR
-La autocorrelación es un concepto importante en econometría y series de tiempo, ya que puede afectar la validez de los estimadores y pruebas estadísticas en modelos de regresión lineal. Autores como William H. Greene y Paul A. Rudd han tratado el tema de la autocorrelación en sus obras.
+\begin{equation}
+v_t = u_t - u_{t-1}
+\end{equation}
 
-En el contexto de la econometría, la autocorrelación se puede producir debido a various factores, como la persistencia de los efectos de un evento en el tiempo o la interacción entre variables económicas. Por ejemplo, si se analiza la relación entre la producción y los insumos, la autocorrelación puede ocurrir si la producción de un trimestre se ve afectada por la producción del trimestre anterior.
+Entonces:
+\begin{equation}
+\text{Cov}(v_t, v_{t-1}) = E[(u_t - u_{t-1})(u_{t-1} - u_{t-2})] = -\sigma^2 \neq 0
+\end{equation}
 
-## PUNTOS CRITICOS
+¡La diferenciación *crea* autocorrelación negativa de orden 1!
 
-* **Supuestos subyacentes**: La autocorrelación puede ser un problema si se supone que los términos de perturbación son independientes y no autocorrelacionados.
-* **Limitaciones y casos borde**: La autocorrelación puede ser difícil de detectar en series de tiempo con pocos datos o con estructuras de dependencia complejas.
-* **Casos de autocorrelación**: La autocorrelación puede ocurrir en series de tiempo con estructuras de dependencia temporal, como la persistencia de los efectos de un evento en el tiempo o la interacción entre variables económicas.
-* **Remedios**: La autocorrelación se puede remediar utilizando técnicas como la transformación de los datos, la inclusión de variables adicionales en el modelo o la utilización de estimadores robustos.
+** 🔗 Perspectiva Wooldridge (§12-1)
+
+Wooldridge distingue tres propiedades afectadas:
+
+| Propiedad        | ¿Afectada por autocorrelación? | Condición                             |
+|------------------+--------------------------------+---------------------------------------|
+| Insesgadez       | ❌ No                          | Requiere exogeneidad estricta         |
+| Consistencia     | ❌ No                          | Requiere exogeneidad contemporánea    |
+| Eficiencia/BLUE  | ✅ Sí — MCO ya no es BLUE     | Teorema de Gauss-Markov falla         |
+| Inferencia (t,F) | ✅ Sí — sesgadas               | Errores estándar son incorrectos      |
+
+* 12.2 El Esquema Autorregresivo AR(1)
+:PROPERTIES:
+:CUSTOM_ID: sec-ar1
+:END:
+
+** 📐 Definición
+
+\begin{equation}
+\boxed{u_t = \rho \, u_{t-1} + \varepsilon_t}
+\end{equation}
+
+donde:
+- $\rho$: coeficiente de autocorrelación ($-1 < \rho < 1$ para estacionariedad)
+- $\varepsilon_t \sim \text{IID}(0, \sigma_\varepsilon^2)$: innovación (ruido blanco)
+
+** 📊 Propiedades del AR(1) Estacionario
+
+| Propiedad                        | Fórmula                                                                              |
+|----------------------------------+--------------------------------------------------------------------------------------|
+| Varianza incondicional           | $\sigma_u^2 = \dfrac{\sigma_\varepsilon^2}{1 - \rho^2}$                             |
+| Autocovarianza en lag $s$        | $\gamma_s = \text{Cov}(u_t, u_{t-s}) = \rho^s \cdot \sigma_u^2$                    |
+| Autocorrelación en lag $s$       | $\rho_s = \rho^s$ (decrece geométricamente)                                         |
+| Condición de estacionariedad     | $|\rho| < 1$                                                                         |
+
+** ⚠️ Casos Especiales
+
+| Valor de $\rho$  | Nombre                | Comportamiento                                   |
+|------------------+-----------------------+--------------------------------------------------|
+| $\rho = 0$       | Ruido blanco          | Sin autocorrelación — supuesto clásico cumplido  |
+| $0 < \rho < 1$   | AC positiva           | Shocks se disipan gradualmente                   |
+| $-1 < \rho < 0$  | AC negativa           | Alternancia de signos (zigzag)                   |
+| $\rho = 1$       | Caminata aleatoria    | No estacionario, varianza → ∞                    |
+| $|\rho| > 1$     | Proceso explosivo     | Diverge — no existe en economía real             |
+
+** 💻 Simulación del AR(1) en los cuatro lenguajes
+
+#+BEGIN_SRC python
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+n = 100
+
+def simular_ar1(rho, n=100):
+    eps = np.random.normal(0, 1, n)
+    u = np.zeros(n)
+    for t in range(1, n):
+        u[t] = rho * u[t-1] + eps[t]
+    return u
+
+rhos = [0.0, 0.5, 0.9, -0.7]
+etiquetas = ['ρ=0 (ruido blanco)', 'ρ=0.5', 'ρ=0.9 (alta AC+)', 'ρ=-0.7 (AC-)']
+
+for rho, etq in zip(rhos, etiquetas):
+    u = simular_ar1(rho)
+    print(f"{etq}: media={u.mean():.3f}, std={u.std():.3f}, "
+          f"corr(u_t, u_{{t-1}})={np.corrcoef(u[1:], u[:-1])[0,1]:.3f}")
+#+END_SRC
+
+#+BEGIN_SRC R
+set.seed(42)
+simular_ar1 <- function(rho, n=100) {
+  eps <- rnorm(n)
+  u   <- numeric(n)
+  for(t in 2:n) u[t] <- rho * u[t-1] + eps[t]
+  u
+}
+
+rhos <- c(0, 0.5, 0.9, -0.7)
+for(rho in rhos) {
+  u <- simular_ar1(rho)
+  cat(sprintf("rho=%.1f: media=%.3f, corr_lag1=%.3f\n",
+              rho, mean(u), cor(u[-1], u[-length(u)])))
+}
+#+END_SRC
+
+#+BEGIN_SRC julia
+using Statistics, Random
+Random.seed!(42)
+
+function simular_ar1(ρ; n=100)
+    ε = randn(n)
+    u = zeros(n)
+    for t in 2:n
+        u[t] = ρ * u[t-1] + ε[t]
+    end
+    u
+end
+
+for ρ in [0.0, 0.5, 0.9, -0.7]
+    u = simular_ar1(ρ)
+    corr = cor(u[2:end], u[1:end-1])
+    println("ρ=$ρ → media=$(round(mean(u),digits=3)), corr_lag1=$(round(corr,digits=3))")
+end
+#+END_SRC
+
+#+BEGIN_SRC rust
+fn main() {
+    // Demostración: propiedades teóricas del AR(1)
+    let rhos = vec![0.0f64, 0.5, 0.9, -0.7];
+    for rho in &rhos {
+        let sigma_u2 = 1.0 / (1.0 - rho.powi(2));  // σ²_u = σ²_ε/(1-ρ²) con σ²_ε=1
+        let gamma1   = rho * sigma_u2;               // Autocovarianza lag 1
+        let rho1     = rho;                          // Autocorrelación lag 1 = ρ
+        println!("ρ={:.1} → Var(u)={:.3}, Cov(u_t,u_{{t-1}})={:.3}, Corr={:.3}",
+                 rho, sigma_u2, gamma1, rho1);
+    }
+}
+#+END_SRC
+
+* 12.3 Consecuencias de MCO bajo Autocorrelación
+:PROPERTIES:
+:CUSTOM_ID: sec-consecuencias
+:END:
+
+** Resumen ejecutivo
+
+#+BEGIN_QUOTE
+*Regla de oro:* MCO con autocorrelación da coeficientes insesgados pero inferencia inválida.
+#+END_QUOTE
+
+** 📐 Análisis detallado
+
+*** Insesgadez (se conserva)
+Dado que $E(\hat{\beta}) = \beta + (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'E(\mathbf{u})$ y $E(\mathbf{u}) = \mathbf{0}$, la insesgadez depende solo de $E(\mathbf{u}) = \mathbf{0}$, no de la estructura de $\text{Cov}(\mathbf{u})$.
+
+*** Pérdida de eficiencia (MCO ya no es BLUE)
+
+La varianza real del estimador MCO de $\hat{\beta}_2$ bajo AR(1) es:
+
+\begin{equation}
+\text{Var}(\hat{\beta}_2)_{\text{real}} = \frac{\sigma^2}{\sum x_t^2}
+\left[1 + 2\rho\frac{\sum x_t x_{t-1}}{\sum x_t^2} + 2\rho^2\frac{\sum x_t x_{t-2}}{\sum x_t^2} + \cdots \right]
+\end{equation}
+
+Mientras que MCO *reporta* incorrectamente:
+
+\begin{equation}
+\widehat{\text{Var}}(\hat{\beta}_2)_{\text{MCO}} = \frac{\hat{\sigma}^2}{\sum x_t^2}
+\end{equation}
+
+Con $\rho > 0$ y variables con tendencia positiva, el segundo término en la fórmula real es positivo, por lo que $\widehat{\text{Var}}_{\text{MCO}} < \text{Var}_{\text{real}}$: **los errores estándar están subestimados.**
+
+*** Sesgo en $\hat{\sigma}^2$
+
+\begin{equation}
+E(\hat{\sigma}^2) = \sigma^2 \cdot \frac{n - \frac{2}{1-\rho} - 2\rho r}{n - 2}
+\end{equation}
+
+donde $r$ es la correlación entre $X_t$ y $X_{t-1}$. Si $\rho > 0$ y $r > 0$, $E(\hat{\sigma}^2) < \sigma^2$: **varianza subestimada**.
+
+*** Consecuencias para la inferencia
+
+| Problema                    | Consecuencia                                         |
+|-----------------------------+------------------------------------------------------|
+| $\hat{\sigma}^2$ sesgado ↓  | Errores estándar artificialmente pequeños            |
+| $t = \hat\beta / se$ inflado | Falsa significancia estadística (Error Tipo I ↑)    |
+| IC demasiado estrechos      | Falsa precisión en las estimaciones                  |
+| $R^2 > d$ (Durbin-Watson)   | Señal de regresión espuria                           |
+
+* 12.4 Ejemplo Hipotético (Monte Carlo)
+:PROPERTIES:
+:CUSTOM_ID: sec-montecarlo
+:END:
+
+Modelo verdadero: $Y_t = 1.0 + 0.8 X_t + u_t$ con $u_t = 0.7 u_{t-1} + \varepsilon_t$
+
+#+BEGIN_SRC python
+import numpy as np
+from scipy import stats
+
+np.random.seed(2026)
+n = 10
+X = np.arange(1, n+1, dtype=float)
+beta1_true, beta2_true, rho = 1.0, 0.8, 0.7
+
+def experimento_mc(rho, n=10, seed=42):
+    np.random.seed(seed)
+    eps = np.random.normal(0, 1, n)
+    u   = np.zeros(n)
+    u[0] = 5.0  # valor inicial (como en Gujarati)
+    for t in range(1, n):
+        u[t] = rho * u[t-1] + eps[t]
+    Y = beta1_true + beta2_true * X + u
+    # Regresión MCO
+    b2, b1, r, p, se = stats.linregress(X, Y)
+    sigma2_hat = np.sum((Y - b1 - b2*X)**2) / (n-2)
+    print(f"  ρ={rho}: Ŷ = {b1:.4f} + {b2:.4f}X | σ²_hat={sigma2_hat:.4f} | R²={r**2:.4f}")
+    return b1, b2, sigma2_hat
+
+print("=== Reproducción del Experimento de Gujarati (§12.4) ===")
+print(f"Verdadero: β1={beta1_true}, β2={beta2_true}\n")
+print("Con autocorrelación (ρ=0.7):")
+experimento_mc(rho=0.7)
+print("\nSin autocorrelación (ρ=0.0):")
+experimento_mc(rho=0.0)
+#+END_SRC
+
+* 12.5 Caso Real: Salarios y Productividad EE.UU. (1959–1998)
+:PROPERTIES:
+:CUSTOM_ID: sec-caso-real
+:END:
+
+** Resultados reportados por Gujarati
+
+| Modelo        | Ecuación estimada                                              | $R^2$  | $d$ (Durbin-Watson) |
+|---------------+----------------------------------------------------------------+--------+---------------------|
+| Lineal        | $\hat{Y}_t = 29.52 + 0.7136 X_t$                              | 0.9584 | 0.1229 ← muy bajo!  |
+| Log-lineal    | $\ln\hat{Y}_t = 1.5239 + 0.6716 \ln X_t$                      | 0.9747 | 0.1542              |
+| 1ª diferencia | $\Delta\hat{Y}_t = 0.7199 \Delta X_t$                         | —      | 1.5096 (OK)         |
+| Cochrane-Orcutt | (con $\hat{\rho} = 0.8919$)                                 | —      | —                   |
+
+Regla empírica de alerta: $R^2 = 0.9584 > d = 0.1229$ → **señal de regresión espuria**.
+
+#+BEGIN_SRC R
+# Replicación con datos sintéticos que mimetizan el patrón
+library(lmtest)
+
+set.seed(2026)
+n   <- 40
+t   <- 1:n
+X   <- 75 + 0.7*t + rnorm(n, 0, 2)   # productividad creciente
+u   <- arima.sim(model=list(ar=0.89), n=n)
+Y   <- 29.52 + 0.7136*X + u
+
+# Modelo MCO simple
+mod <- lm(Y ~ X)
+cat("=== MCO Simple ===\n")
+print(summary(mod)$coefficients)
+cat("\nEstadístico d de Durbin-Watson:\n")
+print(dwtest(mod))
+
+# Primera diferencia
+dY <- diff(Y); dX <- diff(X)
+mod_diff <- lm(dY ~ dX - 1)
+cat("\n=== Primera Diferencia ===\n")
+print(summary(mod_diff)$coefficients)
+cat("DW:", dwtest(mod_diff)$statistic, "\n")
+#+END_SRC
+
+* 12.6 Detección de la Autocorrelación
+:PROPERTIES:
+:CUSTOM_ID: sec-deteccion
+:END:
+
+** I. Método Gráfico
+
+Herramientas visuales esenciales:
+
+| Gráfico                              | Señal de AC positiva               | Señal de AC negativa       |
+|--------------------------------------+------------------------------------+----------------------------|
+| $\hat{u}_t$ vs $t$                   | Racimos de mismo signo             | Alternancia rápida (zigzag)|
+| $\hat{u}_t$ vs $\hat{u}_{t-1}$       | Concentración en cuadrantes I y III| Cuadrantes II y IV         |
+| $\hat{u}_t^2$ vs $\hat{Y}_t$         | Forma de embudo                    | Heteroscedasticidad        |
+
+#+BEGIN_SRC python
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima.model import ARIMA
+
+np.random.seed(42)
+n = 50
+t = np.arange(n)
+eps = np.random.normal(0, 1, n)
+
+# Generar residuos con y sin autocorrelación
+u_ac   = np.zeros(n)
+u_noac = eps.copy()
+for i in range(1, n):
+    u_ac[i] = 0.85 * u_ac[i-1] + eps[i]
+
+print("Autocorrelación lag-1 (con AC):", round(np.corrcoef(u_ac[1:], u_ac[:-1])[0,1], 3))
+print("Autocorrelación lag-1 (sin AC):", round(np.corrcoef(u_noac[1:], u_noac[:-1])[0,1], 3))
+print("\nFunción de autocorrelación (con AC, lags 1-5):")
+for lag in range(1, 6):
+    r = np.corrcoef(u_ac[lag:], u_ac[:-lag])[0,1]
+    barra = "█" * int(abs(r)*20)
+    print(f"  Lag {lag}: {r:+.3f} {barra}")
+#+END_SRC
+
+** II. Prueba de las Rachas (Runs Test)
+
+*** Formulación
+
+Dado $N_1$ residuos positivos, $N_2$ negativos, $N = N_1 + N_2$, y $R$ = número de rachas observadas:
+
+\begin{align}
+E(R) &= \frac{2N_1 N_2}{N} + 1 \\[6pt]
+\text{Var}(R) &= \frac{2N_1 N_2 (2N_1 N_2 - N)}{N^2(N-1)} \\[6pt]
+Z &= \frac{R - E(R)}{\sqrt{\text{Var}(R)}} \xrightarrow{d} N(0,1)
+\end{align}
+
+Intervalo de confianza al 95%: $\left[E(R) - 1.96\sqrt{\text{Var}(R)},\; E(R) + 1.96\sqrt{\text{Var}(R)}\right]$
+
+#+BEGIN_SRC python
+import numpy as np
+from statsmodels.stats.stattools import durbin_watson
+
+def prueba_rachas(residuos):
+    signos   = np.sign(residuos)
+    N1       = np.sum(signos > 0)
+    N2       = np.sum(signos < 0)
+    N        = N1 + N2
+    # Contar rachas
+    R = 1 + np.sum(signos[1:] != signos[:-1])
+    ER       = 2*N1*N2/N + 1
+    VarR     = 2*N1*N2*(2*N1*N2 - N) / (N**2 * (N-1))
+    Z        = (R - ER) / np.sqrt(VarR)
+    ic_lower = ER - 1.96*np.sqrt(VarR)
+    ic_upper = ER + 1.96*np.sqrt(VarR)
+    print(f"N1(+)={N1}, N2(-)={N2}, N={N}")
+    print(f"Rachas observadas R={R}")
+    print(f"E(R)={ER:.2f}, IC 95%=[{ic_lower:.2f}, {ic_upper:.2f}]")
+    print(f"Z={Z:.3f} → {'RECHAZAR H0 (autocorrelación)' if abs(Z)>1.96 else 'No rechazar H0'}")
+    return R, Z
+
+np.random.seed(42)
+u_ar1 = np.zeros(50)
+for i in range(1, 50):
+    u_ar1[i] = 0.85 * u_ar1[i-1] + np.random.normal()
+
+print("=== Prueba de Rachas — Residuos con AR(0.85) ===")
+prueba_rachas(u_ar1)
+#+END_SRC
+
+** III. Prueba d de Durbin-Watson
+
+*** La estadística
+
+\begin{equation}
+d = \frac{\sum_{t=2}^{n} (\hat{u}_t - \hat{u}_{t-1})^2}{\sum_{t=1}^{n} \hat{u}_t^2}
+\end{equation}
+
+*** Relación con $\hat{\rho}$
+
+\begin{equation}
+d \approx 2(1 - \hat{\rho}) \quad \Longrightarrow \quad \hat{\rho} \approx 1 - \frac{d}{2}
+\end{equation}
+
+*** Zonas de decisión
+
+#+BEGIN_EXAMPLE
+ 0        dL       dU         2        4-dU      4-dL        4
+ |========|--------|----------|---------|--------|========|
+ AC(+)  Indecisión  No AC              Indecisión  AC(-)
+ RECHAZAR              ACEPTAR H0              RECHAZAR
+#+END_EXAMPLE
+
+| Zona               | Valores de $d$            | Decisión                    |
+|--------------------+---------------------------+-----------------------------|
+| AC positiva        | $0 < d < d_L$             | Rechazar $H_0$              |
+| Indecisión (pos)   | $d_L \leq d \leq d_U$     | Test no concluyente         |
+| No AC              | $d_U < d < 4-d_U$         | No rechazar $H_0$           |
+| Indecisión (neg)   | $4-d_U \leq d \leq 4-d_L$ | Test no concluyente         |
+| AC negativa        | $4-d_L < d < 4$           | Rechazar $H_0$              |
+
+*** ⚠️ Supuestos críticos del DW
+
+1. El modelo tiene intercepto
+2. Variables $X$ no estocásticas
+3. Error sigue AR(1) — no detecta órdenes superiores
+4. No hay $Y_{t-1}$ como regresor (usar test de Durbin $h$ en ese caso)
+5. Sin observaciones faltantes
+
+#+BEGIN_SRC R
+library(lmtest)
+
+set.seed(2026)
+n <- 50
+X <- 1:n + rnorm(n, 0, 2)
+
+# Caso 1: Sin autocorrelación
+Y1 <- 2 + 0.5*X + rnorm(n)
+cat("=== Sin autocorrelación ===\n")
+mod1 <- lm(Y1 ~ X)
+dw1  <- dwtest(mod1)
+cat(sprintf("d = %.4f, p-value = %.4f\n\n", dw1$statistic, dw1$p.value))
+
+# Caso 2: AR(1) con ρ=0.85
+u  <- arima.sim(model=list(ar=0.85), n=n)
+Y2 <- 2 + 0.5*X + u
+cat("=== Con autocorrelación AR(0.85) ===\n")
+mod2 <- lm(Y2 ~ X)
+dw2  <- dwtest(mod2)
+cat(sprintf("d = %.4f, p-value = %.4f\n", dw2$statistic, dw2$p.value))
+cat(sprintf("ρ_hat ≈ 1 - d/2 = %.4f\n", 1 - dw2$statistic/2))
+#+END_SRC
+
+** IV. Prueba de Breusch-Godfrey (BG)
+
+La prueba más general — supera las limitaciones del DW.
+
+*** Modelo nulo con AR(p)
+
+\begin{equation}
+u_t = \rho_1 u_{t-1} + \rho_2 u_{t-2} + \cdots + \rho_p u_{t-p} + \varepsilon_t
+\end{equation}
+
+$H_0$: $\rho_1 = \rho_2 = \cdots = \rho_p = 0$
+
+*** Procedimiento paso a paso
+
+1. Estimar modelo original → obtener $\hat{u}_t$
+2. Regresión auxiliar: $\hat{u}_t = \alpha_1 + \alpha_2 X_t + \hat{\rho}_1 \hat{u}_{t-1} + \cdots + \hat{\rho}_p \hat{u}_{t-p} + v_t$
+3. Estadístico: $LM = (n-p)R^2_{\text{aux}} \sim \chi^2_p$ bajo $H_0$
+
+*** Ventajas sobre DW
+
+| Característica              | Durbin-Watson | Breusch-Godfrey |
+|-----------------------------+---------------+-----------------|
+| Detecta AR(p) orden $p > 1$ | ❌ No         | ✅ Sí           |
+| Válido con $Y_{t-1}$        | ❌ No         | ✅ Sí           |
+| Válido con MA(q)            | ❌ No         | ✅ Sí           |
+| Muestra pequeña             | ✅ Mejor      | ⚠️ Asintótico  |
+
+#+BEGIN_SRC R
+library(lmtest)
+
+# Prueba BG con AR(1) y AR(4)
+set.seed(2026)
+n  <- 100
+X  <- rnorm(n)
+u  <- arima.sim(model=list(ar=c(0.6, 0.3)), n=n)  # AR(2) verdadero
+Y  <- 1 + 0.5*X + u
+mod <- lm(Y ~ X)
+
+cat("=== Prueba Breusch-Godfrey ===\n")
+cat("H0: No autocorrelación\n\n")
+for(p in 1:4) {
+  bg <- bgtest(mod, order=p)
+  cat(sprintf("AR(%d): LM=%.3f, p-value=%.4f %s\n",
+              p, bg$statistic, bg$p.value,
+              ifelse(bg$p.value < 0.05, "*** RECHAZAR H0", "")))
+}
+#+END_SRC
+
+#+BEGIN_SRC julia
+# Implementación manual de BG en Julia
+using Statistics, LinearAlgebra
+
+function prueba_bg(Y, X, p)
+    n = length(Y)
+    # Paso 1: MCO original
+    X_mat = hcat(ones(n), X)
+    beta = X_mat \ Y
+    u_hat = Y - X_mat * beta
+
+    # Paso 2: Regresión auxiliar con lags de residuos
+    n2    = n - p
+    U_lag = hcat([u_hat[p-j+1:n-j] for j in 1:p]...)
+    X_aux = hcat(ones(n2), X[p+1:end], U_lag)
+    u_dep = u_hat[p+1:end]
+
+    beta_aux = X_aux \ u_dep
+    u_res    = u_dep - X_aux * beta_aux
+    SS_res   = sum(u_res.^2)
+    SS_tot   = sum((u_dep .- mean(u_dep)).^2)
+    R2_aux   = 1 - SS_res/SS_tot
+    LM       = n2 * R2_aux
+    println("BG(p=$p): LM=$( round(LM,digits=3)), R²_aux=$(round(R2_aux,digits=3))")
+    return LM
+end
+
+# Datos simulados
+Random.seed!(2026)
+n = 100
+X = randn(n)
+u = zeros(n)
+for t in 3:n
+    u[t] = 0.6*u[t-1] + 0.3*u[t-2] + randn()
+end
+Y = 1.0 .+ 0.5.*X .+ u
+
+println("=== Prueba BG en Julia ===")
+for p in 1:4
+    prueba_bg(Y, X, p)
+end
+#+END_SRC
+
+* 12.7 Por qué Usar Pruebas de Autocorrelación
+:PROPERTIES:
+:CUSTOM_ID: sec-por-que
+:END:
+
+** El argumento central
+
+Las pruebas son necesarias por cinco razones:
+
+1. *Distinguir causa raíz*: ¿Es autocorrelación pura o mala especificación? (La solución es completamente diferente.)
+2. *Evitar Error Tipo I*: Sin detectar AC, reportaremos variables como significativas cuando no lo son.
+3. *Validar la forma funcional*: Un $d$ bajo puede indicar que falta un término cuadrático.
+4. *Decidir entre MCO y MCG*: Solo si AC es confirmada y fuerte se justifica la complejidad de MCG.
+5. *Evitar data mining*: Usar varias pruebas da base estadística sólida.
+
+** Fórmula del sesgo de $\hat{\sigma}^2$
+
+\begin{equation}
+E(\hat{\sigma}^2) = \sigma^2 \cdot \left\{1 - \frac{2\rho\, r + 2/(1-\rho) - 2}{n-2}\right\}
+\end{equation}
+
+Con $\rho > 0$ y $r > 0$ (correlación serial positiva en $X$), $E(\hat{\sigma}^2) < \sigma^2$.
+
+* 12.8 Mala Especificación vs. Autocorrelación Pura
+:PROPERTIES:
+:CUSTOM_ID: sec-especificacion
+:END:
+
+** La distinción crucial
+
+| Aspecto                | Autocorrelación Pura                      | Mala Especificación                          |
+|------------------------+-------------------------------------------+----------------------------------------------|
+| Origen                 | Proceso estocástico natural de $u_t$      | Error del investigador en construir el modelo|
+| $\hat{\beta}$          | Insesgados y consistentes                 | *Sesgados e inconsistentes*                  |
+| Inferencia             | Inválida (varianzas sesgadas)             | Totalmente errónea                           |
+| Remedio                | MCG, Prais-Winsten, HAC                   | Respecificar: incluir variables, cambiar $f$ |
+
+** Regla de Oro
+
+#+BEGIN_QUOTE
+*Nunca apliques MCG hasta estar seguro de que el modelo está correctamente especificado.*
+Corregir mala especificación con MCG es ocultar un error estructural bajo álgebra.
+#+END_QUOTE
+
+** Estrategia diagnóstica (caso salarios-productividad)
+
+#+BEGIN_EXAMPLE
+Modelo lineal:      d = 0.1229  → AC severa
++ tendencia t:      d = 0.2046  → AC sigue presente
++ término X²:       d = 1.02    → Mejoró, pero d < dL = 1.39
+─────────────────────────────────────────────────────────────
+Conclusión: El problema persiste → AUTOCORRELACIÓN PURA
+#+END_EXAMPLE
+
+* 12.9 Corrección: Mínimos Cuadrados Generalizados (MCG)
+:PROPERTIES:
+:CUSTOM_ID: sec-correccion
+:END:
+
+** El principio de la cuasi-diferencia
+
+Si $u_t = \rho u_{t-1} + \varepsilon_t$, multiplicamos el modelo en $t-1$ por $\rho$ y restamos:
+
+\begin{align}
+Y_t - \rho Y_{t-1} &= \beta_1(1-\rho) + \beta_2(X_t - \rho X_{t-1}) + \varepsilon_t \\
+Y_t^* &= \beta_1^* + \beta_2 X_t^* + \varepsilon_t
+\end{align}
+
+Ahora $\varepsilon_t$ es ruido blanco → MCO sobre variables transformadas es BLUE.
+
+** Estimación de $\rho$
+
+| Método                    | Fórmula                                          | Uso recomendado        |
+|---------------------------+--------------------------------------------------+------------------------|
+| Basado en DW              | $\hat{\rho} \approx 1 - d/2$                     | Muestra grande         |
+| Theil-Nagar               | $\hat{\rho} = \frac{n^2(1-d/2) + k^2}{n^2-k^2}$ | Muestra pequeña        |
+| Regresión de residuos     | $\hat{u}_t = \hat{\rho}\hat{u}_{t-1} + v_t$ (MCO) | General              |
+
+** Cochrane-Orcutt (Iterativo)
+
+#+BEGIN_EXAMPLE
+1. MCO original → residuos $\hat{u}_t$
+2. Regresión $\hat{u}_t$ sobre $\hat{u}_{t-1}$ → $\hat{\rho}^{(1)}$
+3. Transformar datos: $Y_t^* = Y_t - \hat{\rho}^{(1)} Y_{t-1}$, ídem para $X$
+4. MCO sobre datos transformados → nuevos residuos
+5. Repetir hasta $|\hat{\rho}^{(k)} - \hat{\rho}^{(k-1)}| < \epsilon$ (ej. 0.005)
+#+END_EXAMPLE
+
+** Prais-Winsten: Conservar la Primera Observación
+
+La transformación para $t=1$:
+
+\begin{equation}
+Y_1^{\text{PW}} = \sqrt{1-\rho^2}\; Y_1, \quad X_1^{\text{PW}} = \sqrt{1-\rho^2}\; X_1
+\end{equation}
+
+Esto garantiza que la primera observación tenga la misma varianza que las demás.
+
+#+BEGIN_SRC R
+library(lmtest)
+library(sandwich)
+
+set.seed(2026)
+n  <- 50
+X  <- 1:n + rnorm(n, 0, 3)
+u  <- arima.sim(model=list(ar=0.8), n=n)
+Y  <- 2 + 0.6*X + u
+
+# MCO simple
+mod_ols <- lm(Y ~ X)
+
+# Cochrane-Orcutt manual
+cochrane_orcutt <- function(Y, X, tol=1e-4, max_iter=100) {
+  n   <- length(Y)
+  rho <- 0
+  for(iter in 1:max_iter) {
+    u_hat  <- residuals(lm(Y ~ X))
+    rho_new <- cor(u_hat[-1], u_hat[-n])
+    Yt <- Y[-1] - rho_new * Y[-n]
+    Xt <- X[-1] - rho_new * X[-n]
+    mod <- lm(Yt ~ Xt)
+    if(abs(rho_new - rho) < tol) break
+    rho <- rho_new
+  }
+  cat(sprintf("Cochrane-Orcutt converge en iter %d, rho_hat=%.4f\n", iter, rho_new))
+  list(model=mod, rho=rho_new)
+}
+
+cat("=== MCO Simple ===\n")
+cat(sprintf("β2_hat=%.4f, SE=%.4f, t=%.3f\n",
+            coef(mod_ols)[2], summary(mod_ols)$coef[2,2],
+            summary(mod_ols)$coef[2,3]))
+cat(sprintf("DW=%.4f\n\n", dwtest(mod_ols)$statistic))
+
+cat("=== Cochrane-Orcutt ===\n")
+co <- cochrane_orcutt(Y, X)
+cat(sprintf("β2_hat=%.4f, SE=%.4f\n",
+            coef(co$model)[2], summary(co$model)$coef[2,2]))
+#+END_SRC
+
+* 12.10 Errores HAC (Newey-West)
+:PROPERTIES:
+:CUSTOM_ID: sec-hac
+:END:
+
+** Idea central
+
+En lugar de transformar los datos, *corregimos la matriz de varianza-covarianza* de MCO:
+
+\begin{equation}
+\widehat{\text{Var}}_{HAC}(\hat{\boldsymbol{\beta}}) = (\mathbf{X}'\mathbf{X})^{-1} \hat{\boldsymbol{\Sigma}}_{NW} (\mathbf{X}'\mathbf{X})^{-1}
+\end{equation}
+
+donde el estimador de Newey-West usa pesos de Bartlett:
+
+\begin{equation}
+\hat{\Sigma}_{NW} = \hat{\Gamma}(0) + \sum_{j=1}^{p} \underbrace{\left(1 - \frac{j}{p+1}\right)}_{w_j \text{ (Bartlett)}} \left[\hat{\Gamma}(j) + \hat{\Gamma}(j)'\right]
+\end{equation}
+
+** Selección del parámetro $p$
+
+| Frecuencia de datos | Recomendación de $p$                  |
+|---------------------+---------------------------------------|
+| Anual               | 1 o 2                                 |
+| Trimestral          | 4 u 8                                 |
+| Mensual             | 12 o 24                               |
+| Regla general       | $p = \lfloor 4(n/100)^{2/9} \rfloor$ |
+
+#+BEGIN_SRC python
+import numpy as np
+import statsmodels.api as sm
+
+np.random.seed(2026)
+n  = 100
+X  = np.column_stack([np.ones(n), np.arange(1, n+1)])
+u  = np.zeros(n)
+for t in range(1, n):
+    u[t] = 0.75*u[t-1] + np.random.normal()
+Y = 2 + 0.5*np.arange(1, n+1) + u
+
+mod = sm.OLS(Y, X).fit()
+
+# Comparar SE: MCO estándar vs HAC
+se_ols = mod.bse
+mod_hac = mod.get_robustcov_results(cov_type='HAC', maxlags=4)
+se_hac = mod_hac.bse
+
+print(f"{'Parámetro':<12} {'SE (MCO)':<12} {'SE (HAC)':<12} {'Ratio HAC/MCO'}")
+print("-"*50)
+for i, name in enumerate(['Intercepto', 'Pendiente']):
+    ratio = se_hac[i]/se_ols[i]
+    print(f"{name:<12} {se_ols[i]:<12.4f} {se_hac[i]:<12.4f} {ratio:.3f}x")
+print("\n→ HAC infla los SE, reflejando la verdadera incertidumbre.")
+#+END_SRC
+
+* 12.11 ¿Cuándo Usar MCO vs. MCG?
+:PROPERTIES:
+:CUSTOM_ID: sec-cuando
+:END:
+
+** Marco de decisión
+
+| Situación                                        | Método recomendado    | Razón                                     |
+|--------------------------------------------------+-----------------------+-------------------------------------------|
+| Muestra pequeña ($n < 20$) + $|\rho| < 0.3$    | *MCO*                 | Error de estimar $\rho$ supera la ganancia|
+| Solo coeficientes, no inferencia                 | *MCO*                 | Sigue siendo insesgado                    |
+| Muestra grande + $|\rho|$ alto + AR(1) plausible | *MCG / Cochrane-Orcutt* | Eficiencia máxima                       |
+| Muestra grande + estructura de error desconocida | *MCO + HAC*           | Inferencia válida sin supuestos fuertes   |
+
+** Criterio de Griliches y Rao
+
+#+BEGIN_QUOTE
+Si $|\hat{\rho}| < 0.3$ en muestras pequeñas, MCO puede ser tan bueno o mejor que MCGF.
+#+END_QUOTE
+
+* 12.12 Wooldridge §12 — Perspectiva Complementaria
+:PROPERTIES:
+:CUSTOM_ID: sec-wooldridge
+:END:
+
+** Diferencias clave de enfoque
+
+| Aspecto              | Gujarati                          | Wooldridge                                    |
+|----------------------+-----------------------------------+-----------------------------------------------|
+| Marco              | Énfasis en el estadístico d de DW | Énfasis en pruebas t robustas sin supuesto AR |
+| AC con $Y_{t-1}$   | Menciona limitación del DW        | Desarrolla test de Durbin $h$ y BG detallado  |
+| Corrección         | Cochrane-Orcutt, Prais-Winsten    | FGLS + HAC como alternativa principal         |
+| ARCH               | No cubre                          | §12-6c cubre ARCH explícitamente              |
+
+** §12-2d: Prueba para AR de Orden Superior (Wooldridge)
+
+#+BEGIN_SRC R
+library(lmtest)
+
+# AR(4) test — útil para datos trimestrales
+set.seed(42)
+n   <- 120
+X   <- rnorm(n)
+u   <- arima.sim(model=list(ar=c(0.3, 0.0, 0.0, 0.4)), n=n)  # AR(4)
+Y   <- 1 + 0.8*X + u
+mod <- lm(Y ~ X)
+
+cat("=== BG para detectar AR de orden superior ===\n")
+cat("(Wooldridge §12-2d — útil con datos trimestrales)\n\n")
+for(p in c(1, 2, 4, 8)) {
+  bg <- bgtest(mod, order=p)
+  cat(sprintf("Orden p=%d: χ²(%.0f)=%.3f, p=%.4f %s\n",
+              p, bg$parameter, bg$statistic, bg$p.value,
+              ifelse(bg$p.value < 0.05, "← Significativo", "")))
+}
+#+END_SRC
+
+** §12-6c: ARCH (Heteroscedasticidad Condicional Autorregresiva)
+
+El modelo ARCH(q) de Engle (1982):
+
+\begin{equation}
+\text{Var}(u_t \mid u_{t-1}, \ldots) = \alpha_0 + \alpha_1 u_{t-1}^2 + \cdots + \alpha_q u_{t-q}^2
+\end{equation}
+
+Relevante para datos financieros donde la volatilidad se agrupa en el tiempo.
+
+#+BEGIN_SRC python
+import numpy as np
+from arch import arch_model
+
+np.random.seed(42)
+n   = 500
+# Simular proceso ARCH(1)
+u   = np.zeros(n)
+eps = np.random.normal(0, 1, n)
+h   = np.ones(n)
+for t in range(1, n):
+    h[t] = 0.05 + 0.85 * u[t-1]**2
+    u[t] = np.sqrt(h[t]) * eps[t]
+
+# Test ARCH
+from statsmodels.stats.diagnostic import het_arch
+lm_stat, lm_p, f_stat, f_p = het_arch(u, nlags=4)
+print("=== Test ARCH de Engle ===")
+print(f"LM={lm_stat:.3f}, p-value={lm_p:.4f}")
+print("→ " + ("Evidencia de efectos ARCH" if lm_p < 0.05 else "Sin efectos ARCH"))
+#+END_SRC
+
+* 📋 Resumen y Guía de Referencia Rápida
+:PROPERTIES:
+:CUSTOM_ID: sec-resumen
+:END:
+
+** Árbol de decisión diagnóstico
+
+#+BEGIN_EXAMPLE
+¿Residuos muestran patrón sistemático?
+         │
+         ├─ NO → Modelo OK. Usar MCO.
+         │
+         └─ SÍ → ¿Puede ser mala especificación?
+                    │
+                    ├─ SÍ → Agregar variables/transformar forma funcional
+                    │       Aplicar RESET test
+                    │
+                    └─ NO → Confirmar con DW y/o BG
+                              │
+                              ├─ d muy bajo (< dL) + BG significativo
+                              │   → AUTOCORRELACIÓN PURA
+                              │   → Remedios:
+                              │       • Muestras grandes + ρ alto: Cochrane-Orcutt / Prais-Winsten
+                              │       • Cualquier muestra grande:  MCO + HAC (Newey-West)
+                              │       • Muestras pequeñas + ρ < 0.3: MCO es suficiente
+                              │
+                              └─ Revisar si hay variables rezagadas como regresores
+                                  → Si hay Y_{t-1}: usar BG en lugar de DW
+#+END_EXAMPLE
+
+** Formulario de referencia rápida
+
+| Concepto                     | Fórmula                                                                                 |
+|------------------------------+-----------------------------------------------------------------------------------------|
+| AR(1)                        | $u_t = \rho u_{t-1} + \varepsilon_t$                                                   |
+| Var. incondicional AR(1)     | $\sigma_u^2 = \sigma_\varepsilon^2/(1-\rho^2)$                                         |
+| Estadístico DW               | $d = \sum(\hat{u}_t - \hat{u}_{t-1})^2 / \sum\hat{u}_t^2$                             |
+| Relación DW-$\rho$           | $d \approx 2(1-\hat{\rho})$                                                             |
+| E(R) en prueba rachas        | $E(R) = 2N_1 N_2/N + 1$                                                                |
+| Estadístico BG               | $LM = (n-p)R^2_{\text{aux}} \sim \chi^2_p$                                             |
+| MCG cuasi-diferencia         | $Y_t^* = Y_t - \rho Y_{t-1}$                                                           |
+| Prais-Winsten (obs. 1)       | $Y_1^* = \sqrt{1-\rho^2}\, Y_1$                                                        |
+| Pesos Bartlett (Newey-West)  | $w_j = 1 - j/(p+1)$                                                                    |
+
+** Señales de alerta en la práctica
+
+- $d < d_L$ con $n$ grande → Autocorrelación confirmada
+- $R^2 > d$ → Posible regresión espuria
+- Rachas observadas $\ll E(R)$ → AC positiva fuerte
+- $\text{SE}_{HAC} \gg \text{SE}_{MCO}$ → Los SE estándar estaban subestimados
+
+* 🔗 Conexiones y Lecturas Complementarias
+:PROPERTIES:
+:CUSTOM_ID: sec-conexiones
+:END:
+
+- *Heteroscedasticidad* (Cap. 11): Comparte la misma «estructura sándwich» del estimador robusto
+- *Raíces unitarias* (Cap. 21): Cuando $\rho = 1$ — la autocorrelación extrema
+- *ARIMA (Box-Jenkins)*: Modelización explícita de la estructura dinámica del error
+- *Panel de datos* (Cap. 16): Autocorrelación dentro de unidades cross-sectionais en el tiempo
+
+#+BEGIN_SRC python
+# Verificación rápida: todos los conceptos del capítulo en acción
+print("✓ Capítulo 12 — Stack completo operativo:")
+print("  Python  → statsmodels, arch, scipy")
+print("  R       → lmtest (dwtest, bgtest), sandwich (HAC)")
+print("  Julia   → Statistics, LinearAlgebra")
+print("  Rust    → Cálculos analíticos de propiedades AR(1)")
+print("\n¡Org Babel ejecuta todo desde Emacs con C-c C-c!")
+#+END_SRC
+
+# Local Variables:
+# org-confirm-babel-evaluate: nil
+# End:
