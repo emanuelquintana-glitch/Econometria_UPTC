@@ -41,7 +41,7 @@
 :CUSTOM_ID: sec-naturaleza
 :END:
 
-** 📐 Definición Formal
+**  Definición Formal
 
 El supuesto clásico #4 exige:
 
