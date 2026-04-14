@@ -63,7 +63,7 @@ E(\mathbf{u}\mathbf{u}') = \sigma^2\mathbf{\Omega} =
 \end{pmatrix}
 \end{equation}
 
-** 🔍 Causas Principales (Gujarati §12.1)
+**  Causas Principales (Gujarati §12.1)
 
 *** 1. Inercia o Lentitud de las Series Económicas
 
