@@ -1,0 +1,678 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+
+\usepackage{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{siunitx}
+
+\geometry{
+  top=2.5cm, bottom=2.5cm,
+  left=3cm,  right=2.5cm
+}
+
+% ── Cabecera / pie ────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Econometría -- UPTC}
+\fancyhead[R]{\small Emanuel Quintana Silva}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Formato de secciones ──────────────────────────────────────────────────────
+\titleformat{\section}[block]{\normalfont\large\bfseries}{(\Alph{section})}{0.6em}{}
+\titleformat{\subsection}[runin]{\normalfont\bfseries}{}{0pt}{}[.\enspace]
+
+% ── Comandos propios ──────────────────────────────────────────────────────────
+\newcommand{\Hcero}{H_0}
+\newcommand{\Huno}{H_1}
+\newcommand{\uhat}{\hat{u}}
+\newcommand{\betahat}{\hat{\beta}}
+
+% ── Hiperenlaces neutros ──────────────────────────────────────────────────────
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black,citecolor=black}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\Large \textsc{Universidad Pedagógica y Tecnológica de Colombia}\\[0.3cm]
+   \large Escuela de Economía}\par
+  \vspace{2cm}
+  \rule{\linewidth}{0.6pt}\\[0.4cm]
+  {\LARGE \bfseries Taller de Econometría}\\[0.3cm]
+  {\large Autocorrelación: Diagnóstico y Corrección}\\[0.1cm]
+  \rule{\linewidth}{0.6pt}
+  \vspace{1.5cm}
+
+  \begin{tabular}{rl}
+    \textbf{Estudiante:} & Emanuel Quintana Silva \\[0.4em]
+    \textbf{Curso:}      & Econometría \\[0.4em]
+    \textbf{Datos:}      & Precio interno del cobre, EE.UU., 1951--1980 \\[0.4em]
+    \textbf{Fuente:}     & Gujarati \& Porter (2010), Tabla 12.7 \\[0.4em]
+    \textbf{Fecha:}      & 14 de abril de 2026
+  \end{tabular}
+
+  \vspace{2cm}
+  \textit{Modelo log-log estimado por Mínimos Cuadrados Ordinarios:}\\[0.6em]
+  \[
+    \ln C_t = \beta_1 + \beta_2\ln I_t + \beta_3\ln L_t + \beta_4\ln A_t + u_t
+  \]
+
+  \vfill
+\end{titlepage}
+
+% ── Tabla de contenidos ───────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% =============================================================================
+\section{Estimación OLS del modelo log-log e interpretación}
+\label{sec:A}
+% =============================================================================
+
+\subsection{Definición de variables}
+
+El modelo analiza los determinantes del precio interno del cobre en los
+Estados Unidos durante el período 1951--1980 mediante una especificación
+doble-logarítmica:
+
+\begin{equation}
+  \ln C_t = \beta_1 + \beta_2\ln I_t + \beta_3\ln L_t + \beta_4\ln A_t + u_t
+  \label{eq:modelo}
+\end{equation}
+
+\noindent donde:
+\begin{itemize}[leftmargin=2cm]
+  \item $C_t$: precio promedio (doce meses) del cobre en EE.UU.\ (centavos/libra)
+  \item $I_t$: índice promedio (doce meses) de la producción industrial
+  \item $L_t$: precio promedio (doce meses) del cobre en la bolsa de metales
+               de Londres (libras esterlinas)
+  \item $A_t$: precio promedio (doce meses) del aluminio (centavos de dólar/libra)
+\end{itemize}
+
+\subsection{Resultados de la estimación}
+
+La Tabla~\ref{tab:ols} presenta los resultados de la regresión por MCO
+estimada con Stata.
+
+\begin{table}[H]
+  \centering
+  \caption{Estimación MCO --- Modelo log-log (Variable dependiente: $\ln C_t$)}
+  \label{tab:ols}
+  \small
+  \begin{tabular}{lrrrrrr}
+    \toprule
+    Variable & Coeficiente & Error est. & $t$ & $P>|t|$ & IC 95\% inf. & IC 95\% sup. \\
+    \midrule
+    $\ln I_t$    & 0.4671 & 0.1614 & 2.89 & 0.008 & 0.1354 & 0.7988 \\
+    $\ln L_t$    & 0.2807 & 0.1151 & 2.44 & 0.022 & 0.0442 & 0.5173 \\
+    $\ln A_t$    & 0.4389 & 0.1049 & 4.18 & 0.000 & 0.2233 & 0.6545 \\
+    Constante    & $-1.5344$ & 0.2765 & $-5.55$ & 0.000 & $-2.1028$ & $-0.9660$ \\
+    \midrule
+    \multicolumn{7}{l}{$n=30$\quad $R^2=0{,}9345$\quad $\bar{R}^2=0{,}9269$\quad
+      $F(3,26)=123{,}61$ ($p<0{,}0001$)\quad RCME $=0{,}1209$} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Ecuación estimada}
+
+\begin{equation}
+  \widehat{\ln C_t} = -1{,}5344 + 0{,}4671\ln I_t + 0{,}2807\ln L_t + 0{,}4389\ln A_t
+  \label{eq:estimada}
+\end{equation}
+
+\subsection{Interpretación económica de los coeficientes}
+
+En un modelo log-log cada coeficiente es directamente una \textbf{elasticidad}:
+
+\begin{enumerate}
+  \item \textbf{$\hat{\beta}_2 = 0{,}4671$ (elasticidad respecto a $I_t$):}
+    Un aumento de 1\% en el índice de producción industrial eleva el precio
+    interno del cobre en aproximadamente \textbf{0,47\%}, \textit{ceteris paribus}.
+    Esto refleja el efecto demanda: mayor actividad industrial presiona al alza
+    el precio del cobre. El coeficiente es positivo y estadísticamente
+    significativo ($p=0{,}008$).
+
+  \item \textbf{$\hat{\beta}_3 = 0{,}2807$ (elasticidad respecto a $L_t$):}
+    Un incremento de 1\% en el precio del cobre en Londres se asocia con un
+    aumento de \textbf{0,28\%} en el precio doméstico. Esto es coherente con
+    la integración de los mercados internacionales del cobre; la relación no es
+    uno a uno porque existen fricciones (aranceles, costos de transporte,
+    diferencias de calidad). Significativo al 5\% ($p=0{,}022$).
+
+  \item \textbf{$\hat{\beta}_4 = 0{,}4389$ (elasticidad respecto a $A_t$):}
+    Un aumento de 1\% en el precio del aluminio eleva el precio del cobre en
+    \textbf{0,44\%}. El aluminio es un sustituto industrial del cobre:
+    cuando el aluminio se encarece, la demanda se desplaza hacia el cobre,
+    elevando su precio. Es el coeficiente más preciso ($p<0{,}001$).
+
+  \item \textbf{Constante $\hat{\beta}_1 = -1{,}5344$:}
+    Logaritmo del factor de escala del modelo; no tiene interpretación
+    económica directa, aunque su significancia confirma que el modelo no
+    debería estimarse sin término independiente.
+\end{enumerate}
+
+\subsection{Bondad del ajuste}
+
+El modelo explica el 93,45\% de la variación en $\ln C_t$ ($R^2=0{,}9345$),
+y el ajustado ($\bar{R}^2=0{,}9269$) es prácticamente igual, lo que indica
+que los tres regresores son conjuntamente relevantes. El estadístico $F$
+($=123{,}61$, $p<0{,}0001$) rechaza la hipótesis nula de que todos los
+coeficientes son simultáneamente cero.
+
+% =============================================================================
+\section{Residuos y diagnóstico visual de autocorrelación}
+\label{sec:B}
+% =============================================================================
+
+\subsection{Obtención de residuos}
+
+Los residuos MCO se definen como
+\[
+  \hat{u}_t = \ln C_t - \widehat{\ln C_t}, \qquad t=1951,\ldots,1980.
+\]
+
+\subsection{Gráficas de diagnóstico}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.90\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{graf_residuos_tiempo.png}
+    \caption{Residuos MCO a lo largo del tiempo (1951--1980).}
+    \label{fig:res_tiempo}
+  \end{subfigure}
+  \vspace{0.8em}
+  \begin{subfigure}[t]{0.55\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{graf_residuos_lag.png}
+    \caption{Diagrama de dispersión $\hat{u}_t$ vs.\ $\hat{u}_{t-1}$.}
+    \label{fig:res_lag}
+  \end{subfigure}
+  \caption{Diagnóstico gráfico de autocorrelación en los residuos MCO.}
+  \label{fig:residuos}
+\end{figure}
+
+\subsection{Interpretación}
+
+\textbf{Figura~\ref{fig:res_tiempo} (residuos vs.\ tiempo):}
+Los residuos no oscilan aleatoriamente alrededor de cero. Se observan
+\emph{clusters} de residuos positivos (p.ej., 1956--1957 y 1973--1974) y
+clusters de residuos negativos (1951--1955, 1958--1963), lo que es un patrón
+característico de \textbf{autocorrelación positiva}: valores grandes van
+seguidos de valores grandes del mismo signo.
+
+\textbf{Figura~\ref{fig:res_lag} ($\hat{u}_t$ vs.\ $\hat{u}_{t-1}$):}
+La nube de puntos se agrupa claramente en el primer y tercer cuadrante,
+mostrando una relación positiva entre $\hat{u}_t$ y $\hat{u}_{t-1}$.
+Esto es evidencia visual de autocorrelación de primer orden AR(1).
+
+\textbf{Conclusión preliminar:} Las gráficas sugieren la presencia de
+autocorrelación positiva en los errores, lo que viola el supuesto clásico
+de errores no correlacionados. MCO sigue siendo insesgado pero ya no es
+eficiente (BLUE falla), y los errores estándar están subestimados, lo que
+infla los estadísticos $t$.
+
+% =============================================================================
+\section{Estadístico de Durbin-Watson}
+\label{sec:C}
+% =============================================================================
+
+\subsection{Hipótesis y estadístico}
+
+La prueba de Durbin-Watson contrasta:
+\[
+  \Hcero: \rho = 0 \quad\text{(no hay autocorrelación de primer orden)}
+  \qquad\text{vs.}\qquad
+  \Huno: \rho > 0 \quad\text{(autocorrelación positiva)}
+\]
+
+El estadístico se define como:
+\begin{equation}
+  d = \frac{\displaystyle\sum_{t=2}^{n}(\hat{u}_t - \hat{u}_{t-1})^2}
+           {\displaystyle\sum_{t=1}^{n}\hat{u}_t^2}
+  \approx 2(1-\hat{\rho})
+  \label{eq:dw}
+\end{equation}
+
+\subsection{Resultado de Stata}
+
+\[
+  \boxed{d = 0{,}9428}
+\]
+
+\subsection{Región de decisión}
+
+Con $n=30$ observaciones, $k'=3$ regresores y $\alpha=5\%$, los valores
+críticos de la tabla Durbin-Watson son:
+
+\[
+  d_L = 1{,}21 \qquad d_U = 1{,}65
+\]
+
+\begin{center}
+\begin{tabular}{ccccc}
+  \toprule
+  $0$ & $d_L=1{,}21$ & $d_U=1{,}65$ & $4-d_U=2{,}35$ & $4-d_L=2{,}79$ \\
+  \midrule
+  Autocorr.\ & Zona  & No rechaza & Zona  & Autocorr. \\
+  positiva   & ind.  & $H_0$      & ind.  & negativa  \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Como $d = 0{,}9428 < d_L = 1{,}21$, la estadística cae en la región de
+\textbf{rechazo de $H_0$}: existe evidencia de \textbf{autocorrelación
+positiva de primer orden}.
+
+\subsection{Estimación de $\rho$}
+
+A partir de la aproximación $d \approx 2(1-\hat\rho)$:
+\[
+  \hat\rho \approx 1 - \frac{d}{2} = 1 - \frac{0{,}9428}{2} \approx 0{,}529
+\]
+
+Esto indica una correlación serial moderada-alta y positiva entre errores
+consecutivos.
+
+\subsection{Limitaciones del estadístico DW}
+
+\begin{itemize}
+  \item Solo detecta autocorrelación de \emph{primer} orden.
+  \item La zona de indecisión puede ser amplia para muestras pequeñas.
+  \item No es válido cuando la regresión incluye variables dependientes
+        rezagadas como regresores.
+  \item Con modelos de series de tiempo largas pueden preferirse las
+        pruebas de Breusch-Godfrey (ver sección~\ref{sec:E}).
+\end{itemize}
+
+% =============================================================================
+\section{Prueba de Rachas (Wald-Wolfowitz)}
+\label{sec:D}
+% =============================================================================
+
+\subsection{Fundamento}
+
+La prueba de rachas (runs test) es una prueba no paramétrica que evalúa la
+aleatoriedad de la secuencia de signos de los residuos, sin asumir ninguna
+distribución específica para los errores.
+
+Una \emph{racha} es una sucesión de observaciones del mismo signo; si los
+residuos son verdaderamente aleatorios, el número de rachas $R$ se distribuye
+aproximadamente de forma normal para muestras grandes.
+
+\subsection{Hipótesis}
+
+\[
+  \Hcero: \text{los residuos son aleatorios (no hay autocorrelación)}
+  \qquad\text{vs.}\qquad
+  \Huno: \text{no son aleatorios (hay autocorrelación)}
+\]
+
+\subsection{Estadístico}
+
+Sea $n_1$ el número de residuos positivos y $n_2$ el número de residuos
+negativos. El estadístico es:
+
+\[
+  z = \frac{R - \bar{R}}{\sigma_R}, \qquad
+  \bar{R} = \frac{2n_1 n_2}{n_1+n_2}+1, \qquad
+  \sigma_R^2 = \frac{2n_1 n_2(2n_1 n_2-n_1-n_2)}{(n_1+n_2)^2(n_1+n_2-1)}
+\]
+
+\subsection{Resultado de Stata}
+
+\begin{center}
+\begin{tabular}{ll}
+  \toprule
+  Residuos $\leq 0$ & $n_2 = 13$ \\
+  Residuos $> 0$    & $n_1 = 17$ \\
+  Total             & $n = 30$   \\
+  Número de rachas  & $R = 9$    \\
+  \midrule
+  Estadístico $z$   & $-2{,}55$ \\
+  $p$-valor (bilateral) & $0{,}0108$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+El número esperado de rachas bajo aleatoriedad es:
+\[
+  \bar{R} = \frac{2(17)(13)}{30}+1 = \frac{442}{30}+1 \approx 15{,}73
+\]
+
+Solo se observaron 9 rachas, muy por debajo del valor esperado de
+$\approx 15{,}7$.
+
+\subsection{Decisión}
+
+Con $|z|=2{,}55 > 1{,}96$ y $p=0{,}011<0{,}05$, se rechaza $H_0$ al nivel
+del 5\%. Los residuos \textbf{no son aleatorios}.
+
+\subsection{Comparación con Durbin-Watson (punto C)}
+
+Ambas pruebas coinciden en su conclusión: los residuos exhiben
+\textbf{autocorrelación positiva}. Sin embargo, la prueba de rachas aporta
+información adicional:
+
+\begin{itemize}
+  \item \textbf{DW} asume normalidad de los errores y está diseñada
+        específicamente para AR(1). Dio $d=0{,}9428<d_L$, evidenciando
+        autocorrelación positiva.
+
+  \item \textbf{Rachas} es no paramétrica: no exige ninguna distribución
+        para $u_t$, y detecta cualquier patrón de no aleatoriedad
+        (no solo AR(1)). Con $R=9 \ll \bar{R}\approx 15{,}7$ y $z=-2{,}55$,
+        apunta a la misma dirección.
+
+  \item La consistencia entre ambas pruebas refuerza la evidencia: la
+        violación del supuesto de no autocorrelación parece robusta y
+        no dependiente de los supuestos distribucionales.
+\end{itemize}
+
+% =============================================================================
+\section{Prueba del Multiplicador de Lagrange (Breusch-Godfrey)}
+\label{sec:E}
+% =============================================================================
+
+\subsection{Fundamento}
+
+La prueba LM de Breusch-Godfrey (BG) es más general que DW porque:
+\begin{enumerate}
+  \item Permite detectar autocorrelación de orden arbitrario $p$.
+  \item Es válida en presencia de variables dependientes rezagadas.
+  \item No tiene zona de indecisión.
+\end{enumerate}
+
+\subsection{Hipótesis}
+
+\[
+  \Hcero: \rho_1 = \rho_2 = \cdots = \rho_p = 0
+  \qquad\text{vs.}\qquad
+  \Huno: \exists\, \rho_j \neq 0, \quad j=1,\ldots,p
+\]
+
+\subsection{Procedimiento}
+
+\begin{enumerate}
+  \item Estimar el modelo original \eqref{eq:modelo} por MCO y obtener $\hat{u}_t$.
+  \item Regresar $\hat{u}_t$ sobre los regresores originales y los rezagos
+        $\hat{u}_{t-1},\ldots,\hat{u}_{t-p}$.
+  \item El estadístico es $LM = nR^2_{\text{aux}} \sim \chi^2(p)$ bajo $H_0$.
+\end{enumerate}
+
+\subsection{Resultados}
+
+\begin{table}[H]
+  \centering
+  \caption{Prueba de Breusch-Godfrey (Stata: \texttt{bgodfrey})}
+  \label{tab:bg}
+  \begin{tabular}{ccrrc}
+    \toprule
+    Orden $p$ & $\chi^2$ calculado & g.l. & $p$-valor & Decisión \\
+    \midrule
+    1 & 8{,}838 & 1 & 0{,}0030 & Rechaza $H_0$ \\
+    2 & 12{,}643 & 2 & 0{,}0018 & Rechaza $H_0$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Interpretación}
+
+\textbf{Orden 1 (AR(1)):}
+Con $\chi^2(1)=8{,}838$ y $p=0{,}003$, se rechaza $H_0$ al 1\%. Existe
+autocorrelación de primer orden estadísticamente significativa.
+
+\textbf{Orden 2 (AR(2)):}
+Con $\chi^2(2)=12{,}643$ y $p=0{,}002$, también se rechaza $H_0$. La
+autocorrelación persiste incluso al controlar dos rezagos.
+
+\subsection{¿Describe mejor un proceso AR(1)?}
+
+Sí, los resultados apuntan a que un proceso \textbf{AR(1)} es la
+especificación principal por las siguientes razones:
+
+\begin{itemize}
+  \item El estadístico de orden 1 ya es muy significativo ($\chi^2=8{,}84$,
+        $p=0{,}003$), lo que sugiere que la autocorrelación se concentra
+        en el primer rezago.
+
+  \item Al pasar de $p=1$ a $p=2$, el $\chi^2$ aumenta en $12{,}643-8{,}838=3{,}805$
+        con un grado de libertad adicional; esto indica que el segundo rezago
+        aporta algo de evidencia, pero el grueso de la autocorrelación ya se
+        captura en el primero.
+
+  \item La estimación $\hat\rho \approx 0{,}53$ obtenida del DW es consistente
+        con un AR(1) de intensidad moderada.
+
+  \item La prueba BG es superior a DW porque: (i) no tiene zona de
+        indecisión, (ii) es asintóticamente válida para cualquier $n$, y
+        (iii) puede extenderse a órdenes mayores. En este caso ambas
+        coinciden en señalar autocorrelación positiva de primer orden.
+\end{itemize}
+
+\textbf{Conclusión:} La autocorrelación en este modelo es coherente con
+un proceso AR(1), con coeficiente $\rho \approx 0{,}53$. Para corregir
+este problema pueden emplearse los estimadores de Cochrane-Orcutt, Prais-Winsten,
+o MCG factibles.
+
+% =============================================================================
+\section{Prueba de Chow (Estabilidad estructural)}
+\label{sec:F}
+% =============================================================================
+
+\subsection{Fundamento}
+
+La prueba de Chow (1960) examina si los parámetros del modelo son estables
+a lo largo de dos subperíodos. El punto de quiebre elegido es \textbf{1965}
+(observación 15), que divide la muestra de 30 años en dos subperíodos de
+igual tamaño:
+
+\begin{itemize}
+  \item Subperíodo 1 (S1): 1951--1965 ($n_1=15$)
+  \item Subperíodo 2 (S2): 1966--1980 ($n_2=15$)
+\end{itemize}
+
+\subsection{Hipótesis}
+
+\[
+  \Hcero: \beta_j^{(1)} = \beta_j^{(2)}, \quad j=1,2,3,4
+  \quad\text{(no hay cambio estructural)}
+\]
+\[
+  \Huno: \exists\,j \mid \beta_j^{(1)} \neq \beta_j^{(2)}
+  \quad\text{(hay cambio estructural)}
+\]
+
+\subsection{Procedimiento y resultados}
+
+El estadístico de Chow es:
+\[
+  F_{\text{Chow}} = \frac{(SCR_R - SCR_U)/k}{SCR_U/(n_1+n_2-2k)} \sim F(k,\, n_1+n_2-2k)
+\]
+
+\noindent donde $SCR_R$ es la suma de cuadrados residuales del modelo
+restringido (muestra completa), $SCR_U = SCR_1 + SCR_2$ es la suma de las
+SCR de las dos submuestras, y $k=4$ es el número de parámetros.
+
+\begin{table}[H]
+  \centering
+  \caption{Sumas de cuadrados residuales para la prueba de Chow}
+  \label{tab:chow}
+  \begin{tabular}{lll}
+    \toprule
+    Muestra & $n$ & $SCR$ \\
+    \midrule
+    Completa (restringida) & 30 & 0{,}37989 \\
+    S1: 1951--1965         & 15 & 0{,}14319 \\
+    S2: 1966--1980         & 15 & 0{,}18243 \\
+    $SCR_U = SCR_1+SCR_2$  & -- & 0{,}32562 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\[
+  F_{\text{Chow}} = \frac{(0{,}37989 - 0{,}32562)/4}{0{,}32562/(30-8)}
+  = \frac{0{,}05427/4}{0{,}32562/22}
+  = \frac{0{,}013568}{0{,}014801}
+  \approx 0{,}917
+\]
+
+\subsection{Decisión}
+
+El valor crítico $F(4,22)_{0{,}05} \approx 2{,}82$.
+
+\[
+  F_{\text{Chow}} \approx 0{,}917 < F_{\text{crítico}} = 2{,}82
+\]
+
+\textbf{No se rechaza $H_0$}. No hay evidencia estadística de cambio
+estructural en el punto de quiebre de 1965.
+
+\subsection{Análisis de los subperíodos}
+
+La Tabla~\ref{tab:subperiodos} compara los coeficientes estimados en cada
+subperíodo.
+
+\begin{table}[H]
+  \centering
+  \caption{Coeficientes MCO por subperíodo}
+  \label{tab:subperiodos}
+  \small
+  \begin{tabular}{lrrr}
+    \toprule
+    Variable & Muestra completa & S1 (1951--1965) & S2 (1966--1980) \\
+    \midrule
+    $\ln I_t$  & 0{,}4671 & 0{,}2607 & 0{,}9802 \\
+    $\ln L_t$  & 0{,}2807 & 0{,}3239 & 0{,}2475 \\
+    $\ln A_t$  & 0{,}4389 & 0{,}9394 & 0{,}2375 \\
+    Constante  & $-1{,}534$ & $-2{,}509$ & $-3{,}060$ \\
+    \midrule
+    $R^2$      & 0{,}9345 & 0{,}7433 & 0{,}8586 \\
+    $n$        & 30       & 15       & 15       \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Interpretación:}
+
+\begin{itemize}
+  \item Aunque los coeficientes difieren numéricamente entre subperíodos
+        (especialmente $\hat\beta_4$: 0{,}94 en S1 vs.\ 0{,}24 en S2),
+        la prueba F indica que estas diferencias no son estadísticamente
+        significativas dado el tamaño de la muestra.
+
+  \item El $R^2$ del subperíodo S1 (0{,}74) es considerablemente menor
+        que el de la muestra completa (0{,}93), lo que sugiere que el
+        período 1951--1965 tiene mayor variabilidad no explicada.
+
+  \item La reducción del coeficiente de $\ln A_t$ de 0{,}94 (S1) a
+        0{,}24 (S2) podría interpretarse como que en el segundo período,
+        el aluminio perdió poder como predictor del precio del cobre
+        (quizás por la irrupción del petróleo como variable determinante
+        a partir del shock de 1973). Sin embargo, este cambio no es
+        formalmente significativo.
+
+  \item \textbf{Conclusión general:} El modelo log-log presenta parámetros
+        estructuralmente estables a través del punto de quiebre de 1965
+        ($F=0{,}917$, $p>0{,}05$). El principal problema identificado en
+        el modelo es la \textbf{autocorrelación positiva} en los errores,
+        no el cambio estructural.
+\end{itemize}
+
+% =============================================================================
+\section*{Diagnósticos adicionales}
+\addcontentsline{toc}{section}{Diagnósticos adicionales}
+% =============================================================================
+
+\subsection*{Multicolinealidad (VIF)}
+
+\begin{table}[H]
+  \centering
+  \caption{Factores de inflación de la varianza}
+  \label{tab:vif}
+  \begin{tabular}{lrr}
+    \toprule
+    Variable & VIF & $1/\text{VIF}$ \\
+    \midrule
+    $\ln I_t$ & 7{,}17 & 0{,}1396 \\
+    $\ln L_t$ & 6{,}64 & 0{,}1506 \\
+    $\ln A_t$ & 2{,}46 & 0{,}4071 \\
+    \midrule
+    VIF medio & 5{,}42 & \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Los VIF de $\ln I_t$ y $\ln L_t$ superan 5 (umbral común de alerta),
+lo que indica \textbf{multicolinealidad moderada-alta} entre el índice de
+producción industrial y el precio londinense. Esto podría inflar los errores
+estándar de estos coeficientes, aunque ambos siguen siendo significativos.
+
+\subsection*{Heterocedasticidad (Breusch-Pagan)}
+
+\[
+  \chi^2(1) = 0{,}01, \qquad p = 0{,}9335
+\]
+
+No se rechaza $H_0$ de varianza constante. \textbf{No hay evidencia de
+heterocedasticidad}, lo que confirma que el principal problema del modelo
+es la autocorrelación, no la heterocedasticidad.
+
+\subsection*{Normalidad de residuos (Jarque-Bera / Skewness-Kurtosis)}
+
+\[
+  \chi^2_{\text{ajust.}}(2) = 0{,}61, \qquad p = 0{,}7371
+\]
+
+No se rechaza $H_0$ de normalidad. Los residuos MCO son compatibles con
+una distribución normal, lo que valida el uso de la inferencia estándar
+(distribuciones $t$ y $F$) para los test de hipótesis.
+
+% =============================================================================
+\section*{Conclusiones generales}
+\addcontentsline{toc}{section}{Conclusiones generales}
+% =============================================================================
+
+\begin{enumerate}
+  \item El modelo log-log tiene un ajuste excelente ($R^2=0{,}93$) y todos
+        los coeficientes son significativos con signos económicamente
+        coherentes.
+
+  \item La \textbf{autocorrelación positiva de primer orden} ($\hat\rho\approx0{,}53$)
+        es el problema estadístico central: confirmada por DW ($d=0{,}94<d_L$),
+        prueba de rachas ($z=-2{,}55$, $p=0{,}011$) y Breusch-Godfrey
+        ($\chi^2(1)=8{,}84$, $p=0{,}003$). MCO es insesgado pero ineficiente
+        y los errores estándar están subestimados.
+
+  \item La \textbf{estabilidad estructural} no se rechaza ($F_{\text{Chow}}=0{,}917$),
+        aunque los coeficientes difieren en magnitud entre los dos subperíodos.
+
+  \item No hay evidencia de heterocedasticidad ni de no normalidad.
+
+  \item \textbf{Corrección recomendada:} aplicar MCG factibles (Cochrane-Orcutt
+        o Prais-Winsten) para obtener estimadores eficientes con errores
+        estándar válidos.
+\end{enumerate}
+
+\end{document}
