@@ -55,7 +55,7 @@
   \centering
   \vspace*{2cm}
   {\Large \textsc{Universidad Pedagógica y Tecnológica de Colombia}\\[0.3cm]
-   \large Escuela de Economía}\par
+   \large Escuela de Ciencias Economicas y Administrativas}\par
   \vspace{2cm}
   \rule{\linewidth}{0.6pt}\\[0.4cm]
   {\LARGE \bfseries Taller de Econometría}\\[0.3cm]
@@ -477,128 +477,128 @@ este problema pueden emplearse los estimadores de Cochrane-Orcutt, Prais-Winsten
 o MCG factibles.
 
 % =============================================================================
-\section{Prueba de Chow (Estabilidad estructural)}
+\section{Estimación con errores estándar de Newey-West (HAC)}
 \label{sec:F}
 % =============================================================================
 
-\subsection{Fundamento}
+\subsection{Motivación}
 
-La prueba de Chow (1960) examina si los parámetros del modelo son estables
-a lo largo de dos subperíodos. El punto de quiebre elegido es \textbf{1965}
-(observación 15), que divide la muestra de 30 años en dos subperíodos de
-igual tamaño:
+Los apartados anteriores confirmaron la presencia de \textbf{autocorrelación
+positiva de primer orden} en los residuos MCO. Cuando existe autocorrelación,
+los estimadores MCO siguen siendo insesgados y consistentes, pero los errores
+estándar convencionales están \emph{subestimados}, lo que infla los estadísticos
+$t$ y puede llevar a rechazar $H_0$ con demasiada frecuencia.
 
-\begin{itemize}
-  \item Subperíodo 1 (S1): 1951--1965 ($n_1=15$)
-  \item Subperíodo 2 (S2): 1966--1980 ($n_2=15$)
-\end{itemize}
+Una solución directa —sin necesidad de transformar las variables ni conocer
+la estructura exacta de la autocorrelación— es el estimador de la matriz
+de covarianzas \textbf{HAC} (Heteroskedasticity and Autocorrelation Consistent)
+propuesto por Newey y West (1987). Este estimador corrige simultáneamente
+heterocedasticidad y autocorrelación de orden arbitrario.
 
-\subsection{Hipótesis}
+\subsection{El estimador Newey-West}
 
-\[
-  \Hcero: \beta_j^{(1)} = \beta_j^{(2)}, \quad j=1,2,3,4
-  \quad\text{(no hay cambio estructural)}
-\]
-\[
-  \Huno: \exists\,j \mid \beta_j^{(1)} \neq \beta_j^{(2)}
-  \quad\text{(hay cambio estructural)}
-\]
+La matriz de covarianzas HAC con kernel de Bartlett y $m$ rezagos es:
 
-\subsection{Procedimiento y resultados}
+\begin{equation}
+  \hat{V}_{\text{NW}} = \frac{n}{n-k}(X'X)^{-1}\hat{S}(X'X)^{-1}
+  \label{eq:vnw}
+\end{equation}
 
-El estadístico de Chow es:
-\[
-  F_{\text{Chow}} = \frac{(SCR_R - SCR_U)/k}{SCR_U/(n_1+n_2-2k)} \sim F(k,\, n_1+n_2-2k)
-\]
+\noindent donde el estimador de la varianza espectral en la frecuencia cero es:
 
-\noindent donde $SCR_R$ es la suma de cuadrados residuales del modelo
-restringido (muestra completa), $SCR_U = SCR_1 + SCR_2$ es la suma de las
-SCR de las dos submuestras, y $k=4$ es el número de parámetros.
+\begin{equation}
+  \hat{S} = \hat{\Gamma}_0 + \sum_{j=1}^{m} w_j \left(\hat{\Gamma}_j + \hat{\Gamma}_j'\right),
+  \qquad
+  w_j = 1 - \frac{j}{m+1} \quad\text{(pesos de Bartlett)}
+  \label{eq:snw}
+\end{equation}
 
-\begin{table}[H]
-  \centering
-  \caption{Sumas de cuadrados residuales para la prueba de Chow}
-  \label{tab:chow}
-  \begin{tabular}{lll}
-    \toprule
-    Muestra & $n$ & $SCR$ \\
-    \midrule
-    Completa (restringida) & 30 & 0{,}37989 \\
-    S1: 1951--1965         & 15 & 0{,}14319 \\
-    S2: 1966--1980         & 15 & 0{,}18243 \\
-    $SCR_U = SCR_1+SCR_2$  & -- & 0{,}32562 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\noindent con $\hat{\Gamma}_j = \sum_{t=j+1}^{n} \hat{u}_t \hat{u}_{t-j} x_t x_{t-j}'$
+la matriz de autocovarianzas muestrales de orden $j$.
 
-\[
-  F_{\text{Chow}} = \frac{(0{,}37989 - 0{,}32562)/4}{0{,}32562/(30-8)}
-  = \frac{0{,}05427/4}{0{,}32562/22}
-  = \frac{0{,}013568}{0{,}014801}
-  \approx 0{,}917
-\]
+La elección del ancho de banda $m$ sigue la regla práctica de Newey-West:
+$m = \lfloor 4(n/100)^{2/9} \rfloor$, que para $n=30$ da $m \approx 2$.
+En Stata el comando es \texttt{newey lnC lnI lnL lnA, lag(m)}.
 
-\subsection{Decisión}
+\textbf{Propiedad clave:} los coeficientes estimados son \emph{idénticos} a
+MCO; solo cambian los errores estándar (y por tanto los estadísticos $t$
+y los intervalos de confianza).
 
-El valor crítico $F(4,22)_{0{,}05} \approx 2{,}82$.
+\subsection{Resultados comparativos}
 
-\[
-  F_{\text{Chow}} \approx 0{,}917 < F_{\text{crítico}} = 2{,}82
-\]
-
-\textbf{No se rechaza $H_0$}. No hay evidencia estadística de cambio
-estructural en el punto de quiebre de 1965.
-
-\subsection{Análisis de los subperíodos}
-
-La Tabla~\ref{tab:subperiodos} compara los coeficientes estimados en cada
-subperíodo.
+La Tabla~\ref{tab:nw} presenta los errores estándar MCO y Newey-West para
+los distintos anchos de banda.
 
 \begin{table}[H]
   \centering
-  \caption{Coeficientes MCO por subperíodo}
-  \label{tab:subperiodos}
+  \caption{Comparación de errores estándar: MCO vs.\ Newey-West}
+  \label{tab:nw}
   \small
-  \begin{tabular}{lrrr}
+  \begin{tabular}{l rr rr rr rr}
     \toprule
-    Variable & Muestra completa & S1 (1951--1965) & S2 (1966--1980) \\
+    & \multicolumn{2}{c}{MCO clásico}
+    & \multicolumn{2}{c}{NW ($m=1$)}
+    & \multicolumn{2}{c}{NW ($m=2$)}
+    & \multicolumn{2}{c}{NW ($m=3$)} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+    Variable & EE & $t$ & EE & $t$ & EE & $t$ & EE & $t$ \\
     \midrule
-    $\ln I_t$  & 0{,}4671 & 0{,}2607 & 0{,}9802 \\
-    $\ln L_t$  & 0{,}2807 & 0{,}3239 & 0{,}2475 \\
-    $\ln A_t$  & 0{,}4389 & 0{,}9394 & 0{,}2375 \\
-    Constante  & $-1{,}534$ & $-2{,}509$ & $-3{,}060$ \\
-    \midrule
-    $R^2$      & 0{,}9345 & 0{,}7433 & 0{,}8586 \\
-    $n$        & 30       & 15       & 15       \\
+    $\ln I_t$   & 0{,}1614 & 2{,}89 & 0{,}2038 & 2{,}29 & 0{,}1951 & 2{,}39 & 0{,}1773 & 2{,}64 \\
+    $\ln L_t$   & 0{,}1151 & 2{,}44 & 0{,}1233 & 2{,}28 & 0{,}1135 & 2{,}47 & 0{,}1060 & 2{,}65 \\
+    $\ln A_t$   & 0{,}1049 & 4{,}18 & 0{,}1152 & 3{,}81 & 0{,}1233 & 3{,}56 & 0{,}1286 & 3{,}41 \\
+    Constante   & 0{,}2765 & $-5{,}55$ & 0{,}3084 & $-4{,}98$ & 0{,}3015 & $-5{,}09$ & 0{,}2753 & $-5{,}57$ \\
     \bottomrule
+    \multicolumn{9}{l}{\small Coeficientes idénticos en todos los casos:
+      $\hat\beta_2=0{,}4671$,\ $\hat\beta_3=0{,}2807$,\ $\hat\beta_4=0{,}4389$,\
+      $\hat\beta_1=-1{,}5344$.}
   \end{tabular}
 \end{table}
 
-\textbf{Interpretación:}
+\subsection{Interpretación de los resultados}
 
-\begin{itemize}
-  \item Aunque los coeficientes difieren numéricamente entre subperíodos
-        (especialmente $\hat\beta_4$: 0{,}94 en S1 vs.\ 0{,}24 en S2),
-        la prueba F indica que estas diferencias no son estadísticamente
-        significativas dado el tamaño de la muestra.
+\begin{enumerate}
+  \item \textbf{Errores estándar corregidos:} Con Newey-West los errores estándar
+        son en general \emph{mayores} que los MCO convencionales, lo que
+        refleja el costo de la autocorrelación: la información real en los
+        datos es menor de lo que indica la muestra de $n=30$ observaciones
+        independientes.
 
-  \item El $R^2$ del subperíodo S1 (0{,}74) es considerablemente menor
-        que el de la muestra completa (0{,}93), lo que sugiere que el
-        período 1951--1965 tiene mayor variabilidad no explicada.
+  \item \textbf{Significancia individual:} A pesar de la corrección, los tres
+        regresores permanecen significativos al 5\% (y $\ln A_t$ al 1\%)
+        para todos los anchos de banda considerados. Esto indica que la
+        inferencia cualitativa del modelo MCO es robusta.
 
-  \item La reducción del coeficiente de $\ln A_t$ de 0{,}94 (S1) a
-        0{,}24 (S2) podría interpretarse como que en el segundo período,
-        el aluminio perdió poder como predictor del precio del cobre
-        (quizás por la irrupción del petróleo como variable determinante
-        a partir del shock de 1973). Sin embargo, este cambio no es
-        formalmente significativo.
+        \begin{itemize}
+          \item $\ln I_t$: $t_{\text{NW}}(m=2)=2{,}39$, $p\approx0{,}024$ — sigue significativo al 5\%.
+          \item $\ln L_t$: $t_{\text{NW}}(m=2)=2{,}47$, $p\approx0{,}020$ — sigue significativo al 5\%.
+          \item $\ln A_t$: $t_{\text{NW}}(m=2)=3{,}56$, $p\approx0{,}002$ — altamente significativo.
+        \end{itemize}
 
-  \item \textbf{Conclusión general:} El modelo log-log presenta parámetros
-        estructuralmente estables a través del punto de quiebre de 1965
-        ($F=0{,}917$, $p>0{,}05$). El principal problema identificado en
-        el modelo es la \textbf{autocorrelación positiva} en los errores,
-        no el cambio estructural.
-\end{itemize}
+  \item \textbf{Sensibilidad al ancho de banda:} Los resultados son estables
+        a través de $m=1,2,3$, lo que da confianza en las conclusiones. La
+        regla $m=2$ es la más apropiada para $n=30$.
+
+  \item \textbf{Ventajas sobre otras correcciones:} A diferencia de
+        Cochrane-Orcutt o Prais-Winsten, Newey-West no requiere especificar
+        la forma exacta del proceso de autocorrelación ni transformar las
+        variables. Es una corrección \emph{ex post} de los errores estándar
+        que resulta especialmente útil cuando el objetivo es la inferencia
+        sobre los coeficientes y no la predicción.
+
+  \item \textbf{Limitación:} Newey-West no recupera la eficiencia perdida
+        por la autocorrelación (MCO corregido sigue siendo menos eficiente
+        que MCG); únicamente hace válida la inferencia estadística.
+\end{enumerate}
+
+\subsection{Comando Stata}
+
+\begin{verbatim}
+newey lnC lnI lnL lnA, lag(2)
+\end{verbatim}
+
+\noindent El resultado produce los mismos coeficientes MCO con errores
+estándar HAC robustos. El número de rezagos \texttt{lag(2)} corresponde a
+$m=\lfloor 4(30/100)^{2/9}\rfloor = 2$.
 
 % =============================================================================
 \section*{Diagnósticos adicionales}
@@ -665,14 +665,15 @@ una distribución normal, lo que valida el uso de la inferencia estándar
         ($\chi^2(1)=8{,}84$, $p=0{,}003$). MCO es insesgado pero ineficiente
         y los errores estándar están subestimados.
 
-  \item La \textbf{estabilidad estructural} no se rechaza ($F_{\text{Chow}}=0{,}917$),
-        aunque los coeficientes difieren en magnitud entre los dos subperíodos.
-
   \item No hay evidencia de heterocedasticidad ni de no normalidad.
 
-  \item \textbf{Corrección recomendada:} aplicar MCG factibles (Cochrane-Orcutt
-        o Prais-Winsten) para obtener estimadores eficientes con errores
-        estándar válidos.
+  \item La estimación \textbf{Newey-West} ($m=2$) confirma que los tres
+        regresores mantienen su significancia individual incluso con errores
+        estándar HAC: $t_{\ln I}=2{,}39$, $t_{\ln L}=2{,}47$,
+        $t_{\ln A}=3{,}56$. La inferencia cualitativa del modelo MCO es robusta.
+
+  \item Para recuperar eficiencia (no solo inferencia válida), se recomienda
+        complementar Newey-West con MCG factibles (Cochrane-Orcutt o Prais-Winsten).
 \end{enumerate}
 
 \end{document}
