@@ -84,8 +84,8 @@ summarize uhat, detail
 * ============================================================
 
 * Gráfica 1: residuos vs tiempo
-twoway (line uhat año, lcolor(black) lwidth(medthin) lpattern(solid)) ///
-       (yline 0, lcolor(black) lpattern(dash)), ///
+twoway (line uhat año, lcolor(black) lwidth(medthin) lpattern(solid)), ///
+       yline(0, lcolor(black) lpattern(dash)) ///
     title("Residuos MCO vs Tiempo", color(black)) ///
     xtitle("Año") ytitle("Residuo ({it:û}{subscript:t})") ///
     graphregion(color(white)) plotregion(color(white)) ///
