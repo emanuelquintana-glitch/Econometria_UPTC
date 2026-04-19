@@ -489,8 +489,8 @@ los estimadores MCO siguen siendo insesgados y consistentes, pero los errores
 estándar convencionales están \emph{subestimados}, lo que infla los estadísticos
 $t$ y puede llevar a rechazar $H_0$ con demasiada frecuencia.
 
-Una solución directa —sin necesidad de transformar las variables ni conocer
-la estructura exacta de la autocorrelación— es el estimador de la matriz
+Una solución directa ---sin necesidad de transformar las variables ni conocer
+la estructura exacta de la autocorrelación--- es el estimador de la matriz
 de covarianzas \textbf{HAC} (Heteroskedasticity and Autocorrelation Consistent)
 propuesto por Newey y West (1987). Este estimador corrige simultáneamente
 heterocedasticidad y autocorrelación de orden arbitrario.
@@ -543,7 +543,7 @@ los distintos anchos de banda.
     \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
     Variable & EE & $t$ & EE & $t$ & EE & $t$ & EE & $t$ \\
     \midrule
-    $\ln I_t$   & 0{,}1614 & 2{,}89 & 0{,}2038 & 2{,}29 & 0{,}1951 & 2{,}39 & 0{,}1773 & 2{,}64 \\
+    $\ln I_t$   & 0{,}1614 & 2{,}89 & 0{,}2038 & 2{,}29 & 0{,}1951 & 2{,}39 & 0{,}1773 & 2{,}63 \\
     $\ln L_t$   & 0{,}1151 & 2{,}44 & 0{,}1233 & 2{,}28 & 0{,}1135 & 2{,}47 & 0{,}1060 & 2{,}65 \\
     $\ln A_t$   & 0{,}1049 & 4{,}18 & 0{,}1152 & 3{,}81 & 0{,}1233 & 3{,}56 & 0{,}1286 & 3{,}41 \\
     Constante   & 0{,}2765 & $-5{,}55$ & 0{,}3084 & $-4{,}98$ & 0{,}3015 & $-5{,}09$ & 0{,}2753 & $-5{,}57$ \\
@@ -559,46 +559,158 @@ los distintos anchos de banda.
 \begin{enumerate}
   \item \textbf{Errores estándar corregidos:} Con Newey-West los errores estándar
         son en general \emph{mayores} que los MCO convencionales, lo que
-        refleja el costo de la autocorrelación: la información real en los
-        datos es menor de lo que indica la muestra de $n=30$ observaciones
-        independientes.
+        refleja el costo de la autocorrelación.
 
   \item \textbf{Significancia individual:} A pesar de la corrección, los tres
-        regresores permanecen significativos al 5\% (y $\ln A_t$ al 1\%)
-        para todos los anchos de banda considerados. Esto indica que la
-        inferencia cualitativa del modelo MCO es robusta.
-
-        \begin{itemize}
-          \item $\ln I_t$: $t_{\text{NW}}(m=2)=2{,}39$, $p\approx0{,}024$ — sigue significativo al 5\%.
-          \item $\ln L_t$: $t_{\text{NW}}(m=2)=2{,}47$, $p\approx0{,}020$ — sigue significativo al 5\%.
-          \item $\ln A_t$: $t_{\text{NW}}(m=2)=3{,}56$, $p\approx0{,}002$ — altamente significativo.
-        \end{itemize}
+        regresores permanecen significativos al 5\% para todos los anchos de
+        banda considerados.
 
   \item \textbf{Sensibilidad al ancho de banda:} Los resultados son estables
-        a través de $m=1,2,3$, lo que da confianza en las conclusiones. La
-        regla $m=2$ es la más apropiada para $n=30$.
-
-  \item \textbf{Ventajas sobre otras correcciones:} A diferencia de
-        Cochrane-Orcutt o Prais-Winsten, Newey-West no requiere especificar
-        la forma exacta del proceso de autocorrelación ni transformar las
-        variables. Es una corrección \emph{ex post} de los errores estándar
-        que resulta especialmente útil cuando el objetivo es la inferencia
-        sobre los coeficientes y no la predicción.
+        a través de $m=1,2,3$. La regla $m=2$ es la más apropiada para $n=30$.
 
   \item \textbf{Limitación:} Newey-West no recupera la eficiencia perdida
-        por la autocorrelación (MCO corregido sigue siendo menos eficiente
-        que MCG); únicamente hace válida la inferencia estadística.
+        por la autocorrelación; únicamente hace válida la inferencia estadística.
 \end{enumerate}
 
-\subsection{Comando Stata}
+% =============================================================================
+\section{Corrección por MCG factibles: Cochrane-Orcutt y Prais-Winsten}
+\label{sec:G}
+% =============================================================================
 
-\begin{verbatim}
-newey lnC lnI lnL lnA, lag(2)
-\end{verbatim}
+\subsection{Motivación}
 
-\noindent El resultado produce los mismos coeficientes MCO con errores
-estándar HAC robustos. El número de rezagos \texttt{lag(2)} corresponde a
-$m=\lfloor 4(30/100)^{2/9}\rfloor = 2$.
+Las secciones anteriores confirmaron autocorrelación positiva de primer orden
+($\hat\rho \approx 0{,}53$). El estimador de Newey-West corrige la inferencia
+pero \emph{no recupera eficiencia}. Para obtener estimadores BLUE en presencia
+de AR(1) se requiere transformar el modelo mediante \textbf{Mínimos Cuadrados
+Generalizados (MCG) factibles}, cuya forma práctica más común son los
+procedimientos iterativos de \textbf{Cochrane-Orcutt} y \textbf{Prais-Winsten}.
+
+\subsection{El modelo AR(1) y la transformación quasi-diferencia}
+
+Bajo el proceso $u_t = \rho u_{t-1} + \varepsilon_t$ con $|\rho|<1$ y
+$\varepsilon_t \sim \text{iid}(0,\sigma^2_\varepsilon)$, la transformación
+quasi-diferencia del modelo \eqref{eq:modelo} es:
+
+\begin{equation}
+  (y_t - \rho y_{t-1}) = \beta_1(1-\rho) + \beta_2(x_{2t}-\rho x_{2,t-1})
+  + \cdots + \beta_k(x_{kt}-\rho x_{k,t-1}) + \varepsilon_t
+  \label{eq:qdif}
+\end{equation}
+
+Dado que $\rho$ es desconocido, se estima iterativamente a partir de los
+residuos MCO. La diferencia entre los dos procedimientos radica en el
+tratamiento de la primera observación:
+
+\begin{itemize}
+  \item \textbf{Cochrane-Orcutt:} descarta la primera observación ($n$ efectivo $= 29$).
+  \item \textbf{Prais-Winsten:} transforma la primera observación como
+        $\sqrt{1-\hat\rho^2}\,y_1$, conservando $n=30$ y ganando eficiencia.
+\end{itemize}
+
+\subsection{Resultados de Stata}
+
+Los dos procedimientos convergen en 7 iteraciones con $\hat\rho \approx 0{,}556$.
+La Tabla~\ref{tab:prais} presenta los resultados junto con los MCO originales.
+
+\begin{table}[H]
+  \centering
+  \caption{Comparación MCO vs.\ Cochrane-Orcutt vs.\ Prais-Winsten}
+  \label{tab:prais}
+  \small
+  \begin{tabular}{l rr rr rr}
+    \toprule
+    & \multicolumn{2}{c}{MCO} & \multicolumn{2}{c}{Cochrane-Orcutt} & \multicolumn{2}{c}{Prais-Winsten} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+    Variable & $\hat\beta$ & EE & $\hat\beta$ & EE & $\hat\beta$ & EE \\
+    \midrule
+    $\ln I_t$ & $0{,}4671$ & $0{,}1614$ & $0{,}3456$ & $0{,}2256$ & $0{,}3341$ & $0{,}1958$ \\
+    $\ln L_t$ & $0{,}2807$ & $0{,}1151$ & $0{,}3498$ & $0{,}1149$ & $0{,}3527$ & $0{,}1097$ \\
+    $\ln A_t$ & $0{,}4389$ & $0{,}1049$ & $0{,}4810$ & $0{,}1480$ & $0{,}4816$ & $0{,}1455$ \\
+    Constante & $-1{,}5344$ & $0{,}2765$ & $-1{,}5504$ & $0{,}5595$ & $-1{,}5172$ & $0{,}4491$ \\
+    \midrule
+    $\hat\rho$ & --- & & $0{,}5556$ & & $0{,}5578$ & \\
+    $n$ & 30 & & 29 & & 30 & \\
+    $R^2$ & $0{,}9345$ & & $0{,}8224$ & & $0{,}8804$ & \\
+    $\bar R^2$ & $0{,}9269$ & & $0{,}8011$ & & $0{,}8665$ & \\
+    DW transformado & $0{,}9428$ & & $1{,}4961$ & & $1{,}5301$ & \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Interpretación de los resultados}
+
+\subsubsection*{Estimación de $\rho$}
+
+Ambos procedimientos estiman $\hat\rho \approx 0{,}556$, muy próximo a la
+aproximación vía DW ($\hat\rho_{\text{DW}} \approx 0{,}529$). Esto confirma
+la presencia de una autocorrelación positiva moderada-alta y la robustez del
+diagnóstico previo.
+
+\subsubsection*{Cambios en los coeficientes}
+
+\begin{enumerate}
+  \item \textbf{$\ln I_t$ (índice de producción industrial):} El coeficiente
+        cae de $0{,}4671$ (MCO) a $\approx 0{,}34$--$0{,}35$ (MCG) y resulta
+        \emph{no significativo} al 5\% ($p=0{,}138$ en CO; $p=0{,}100$ en PW).
+        Esto sugiere que parte de la correlación aparente entre $\ln I_t$ y
+        $\ln C_t$ era espuria, producto de tendencias comunes en el tiempo.
+
+  \item \textbf{$\ln L_t$ (precio Londres):} El coeficiente aumenta
+        ligeramente de $0{,}2807$ a $\approx 0{,}350$ y se mantiene
+        altamente significativo ($p=0{,}005$ en CO; $p=0{,}003$ en PW).
+        La integración del mercado internacional del cobre es un efecto
+        robusto a la corrección por autocorrelación.
+
+  \item \textbf{$\ln A_t$ (precio aluminio):} El coeficiente sube de
+        $0{,}4389$ a $\approx 0{,}481$, permaneciendo significativo al 1\%
+        ($p=0{,}003$ en ambos). El efecto sustitución aluminio-cobre es
+        el más estable y robusto del modelo.
+
+  \item \textbf{Constante:} Prácticamente sin cambios ($\approx -1{,}52$),
+        aunque con errores estándar mayores en MCG, lo cual es esperable.
+\end{enumerate}
+
+\subsubsection*{DW transformado}
+
+El estadístico DW sobre los residuos transformados sube de $0{,}9428$ a
+$1{,}4961$ (CO) y $1{,}5301$ (PW). Aunque ambos quedan en la zona de
+indecisión ($d_L=1{,}21 < d < d_U=1{,}65$), la mejoría respecto al DW
+original es clara: la mayor parte de la autocorrelación ha sido eliminada
+por la transformación.
+
+\subsubsection*{$R^2$ y ajuste}
+
+El $R^2$ cae de $0{,}93$ (MCO) a $0{,}82$--$0{,}88$ (MCG). Esta caída es
+normal y esperada: el $R^2$ en el modelo transformado mide el ajuste sobre
+las quasi-diferencias $y_t - \hat\rho y_{t-1}$, no sobre los niveles
+originales. No indica que el modelo sea peor; refleja que parte del $R^2$
+MCO era espurio.
+
+\subsubsection*{Cochrane-Orcutt vs.\ Prais-Winsten}
+
+Los coeficientes son prácticamente idénticos en ambos métodos.
+Prais-Winsten es \textbf{preferible} porque conserva la primera
+observación ($n=30$ vs.\ $n=29$), lo que es especialmente relevante
+con muestras pequeñas como esta, y produce errores estándar ligeramente
+menores.
+
+\subsection{Conclusión de la sección}
+
+La corrección por MCG factibles confirma y matiza los resultados MCO:
+
+\begin{itemize}
+  \item \textbf{$\ln A_t$ y $\ln L_t$} son efectos reales, robustos y
+        significativos: el precio del aluminio y del cobre londinense
+        determinan genuinamente el precio interno del cobre en EE.UU.
+  \item \textbf{$\ln I_t$} pierde significancia estadística tras la
+        corrección, lo que sugiere que su efecto en MCO estaba parcialmente
+        contaminado por la autocorrelación compartida con la variable dependiente.
+  \item La autocorrelación residual ha sido reducida sustancialmente,
+        aunque no eliminada por completo (DW transformado en zona de indecisión).
+  \item Para análisis futuros podría considerarse incluir una tendencia
+        temporal explícita o explorar especificaciones con rezagos de $\ln I_t$.
+\end{itemize}
 
 % =============================================================================
 \section*{Diagnósticos adicionales}
@@ -626,8 +738,7 @@ $m=\lfloor 4(30/100)^{2/9}\rfloor = 2$.
 
 Los VIF de $\ln I_t$ y $\ln L_t$ superan 5 (umbral común de alerta),
 lo que indica \textbf{multicolinealidad moderada-alta} entre el índice de
-producción industrial y el precio londinense. Esto podría inflar los errores
-estándar de estos coeficientes, aunque ambos siguen siendo significativos.
+producción industrial y el precio londinense.
 
 \subsection*{Heterocedasticidad (Breusch-Pagan)}
 
@@ -637,17 +748,16 @@ estándar de estos coeficientes, aunque ambos siguen siendo significativos.
 
 No se rechaza $H_0$ de varianza constante. \textbf{No hay evidencia de
 heterocedasticidad}, lo que confirma que el principal problema del modelo
-es la autocorrelación, no la heterocedasticidad.
+es la autocorrelación.
 
-\subsection*{Normalidad de residuos (Jarque-Bera / Skewness-Kurtosis)}
+\subsection*{Normalidad de residuos (Skewness-Kurtosis)}
 
 \[
   \chi^2_{\text{ajust.}}(2) = 0{,}61, \qquad p = 0{,}7371
 \]
 
 No se rechaza $H_0$ de normalidad. Los residuos MCO son compatibles con
-una distribución normal, lo que valida el uso de la inferencia estándar
-(distribuciones $t$ y $F$) para los test de hipótesis.
+una distribución normal.
 
 % =============================================================================
 \section*{Conclusiones generales}
@@ -662,18 +772,17 @@ una distribución normal, lo que valida el uso de la inferencia estándar
   \item La \textbf{autocorrelación positiva de primer orden} ($\hat\rho\approx0{,}53$)
         es el problema estadístico central: confirmada por DW ($d=0{,}94<d_L$),
         prueba de rachas ($z=-2{,}55$, $p=0{,}011$) y Breusch-Godfrey
-        ($\chi^2(1)=8{,}84$, $p=0{,}003$). MCO es insesgado pero ineficiente
-        y los errores estándar están subestimados.
+        ($\chi^2(1)=8{,}84$, $p=0{,}003$).
 
   \item No hay evidencia de heterocedasticidad ni de no normalidad.
 
   \item La estimación \textbf{Newey-West} ($m=2$) confirma que los tres
-        regresores mantienen su significancia individual incluso con errores
-        estándar HAC: $t_{\ln I}=2{,}39$, $t_{\ln L}=2{,}47$,
-        $t_{\ln A}=3{,}56$. La inferencia cualitativa del modelo MCO es robusta.
+        regresores mantienen su significancia con errores estándar HAC.
 
-  \item Para recuperar eficiencia (no solo inferencia válida), se recomienda
-        complementar Newey-West con MCG factibles (Cochrane-Orcutt o Prais-Winsten).
+  \item Tras la corrección por \textbf{Cochrane-Orcutt / Prais-Winsten},
+        $\ln A_t$ y $\ln L_t$ mantienen su significancia, pero $\ln I_t$
+        la pierde, revelando que parte de su efecto en MCO era espurio.
+        Prais-Winsten es el método preferido por conservar las 30 observaciones.
 \end{enumerate}
 
 \end{document}
