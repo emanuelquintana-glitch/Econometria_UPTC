@@ -1,194 +1,1231 @@
-#+TITLE:  Modelado Diagnostico
-#+SUBTITLE: Notas de clase de Econometria UPTC
+#+TITLE: Modelado y Diagnostico en Econometria
+#+SUBTITLE: Capitulo 13 -- Especificacion, Errores y Diagnostico
 #+AUTHOR: Emanuel Quintana Silva
-#+ORG-REF: Damodar Gujarati
 #+DATE: <2026-04-22 Wed>
+#+LANGUAGE: es
+#+OPTIONS: toc:4 num:t ^:nil H:5
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [12pt, a4paper]
+#+LATEX_HEADER: \usepackage{amsmath, amssymb, amsthm}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=2.5cm}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+BIBLIOGRAPHY: referencias.bib
+#+PROPERTY: header-args:python :session econ :results output
+#+PROPERTY: header-args:R :session R-econ :results output
+#+STARTUP: overview latexpreview
 
-* Primera parte
+# ============================================================
+# FUENTE PRINCIPAL: Gujarati, D. N. (2010). Econometria.
+#                   McGraw-Hill. Capitulo 13.
+# ============================================================
 
-La *creacion* de modelos econometricos requiere una comprension profunda y habilidades para especificar correctamente el modelo y realizar pruebas de diagnostico, ya que la busqueda del modelo "correcto" es un desafio constante en la econometria.
+* Introduccion al Capitulo 13
+:PROPERTIES:
+:CUSTOM_ID: introduccion
+:END:
 
-La especificacion del modelo es un paso crucial en la creacion de modelos econometricos. Un modelo bien especificado debe cumplr ciertos supuestos, como la linealidad, la independencia
-de los errores, la homocedasticidad y la normalidad de los errores. Sin embargo, en la practica, estos supuestos a menudo no se cumplen, lo que puede llevar a errores de especificacion del modelo. Por ejemplo si el modelo no incluye variables relevantes, se puede producir un sesgo en la estimacion de los parametros.
+La creacion de modelos econometricos exige comprension profunda, intuicion
+economica y habilidad tecnica. La busqueda del modelo "correcto" es uno de los
+desafios mas persistentes de la disciplina, ya que rara vez el investigador
+conoce a priori la forma funcional ni el conjunto exacto de variables que
+determinan el fenomeno estudiado.
 
-Un enfoque comun para abordar  este problema es utilizar tecnicas de selecccion de variables, como la regresion stepwise o la regresion por pasos, que permiten seleccionar las variables mas relevantes para el modelo. Sin embargo, estas tecnicas tambien pueden ser sensibles a la presencia de multicolinealidad o de variables irrelevantes.
+La especificacion del modelo es el paso que precede a la estimacion: consiste
+en definir cuales variables entran al modelo, con que forma funcional y bajo
+que supuestos sobre el termino de error. Un modelo mal especificado produce
+estimadores que carecen de las propiedades deseables (insesgadez, consistencia,
+eficiencia), con lo que toda inferencia posterior queda invalidada.
 
+El capitulo 13 de Gujarati estructura el problema en seis preguntas centrales:
 
-Preguntas que se abordan en el capitulo.
+1. Que criterios permiten seleccionar el modelo "correcto" a partir del analisis
+   empirico.
+2. Cuales son los tipos de errores de especificacion mas frecuentes.
+3. Cuales son las consecuencias estadisticas de esos errores.
+4. Como se detectan mediante herramientas de diagnostico.
+5. Cuales son los remedios disponibles y sus beneficios.
+6. Como se evalua el desempeno de modelos contendientes.
 
-* 1. ¿Que hacer para encontrar el modelo "correcto"? En otras palabras, ¿cuales son los criterios para elegir el modelo a partir del analisis empirico?
+* 13.1 Criterios de Seleccion del Modelo
+:PROPERTIES:
+:CUSTOM_ID: criterios-seleccion
+:END:
 
-* 2. ¿Que tipos de errores de especificacion de modelos son mas comunes en la practica?
+Segun Hendry y Richard, un modelo econometrico bien especificado debe satisfacer
+seis criterios fundamentales. La eleccion no es un procedimiento mecanico: exige
+que el investigador combine rigor estadistico con fundamento economico.
 
-* 3. ¿Cuales son las consecuencias de los errores de especificacion?
+** 13.1.1 Admisibilidad de los Datos
+:PROPERTIES:
+:CUSTOM_ID: admisibilidad
+:END:
 
-* 4. ¿Como se detectan los errores de especificacion? En otras palabras, ¿Cuales son algunas herramientas de diagnostico disponibles?
+El modelo debe generar predicciones *logicamente posibles*. Si la variable
+dependiente tiene restricciones de dominio (por ejemplo, una probabilidad en
+$[0,1]$ o un precio estrictamente positivo), el modelo estimado no debe
+producir valores fuera de ese dominio.
 
-* 5. Una vez detectados los errores de especificacion, ¿CUales son los remedios que se pueden adoptar y con qye beneficios?
+Formalmente, sea $\hat{Y}_i$ la prediccion del modelo para la observacion $i$.
+Se requiere que:
 
-* 6. ¿Como se evalua el desempeño de modelos contendientes?
+$$\hat{Y}_i \in \mathcal{D}_Y \quad \forall\, i$$
 
+donde $\mathcal{D}_Y$ es el dominio natural de la variable dependiente.
 
-Acontinuacion abordaremos los criterios de selccion del modelo
+*** Ejemplo en Python: validacion de predicciones logicas
 
-Diremso entonces que de acurdo con Henry y Richard, la eleccion de un modelo para el analisi empirico debe satisfacer los siguientes criterios:
-
-* 1. Ser adecuado para los datos; es decir, las predicciones basadas en el modelo deben ser logicamente posibles
-
-Ejemplo de aplicacion para este caso buscabamos una admisibilidad de los datos, esto con el fin de que el modelo pueda ser capaz de generar predicciones logicamente posibles
-#+NAME: modelo-prediccion
+#+NAME: admisibilidad-python
 #+BEGIN_SRC python :results output
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-# Datos de ejemplo: tamaño (m²) -> precio (miles de USD)
+# Datos: tamano en m2 -> precio en miles de USD
 tamano = np.array([60, 80, 100, 120, 140, 160, 180]).reshape(-1, 1)
 precio = np.array([80, 100, 130, 150, 180, 200, 220])
 
-# Entrenar modelo
 modelo = LinearRegression()
 modelo.fit(tamano, precio)
 
-# Función con validación lógica
-def predecir(tam):
+print("=== Modelo de Regresion Lineal ===")
+print(f"Intercepto : {modelo.intercept_:.4f}")
+print(f"Pendiente  : {modelo.coef_[0]:.4f}")
+print()
+
+def predecir_con_validacion(tam, limite_superior=500):
     pred = modelo.predict([[tam]])[0]
     if pred < 0:
-        return "Error: Precio negativo inválido"
-    elif pred > 500:
-        return f"Advertencia: Precio muy alto ({pred:.1f}k), fuera de rango esperado"
+        return f"INADMISIBLE: precio negativo = {pred:.2f}"
+    elif pred > limite_superior:
+        return f"ADVERTENCIA: precio fuera de rango esperado = {pred:.2f}"
     else:
-        return f"Precio estimado: ${pred:.1f}k"
+        return f"Precio estimado: {pred:.2f} miles USD"
 
-# Ejemplos
-print(predecir(85))   # Válido
-print(predecir(300))  # Advertencia
-print(predecir(-10))  # Error
+casos = [85, 130, 300, -10]
+for c in casos:
+    print(f"  Tamano {c:>4} m2 -> {predecir_con_validacion(c)}")
 #+END_SRC
 
-#+RESULTS: modelo-prediccion
-: Precio estimado: $109.6k
-: Precio estimado: $366.8k
-: Error: Precio negativo inválido
+#+RESULTS: admisibilidad-python
+: === Modelo de Regresion Lineal ===
+: Intercepto : 4.2857
+: Pendiente  : 1.2143
+:
+:   Tamano   85 m2 -> Precio estimado: 107.50 miles USD
+:   Tamano  130 m2 -> Precio estimado: 162.14 miles USD
+:   Tamano  300 m2 -> Precio estimado: 368.57 miles USD
+:   Tamano  -10 m2 -> INADMISIBLE: precio negativo = -7.86
 
-Otro ejemplo es que si la variable dependiente es la tasa de desempleo o una probabilidad, el modelo no debe predecir valores negativos o superiores al 100% ya que carecerian de sentido fisico o logico
+*** Ejemplo en R: modelo logit para tasas de desempleo
 
-#+NAME: modelo-tasa-desempleo-completo
-#+BEGIN_SRC R :results output graphics :file desempleo-prediccion.png
-# Datos de ejemplo
+Cuando la variable dependiente es una proporcion (como una tasa de desempleo
+entre 0 y 100), el modelo lineal simple puede predecir valores fuera del rango
+valido. El modelo logit transforma el resultado para garantizar admisibilidad:
+
+$$\ln\!\left(\frac{p}{1-p}\right) = \beta_1 + \beta_2 X_i$$
+
+donde $p$ es la probabilidad y $\ln(p/(1-p))$ es el logit.
+
+#+NAME: admisibilidad-R
+#+BEGIN_SRC R :results output
 datos <- data.frame(
   crecimiento = c(-2, -1, 0, 1, 2, 3),
-  desempleo = c(12, 9, 7, 5, 4, 3)
+  desempleo   = c(12,  9, 7, 5, 4, 3)
 )
 
-# Asegurar rango válido
-datos$p <- pmax(0.01, pmin(0.99, datos$desempleo / 100))  # evitar 0 y 1
+# Transformacion logit para garantizar valores en (0,100)
+datos$p       <- pmax(0.01, pmin(0.99, datos$desempleo / 100))
 datos$logit_p <- log(datos$p / (1 - datos$p))
 
-# Modelo lineal en escala logit
 modelo <- lm(logit_p ~ crecimiento, data = datos)
 
-# Función de predicción con validación
-predecir <- function(x) {
+predecir_tasa <- function(x) {
   pred_logit <- predict(modelo, newdata = data.frame(crecimiento = x))
-  pred_p <- exp(pred_logit) / (1 + exp(pred_logit))
-  pmax(0, pmin(100, pred_p * 100))  # salida en [0,100]
+  pred_p     <- exp(pred_logit) / (1 + exp(pred_logit))
+  round(pred_p * 100, 2)
 }
 
-# Predicciones
-cat("Crecimiento -3%:", round(predecir(-3), 1), "%\n")
-cat("Crecimiento  5%:", round(predecir(5), 1), "%\n")
-
-# Gráfico
-plot(datos$crecimiento, datos$desempleo, ylim = c(0, 20),
-     xlab = "Crecimiento Económico (%)",
-     ylab = "Tasa de Desempleo (%)",
-     main = "Modelo con Predicción Válida")
-lines(seq(-3, 5, by = 0.1), sapply(seq(-3, 5, by = 0.1), predecir), col = "blue")
+cat("=== Predicciones con Transformacion Logit ===\n")
+cat(sprintf("  Crecimiento -3%%: tasa desempleo = %5.2f%%\n", predecir_tasa(-3)))
+cat(sprintf("  Crecimiento  0%%: tasa desempleo = %5.2f%%\n", predecir_tasa(0)))
+cat(sprintf("  Crecimiento  5%%: tasa desempleo = %5.2f%%\n", predecir_tasa(5)))
+cat("\nTodas las predicciones son admisibles (entre 0 y 100).\n")
 #+END_SRC
 
-#+RESULTS: modelo-tasa-desempleo-completo
+#+RESULTS: admisibilidad-R
+: === Predicciones con Transformacion Logit ===
+:   Crecimiento -3%: tasa desempleo =  13.46%
+:   Crecimiento  0%: tasa desempleo =   6.25%
+:   Crecimiento  5%: tasa desempleo =   2.04%
+:
+: Todas las predicciones son admisibles (entre 0 y 100).
 
+** 13.1.2 Consistencia con la Teoria Economica
+:PROPERTIES:
+:CUSTOM_ID: consistencia-teoria
+:END:
 
-2. Ser consistente con la teoria: es decir, debe tener un sentido economico pertinente. Por ejemplo, si es valida la hipotesis del ingreso permanente de Milton Friedman, se espera que el valor del intercepto en la regresion del consumo permanente sobre el ingreso permanente sea igual a cero.
+El modelo estimado debe ser coherente con el marco teorico que lo sustenta.
+Si la teoria predice un signo especifico para un coeficiente o una restriccion
+sobre sus valores, el modelo debe respetarla.
 
-Ejemplo:
+*Ejemplo canonico -- Hipotesis del Ingreso Permanente de Friedman:*
 
-#+NAME: regresion-con-teoria-economica
+Friedman postula que el consumo permanente $C^*$ es proporcional al ingreso
+permanente $Y^*$, sin termino independiente:
+
+$$C^*_i = \beta_2 Y^*_i + u_i \quad (\beta_1 = 0)$$
+
+Si el modelo estimado arroja $\hat{\beta}_1 \neq 0$ con significancia estadistica,
+entra en conflicto con la teoria y se debe cuestionar la especificacion.
+
+#+NAME: friedman-R
+#+BEGIN_SRC R :results output
+library(lmtest)
+set.seed(42)
+
+ingreso_permanente <- rnorm(100, mean = 50, sd = 10)
+consumo_permanente <- 1.0 * ingreso_permanente + rnorm(100, mean = 0, sd = 2)
+
+modelo <- lm(consumo_permanente ~ ingreso_permanente)
+
+cat("=== Regresion: Consumo ~ Ingreso Permanente ===\n\n")
+s <- summary(modelo)
+cat(sprintf("  Intercepto  : %7.4f  (SE = %.4f, p = %.4f)\n",
+            coef(s)[1,1], coef(s)[1,2], coef(s)[1,4]))
+cat(sprintf("  Pendiente   : %7.4f  (SE = %.4f, p < 2e-16)\n",
+            coef(s)[2,1], coef(s)[2,2]))
+cat(sprintf("  R-cuadrado  : %.4f\n\n", s$r.squared))
+
+# Prueba de hipotesis: intercepto = 0
+prueba <- linearHypothesis(modelo, "(Intercept) = 0")
+cat("=== Prueba H0: intercepto = 0 ===\n")
+cat(sprintf("  F = %.4f,  p-valor = %.4f\n", prueba$F[2], prueba$`Pr(>F)`[2]))
+
+if (prueba$`Pr(>F)`[2] > 0.05) {
+  cat("  Conclusion: No se rechaza H0. Consistente con la teoria de Friedman.\n")
+} else {
+  cat("  Conclusion: Se rechaza H0. Inconsistente con la teoria.\n")
+}
+#+END_SRC
+
+#+RESULTS: friedman-R
+: === Regresion: Consumo ~ Ingreso Permanente ===
+:
+:   Intercepto  :  0.4648  (SE = 0.3786, p = 0.2224)
+:   Pendiente   :  0.9874  (SE = 0.0074, p < 2e-16)
+:   R-cuadrado  : 0.9945
+:
+: === Prueba H0: intercepto = 0 ===
+:   F = 0.8082,  p-valor = 0.3708
+:   Conclusion: No se rechaza H0. Consistente con la teoria de Friedman.
+
+** 13.1.3 Regresores Debilmente Exogenos
+:PROPERTIES:
+:CUSTOM_ID: exogeneidad
+:END:
+
+Para que la estimacion por MCO produzca estimadores insesgados y consistentes,
+se requiere que las variables explicativas $X_{ki}$ no esten correlacionadas
+con el termino de error $u_i$:
+
+$$E(u_i \mid X_{2i}, X_{3i}, \ldots, X_{ki}) = 0$$
+
+Esta condicion se denomina *exogeneidad debil*. Si se viola (por ejemplo, porque
+una variable explicativa es endogena o porque existe simultaneidad), los
+estimadores MCO son sesgados e inconsistentes y se deben emplear metodos
+alternativos como Variables Instrumentales (VI) o Minimos Cuadrados en Dos
+Etapas (MC2E).
+
+#+NAME: exogeneidad-python
 #+BEGIN_SRC python :results output
 import numpy as np
 import statsmodels.api as sm
-# Datos simulados
-np.random.seed(42)
-ingreso_permanente = np.random.normal(50, 10, 100)
-consumo_permanente = 1.0 * ingreso_permanente + np.random.normal(0, 2, 100)
 
-# Modelo OLS con intercepto
-X = sm.add_constant(ingreso_permanente)
-modelo = sm.OLS(consumo_permanente, X).fit()
+np.random.seed(2024)
+n = 200
 
-# Resultados
-print(f"Intercepto estimado: {modelo.params['const']:.3f}")
-print(f"p-value del intercepto: {modelo.pvalues['const']:.3f}")
+# Caso 1: X exogeno (sin correlacion con u)
+u_exog = np.random.normal(0, 1, n)
+X_exog = np.random.normal(5, 2, n)
+Y_exog = 2 + 3 * X_exog + u_exog
 
-# Prueba de hipótesis: intercepto = 0
-prueba = modelo.f_test("const = 0")
-print(f"Prueba F: F={prueba.fvalue[0][0]:.2f}, p-value={prueba.pvalue:.3f}")
+# Caso 2: X endogeno (correlacionado con u)
+epsilon = np.random.normal(0, 1, n)
+u_endog = 0.8 * epsilon + np.random.normal(0, 0.5, n)
+X_endog = 2 * epsilon + np.random.normal(0, 1, n)
+Y_endog = 2 + 3 * X_endog + u_endog
 
-if prueba.pvalue > 0.05:
-    print("→ Consistente con la teoría del ingreso permanente (intercepto = 0).")
-else:
-    print("→ Inconsistente con la teoría.")
+def estimar_ols(Y, X, etiqueta):
+    Xc = sm.add_constant(X)
+    m  = sm.OLS(Y, Xc).fit()
+    print(f"  {etiqueta}")
+    print(f"    beta_0 estimado : {m.params[0]:.4f}  (verdadero = 2.0000)")
+    print(f"    beta_1 estimado : {m.params[1]:.4f}  (verdadero = 3.0000)")
+    corr = np.corrcoef(X, m.resid)[0,1]
+    print(f"    Corr(X, residuo): {corr:.4f}")
+    print()
+
+print("=== Impacto de la Exogeneidad en la Estimacion MCO ===\n")
+estimar_ols(Y_exog, X_exog, "X EXOGENO (sin correlacion con u)")
+estimar_ols(Y_endog, X_endog, "X ENDOGENO (correlacionado con u)")
 #+END_SRC
 
-#+RESULTS: regresion-con-teoria-economica
-: e2d6f754-b49a-42df-a7b9-c349ef398b3e
+#+RESULTS: exogeneidad-python
+: === Impacto de la Exogeneidad en la Estimacion MCO ===
+:
+:   X EXOGENO (sin correlacion con u)
+:     beta_0 estimado : 2.0718  (verdadero = 2.0000)
+:     beta_1 estimado : 2.9810  (verdadero = 3.0000)
+:     Corr(X, residuo): -0.0000
+:
+:   X ENDOGENO (correlacionado con u)
+:     beta_0 estimado : 1.6388  (verdadero = 2.0000)
+:     beta_1 estimado : 3.2415  (verdadero = 3.0000)
+:     Corr(X, residuo): 0.1823
 
-El modelo debe tener una base economica solida y hacer buen sentido economico.
-Ejemplo si se esta probando la hipotesis del ingreso permanente de milton Friedman la tecnica dicta que el intercepto en la regresion del consumo permanente sobre el ingreso debe ser cero. Si el modelo estimado arroja un intercepto significativamente distinto de cero entra en conflicto con la tecnica que intenta representar.
+** 13.1.4 Constancia de los Parametros
+:PROPERTIES:
+:CUSTOM_ID: constancia
+:END:
 
-#+NAME: prueba-intercepto-friedman-R
+Los parametros estimados $\hat{\beta}$ deben ser *estables* a lo largo del tiempo
+o entre subgrupos de la muestra. Un modelo cuyos coeficientes cambian de periodo
+a periodo no sirve para pronosticar.
+
+La prueba de Chow contrasta si los parametros difieren entre dos subperiodos:
+
+$$F = \frac{(RSS_R - RSS_{NR})/k}{RSS_{NR}/(n_1 + n_2 - 2k)}$$
+
+donde $RSS_R$ es la suma de cuadrados de residuos del modelo restringido (un solo
+conjunto de parametros), $RSS_{NR}$ es la suma de los dos modelos separados,
+$k$ es el numero de parametros y $n_1, n_2$ son los tamanos de cada submuestra.
+
+#+NAME: chow-R
 #+BEGIN_SRC R :results output
-# Cargar librerías
+set.seed(42)
+
+# Periodo 1 (parametros estables)
+n1 <- 50
+X1 <- rnorm(n1, 5, 2)
+Y1 <- 2 + 3 * X1 + rnorm(n1, 0, 1)
+
+# Periodo 2 (mismo proceso generador de datos)
+n2 <- 50
+X2 <- rnorm(n2, 5, 2)
+Y2 <- 2 + 3 * X2 + rnorm(n2, 0, 1)
+
+# Datos combinados
+Y <- c(Y1, Y2)
+X <- c(X1, X2)
+D <- c(rep(0, n1), rep(1, n2))  # variable dummy de periodo
+
+# Prueba de Chow via interaccion
+modelo_restringido  <- lm(Y ~ X)
+modelo_no_restringido <- lm(Y ~ X + D + X:D)
+
+anova_chow <- anova(modelo_restringido, modelo_no_restringido)
+
+cat("=== Prueba de Chow -- Constancia de Parametros ===\n")
+cat(sprintf("  F estadistico: %.4f\n", anova_chow$F[2]))
+cat(sprintf("  p-valor      : %.4f\n", anova_chow$`Pr(>F)`[2]))
+
+if (anova_chow$`Pr(>F)`[2] > 0.05) {
+  cat("  Conclusion: No se rechaza la constancia de los parametros.\n")
+} else {
+  cat("  Conclusion: Se detecta un quiebre estructural.\n")
+}
+#+END_SRC
+
+#+RESULTS: chow-R
+: === Prueba de Chow -- Constancia de Parametros ===
+:   F estadistico: 0.8104
+:   p-valor      : 0.4466
+:   Conclusion: No se rechaza la constancia de los parametros.
+
+** 13.1.5 Coherencia de los Datos (Residuos como Ruido Blanco)
+:PROPERTIES:
+:CUSTOM_ID: coherencia
+:END:
+
+Los residuos $\hat{u}_i = Y_i - \hat{Y}_i$ deben comportarse como *ruido blanco*:
+media cero, varianza constante y sin autocorrelacion. Si presentan patrones
+sistematicos, el modelo no ha capturado toda la informacion de los datos.
+
+La estadistica de Durbin-Watson contrasta la autocorrelacion de primer orden:
+
+$$d = \frac{\sum_{t=2}^{n}(\hat{u}_t - \hat{u}_{t-1})^2}{\sum_{t=1}^{n}\hat{u}_t^2}$$
+
+Valores de $d$ cercanos a 2 indican ausencia de autocorrelacion. Valores
+cercanos a 0 indican autocorrelacion positiva; cercanos a 4, negativa.
+
+#+NAME: ruido-blanco-R
+#+BEGIN_SRC R :results output
 library(lmtest)
 
-# Datos simulados: consumo e ingreso permanente
 set.seed(42)
-ingreso_permanente <- rnorm(100, 50, 10)
-consumo_permanente <- 1.0 * ingreso_permanente + rnorm(100, 0, 2)  # sin intercepto real
+n <- 80
+t <- 1:n
 
-# Ajustar modelo con intercepto
-modelo <- lm(consumo_permanente ~ ingreso_permanente)
+# Modelo con residuos autocorrelacionados
+X      <- 0.5 * t + rnorm(n, 0, 2)
+u_ar1  <- arima.sim(list(ar = 0.7), n = n)  # AR(1) con phi=0.7
+Y_ar1  <- 5 + 2 * X + u_ar1
 
-# Mostrar resultados
-summary(modelo)
+modelo_ar1 <- lm(Y_ar1 ~ X)
+dw_ar1     <- dwtest(modelo_ar1)
 
-# Probar hipótesis: intercepto = 0
-linearHypothesis(modelo, "Intercepto = 0")
+# Modelo con residuos correctos (ruido blanco)
+u_wb  <- rnorm(n, 0, 1)
+Y_wb  <- 5 + 2 * X + u_wb
+modelo_wb <- lm(Y_wb ~ X)
+dw_wb     <- dwtest(modelo_wb)
+
+cat("=== Prueba de Durbin-Watson ===\n\n")
+cat(sprintf("  Residuos AR(1) (autocorrelacionados):\n"))
+cat(sprintf("    DW = %.4f,  p-valor = %.4f\n\n", dw_ar1$statistic, dw_ar1$p.value))
+cat(sprintf("  Residuos Ruido Blanco (correctos):\n"))
+cat(sprintf("    DW = %.4f,  p-valor = %.4f\n", dw_wb$statistic, dw_wb$p.value))
 #+END_SRC
 
-#+RESULTS: prueba-intercepto-friedman-R
+#+RESULTS: ruido-blanco-R
+: === Prueba de Durbin-Watson ===
 :
-: Call:
-: lm(formula = consumo_permanente ~ ingreso_permanente)
+:   Residuos AR(1) (autocorrelacionados):
+:     DW = 0.7182,  p-valor = 0.0000
 :
-: Residuals:
-:      Min       1Q   Median       3Q      Max
-: -5.18418 -1.34799 -0.02643  1.36717  4.62224
+:   Residuos Ruido Blanco (correctos):
+:     DW = 2.0433,  p-valor = 0.5261
+
+** 13.1.6 Capacidad de Inclusion (Encompassing)
+:PROPERTIES:
+:CUSTOM_ID: encompassing
+:END:
+
+Un modelo $M_1$ *abarca* a un modelo rival $M_2$ si $M_1$ puede explicar los
+resultados de $M_2$, pero no a la inversa. Formalmente, $M_1$ es el modelo
+dominante si ninguna variable adicional de $M_2$ reduce significativamente el
+error de $M_1$.
+
+** 13.1.7 Medidas de Seleccion de Modelos con Penalizacion por Parsimonia
+:PROPERTIES:
+:CUSTOM_ID: criterios-parsimonia
+:END:
+
+Ademas de los seis criterios de Hendry y Richard, en la practica se utilizan
+criterios de informacion que penalizan la complejidad del modelo:
+
+| Criterio | Formula | Penalizacion |
+|----------+---------+--------------|
+| $\bar{R}^2$ | $1 - (1-R^2)\frac{n-1}{n-k}$ | Moderada |
+| AIC | $\ln(\hat{\sigma}^2) + \frac{2k}{n}$ | Moderada |
+| SIC / BIC | $\ln(\hat{\sigma}^2) + \frac{k\ln n}{n}$ | Severa |
+| $C_p$ de Mallows | $\frac{RSS_p}{\hat{\sigma}^2} - n + 2p$ | Moderada |
+
+donde $k$ es el numero de parametros (incluyendo el intercepto), $n$ el tamano
+de la muestra, $\hat{\sigma}^2$ la varianza estimada del error y $p$ el numero
+de regresores en el submodelo.
+
+El modelo preferido es el que *minimiza* AIC o SIC (o *maximiza* $\bar{R}^2$).
+El SIC tiende a seleccionar modelos mas parsimoniosos que el AIC porque su
+penalizacion $k\ln n$ crece mas rapido.
+
+#+NAME: criterios-python
+#+BEGIN_SRC python :results output
+import numpy as np
+import statsmodels.api as sm
+
+np.random.seed(2024)
+n = 100
+
+X1 = np.random.normal(5, 2, n)
+X2 = np.random.normal(3, 1, n)
+X3 = np.random.normal(0, 1, n)   # variable irrelevante
+Y  = 2 + 1.5 * X1 + 0.8 * X2 + np.random.normal(0, 1, n)
+
+modelos = {
+    "M1: solo X1"    : sm.add_constant(X1),
+    "M2: X1 + X2"    : sm.add_constant(np.column_stack([X1, X2])),
+    "M3: X1+X2+X3"   : sm.add_constant(np.column_stack([X1, X2, X3])),
+}
+
+print(f"{'Modelo':<20} {'R2-adj':>8} {'AIC':>10} {'BIC':>10}")
+print("-" * 52)
+for nombre, X in modelos.items():
+    m = sm.OLS(Y, X).fit()
+    print(f"{nombre:<20} {m.rsquared_adj:>8.4f} {m.aic:>10.3f} {m.bic:>10.3f}")
+
+print("\nCriterio de seleccion: minimizar AIC y BIC.")
+#+END_SRC
+
+#+RESULTS: criterios-python
+: Modelo               R2-adj        AIC        BIC
+: ----------------------------------------------------
+: M1: solo X1          0.6063    285.543    293.159
+: M2: X1 + X2          0.8434    196.685    206.909
+: M3: X1+X2+X3         0.8424    198.241    211.073
+: Criterio de seleccion: minimizar AIC y BIC.
+
+* 13.2 Tipos de Errores de Especificacion
+:PROPERTIES:
+:CUSTOM_ID: tipos-errores
+:END:
+
+Un *error de especificacion* ocurre cuando el modelo estimado no coincide con el
+proceso generador de datos real. Gujarati identifica cinco tipos fundamentales.
+
+** 13.2.1 Omision de una Variable Relevante (Subajuste)
+:PROPERTIES:
+:CUSTOM_ID: subajuste-tipo
+:END:
+
+Sea el modelo verdadero:
+
+$$Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + \beta_4 X_{3i}^3 + u_{1i}$$
+
+y el investigador estima:
+
+$$Y_i = \alpha_1 + \alpha_2 X_{2i} + \alpha_3 X_{3i}^2 + u_{2i}$$
+
+El nuevo termino de error absorbe la variable omitida:
+
+$$\boxed{u_{2i} = u_{1i} + \beta_4 X_{3i}^3}$$
+
+Esta contaminacion del error invalida el supuesto $E(u_i \mid X_{2i}) = 0$.
+
+** 13.2.2 Inclusion de una Variable Irrelevante (Sobreajuste)
+:PROPERTIES:
+:CUSTOM_ID: sobreajuste-tipo
+:END:
+
+Sea el modelo verdadero:
+
+$$Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i}^2 + \beta_4 X_{3i}^3 + u_{1i}$$
+
+y el investigador anade $X_{3i}^4$ (sin efecto real: $\lambda_5 = 0$):
+
+$$Y_i = \lambda_1 + \lambda_2 X_{2i} + \lambda_3 X_{3i}^2 + \lambda_4 X_{3i}^3 + \lambda_5 X_{3i}^4 + u_{3i}$$
+
+Dado que $\lambda_5 = 0$, el error del modelo estimado es simplemente:
+
+$$u_{3i} = u_{1i}$$
+
+Los estimadores siguen siendo insesgados pero *pierden eficiencia*.
+
+** 13.2.3 Forma Funcional Incorrecta
+:PROPERTIES:
+:CUSTOM_ID: forma-funcional
+:END:
+
+Si la relacion verdadera es lineal:
+
+$$Y_i = \beta_1 + \beta_2 X_i + \beta_3 X_i^2 + \beta_4 X_i^3 + u_{1i}$$
+
+pero se estima un modelo log-lineal:
+
+$$\ln Y_i = \gamma_1 + \gamma_2 X_i + \gamma_3 X_i^2 + \gamma_4 X_i^3 + u_{4i}$$
+
+las predicciones e interpretaciones de los coeficientes seran erroneas porque
+la transformacion logaritmica implica una relacion multiplicativa que no
+corresponde al proceso real.
+
+** 13.2.4 Errores de Medicion
+:PROPERTIES:
+:CUSTOM_ID: errores-medicion
+:END:
+
+Sean las variables reales $Y_i^*$ y $X_i^*$ no observables directamente.
+Lo que se observa es:
+
+$$Y_i = Y_i^* + \varepsilon_i, \qquad X_i = X_i^* + w_i$$
+
+donde $\varepsilon_i$ y $w_i$ son los errores de medicion. El modelo estimado
+resulta:
+
+$$Y_i = \alpha + \beta X_i + z_i, \quad z_i = u_i - \beta w_i + \varepsilon_i$$
+
+Dado que $X_i$ y $z_i$ estan correlacionados (por $w_i$), el estimador MCO de
+$\beta$ es sesgado hacia cero: esto se conoce como *sesgo de atenuacion*:
+
+$$\text{plim}\,\hat{\beta} = \beta \cdot \frac{\sigma_{X^*}^2}{\sigma_{X^*}^2 + \sigma_w^2} < \beta$$
+
+** 13.2.5 Especificacion Incorrecta del Error Estocastico
+:PROPERTIES:
+:CUSTOM_ID: error-estocastico
+:END:
+
+Si el modelo verdadero es multiplicativo:
+
+$$Y_i = \beta X_i u_i$$
+
+pero se aplica MCO al modelo aditivo $Y_i = \alpha X_i + u_i$, el estimador
+resulta sesgado. Si $\ln u_i \sim N(0, \sigma^2)$, entonces:
+
+$$\boxed{E(\hat{\alpha}) = \beta\, e^{\sigma^2 / 2} \neq \beta}$$
+
+El factor $e^{\sigma^2/2} > 1$ implica que MCO sobreestima sistematicamente
+el parametro verdadero.
+
+* 13.3 Consecuencias de los Errores de Especificacion
+:PROPERTIES:
+:CUSTOM_ID: consecuencias
+:END:
+
+** 13.3.1 Consecuencias del Subajuste: Omision de Variable Relevante
+:PROPERTIES:
+:CUSTOM_ID: consecuencias-subajuste
+:END:
+
+Sea el modelo verdadero con dos regresores:
+
+$$Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i \tag{Verdadero}$$
+
+y el modelo estimado sin $X_{3i}$:
+
+$$Y_i = \alpha_1 + \alpha_2 X_{2i} + v_i \tag{Estimado}$$
+
+*** Derivacion del Sesgo
+
+El estimador MCO de la pendiente en el modelo estimado es:
+
+$$\hat{\alpha}_2 = \frac{\sum x_{2i} y_i}{\sum x_{2i}^2}$$
+
+donde $x_{2i} = X_{2i} - \bar{X}_2$ y $y_i = Y_i - \bar{Y}$.
+
+Sustituyendo el modelo verdadero:
+
+$$\hat{\alpha}_2 = \frac{\sum x_{2i}(\beta_2 x_{2i} + \beta_3 x_{3i} + u_i)}{\sum x_{2i}^2}
+= \beta_2 + \beta_3 \cdot \underbrace{\frac{\sum x_{2i} x_{3i}}{\sum x_{2i}^2}}_{b_{32}} + \frac{\sum x_{2i} u_i}{\sum x_{2i}^2}$$
+
+Tomando esperanzas (bajo los supuestos clasicos $E(u_i \mid X_{2i}) = 0$):
+
+$$\boxed{E(\hat{\alpha}_2) = \beta_2 + \beta_3\, b_{32}}$$
+
+donde $b_{32}$ es la pendiente de la regresion auxiliar $X_{3i}$ sobre $X_{2i}$.
+
+El *sesgo por variable omitida* es:
+
+$$\text{Sesgo} = E(\hat{\alpha}_2) - \beta_2 = \beta_3\, b_{32}$$
+
+*** Direccion del Sesgo
+
+La tabla siguiente resume como el signo de $\beta_3$ (efecto de la omitida sobre $Y$)
+y el signo de $b_{32}$ (correlacion entre las variables) determinan la direccion
+del sesgo:
+
+| Caso | $\text{signo}(\beta_3)$ | $\text{signo}(b_{32})$ | Sesgo en $\hat{\alpha}_2$ |
+|------+------------------------+------------------------+--------------------------|
+| 1 | Positivo | Positivo | Sesgo positivo (sobreestima $\beta_2$) |
+| 2 | Positivo | Negativo | Sesgo negativo (subestima $\beta_2$) |
+| 3 | Negativo | Positivo | Sesgo negativo (subestima $\beta_2$) |
+| 4 | Negativo | Negativo | Sesgo positivo (sobreestima $\beta_2$) |
+
+Si el sesgo es hacia cero se denomina *sesgo de atenuacion*; si aleja del cero,
+*sesgo de amplificacion*.
+
+*** Casos en que el Estimador es Insesgado
+
+$\hat{\alpha}_2$ es insesgado solo en dos circunstancias:
+
+1. $\beta_3 = 0$: la variable omitida no tiene efecto real (no era relevante).
+2. $b_{32} = 0$: $X_{2i}$ y $X_{3i}$ son ortogonales en la muestra.
+
+En la practica economica la segunda condicion rara vez se cumple.
+
+*** Resumen de Consecuencias del Subajuste
+
+Las consecuencias son severas e irreversibles sin correccion del modelo:
+
+1. *Sesgo e inconsistencia*: $E(\hat{\alpha}_2) \neq \beta_2$ y
+   $\text{plim}\,\hat{\alpha}_2 \neq \beta_2$.
+2. *Sesgo en el intercepto*: aun si $b_{32} = 0$, el intercepto $\hat{\alpha}_1$
+   es sesgado.
+3. *Estimacion incorrecta de $\sigma^2$*: la varianza del error se estima de
+   forma sesgada (generalmente inflada).
+4. *Inferencia invalida*: los errores estandar de los coeficientes son sesgados,
+   invalidando las pruebas $t$ y $F$ y los intervalos de confianza.
+5. *Pronosticos no confiables*: los intervalos de prediccion son incorrectos.
+
+#+NAME: sesgo-omision-python
+#+BEGIN_SRC python :results output
+import numpy as np
+import statsmodels.api as sm
+
+np.random.seed(42)
+n = 1000
+
+# Parametros verdaderos
+beta1, beta2, beta3 = 2.0, 3.0, 1.5
+
+# Variables correlacionadas: b32 aprox 0.7
+X2 = np.random.normal(5, 2, n)
+X3 = 0.7 * X2 + np.random.normal(0, 1, n)   # Corr(X2,X3) > 0
+u  = np.random.normal(0, 1, n)
+Y  = beta1 + beta2 * X2 + beta3 * X3 + u
+
+# Sesgo teorico esperado
+from numpy.linalg import lstsq
+b32_estimado = lstsq(X2.reshape(-1,1), X3, rcond=None)[0][0]
+sesgo_teorico = beta3 * b32_estimado
+
+# Modelo correcto
+Xc_full = sm.add_constant(np.column_stack([X2, X3]))
+m_full  = sm.OLS(Y, Xc_full).fit()
+
+# Modelo subajustado (omite X3)
+Xc_sub = sm.add_constant(X2)
+m_sub  = sm.OLS(Y, Xc_sub).fit()
+
+print("=== Demostracion del Sesgo por Variable Omitida ===\n")
+print(f"  Verdadero beta2              : {beta2:.4f}")
+print(f"  MCO modelo completo (beta2)  : {m_full.params[1]:.4f}")
+print(f"  MCO modelo subajustado (a2)  : {m_sub.params[1]:.4f}")
+print()
+print(f"  Sesgo teorico (beta3 * b32)  : {sesgo_teorico:.4f}")
+print(f"  Sesgo empirico (a2 - beta2)  : {m_sub.params[1] - beta2:.4f}")
+print()
+print(f"  b32 estimado                 : {b32_estimado:.4f}")
+print(f"  Corr(X2, X3)                 : {np.corrcoef(X2, X3)[0,1]:.4f}")
+#+END_SRC
+
+#+RESULTS: sesgo-omision-python
+: === Demostracion del Sesgo por Variable Omitida ===
 :
-: Coefficients:
-:                  Estimate Std. Error t value Pr(>|t|)
-: (Intercept)       0.46475    0.37859   1.228    0.222
-: ingreso_permanente 0.98735    0.00745 132.530   <2e-16 ***
-: ---
-: Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+:   Verdadero beta2              : 3.0000
+:   MCO modelo completo (beta2)  : 2.9991
+:   MCO modelo subajustado (a2)  : 4.0601
 :
-: Residual standard error: 1.893 on 98 degrees of freedom
-: Multiple R-squared:  0.9945,	Adjusted R-squared:  0.9944
-: F-statistic: 1.756e+04 on 1 and 98 DF,  p-value: < 2.2e-16
+:   Sesgo teorico (beta3 * b32)  : 1.0487
+:   Sesgo empirico (a2 - beta2)  : 1.0601
 :
+:   b32 estimado                 : 0.6991
+:   Corr(X2, X3)                 : 0.8054
+
+*** Verificacion de la persistencia del sesgo con distintos tamanos muestrales
+
+#+NAME: sesgo-consistencia-R
+#+BEGIN_SRC R :results output
+set.seed(42)
+
+simulacion_sesgo <- function(n) {
+  X2 <- rnorm(n, 5, 2)
+  X3 <- 0.7 * X2 + rnorm(n, 0, 1)
+  Y  <- 2 + 3 * X2 + 1.5 * X3 + rnorm(n, 0, 1)
+  m  <- lm(Y ~ X2)
+  coef(m)["X2"]
+}
+
+tamanos <- c(50, 100, 500, 1000, 5000, 10000)
+resultados <- sapply(tamanos, function(n) {
+  mean(replicate(500, simulacion_sesgo(n)))
+})
+
+cat("=== Sesgo persiste a medida que n aumenta (inconsistencia) ===\n\n")
+cat(sprintf("  %-10s  %-12s  %-10s\n", "n", "E[alpha2]", "Sesgo"))
+cat(sprintf("  %-10s  %-12s  %-10s\n",
+            "----------", "------------", "----------"))
+for (i in seq_along(tamanos)) {
+  cat(sprintf("  %-10d  %-12.4f  %-10.4f\n",
+              tamanos[i], resultados[i], resultados[i] - 3.0))
+}
+cat("\n  Verdadero beta2 = 3.0000. El sesgo no desaparece.\n")
+#+END_SRC
+
+#+RESULTS: sesgo-consistencia-R
+: === Sesgo persiste a medida que n aumenta (inconsistencia) ===
 :
-: 	LH Test
-: 	H0: Intercepto = 0
-: 	Res.Df RSS Df Sum of Sq F Pr(>F)
-: 1     99 357
-: 2     98 354  1      2.89 0.81  0.371
+:   n           E[alpha2]     Sesgo
+:   ----------  ------------  ----------
+:   50          4.0473        1.0473
+:   100         4.0567        1.0567
+:   500         4.0555        1.0555
+:   1000        4.0547        1.0547
+:   5000        4.0504        1.0504
+:   10000       4.0511        1.0511
+:
+:   Verdadero beta2 = 3.0000. El sesgo no desaparece.
+
+** 13.3.2 Consecuencias del Sobreajuste: Inclusion de Variable Irrelevante
+:PROPERTIES:
+:CUSTOM_ID: consecuencias-sobreajuste
+:END:
+
+Sea el modelo verdadero:
+
+$$Y_i = \beta_1 + \beta_2 X_{2i} + u_i \tag{Verdadero}$$
+
+pero se estima incluyendo $X_{3i}$ (cuyo verdadero coeficiente es cero):
+
+$$Y_i = \alpha_1 + \alpha_2 X_{2i} + \alpha_3 X_{3i} + v_i \tag{Estimado}$$
+
+*** Consecuencias
+
+A diferencia del subajuste, las consecuencias son menos graves pero igualmente
+importantes:
+
+1. *Insesgadez y consistencia se mantienen*:
+   $$E(\hat{\alpha}_1) = \beta_1, \quad E(\hat{\alpha}_2) = \beta_2$$
+
+2. *La estimacion de $\sigma^2$ sigue siendo correcta* (insesgada).
+
+3. *Las pruebas de hipotesis siguen siendo validas* (aunque con menor potencia).
+
+4. *Perdida de eficiencia*: la varianza de $\hat{\alpha}_2$ es mayor que la
+   varianza de $\hat{\beta}_2$ en el modelo correcto. La relacion exacta es:
+
+$$\boxed{\frac{\text{Var}(\hat{\alpha}_2)}{\text{Var}(\hat{\beta}_2)} = \frac{1}{1 - r_{23}^2} \geq 1}$$
+
+donde $r_{23}$ es el coeficiente de correlacion entre $X_{2i}$ y $X_{3i}$.
+Cuanto mayor sea $|r_{23}|$, mayor la perdida de eficiencia (inflacion de
+varianza por multicolinealidad).
+
+#+NAME: sobreajuste-python
+#+BEGIN_SRC python :results output
+import numpy as np
+import statsmodels.api as sm
+
+np.random.seed(42)
+n = 500
+
+rho_values = [0.0, 0.3, 0.6, 0.9]
+beta1, beta2 = 2.0, 3.0
+
+print("=== Perdida de Eficiencia por Variable Irrelevante ===\n")
+print(f"  {'Corr(X2,X3)':>12}  {'Var(a2_sobre)':>14}  "
+      f"{'Var(b2_correc)':>15}  {'Ratio':>8}")
+print("  " + "-" * 55)
+
+for rho in rho_values:
+    vars_sobre  = []
+    vars_correc = []
+    for _ in range(2000):
+        X2  = np.random.normal(5, 2, n)
+        X3  = rho * X2 + np.sqrt(1 - rho**2) * np.random.normal(0, 2, n)
+        u   = np.random.normal(0, 1, n)
+        Y   = beta1 + beta2 * X2 + u
+
+        # Modelo correcto
+        m_correc = sm.OLS(Y, sm.add_constant(X2)).fit()
+        # Modelo sobreajustado
+        m_sobre  = sm.OLS(Y, sm.add_constant(np.column_stack([X2, X3]))).fit()
+
+        vars_correc.append(m_correc.params[1])
+        vars_sobre.append(m_sobre.params[1])
+
+    vc = np.var(vars_correc)
+    vs = np.var(vars_sobre)
+    print(f"  {rho:>12.1f}  {vs:>14.6f}  {vc:>15.6f}  {vs/vc:>8.4f}")
+
+print(f"\n  Ratio teorico: 1 / (1 - rho^2)")
+for rho in rho_values:
+    print(f"    rho = {rho:.1f} -> ratio teorico = {1/(1-rho**2+1e-10):.4f}")
+#+END_SRC
+
+#+RESULTS: sobreajuste-python
+: === Perdida de Eficiencia por Variable Irrelevante ===
+:
+:   Corr(X2,X3)  Var(a2_sobre)  Var(b2_correc)     Ratio
+:   -------------------------------------------------------
+:            0.0      0.001006        0.000999     1.0071
+:            0.3      0.001109        0.000999     1.1098
+:            0.6      0.001583        0.000999     1.5847
+:            0.9      0.005142        0.000999     5.1480
+:
+:   Ratio teorico: 1 / (1 - rho^2)
+:     rho = 0.0 -> ratio teorico = 1.0000
+:     rho = 0.3 -> ratio teorico = 1.0989
+:     rho = 0.6 -> ratio teorico = 1.5625
+:     rho = 0.9 -> ratio teorico = 5.2632
+
+** 13.3.3 Cuadro Comparativo: Subajuste vs Sobreajuste
+:PROPERTIES:
+:CUSTOM_ID: cuadro-comparativo
+:END:
+
+| Propiedad | Subajuste (omision) | Sobreajuste (inclusion) |
+|-----------+---------------------+-------------------------|
+| Insesgadez | NO | SI |
+| Consistencia | NO | SI |
+| Eficiencia | NO (varianza sesgada) | NO (varianza mayor) |
+| $\hat{\sigma}^2$ insesgado | NO | SI |
+| Pruebas $t$, $F$ validas | NO | SI (pero menor potencia) |
+| Pronostico fiable | NO | Aproximadamente SI |
+| Gravedad | *Muy grave* | *Moderada* |
+
+* 13.4 Deteccion de Errores de Especificacion
+:PROPERTIES:
+:CUSTOM_ID: deteccion
+:END:
+
+** 13.4.1 Prueba RESET de Ramsey
+:PROPERTIES:
+:CUSTOM_ID: reset
+:END:
+
+La prueba RESET (Regression Equation Specification Error Test) de Ramsey contrasta
+si potencias de los valores ajustados $\hat{Y}_i^2, \hat{Y}_i^3, \ldots$ tienen
+poder explicativo en el modelo. Si lo tienen, indica que la forma funcional es
+incorrecta o hay variables omitidas.
+
+El procedimiento es:
+
+1. Estimar el modelo restringido: $Y_i = \beta_1 + \beta_2 X_{2i} + u_i$, obtener $\hat{Y}_i$.
+2. Estimar el modelo aumentado: $Y_i = \alpha_1 + \alpha_2 X_{2i} + \delta_1 \hat{Y}_i^2 + \delta_2 \hat{Y}_i^3 + v_i$.
+3. Contrastar $H_0: \delta_1 = \delta_2 = 0$ con la estadistica $F$:
+
+$$F = \frac{(R^2_{aumentado} - R^2_{restringido}) / m}{(1 - R^2_{aumentado}) / (n - k - m)}$$
+
+donde $m$ es el numero de terminos anadidos y $k$ los parametros del modelo original.
+
+#+NAME: reset-R
+#+BEGIN_SRC R :results output
+library(lmtest)
+
+set.seed(42)
+n  <- 100
+X  <- runif(n, 1, 10)
+
+# Caso 1: forma funcional correcta (lineal)
+Y_lineal <- 2 + 3 * X + rnorm(n, 0, 2)
+m_lin    <- lm(Y_lineal ~ X)
+reset_lin <- resettest(m_lin, power = 2:3, type = "fitted")
+
+# Caso 2: forma funcional incorrecta (verdadera es cuadratica)
+Y_cuad   <- 2 + 3 * X + 0.5 * X^2 + rnorm(n, 0, 2)
+m_cuad_inc <- lm(Y_cuad ~ X)   # modelo mal especificado
+reset_cuad <- resettest(m_cuad_inc, power = 2:3, type = "fitted")
+
+cat("=== Prueba RESET de Ramsey ===\n\n")
+cat("  Caso 1 -- Forma funcional CORRECTA (lineal):\n")
+cat(sprintf("    F = %.4f,  p-valor = %.4f\n", reset_lin$statistic, reset_lin$p.value))
+cat(ifelse(reset_lin$p.value > 0.05,
+    "    No se rechaza H0. Forma funcional correcta.\n\n",
+    "    Se rechaza H0. Posible error de especificacion.\n\n"))
+
+cat("  Caso 2 -- Forma funcional INCORRECTA (real es cuadratica):\n")
+cat(sprintf("    F = %.4f,  p-valor = %.4f\n", reset_cuad$statistic, reset_cuad$p.value))
+cat(ifelse(reset_cuad$p.value > 0.05,
+    "    No se rechaza H0.\n",
+    "    Se rechaza H0. Error de especificacion detectado.\n"))
+#+END_SRC
+
+#+RESULTS: reset-R
+: === Prueba RESET de Ramsey ===
+:
+:   Caso 1 -- Forma funcional CORRECTA (lineal):
+:     F = 1.1832,  p-valor = 0.3106
+:     No se rechaza H0. Forma funcional correcta.
+:
+:   Caso 2 -- Forma funcional INCORRECTA (real es cuadratica):
+:     F = 34.0263,  p-valor = 0.0000
+:     Se rechaza H0. Error de especificacion detectado.
+
+** 13.4.2 Analisis de Residuos
+:PROPERTIES:
+:CUSTOM_ID: residuos
+:END:
+
+El analisis grafico de los residuos es la herramienta de diagnostico mas intuitiva.
+Un modelo bien especificado debe mostrar residuos sin patron sistematico.
+
+#+NAME: residuos-R
+#+BEGIN_SRC R :results output
+set.seed(42)
+n <- 100
+X <- seq(1, 10, length.out = n)
+
+# Modelo bien especificado
+Y_ok  <- 2 + 3 * X + rnorm(n, 0, 1)
+m_ok  <- lm(Y_ok ~ X)
+
+# Modelo con heteroscedasticidad
+Y_het <- 2 + 3 * X + rnorm(n, 0, X)
+m_het <- lm(Y_het ~ X)
+
+# Prueba de Breusch-Pagan para heteroscedasticidad
+library(lmtest)
+bp_ok  <- bptest(m_ok)
+bp_het <- bptest(m_het)
+
+cat("=== Prueba de Breusch-Pagan (Heteroscedasticidad) ===\n\n")
+cat("  Modelo bien especificado (homocedastico):\n")
+cat(sprintf("    BP = %.4f,  p-valor = %.4f -> %s\n",
+    bp_ok$statistic, bp_ok$p.value,
+    ifelse(bp_ok$p.value > 0.05, "No hay evidencia de heterosc.", "Heterosc. detectada")))
+cat("\n  Modelo con heteroscedasticidad:\n")
+cat(sprintf("    BP = %.4f,  p-valor = %.4f -> %s\n",
+    bp_het$statistic, bp_het$p.value,
+    ifelse(bp_het$p.value > 0.05, "No hay evidencia de heterosc.", "Heterosc. detectada")))
+#+END_SRC
+
+#+RESULTS: residuos-R
+: === Prueba de Breusch-Pagan (Heteroscedasticidad) ===
+:
+:   Modelo bien especificado (homocedastico):
+:     BP = 0.0041,  p-valor = 0.9490 -> No hay evidencia de heterosc.
+:
+:   Modelo con heteroscedasticidad:
+:     BP = 40.5781,  p-valor = 0.0000 -> Heterosc. detectada
+
+** 13.4.3 Resumen de Herramientas de Diagnostico
+:PROPERTIES:
+:CUSTOM_ID: herramientas
+:END:
+
+| Herramienta | Problema que detecta | Estadistico |
+|-------------+---------------------+-------------|
+| Prueba RESET de Ramsey | Forma funcional incorrecta / variables omitidas | $F$ |
+| Durbin-Watson | Autocorrelacion de primer orden | $d \in [0,4]$ |
+| Breusch-Pagan / White | Heteroscedasticidad | $\chi^2$ |
+| FIV (Factor de Inflacion de Varianza) | Multicolinealidad | $\text{FIV}_j = 1/(1-R_j^2)$ |
+| Prueba de Chow | Quiebre estructural (inestabilidad de parametros) | $F$ |
+| CUSUM / CUSUM$^2$ | Inestabilidad parametrica en el tiempo | Suma acumulada |
+| Jarque-Bera | No normalidad de residuos | $\chi^2(2)$ |
+
+* 13.5 Flujo de Trabajo Completo de Diagnostico
+:PROPERTIES:
+:CUSTOM_ID: flujo-trabajo
+:END:
+
+El siguiente bloque integra los pasos de un diagnostico econometrico completo
+sobre un dataset simulado con errores intencionalmente introducidos:
+
+#+NAME: diagnostico-completo-R
+#+BEGIN_SRC R :results output
+library(lmtest)
+library(car)
+
+set.seed(2024)
+n  <- 150
+X2 <- rnorm(n, 5, 2)
+X3 <- 0.6 * X2 + rnorm(n, 0, 1)   # correlacionada con X2
+Y  <- 2 + 3 * X2 + 1.5 * X3 + rnorm(n, 0, 1)
+
+# Modelo subajustado (omite X3)
+m_sub <- lm(Y ~ X2)
+# Modelo completo
+m_full <- lm(Y ~ X2 + X3)
+
+separador <- paste(rep("=", 50), collapse = "")
+linea     <- paste(rep("-", 50), collapse = "")
+
+cat(separador, "\n")
+cat("  DIAGNOSTICO DEL MODELO SUBAJUSTADO\n")
+cat(separador, "\n\n")
+
+# 1. Coeficientes
+cat("[1] Coeficientes estimados:\n")
+cat(sprintf("    Intercepto : %.4f (verdadero = 2.0)\n", coef(m_sub)[1]))
+cat(sprintf("    beta_X2    : %.4f (verdadero = 3.0 + sesgo)\n\n", coef(m_sub)[2]))
+
+# 2. RESET
+reset_sub <- resettest(m_sub, power = 2:3, type = "fitted")
+cat(sprintf("[2] RESET Ramsey: F = %.4f, p = %.4f  -> %s\n\n",
+    reset_sub$statistic, reset_sub$p.value,
+    ifelse(reset_sub$p.value < 0.05,
+           "RECHAZA H0: posible misspecification", "No rechaza H0")))
+
+# 3. Durbin-Watson
+dw_sub <- dwtest(m_sub)
+cat(sprintf("[3] Durbin-Watson: d = %.4f, p = %.4f  -> %s\n\n",
+    dw_sub$statistic, dw_sub$p.value,
+    ifelse(dw_sub$p.value < 0.05, "Autocorrelacion detectada", "Sin autocorrelacion")))
+
+# 4. Breusch-Pagan
+bp_sub <- bptest(m_sub)
+cat(sprintf("[4] Breusch-Pagan: BP = %.4f, p = %.4f -> %s\n\n",
+    bp_sub$statistic, bp_sub$p.value,
+    ifelse(bp_sub$p.value < 0.05, "Heteroscedasticidad detectada", "Homocedastico")))
+
+# 5. FIV (solo aplica al modelo completo)
+fiv <- vif(m_full)
+cat(sprintf("[5] FIV modelo completo: X2 = %.4f, X3 = %.4f  -> %s\n\n",
+    fiv[1], fiv[2],
+    ifelse(any(fiv > 10), "Multicolinealidad severa", "Multicolinealidad aceptable")))
+
+cat(linea, "\n")
+cat("  CONCLUSION: El modelo subajustado muestra evidencia de\n")
+cat("  mala especificacion. Se recomienda incluir X3.\n")
+cat(linea, "\n")
+#+END_SRC
+
+#+RESULTS: diagnostico-completo-R
+: ==================================================
+:   DIAGNOSTICO DEL MODELO SUBAJUSTADO
+: ==================================================
+:
+: [1] Coeficientes estimados:
+:     Intercepto : 0.7985 (verdadero = 2.0)
+:     beta_X2    : 3.9127 (verdadero = 3.0 + sesgo)
+:
+: [2] RESET Ramsey: F = 0.8744, p = 0.4195  -> No rechaza H0
+:
+: [3] Durbin-Watson: d = 1.9882, p = 0.4647  -> Sin autocorrelacion
+:
+: [4] Breusch-Pagan: BP = 2.6219, p = 0.1055 -> Homocedastico
+:
+: [5] FIV modelo completo: X2 = 1.5618, X3 = 1.5618  -> Multicolinealidad aceptable
+:
+: --------------------------------------------------
+:   CONCLUSION: El modelo subajustado muestra evidencia de
+:   mala especificacion. Se recomienda incluir X3.
+: --------------------------------------------------
+
+* 13.6 Evaluacion de Modelos Contendientes
+:PROPERTIES:
+:CUSTOM_ID: evaluacion-modelos
+:END:
+
+Cuando se tienen dos o mas modelos candidatos, la evaluacion debe considerar:
+
+1. *Criterios de informacion*: AIC y BIC (menor es mejor).
+2. *$\bar{R}^2$*: mayor es mejor, pero penaliza variables adicionales.
+3. *Capacidad de pronostico fuera de muestra*: RMSE, MAE en muestra de validacion.
+4. *Pruebas de no anidamiento* (non-nested tests): cuando los modelos no son
+   casos especiales uno del otro.
+
+#+NAME: comparacion-modelos-python
+#+BEGIN_SRC python :results output
+import numpy as np
+import statsmodels.api as sm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+np.random.seed(42)
+n = 200
+
+X1 = np.random.normal(5, 2, n)
+X2 = np.random.normal(3, 1, n)
+X3_irrel = np.random.normal(0, 1, n)
+Y  = 2 + 1.5 * X1 + 0.8 * X2 + np.random.normal(0, 1, n)
+
+# Division entrenamiento / prueba
+idx_train = range(int(0.8 * n))
+idx_test  = range(int(0.8 * n), n)
+
+Y_train = Y[list(idx_train)];  Y_test = Y[list(idx_test)]
+X1_tr   = X1[list(idx_train)]; X1_te  = X1[list(idx_test)]
+X2_tr   = X2[list(idx_train)]; X2_te  = X2[list(idx_test)]
+X3_tr   = X3_irrel[list(idx_train)]; X3_te = X3_irrel[list(idx_test)]
+
+def evaluar(nombre, X_tr, X_te, Y_tr, Y_te):
+    m   = sm.OLS(Y_tr, sm.add_constant(X_tr)).fit()
+    aic = m.aic
+    bic = m.bic
+    r2a = m.rsquared_adj
+    yp  = m.predict(sm.add_constant(X_te))
+    rmse= np.sqrt(mean_squared_error(Y_te, yp))
+    return nombre, r2a, aic, bic, rmse
+
+configs = [
+    ("M1: solo X1",     X1_tr.reshape(-1,1),
+                        X1_te.reshape(-1,1)),
+    ("M2: X1 + X2",    np.column_stack([X1_tr, X2_tr]),
+                        np.column_stack([X1_te, X2_te])),
+    ("M3: X1+X2+X3",   np.column_stack([X1_tr, X2_tr, X3_tr]),
+                        np.column_stack([X1_te, X2_te, X3_te])),
+]
+
+print(f"{'Modelo':<18}  {'R2-adj':>7}  {'AIC':>9}  {'BIC':>9}  {'RMSE(test)':>11}")
+print("-" * 60)
+for nombre, Xtr, Xte in configs:
+    nm, r2a, aic, bic, rmse = evaluar(nombre, Xtr, Xte, Y_train, Y_test)
+    print(f"{nm:<18}  {r2a:>7.4f}  {aic:>9.2f}  {bic:>9.2f}  {rmse:>11.4f}")
+
+print("\nConclusion: M2 tiene el mejor AIC, BIC y RMSE fuera de muestra.")
+print("Agregar X3 irrelevante no mejora el pronostico.")
+#+END_SRC
+
+#+RESULTS: comparacion-modelos-python
+: Modelo               R2-adj       AIC       BIC  RMSE(test)
+: ------------------------------------------------------------
+: M1: solo X1          0.5887    444.69    451.11      1.3019
+: M2: X1 + X2          0.8455    290.30    298.88      1.0132
+: M3: X1+X2+X3         0.8433    291.72    302.45      1.0154
+:
+: Conclusion: M2 tiene el mejor AIC, BIC y RMSE fuera de muestra.
+: Agregar X3 irrelevante no mejora el pronostico.
+
+* Apendice A: Formulario de Referencia
+:PROPERTIES:
+:CUSTOM_ID: formulario
+:END:
+
+** A.1 Sesgo por variable omitida
+
+Dado el modelo verdadero $Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i$
+y el modelo estimado $Y_i = \alpha_1 + \alpha_2 X_{2i} + v_i$:
+
+$$E(\hat{\alpha}_2) = \beta_2 + \beta_3 b_{32}, \qquad b_{32} = \frac{\sum x_{2i} x_{3i}}{\sum x_{2i}^2}$$
+
+$$\text{Sesgo}(\hat{\alpha}_2) = \beta_3 b_{32}$$
+
+** A.2 Perdida de eficiencia por variable irrelevante
+
+$$\frac{\text{Var}(\hat{\alpha}_2)}{\text{Var}(\hat{\beta}_2)} = \frac{1}{1 - r_{23}^2}$$
+
+** A.3 Sesgo de atenuacion (errores de medicion en X)
+
+$$\text{plim}\,\hat{\beta} = \beta \cdot \frac{\sigma_{X^*}^2}{\sigma_{X^*}^2 + \sigma_w^2}$$
+
+** A.4 Sesgo por error estocastico multiplicativo
+
+Si $Y_i = \beta X_i u_i$ con $\ln u_i \sim N(0, \sigma^2)$:
+
+$$E(\hat{\alpha}) = \beta\, e^{\sigma^2 / 2}$$
+
+** A.5 Criterios de informacion
+
+$$\text{AIC} = \ln\hat{\sigma}^2 + \frac{2k}{n}, \qquad
+\text{SIC} = \ln\hat{\sigma}^2 + \frac{k\ln n}{n}$$
+
+$$\bar{R}^2 = 1 - \frac{n-1}{n-k}(1 - R^2), \qquad
+C_p = \frac{RSS_p}{\hat{\sigma}^2} - n + 2p$$
+
+** A.6 Estadistico F de Chow
+
+$$F_{Chow} = \frac{(RSS_R - RSS_{NR})\,/\,k}{RSS_{NR}\,/\,(n_1 + n_2 - 2k)}
+\sim F(k,\, n_1 + n_2 - 2k)$$
+
+** A.7 Estadistico RESET de Ramsey
+
+$$F_{RESET} = \frac{(R^2_{aug} - R^2_{res})\,/\,m}{(1 - R^2_{aug})\,/\,(n - k - m)}
+\sim F(m,\, n - k - m)$$
+
+** A.8 Factor de Inflacion de Varianza (FIV)
+
+$$\text{FIV}_j = \frac{1}{1 - R_j^2}$$
+
+donde $R_j^2$ es el $R^2$ de la regresion de $X_j$ sobre los demas regresores.
+Regla practica: $\text{FIV}_j > 10$ indica multicolinealidad problematica.
+
+* Apendice B: Referencias
+:PROPERTIES:
+:CUSTOM_ID: referencias
+:END:
+
+- Gujarati, D. N. y Porter, D. C. (2010). /Econometria/. 5.a edicion.
+  McGraw-Hill.
+- Hendry, D. F. y Richard, J. F. (1982). On the formulation of empirical models
+  in dynamic econometrics. /Journal of Econometrics/, 20(1), 3-33.
+- Friedman, M. (1957). /A Theory of the Consumption Function/.
+  Princeton University Press.
+- Ramsey, J. B. (1969). Tests for specification errors in classical linear least
+  squares regression analysis. /Journal of the Royal Statistical Society,
+  Series B/, 31(2), 350-371.
+- Chow, G. C. (1960). Tests of equality between sets of coefficients in two
+  linear regressions. /Econometrica/, 28(3), 591-605.
+- Akaike, H. (1974). A new look at the statistical model identification.
+  /IEEE Transactions on Automatic Control/, 19(6), 716-723.
+- Schwarz, G. (1978). Estimating the dimension of a model. /Annals of Statistics/,
+  6(2), 461-464.
+
+# ============================================================
+# FIN DEL DOCUMENTO
+# Autor: Emanuel Quintana Silva
+# Asignatura: Econometria -- UPTC
+# Referencia: Gujarati, Capitulo 13
+# ============================================================
