@@ -36,7 +36,7 @@ input año C I L A
 1969  47.90  111.1   620.7  27.18
 1970  58.20  107.8   588.6  28.72
 1971  52.00  109.6   444.4  29.00
-1972  51.20  109.7   427.8  26.67
+1972  51.20  119.7   427.8  26.67
 1973  59.50  129.8   727.1  25.33
 1974  77.30  129.3   877.6  34.06
 1975  64.20  117.8   556.6  39.79
@@ -205,3 +205,8 @@ prais lnC lnI lnL lnA
 
 * ── FIN ──────────────────────────────────────────────────────
 log close
+
+* ── EXPORTAR LOG A PDF ───────────────────────────────────────
+* Convierte el log de texto a PDF (requiere Stata 15+ con translate)
+translate "taller_autocorrelacion.log" "taller_autocorrelacion_resultados.pdf", ///
+    translator(txt2pdf) replace
