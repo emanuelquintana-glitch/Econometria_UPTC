@@ -9,3 +9,15 @@
 La *creacion* de modelos econometricos requiere una comprension profunda y habilidades para especificar correctamente el modelo y realizar pruebas de diagnostico, ya que la busqueda del modelo "correcto" es un desafio constante en la econometria.
 
 La especificacion del modelo es un paso crucial en la creacion de modelos econometricos. Un modelo bien especificado debe cumplr ciertos supuestos, como la linealidad, la independencia
+de los errores, la homocedasticidad y la normalidad de los errores. Sin embargo, en la practica, estos supuestos a menudo no se cumplen, lo que puede llevar a errores de especificacion del modelo. Por ejemplo si el modelo no incluye variables relevantes, se puede producir un sesgo en la estimacion de los parametros.
+
+Un enfoque comun para abordar  este problema es utilizar tecnicas de selecccion de variables, como la regresion stepwise o la regresion por pasos, que permiten seleccionar las variables mas relevantes para el modelo. Sin embargo, estas tecnicas tambien pueden ser sensibles a la presencia de multicolinealidad o de variables irrelevantes.
+
+
+Preguntas que se abordan en el capitulo.
+
+* ¿Que hacer para encontrar el modelo "correcto"? En otras palabras, ¿cuales son los criterios para elegir el modelo a partir del analisis empirico?
+
+* ¿Que tipos de errores de especificacion de modelos son mas comunes en la practica?
+
+*
