@@ -107,3 +107,39 @@ lines(seq(-3, 5, by = 0.1), sapply(seq(-3, 5, by = 0.1), predecir), col = "blue"
 #+END_SRC
 
 #+RESULTS: modelo-tasa-desempleo-completo
+
+
+2. Ser consistente con la teoria: es decir, debe tener un sentido economico pertinente. Por ejemplo, si es valida la hipotesis del ingreso permanente de Milton Friedman, se espera que el valor del intercepto en la regresion del consumo permanente sobre el ingreso permanente sea igual a cero.
+
+   Ejemplo:
+  #+NAME: regresion-con-teoria-economica
+#+BEGIN_SRC python :results output
+import numpy as np
+import statsmodels.api as sm
+from scipy import stats
+
+# Datos simulados: consumo e ingreso permanente
+np.random.seed(42)
+ingreso_permanente = np.random.normal(50, 10, 100)
+consumo_permanente = 0.0 + 1.0 * ingreso_permanente + np.random.normal(0, 2, 100)
+
+# Añadir constante para el intercepto
+X = sm.add_constant(ingreso_permanente)
+modelo = sm.OLS(consumo_permanente, X).fit()
+
+# Mostrar resultados clave
+print("Intercepto estimado:", modelo.params['const'])
+print("p-value del intercepto:", modelo.pvalues['const'])
+
+# Probar hipótesis: intercepto = 0 (consistente con Friedman)
+prueba_intercepto = modelo.f_test("const = 0")
+print(f"Prueba F: F={prueba_intercepto.fvalue[0][0]:.2f}, p-value={prueba_intercepto.pvalue:.3f}")
+
+if prueba_intercepto.pvalue > 0.05:
+    print("→ El intercepto no es significativo: consistente con la teoría del ingreso permanente.")
+else:
+    print("→ El intercepto es significativo: inconsistente con la teoría.")
+#+END_SRC
+
+#+RESULTS:
+: cde4217f-ce41-4dec-bfd0-87b2bc7da5f4
