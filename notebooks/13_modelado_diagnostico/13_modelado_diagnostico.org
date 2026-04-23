@@ -1,0 +1,11 @@
+#+TITLE:  Modelado Diagnostico
+#+SUBTITLE: Notas de clase de Econometria UPTC
+#+AUTHOR: Emanuel Quintana Silva
+#+ORG-REF: Damodar Gujarati
+#+DATE: <2026-04-22 Wed>
+
+* Primera parte
+
+La *creacion* de modelos econometricos requiere una comprension profunda y habilidades para especificar correctamente el modelo y realizar pruebas de diagnostico, ya que la busqueda del modelo "correcto" es un desafio constante en la econometria.
+
+La especificacion del modelo es un paso crucial en la creacion de modelos econometricos. Un modelo bien especificado debe cumplr ciertos supuestos, como la linealidad, la independencia
