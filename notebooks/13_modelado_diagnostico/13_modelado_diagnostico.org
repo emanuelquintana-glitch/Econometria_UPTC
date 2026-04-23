@@ -16,8 +16,17 @@ Un enfoque comun para abordar  este problema es utilizar tecnicas de selecccion 
 
 Preguntas que se abordan en el capitulo.
 
-* ¿Que hacer para encontrar el modelo "correcto"? En otras palabras, ¿cuales son los criterios para elegir el modelo a partir del analisis empirico?
+* 1. ¿Que hacer para encontrar el modelo "correcto"? En otras palabras, ¿cuales son los criterios para elegir el modelo a partir del analisis empirico?
 
-* ¿Que tipos de errores de especificacion de modelos son mas comunes en la practica?
+* 2. ¿Que tipos de errores de especificacion de modelos son mas comunes en la practica?
 
-*
+* 3. ¿Cuales son las consecuencias de los errores de especificacion?
+
+* 4. ¿Como se detectan los errores de especificacion? En otras palabras, ¿Cuales son algunas herramientas de diagnostico disponibles?
+
+* 5. Una vez detectados los errores de especificacion, ¿CUales son los remedios que se pueden adoptar y con qye beneficios?
+
+* 6. ¿Como se evalua el desempeño de modelos contendientes?
+
+
+Acontinuacion abordaremos los criterios de selccion del modelo
