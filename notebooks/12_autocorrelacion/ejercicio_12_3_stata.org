@@ -31,6 +31,78 @@ label variable Y "Participación laboral"
 list
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+----------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_562387.log
+  log type:  text
+ opened on:  26 Apr 2026, 01:30:57
+
+. set linesize 200
+
+. clear
+
+. input t Y
+
+             t          Y
+  1. 1  0.450
+  2. 2  0.442
+  3. 3  0.448
+  4. 4  0.434
+  5. 5  0.433
+  6. 6  0.431
+  7. 7  0.426
+  8. 8  0.428
+  9. 9  0.417
+ 10. 10 0.418
+ 11. 11 0.420
+ 12. 12 0.412
+ 13. 13 0.407
+ 14. 14 0.404
+ 15. 15 0.407
+ 16. 16 0.401
+ 17. end
+
+.
+. label variable t "Tiempo (1=1949)"
+
+. label variable Y "Participación laboral"
+
+. list
+
+     +-----------+
+     |  t      Y |
+     |-----------|
+  1. |  1    .45 |
+  2. |  2   .442 |
+  3. |  3   .448 |
+  4. |  4   .434 |
+  5. |  5   .433 |
+     |-----------|
+  6. |  6   .431 |
+  7. |  7   .426 |
+  8. |  8   .428 |
+  9. |  9   .417 |
+ 10. | 10   .418 |
+     |-----------|
+ 11. | 11    .42 |
+ 12. | 12   .412 |
+ 13. | 13   .407 |
+ 14. | 14   .404 |
+ 15. | 15   .407 |
+     |-----------|
+ 16. | 16   .401 |
+     +-----------+
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_562387.log
+  log type:  text
+ closed on:  26 Apr 2026, 01:30:57
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
 * Modelo A: Tendencia Lineal
 
 #+BEGIN_SRC stata :results output
@@ -58,8 +130,63 @@ regress Y t
 estat dwatson
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+----------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_562508.log
+  log type:  text
+ opened on:  26 Apr 2026, 01:31:10
+
+. set linesize 200
+
+. clear
+
+. input t Y
+
+             t          Y
+  1. 1  0.450
+  2. 2  0.442
+  3. 3  0.448
+  4. 4  0.434
+  5. 5  0.433
+  6. 6  0.431
+  7. 7  0.426
+  8. 8  0.428
+  9. 9  0.417
+ 10. 10 0.418
+ 11. 11 0.420
+ 12. 12 0.412
+ 13. 13 0.407
+ 14. 14 0.404
+ 15. 15 0.407
+ 16. 16 0.401
+ 17. end
+
+.
+. regress Y t
+
+      Source |       SS           df       MS      Number of obs   =        16
+-------------+----------------------------------   F(1, 14)        =    290.89
+       Model |  .003411555         1  .003411555   Prob > F        =    0.0000
+    Residual |  .000164194        14  .000011728   R-squared       =    0.9541
+-------------+----------------------------------   Adj R-squared   =    0.9508
+       Total |  .003575749        15  .000238383   Root MSE        =    .00342
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           t |  -.0031676   .0001857   -17.06   0.000     -.003566   -.0027693
+       _cons |     .45055   .0017959   250.88   0.000     .4466982    .4544018
+------------------------------------------------------------------------------
+
+. estat dwatson
+time variable not set, use tsset varname ...
+#+end_example
+
 * Modelo B: Tendencia Cuadrática
 
+* Datos: guardar una vez
 #+BEGIN_SRC stata :results output
 clear
 input t Y
@@ -80,42 +207,43 @@ input t Y
 15 0.407
 16 0.401
 end
+tsset t
+save "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", replace
+list
+#+END_SRC
 
+#+RESULTS:
+
+* Modelo A: Tendencia Lineal
+#+BEGIN_SRC stata :results output
+use "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", clear
+tsset t
+regress Y t
+estat dwatson
+#+END_SRC
+
+#+RESULTS:
+
+* Modelo B: Tendencia Cuadrática
+#+BEGIN_SRC stata :results output
+use "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", clear
+tsset t
 generate t2 = t^2
-
 regress Y t t2
 estat dwatson
 #+END_SRC
 
-* Prueba RESET — Diagnóstico de especificación
+#+RESULTS:
 
+* Diagnóstico: RESET y Breusch-Godfrey
 #+BEGIN_SRC stata :results output
-clear
-input t Y
-1  0.450
-2  0.442
-3  0.448
-4  0.434
-5  0.433
-6  0.431
-7  0.426
-8  0.428
-9  0.417
-10 0.418
-11 0.420
-12 0.412
-13 0.407
-14 0.404
-15 0.407
-16 0.401
-end
-
-* Modelo A con RESET
+use "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", clear
+tsset t
 regress Y t
 estat ovtest
-
-* Modelo B con Breusch-Godfrey
 generate t2 = t^2
 regress Y t t2
 estat bgodfrey, lags(1)
 #+END_SRC
+
+#+RESULTS:

@@ -1,0 +1,142 @@
+% Created 2026-04-26 Sun 01:42
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Emanuel Quintana Silva}
+\date{2026}
+\title{Ejercicio 12.3 — Gujarati: Autocorrelación Pura vs. Sesgo de Especificación}
+\hypersetup{
+ pdfauthor={Emanuel Quintana Silva},
+ pdftitle={Ejercicio 12.3 — Gujarati: Autocorrelación Pura vs. Sesgo de Especificación},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\usepackage[style=authoryear]{biblatex}
+\addbibresource{~/org/bib/referencias.bib}
+\begin{document}
+
+\maketitle
+\section{Datos: Participación Laboral en Industria Metalúrgica 1949-1964}
+\label{sec:org4877083}
+
+\begin{verbatim}
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+
+label variable t "Tiempo (1=1949)"
+label variable Y "Participación laboral"
+list
+\end{verbatim}
+\section{Modelo A: Tendencia Lineal}
+\label{sec:orgfcbe847}
+
+\begin{verbatim}
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+
+regress Y t
+estat dwatson
+\end{verbatim}
+\section{Modelo B: Tendencia Cuadrática}
+\label{sec:orgedee5ff}
+
+\section{Datos: guardar una vez}
+\label{sec:org52bc225}
+\begin{verbatim}
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+tsset t
+save "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", replace
+list
+\end{verbatim}
+\section{Modelo A: Tendencia Lineal}
+\label{sec:org72cab8d}
+\begin{verbatim}
+use "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", clear
+tsset t
+regress Y t
+estat dwatson
+\end{verbatim}
+\section{Modelo B: Tendencia Cuadrática}
+\label{sec:org98e76ff}
+\begin{verbatim}
+use "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", clear
+tsset t
+generate t2 = t^2
+regress Y t t2
+estat dwatson
+\end{verbatim}
+\section{Diagnóstico: RESET y Breusch-Godfrey}
+\label{sec:org5550133}
+\begin{verbatim}
+use "/home/emanuel/Econometria_UPTC/notebooks/12_autocorrelacion/gujarati_12_3.dta", clear
+tsset t
+regress Y t
+estat ovtest
+generate t2 = t^2
+regress Y t t2
+estat bgodfrey, lags(1)
+\end{verbatim}
+\end{document}
