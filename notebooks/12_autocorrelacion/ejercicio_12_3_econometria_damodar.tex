@@ -1,0 +1,296 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 12.3}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Participacion Laboral en la Industria Metalurgica:}\\[6pt]
+  {\LARGE\bfseries Autocorrelacion Pura vs.\ Sesgo de Especificacion}\\[12pt]
+  {\large\itshape Modelos de tendencia lineal y cuadratica, estadistico de Durbin-Watson}\\
+  {\large\itshape y diagnostico de la fuente de correlacion serial}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~12.3 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.\
+  por Emanuel Quintana Silva}\\[4pt]
+  {\small\textsc{Basado en Gujarati (1969), ``Labor's Share in Manufacturing Industries'',
+  \textit{ILRR}, vol.~23, num.~1}}
+\end{center}
+
+\vspace{10pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Planteamiento del problema}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Se estudia el movimiento en la participacion laboral ($Y_t$) en el valor agregado
+de la industria metalurgica basica, con datos anuales de 1949 a 1964 ($n = 16$
+observaciones). Se comparan dos especificaciones:
+
+\begin{align}
+  \textbf{Modelo A:} \quad
+    Y_t &= \beta_0 + \beta_1 t + u_t
+  \label{eq:modA}\\[6pt]
+  \textbf{Modelo B:} \quad
+    Y_t &= \alpha_0 + \alpha_1 t + \alpha_2 t^2 + u_t
+  \label{eq:modB}
+\end{align}
+
+Los resultados estimados son:
+
+\begin{align}
+  \hat Y_t &= 0.4529 - 0.0041\,t
+  \tag{A}\label{eq:estA}\\
+  &\quad\quad (-3.9608) \qquad R^2 = 0.5284 \quad d = 0.8252 \notag\\[8pt]
+  \hat Y_t &= 0.4786 - 0.0127\,t + 0.0005\,t^2
+  \tag{B}\label{eq:estB}\\
+  &\quad\quad (-3.2724)\quad (2.7777) \qquad R^2 = 0.6629 \quad d = 1.82 \notag
+\end{align}
+
+donde las cifras entre parentesis son las razones $t$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Inciso (a): Correlacion serial en los modelos A y B}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Para $n = 16$ observaciones, los valores criticos de la tabla de Durbin-Watson
+al nivel de significancia del $5\%$ son:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{cccc}
+\toprule
+\textbf{Modelo} & $k'$ & $d_L$ & $d_U$ \\
+\midrule
+A (tendencia lineal)    & 1 & 1.106 & 1.371 \\
+B (tendencia cuadratica)& 2 & 0.982 & 1.539 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Modelo A}
+
+\textbf{Comparacion:}
+\begin{equation}
+  d_A = 0.8252 \;<\; d_L = 1.106
+\end{equation}
+
+El estadistico $d$ cae por debajo del limite inferior. Se rechaza la hipotesis
+nula de no autocorrelacion.
+
+\textbf{Conclusion:} El Modelo A presenta \textbf{autocorrelacion positiva}
+de primer orden estadisticamente significativa al nivel del $5\%$.
+
+\begin{clave}
+  Modelo A: $d = 0.8252 < d_L = 1.106$ $\Rightarrow$
+  Rechazar $H_0$. Autocorrelacion positiva significativa.
+\end{clave}
+
+\subsection{Modelo B}
+
+\textbf{Comparacion:}
+\begin{equation}
+  d_B = 1.82 \;>\; d_U = 1.539
+\end{equation}
+
+El estadistico $d$ supera el limite superior y se encuentra en la region de no
+rechazo ($d_U < d < 4 - d_U$, puesto que $4 - 1.539 = 2.461$ y
+$1.539 < 1.82 < 2.461$). No se rechaza la hipotesis nula.
+
+\textbf{Conclusion:} El Modelo B \textbf{no presenta evidencia} de correlacion
+serial al nivel del $5\%$. El estadistico $d = 1.82$ es consistente con la
+ausencia de autocorrelacion.
+
+\begin{clave}
+  Modelo B: $d_U = 1.539 < d = 1.82 < 2.461 = 4 - d_U$
+  $\Rightarrow$ No rechazar $H_0$. Sin evidencia de autocorrelacion.
+\end{clave}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Inciso (b): Explicacion de la correlacion serial en el Modelo A}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La correlacion serial detectada en el Modelo A es, muy probablemente,
+\textbf{autocorrelacion inducida por un error de especificacion} en la forma
+funcional, no autocorrelacion pura.
+
+\subsection{Argumento estadistico}
+
+El termino cuadratico $t^2$ en el Modelo B tiene una razon $t = 2.7777$,
+estadisticamente significativa al nivel del $5\%$ (valor critico $\approx 2.16$
+para $n - k = 13$ grados de libertad). Esto indica que la participacion laboral
+sigue una trayectoria \emph{no lineal} en el tiempo y que el Modelo A omite
+ese componente de curvatura.
+
+\subsection{Mecanismo de induccion}
+
+Cuando la verdadera forma funcional es cuadratica pero se estima un modelo
+lineal, el residuo del Modelo A absorbe el patron no lineal omitido:
+\begin{equation}
+  \hat u_t^{(A)} = (Y_t - \hat Y_t^{(A)})
+  \approx \alpha_2 t^2 + \text{error puro}
+\end{equation}
+Dado que $\alpha_2 t^2$ es una funcion suave y monotona en $t$, los residuos
+de periodos consecutivos seran sistematicamente similares en signo y magnitud,
+lo que genera una correlacion serial aparente. En terminos geometricos: si los
+datos siguen una curva y el modelo ajusta una recta, los residuos estaran
+primero todos positivos, luego negativos, luego positivos de nuevo, produciendo
+exactamente el patron que detecta la prueba de Durbin-Watson.
+
+\subsection{Evidencia empirica}
+
+El siguiente cuadro resume la mejora al pasar del Modelo A al Modelo B:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Modelo} & $R^2$ & $d$ & \textbf{Diagnostico} \\
+\midrule
+A (lineal)    & 0.5284 & 0.8252 & Autocorrelacion positiva \\
+B (cuadratico)& 0.6629 & 1.82   & Sin autocorrelacion \\
+\midrule
+\multicolumn{2}{l}{Mejora al agregar $t^2$}
+  & $\Delta d = +0.9948$ & Desaparece la correlacion serial \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El aumento de $d$ de $0.8252$ a $1.82$ al incluir $t^2$ es la evidencia
+mas directa de que la correlacion serial del Modelo A era consecuencia de la
+forma funcional incorrecta, no de un proceso autorregresivo en el error.
+
+\begin{clave}
+  La participacion laboral sigue una trayectoria cuadratica. Al omitir $t^2$
+  en el Modelo A, los residuos absorben la curvatura y exhiben un patron
+  serial sistematico. Corregir la especificacion elimina la autocorrelacion.
+\end{clave}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Inciso (c): Distincion entre autocorrelacion pura y sesgo de especificacion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Distinguir entre autocorrelacion \emph{pura} (inherente al proceso generador
+de los errores) y autocorrelacion \emph{inducida} (por mala especificacion del
+modelo) es una de las tareas mas delicadas del diagnostico econometrico. Los
+criterios siguientes son los mas utilizados en la practica.
+
+\subsection{Criterio 1: respuesta del estadistico $d$ ante cambios de especificacion}
+
+Si al corregir la forma funcional o incluir variables omitidas el estadistico
+$d$ pasa de ser significativo a un valor cercano a 2 (sin autocorrelacion), la
+fuente era \textbf{sesgo de especificacion}.
+
+Si, por el contrario, $d$ permanece bajo tras agotar las especificaciones
+teoricamente justificadas, es mas probable que se trate de \textbf{autocorrelacion
+pura}. Este es precisamente el caso del ejercicio: $d$ pasa de $0.8252$ a $1.82$
+al corregir la especificacion, lo que senala mala especificacion como causa.
+
+\subsection{Criterio 2: analisis grafico de residuos}
+
+Una inspeccion visual de los residuos contra el tiempo o contra $\hat Y_t$ puede
+revelar el origen del problema:
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Patron en forma de U o de S}: sugiere forma funcional incorrecta
+    (componente polinomial omitido). Tipico de sesgo de especificacion.
+  \item \textbf{Oscilaciones suaves y regulares sin patron en U/S}: mas consistente
+    con autocorrelacion pura de primer orden ($u_t = \rho u_{t-1} + \varepsilon_t$).
+  \item \textbf{Patron ciclico de largo plazo}: puede indicar autocorrelacion de
+    orden superior o un componente estacional omitido.
+\end{itemize}
+
+\subsection{Criterio 3: prueba de Ramsey RESET}
+
+La prueba RESET (Regression Equation Specification Error Test) contrasta
+formalmente si potencias de $\hat Y_t$ tienen poder explicativo adicional:
+\begin{equation}
+  H_0: \text{la forma funcional es correcta}
+  \qquad \text{vs.} \qquad
+  H_1: \text{existe mala especificacion}
+\end{equation}
+Un rechazo de $H_0$ senala sesgo de especificacion antes de atribuir la
+correlacion serial a autocorrelacion pura.
+
+\subsection{Criterio 4: prueba de Breusch-Godfrey}
+
+La prueba LM de Breusch-Godfrey contrasta autocorrelacion de orden $p$ sin las
+restricciones de la prueba de Durbin-Watson. Si tras corregir la especificacion
+la prueba LM aun rechaza $H_0$, la autocorrelacion residual es de naturaleza pura.
+Si no rechaza, confirma que el problema original era de especificacion.
+
+\subsection{Aplicacion al ejercicio}
+
+En el presente caso, la combinacion de los criterios 1 y 2 es concluyente:
+\begin{enumerate}[leftmargin=1.8em, itemsep=4pt]
+  \item El estadistico $d$ mejora drasticamente ($0.82 \to 1.82$) al agregar $t^2$.
+  \item El coeficiente de $t^2$ es altamente significativo ($t = 2.78$).
+  \item El $R^2$ aumenta de $0.53$ a $0.66$, confirmando mejor ajuste.
+\end{enumerate}
+Estos tres hechos conjuntos indican que la autocorrelacion del Modelo A era
+\textbf{inducida por la omision de la tendencia cuadratica}, no un fenomeno
+estructural del proceso de error.
+
+\begin{clave}
+  \textbf{Regla practica:} si agregar variables o corregir la forma funcional
+  elimina la correlacion serial, el problema era de especificacion.
+  Si la correlacion persiste tras la correccion, es autocorrelacion pura
+  y se debe tratar con GLS, FGLS o errores estandar de Newey-West.
+\end{clave}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.}
+El ejercicio ilustra un principio metodologico fundamental: ante un estadistico
+$d$ significativo, la primera accion no debe ser corregir la autocorrelacion
+sino \emph{revisar la especificacion del modelo}. Aplicar GLS o transformar
+las variables cuando el verdadero problema es la omision de un regresor produce
+estimadores inconsistentes y no resuelve el problema de fondo.
+La jerarquia correcta es: (1) diagnosticar la especificacion, (2) corregir si
+procede, (3) solo entonces tratar la autocorrelacion si persiste.}
+
+\end{document}
