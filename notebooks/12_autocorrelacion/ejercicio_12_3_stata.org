@@ -6,7 +6,6 @@
 * Datos: Participación Laboral en Industria Metalúrgica 1949-1964
 
 #+BEGIN_SRC stata :results output
-* Ingresar datos manualmente (Gujarati, tabla 12.5)
 clear
 input t Y
 1  0.450
@@ -55,7 +54,6 @@ input t Y
 16 0.401
 end
 
-* Modelo A: Y = b0 + b1*t
 regress Y t
 estat dwatson
 #+END_SRC
@@ -85,7 +83,6 @@ end
 
 generate t2 = t^2
 
-* Modelo B: Y = a0 + a1*t + a2*t^2
 regress Y t t2
 estat dwatson
 #+END_SRC
