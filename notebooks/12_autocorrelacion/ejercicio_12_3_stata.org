@@ -1,0 +1,124 @@
+#+TITLE: Ejercicio 12.3 — Gujarati: Autocorrelación Pura vs. Sesgo de Especificación
+#+AUTHOR: Emanuel Quintana Silva
+#+DATE: 2026
+#+OPTIONS: toc:nil num:t
+
+* Datos: Participación Laboral en Industria Metalúrgica 1949-1964
+
+#+BEGIN_SRC stata :results output
+* Ingresar datos manualmente (Gujarati, tabla 12.5)
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+
+label variable t "Tiempo (1=1949)"
+label variable Y "Participación laboral"
+list
+#+END_SRC
+
+* Modelo A: Tendencia Lineal
+
+#+BEGIN_SRC stata :results output
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+
+* Modelo A: Y = b0 + b1*t
+regress Y t
+estat dwatson
+#+END_SRC
+
+* Modelo B: Tendencia Cuadrática
+
+#+BEGIN_SRC stata :results output
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+
+generate t2 = t^2
+
+* Modelo B: Y = a0 + a1*t + a2*t^2
+regress Y t t2
+estat dwatson
+#+END_SRC
+
+* Prueba RESET — Diagnóstico de especificación
+
+#+BEGIN_SRC stata :results output
+clear
+input t Y
+1  0.450
+2  0.442
+3  0.448
+4  0.434
+5  0.433
+6  0.431
+7  0.426
+8  0.428
+9  0.417
+10 0.418
+11 0.420
+12 0.412
+13 0.407
+14 0.404
+15 0.407
+16 0.401
+end
+
+* Modelo A con RESET
+regress Y t
+estat ovtest
+
+* Modelo B con Breusch-Godfrey
+generate t2 = t^2
+regress Y t t2
+estat bgodfrey, lags(1)
+#+END_SRC
