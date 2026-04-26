@@ -1,0 +1,241 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria · Gujarati --- Ejercicio 12.2}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Prueba de Durbin-Watson:}\\[6pt]
+  {\LARGE\bfseries Analisis de Autocorrelacion ($n=50$, $k'=4$)}\\[12pt]
+  {\large\itshape Aplicacion de las reglas de decision del estadistico $d$}\\
+  {\large\itshape para distintos valores muestrales}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~12.2 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.\ por Emanuel Quintana Silva}\\[4pt]
+  {\small\textsc{Valores criticos, zonas de decision y conclusiones de inferencia}}
+\end{center}
+
+\vspace{10pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Valores criticos de la prueba}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Para $n = 50$ observaciones y $k' = 4$ variables explicativas (excluyendo la
+constante), los valores criticos de la tabla de Durbin-Watson al nivel de
+significancia del $5\%$ son:
+\begin{equation}
+  d_L = 1.378, \qquad d_U = 1.721
+  \label{eq:criticos}
+\end{equation}
+
+La prueba cubre cinco regiones de decision:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{llp{6cm}}
+\toprule
+\textbf{Region} & \textbf{Criterio} & \textbf{Decision} \\
+\midrule
+I   & $d < d_L = 1.378$
+    & Rechazar $H_0$: autocorrelacion positiva \\
+II  & $d_L \le d \le d_U$, \; $1.378 \le d \le 1.721$
+    & Zona de indecision \\
+III & $d_U < d < 4 - d_U$, \; $1.721 < d < 2.279$
+    & No rechazar $H_0$: sin autocorrelacion \\
+IV  & $4-d_U \le d \le 4-d_L$, \; $2.279 \le d \le 2.622$
+    & Zona de indecision (autocorrelacion negativa) \\
+V   & $d > 4 - d_L = 2.622$
+    & Rechazar $H_0$: autocorrelacion negativa \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent Para contrastar autocorrelacion \emph{negativa} se utiliza el estadistico
+transformado $d^* = 4 - d$, que se compara con los mismos valores criticos $d_L$
+y $d_U$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Analisis de cada valor del estadistico $d$}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Inciso (a): $d = 1.05$}
+
+\textbf{Comparacion:}
+\begin{equation}
+  d = 1.05 < d_L = 1.378
+\end{equation}
+
+El valor observado se encuentra en la \textbf{Region~I}, por debajo del limite
+inferior. Se rechaza la hipotesis nula de no autocorrelacion.
+
+\textbf{Conclusion:} Existe evidencia estadistica de \textbf{autocorrelacion
+positiva} de primer orden al nivel de significancia del $5\%$. Los residuos MCO
+muestran un patron de correlacion serial positiva, lo que implica que errores
+consecutivos tienden a tener el mismo signo.
+
+\begin{clave}
+  $d = 1.05 < d_L = 1.378$ $\Rightarrow$ \textbf{Rechazar $H_0$}.
+  Autocorrelacion positiva significativa.
+\end{clave}
+
+\subsection{Inciso (b): $d = 1.40$}
+
+\textbf{Comparacion:}
+\begin{equation}
+  d_L = 1.378 \;\le\; d = 1.40 \;\le\; d_U = 1.721
+\end{equation}
+
+El valor observado cae exactamente en la \textbf{Region~II} (zona de indecision).
+La prueba de Durbin-Watson no permite concluir si existe o no autocorrelacion
+positiva con la informacion disponible.
+
+\textbf{Conclusion:} La prueba es \textbf{inconcluyente}. En la practica
+econometrica se recomienda complementar el analisis con la prueba de
+Breusch-Godfrey (prueba LM), que no presenta zonas de indecision y es valida
+incluso con modelos dinamicos.
+
+\begin{clave}
+  $d_L \le 1.40 \le d_U$ $\Rightarrow$ \textbf{Zona de indecision}.
+  Usar prueba de Breusch-Godfrey como alternativa.
+\end{clave}
+
+\subsection{Inciso (c): $d = 2.50$}
+
+Para contrastar autocorrelacion negativa se calcula:
+\begin{equation}
+  d^* = 4 - d = 4 - 2.50 = 1.50
+\end{equation}
+
+\textbf{Comparacion respecto a autocorrelacion negativa:}
+\begin{equation}
+  d_L = 1.378 \;\le\; d^* = 1.50 \;\le\; d_U = 1.721
+  \quad \Rightarrow \quad \text{zona de indecision}
+\end{equation}
+
+\textbf{Comparacion respecto a autocorrelacion positiva:}
+\begin{equation}
+  d = 2.50 > d_U = 1.721
+  \quad \Rightarrow \quad \text{no hay autocorrelacion positiva}
+\end{equation}
+
+Equivalentemente, los limites para la region de indecision de autocorrelacion
+negativa son $4 - d_U = 2.279$ y $4 - d_L = 2.622$, y se verifica:
+\begin{equation}
+  2.279 \;\le\; d = 2.50 \;\le\; 2.622
+\end{equation}
+
+\textbf{Conclusion:} La prueba es \textbf{inconcluyente} respecto a la
+autocorrelacion negativa (Region~IV). No hay evidencia de autocorrelacion
+positiva.
+
+\begin{clave}
+  $d = 2.50$: inconcluyente para autocorrelacion negativa;
+  sin autocorrelacion positiva.
+\end{clave}
+
+\subsection{Inciso (d): $d = 3.97$}
+
+Se calcula el estadistico transformado:
+\begin{equation}
+  d^* = 4 - d = 4 - 3.97 = 0.03
+\end{equation}
+
+\textbf{Comparacion:}
+\begin{equation}
+  d^* = 0.03 \;<\; d_L = 1.378
+\end{equation}
+
+El estadistico transformado cae en la Region~I del criterio para
+autocorrelacion negativa, equivalente a la Region~V del estadistico original
+($d = 3.97 > 4 - d_L = 2.622$). Se rechaza la hipotesis nula.
+
+\textbf{Conclusion:} Existe evidencia estadistica muy fuerte de
+\textbf{autocorrelacion negativa} de primer orden al nivel del $5\%$. Los
+errores consecutivos tienden a alternar de signo, lo que puede indicar una
+sobrecoleccion de errores o la presencia de un proceso de medias moviles en los
+residuos.
+
+\begin{clave}
+  $d^* = 4 - 3.97 = 0.03 < d_L = 1.378$ $\Rightarrow$ \textbf{Rechazar $H_0$}.
+  Autocorrelacion negativa significativa.
+\end{clave}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Sintesis de resultados}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{cccl}
+\toprule
+\textbf{Inciso} & \textbf{$d$ observado} & \textbf{Region} & \textbf{Conclusion} \\
+\midrule
+(a) & $1.05$ & I              & Autocorrelacion positiva significativa \\
+(b) & $1.40$ & II             & Inconcluyente (zona de indecision) \\
+(c) & $2.50$ & IV             & Inconcluyente para autocorrelacion negativa \\
+(d) & $3.97$ & V              & Autocorrelacion negativa significativa \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota.}
+La zona de indecision es la limitacion mas conocida de la prueba de
+Durbin-Watson. Cuando el estadistico cae en ella, la alternativa mas utilizada
+en econometria aplicada es la \textbf{prueba de Breusch-Godfrey} (o prueba LM
+de multiplicadores de Lagrange): no tiene zonas de indecision, es valida con
+regresores estocasticos y permite contrastar autocorrelacion de orden superior
+al primero. Para series temporales con posible raiz unitaria en el error,
+conviene ademas aplicar la prueba de \textbf{Berenblut-Webb} ($g$-test), que
+contrasta especificamente $H_0: \rho = 1$.}
+
+\end{document}
