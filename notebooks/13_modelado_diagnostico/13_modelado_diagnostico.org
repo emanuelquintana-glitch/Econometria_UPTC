@@ -1207,21 +1207,7 @@ Regla practica: $\text{FIV}_j > 10$ indica multicolinealidad problematica.
 :CUSTOM_ID: referencias
 :END:
 
-- Gujarati, D. N. y Porter, D. C. (2010). /Econometria/. 5.a edicion.
-  McGraw-Hill.
-- Hendry, D. F. y Richard, J. F. (1982). On the formulation of empirical models
-  in dynamic econometrics. /Journal of Econometrics/, 20(1), 3-33.
-- Friedman, M. (1957). /A Theory of the Consumption Function/.
-  Princeton University Press.
-- Ramsey, J. B. (1969). Tests for specification errors in classical linear least
-  squares regression analysis. /Journal of the Royal Statistical Society,
-  Series B/, 31(2), 350-371.
-- Chow, G. C. (1960). Tests of equality between sets of coefficients in two
-  linear regressions. /Econometrica/, 28(3), 591-605.
-- Akaike, H. (1974). A new look at the statistical model identification.
-  /IEEE Transactions on Automatic Control/, 19(6), 716-723.
-- Schwarz, G. (1978). Estimating the dimension of a model. /Annals of Statistics/,
-  6(2), 461-464.
+.
 
 # ============================================================
 # FIN DEL DOCUMENTO
@@ -1231,8 +1217,18 @@ Regla practica: $\text{FIV}_j > 10$ indica multicolinealidad problematica.
 # ============================================================
 
 
-#+Title: 13 Creacion de modelos econometricos: especificacion del modelo y prueba de diagnostico.
+#+TITLE: 13 Creacion de modelos econometricos: especificacion del modelo y prueba de diagnostico.
+#+AUTHOR: Emanuel Quintana Silva (aclaracion son noftas del libro nada es de mi autoria y solo son notas de cosas importantes asi como codigo en stata, r, pyhon, rust para su replicacion).
+#+DATE: <2026/04/29>
 
+Agradesco imensamente a los autores de los libros por tan maravilloso trabajo
+Gujarati, D. N. y Porter, D. C. (2010). Econometria. 5.a edicion. McGraw-Hill.
+Hendry, D. F. y Richard, J. F. (1982). On the formulation of empirical models in dynamic econometrics. Journal of Econometrics, 20(1), 3-33.
+Friedman, M. (1957). A Theory of the Consumption Function. Princeton University Press.
+Ramsey, J. B. (1969). Tests for specification errors in classical linear least squares regression analysis. Journal of the Royal Statistical Society, Series B, 31(2), 350-371.
+Chow, G. C. (1960). Tests of equality between sets of coefficients in two linear regressions. Econometrica, 28(3), 591-605.
+Akaike, H. (1974). A new look at the statistical model identification. IEEE Transactions on Automatic Control, 19(6), 716-723.
+Schwarz, G. (1978). Estimating the dimension of a model. Annals of Statistics, 6(2), 461-464.
 Recordando el supuesto del modelo clasico de regresion lineal que nos habla sobre qye en el modelo de regresion del analisis esta especificado "correctamente"; si no es asi, nos enfrentamos al problema de /*error de especificacion del modelo*/ o /*sesgo de especificacion del modelo.*/
 
 Algunas preguntas que se abordaran en el capitulo son 
@@ -1241,4 +1237,15 @@ Algunas preguntas que se abordaran en el capitulo son
 
 *** 2. ¿Que tipos de especificacion de modelos son mas comunes en la practica?
 
-***
+*** 3. ¿Cuales son las consecuencias de los errores de especificacion?
+
+*** 4. ¿Como se detectan los errores de especidficacion? En otras palabras, ¿cuales son algunas herramientas de diagnostico disponibles?
+
+*** 5. Una vez detectados los errores de especificacion, ¿cuales son los remedios que se pueden adoptar y con que beneficios?
+
+** 13.1 Criterios de seleccion del modelo
+
+En este apartado se hablara de algunos de los aportes de Hendry y Richard sobre la eleccion de un modelo para el analisis empirico
+
+- 1. Ser adecuado para los datos: es decir, las predicciones basadas en el modelo deben ser logicamente posibles.
+  
