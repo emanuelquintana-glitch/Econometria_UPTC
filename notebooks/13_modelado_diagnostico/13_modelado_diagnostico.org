@@ -1298,4 +1298,75 @@ print(f"Predicción Logit:        {pred_log:.4f}  -> ADMISIBLE (Rango lógico)")
 
 - 2. Ser consistente con la teoria: es decir, debe tener un sentido economico pertinente. Por ejemplo, si es valida la hipotesis del ingreso permanete de Milton Friedman se espera que el valor del intercepto en la regresion del consumo permanente sobre el ingreso permanente sea igual a cero.
   Un modelo no debe ser simplemente un ejercicio matematico de ajuste de datos, sino que debe reflejar las relaciones predichas por la ciencia economica.
-  Los autores mencionan que segun la hipotesis del ingreso permanente de Milthon Friedman, el consumo permanente, es proporcional al ingreso permanente. Por lo tantoo en una regresion de consumo sobre ingreso, la teoria que dicta que el intercepto debe ser cero. Si un modelo estimado muestra un intercepto significativamente difrente de cero, el investigador debe cuestionar si el modelo es consistente con la teoria que intenta probar.  
+  Los autores mencionan que segun la hipotesis del ingreso permanente de Milthon Friedman, el consumo permanente, es proporcional al ingreso permanente. Por lo tantoo en una regresion de consumo sobre ingreso, la teoria que dicta que el intercepto debe ser cero. Si un modelo estimado muestra un intercepto significativamente difrente de cero, el investigador debe cuestionar si el modelo es consistente con la teoria que intenta probar.
+
+  Otro punto importante que debemos abordar es que las regresoras son debilmente exogenas, es asi entonces que para que un modelo sea estadisticamente confiable las variables explicativas deben ser debilmente exogenas, esto significa que los regresores no deben estar correlacionados con el termino de error del modelo.
+  Si se viola este supuesto y existe correlacion entre los regresores y el error, los estimadores de minimos cuadrados  ordinarios se vuelven sesgados e inconsistentes. Esto con frecuencia en modelos de ecuaciones simultaneas, donde la variable que actua como  causa es, a su vez, afectada por la variable que intenta explicar , creando un bucle de retroalimentacion que invalida la exogeneidad. En un modelo "correcto", los cambios en el error no deberianinfluir sistematicamente en los valores de las variables explicativas.
+
+ ** Ejemplo: Hipótesis del Ingreso Permanente (Friedman)
+La teoría dicta que el consumo es proporcional al ingreso permanente ($C = \beta Y$), lo que implica un intercepto ($\alpha$) igual a cero.
+
+#+BEGIN_SRC python
+import numpy as np
+import statsmodels.api as sm
+import pandas as pd
+
+# Generar datos donde la teoría es cierta (alfa = 0)
+np.random.seed(42)
+ingreso_perm = np.linspace(1000, 5000, 50)
+consumo = 0.85 * ingreso_perm + np.random.normal(0, 100, 50)
+
+# Estimación del modelo con intercepto
+X = sm.add_constant(ingreso_perm)
+modelo = sm.OLS(consumo, X).fit()
+
+# Prueba de hipótesis: ¿Es el intercepto significativamente distinto de cero?
+p_valor_alfa = modelo.pvalues[0]
+alfa_estimado = modelo.params[0]
+
+print(f"Intercepto estimado: {alfa_estimado:.4f}")
+print(f"P-valor del intercepto: {p_valor_alfa:.4f}")
+
+if p_valor_alfa > 0.05:
+    print("Resultado: Consistente con la Teoría del Ingreso Permanente (Alfa = 0)")
+else:
+    print("Resultado: Inconsistente con la teoría. El intercepto es significativo.")
+#+END_SRC
+
+* 3. Regresores Débilmente Exógenos
+Para la validez de MCO, los regresores deben ser independientes del término de error ($E[u|X] = 0$).
+
+** El Problema: Sesgo por Simultaneidad (Endogeneidad)
+Si $X$ afecta a $Y$, pero $Y$ también afecta a $X$ a través del error, MCO genera estimadores sesgados.
+
+#+BEGIN_SRC python
+# Simulación de un bucle de retroalimentación (Simultaneidad)
+n = 1000
+error = np.random.normal(0, 1, n)
+
+# X es influenciado por el mismo error que afecta a Y (Endogeneidad)
+X_endogeno = 2 + 0.5 * error + np.random.normal(0, 1, n)
+# El verdadero Beta es 1.5
+Y = 10 + 1.5 * X_endogeno + error 
+
+# Estimación por MCO
+X_matrix = sm.add_constant(X_endogeno)
+modelo_sesgado = sm.OLS(Y, X_matrix).fit()
+
+print(f"Verdadero Beta: 1.5")
+print(f"Beta estimado por MCO: {modelo_sesgado.params[1]:.4f}")
+print(f"Sesgo detectado: {abs(1.5 - modelo_sesgado.params[1]):.4f}")
+
+# Prueba de correlación entre regresor y error (conceptual)
+corr = np.corrcoef(X_endogeno, modelo_sesgado.resid)[0,1]
+print(f"Correlación (X, Error): {corr:.4f} -> Si es != 0, viola exogeneidad.")
+#+END_SRC
+
+#+RESULTS:
+: 6d973159-d733-44da-817f-c7ca599bee80
+
+* Resumen de Criterios en la Selección de Modelos
+| Criterio | Requisito Técnico | Consecuencia de Violación |
+|----------+-------------------+---------------------------|
+| **Consistencia Teórica** | Signos y magnitudes según teoría | Correlación espuria o mala especificación |
+| **Exogeneidad Débil** | $Cov(X, u) = 0$ | Estimadores sesgados e inconsistentes |
