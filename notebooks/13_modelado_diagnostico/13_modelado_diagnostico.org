@@ -1298,4 +1298,4 @@ print(f"Predicción Logit:        {pred_log:.4f}  -> ADMISIBLE (Rango lógico)")
 
 - 2. Ser consistente con la teoria: es decir, debe tener un sentido economico pertinente. Por ejemplo, si es valida la hipotesis del ingreso permanete de Milton Friedman se espera que el valor del intercepto en la regresion del consumo permanente sobre el ingreso permanente sea igual a cero.
   Un modelo no debe ser simplemente un ejercicio matematico de ajuste de datos, sino que debe reflejar las relaciones predichas por la ciencia economica.
-  Los autores mencionan que segun la hipotesis del ingreso permanente de Milthon Friedman
+  Los autores mencionan que segun la hipotesis del ingreso permanente de Milthon Friedman, el consumo permanente, es proporcional al ingreso permanente. Por lo tantoo en una regresion de consumo sobre ingreso, la teoria que dicta que el intercepto debe ser cero. Si un modelo estimado muestra un intercepto significativamente difrente de cero
