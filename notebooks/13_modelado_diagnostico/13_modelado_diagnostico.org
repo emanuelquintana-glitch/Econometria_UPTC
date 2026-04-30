@@ -1231,4 +1231,8 @@ Regla practica: $\text{FIV}_j > 10$ indica multicolinealidad problematica.
 # ============================================================
 
 
-#+Title: 13 Creacion de modelos econometricos: especificacion del modelo y prueba de diagnostico
+#+Title: 13 Creacion de modelos econometricos: especificacion del modelo y prueba de diagnostico.
+
+Recordando el supuesto del modelo clasico de regresion lineal que nos habla sobre qye en el modelo de regresion del analisis esta especificado "correctamente"; si no es asi, nos enfrentamos al problema de /*error de especificacion del modelo*/ o /*sesgo de especificacion del modelo.*/
+
+*** 1. 
