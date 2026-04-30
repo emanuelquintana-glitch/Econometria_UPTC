@@ -35,9 +35,9 @@ list
 #+begin_example
 ----------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_568502.log
+       log:  C:\tmp\stata_out_52306.log
   log type:  text
- opened on:  26 Apr 2026, 01:54:19
+ opened on:  27 Apr 2026, 22:08:24
 
 . set linesize 200
 
@@ -97,9 +97,9 @@ list
 
 . log close
       name:  <unnamed>
-       log:  C:\tmp\stata_out_568502.log
+       log:  C:\tmp\stata_out_52306.log
   log type:  text
- closed on:  26 Apr 2026, 01:54:19
+ closed on:  27 Apr 2026, 22:08:24
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
@@ -134,9 +134,9 @@ estat dwatson
 #+begin_example
 ----------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_568676.log
+       log:  C:\tmp\stata_out_52444.log
   log type:  text
- opened on:  26 Apr 2026, 01:54:42
+ opened on:  27 Apr 2026, 22:08:45
 
 . set linesize 200
 
@@ -182,6 +182,10 @@ estat dwatson
 
 . estat dwatson
 time variable not set, use tsset varname ...
+r(111);
+
+end of do-file
+r(111);
 #+end_example
 
 * Modelo B: Tendencia Cuadrática

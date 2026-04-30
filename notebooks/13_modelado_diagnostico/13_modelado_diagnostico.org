@@ -1229,3 +1229,6 @@ Regla practica: $\text{FIV}_j > 10$ indica multicolinealidad problematica.
 # Asignatura: Econometria -- UPTC
 # Referencia: Gujarati, Capitulo 13
 # ============================================================
+
+
+#+Title: 13 Creacion de modelos econometricos: especificacion del modelo y prueba de diagnostico
