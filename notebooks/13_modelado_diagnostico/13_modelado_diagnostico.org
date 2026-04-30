@@ -1248,4 +1248,10 @@ Algunas preguntas que se abordaran en el capitulo son
 En este apartado se hablara de algunos de los aportes de Hendry y Richard sobre la eleccion de un modelo para el analisis empirico
 
 - 1. Ser adecuado para los datos: es decir, las predicciones basadas en el modelo deben ser logicamente posibles.
-  
+  En terminos sencillos significa que el modelo debe estar diseñado de tal manera que sus resultados y predicciones no contradigan la logica o las restricciones fisicas de las variables que se estan estudiando.
+
+  **** Puntos clave:
+  - Logica de los resultados: El modelo no debe ser capaz de generar predicciones que sean fisicamente imposibles.
+
+    Ejemplos comunes: Si la variable dependiente es la tasa de desempleo, el modelo  no deberia predecir nunca el valor negativo, ya que no tiene sentido economico.
+    - Si se esta estimando 
