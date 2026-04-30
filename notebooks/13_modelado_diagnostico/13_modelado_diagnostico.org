@@ -1235,4 +1235,10 @@ Regla practica: $\text{FIV}_j > 10$ indica multicolinealidad problematica.
 
 Recordando el supuesto del modelo clasico de regresion lineal que nos habla sobre qye en el modelo de regresion del analisis esta especificado "correctamente"; si no es asi, nos enfrentamos al problema de /*error de especificacion del modelo*/ o /*sesgo de especificacion del modelo.*/
 
-*** 1. 
+Algunas preguntas que se abordaran en el capitulo son 
+
+*** 1. ¿Que hacer para encontrar el modelo "correcto"? En otras palabras, ¿cuales son los criterios para elegir un modelo a partir del analisis empirico?
+
+*** 2. ¿Que tipos de especificacion de modelos son mas comunes en la practica?
+
+***
