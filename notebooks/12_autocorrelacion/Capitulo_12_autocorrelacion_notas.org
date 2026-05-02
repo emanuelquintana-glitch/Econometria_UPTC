@@ -1012,3 +1012,67 @@ El modelo clasico supone que el termino de perturbacion relacionado con una obse
 Sin emabargo, si existe tal dependencia, hay autocorrelacion. Simbolicamente,
 
 $$E(u_{i}u_{j}) != 0$$ $$i != 0$$
+
+** Autocorrelacion y Correlacion serial
+
+Autocorrelacion: "correlacion rezagada de una serie consigo misma, rezagada por un numero de unidades de tiempo"
+
+#+BEGIN_SRC stata :results output
+webuse air2, clear
+describe
+tsset t
+regress air L.air
+estat dwatson
+predict u, residual
+generate u_lag = u[_n-1]
+correlate u u_lag
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_12814.log
+  log type:  text
+ opened on:   1 May 2026, 22:45:30
+
+. webuse air2, clear
+(TIMESLAB: Airline passengers)
+
+. describe
+
+Contains data from https://www.stata-press.com/data/r19/air2.dta
+ Observations:           144                  TIMESLAB: Airline passengers
+    Variables:             3                  3 Mar 2024 10:01
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+air             int     %8.0g                 Airline passengers (1949-1960)
+time            float   %9.0g                 Time (in months)
+t               int     %9.0g                 Time
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sorted by: t
+
+. tsset t
+
+Time variable: t, 1 to 144
+        Delta: 1 unit
+
+. regress air L.air
+
+      Source |       SS           df       MS      Number of obs   =       143
+-------------+----------------------------------   F(1, 141)       =   1666.08
+       Model |  1871165.72         1  1871165.72   Prob > F        =    0.0000
+    Residual |   158355.94       141  1123.09177   R-squared       =    0.9220
+-------------+----------------------------------   Adj R-squared   =    0.9214
+       Total |  2029521.66       142  14292.4061   Root MSE        =    33.513
+
+           _coef_table():  3499  member _b_table::set_rowcformat() not found
+--Break--
+r(1);
+
+end of do-file
+--Break--
+r(1);
+#+end_example
