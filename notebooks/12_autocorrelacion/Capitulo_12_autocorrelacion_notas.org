@@ -994,3 +994,5 @@ Existen tres tipos de datos para el analisis empirico:
 *** 3) Laa combinacion de ambos, tambien conocida como datos agrupados.
 
 **** Los datos transversales a menudo estan plagados de problemas de heteroscedasticidad.
+
+*** Autocorrelacion espacioal; es decir es una correlacion en el espacio mas que en el tiempo. Sin emabrgo, es importante recordar que en el analisis transversal la ordenacion de los datos debe tener alguna logica, o algun interes economico a fin de que cobre sentido la conclusion de la presencia o ausencia de autocorrelacion (espacial)
