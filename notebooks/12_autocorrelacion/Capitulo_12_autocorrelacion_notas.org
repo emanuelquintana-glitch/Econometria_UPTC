@@ -1008,3 +1008,5 @@ Empecemos definiendo el termino de Autocorrelacion se define como la correlacion
 $$cov(u_{i},u_{j}|x_{i},x_{j}_{}_{}) = E(u_{i},u_{j}) = 0$$
 
 El modelo clasico supone que el termino de perturbacion relacionado con una observacion cualquiera no recibe influecia del termino de perturbacion relacionado con cualquier otra observacion.
+
+Sin emabargo, si exist tal dependencia, hay autocorrelacion. Simbolicamente
