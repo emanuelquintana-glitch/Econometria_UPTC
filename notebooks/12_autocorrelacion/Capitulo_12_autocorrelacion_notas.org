@@ -985,3 +985,9 @@ print("\n¡Org Babel ejecuta todo desde Emacs con C-c C-c!")
 # Local Variables:
 # org-confirm-babel-evaluate: nil
 # End:
+
+
+Existen tres tipos de datos para el analisis empirico:
+
+*** 1) Transversales
+*** 2) Series de tiempo
