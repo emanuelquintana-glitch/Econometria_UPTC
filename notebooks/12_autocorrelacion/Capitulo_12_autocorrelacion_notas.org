@@ -992,3 +992,5 @@ Existen tres tipos de datos para el analisis empirico:
 *** 1) Transversales
 *** 2) Series de tiempo
 *** 3) Laa combinacion de ambos, tambien conocida como datos agrupados.
+
+**** Los datos transversales a menudo estan plagados de problemas de heteroscedasticidad.
