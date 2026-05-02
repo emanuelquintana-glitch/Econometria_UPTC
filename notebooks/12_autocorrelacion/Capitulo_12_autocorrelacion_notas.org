@@ -995,4 +995,6 @@ Existen tres tipos de datos para el analisis empirico:
 
 **** Los datos transversales a menudo estan plagados de problemas de heteroscedasticidad.
 
-*** Autocorrelacion espacioal; es decir es una correlacion en el espacio mas que en el tiempo. Sin emabrgo, es importante recordar que en el analisis transversal la ordenacion de los datos debe tener alguna logica, o algun interes economico a fin de que cobre sentido la conclusion de la presencia o ausencia de autocorrelacion (espacial)
+*** Autocorrelacion espacioal; es decir es una correlacion en el espacio mas que en el tiempo. Sin emabrgo, es importante recordar que en el analisis transversal la ordenacion de los datos debe tener alguna logica, o algun interes economico a fin de que cobre sentido la conclusion de la presencia o ausencia de autocorrelacion (espacial).
+
+Obvio, en esta clase de situaciones se viola el supuesto del MCRL en cuanto a que /*no existe autocorrelacion, ni correlacion serial*/ en los terminos de error.
