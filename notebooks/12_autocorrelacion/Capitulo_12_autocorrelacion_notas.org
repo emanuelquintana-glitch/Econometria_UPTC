@@ -1002,3 +1002,5 @@ Obvio, en esta clase de situaciones se viola el supuesto del MCRL en cuanto a qu
 /*En presencia tanto de autocorrelacion como de heteroscedasticidad, los estimadores de MCO usales, a pesar de ser lineales, insesgados y tener distrucion asintoticamente normal (es decir, en muestras grandes), dejan de tener varianza minima entre todos los estimadores lineales insesgados. En resumen, no son eficientes en relacion con los demas estimadores lineales e insesgados. Dicho de otro modo, es posible que no sean los mejores estimadores lineales insesgados (MELI). Como resultados, las pruebas usuales t, F y x^{2} pueden no ser validas.*/
 
 *** 12.1 Naturaleza del problema
+
+Empecemos definiendo el termino de Autocorrelacion se define como la correlacion entre los miembros de series de observaciones ordenadas en el tiempo (como en datos de series de tiempo) o en el espacio (como en datos de corte transversal)
