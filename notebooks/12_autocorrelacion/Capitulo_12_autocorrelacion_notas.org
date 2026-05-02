@@ -1076,3 +1076,72 @@ end of do-file
 --Break--
 r(1);
 #+end_example
+
+
+#+BEGIN_SRC stata :results output
+webuse air2, clear
+generate lnair = ln(air)
+tsset t
+regress air lnair
+predict u, residual
+generate u_lag = u[_n-1]
+scatter u u_lag, title("Residuales vs Residuales rezagados")
+graph export "/home/emanuel/org/grafico_autocorr.png", replace
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_14027.log
+  log type:  text
+ opened on:   1 May 2026, 22:50:00
+
+. webuse air2, clear
+(TIMESLAB: Airline passengers)
+
+. generate lnair = ln(air)
+
+. tsset t
+
+Time variable: t, 1 to 144
+        Delta: 1 unit
+
+. regress air lnair
+
+      Source |       SS           df       MS      Number of obs   =       144
+-------------+----------------------------------   F(1, 142)       =   2821.37
+       Model |  1959426.06         1  1959426.06   Prob > F        =    0.0000
+    Residual |  98618.0988       142  694.493653   R-squared       =    0.9521
+-------------+----------------------------------   Adj R-squared   =    0.9517
+       Total |  2058044.16       143  14391.9172   Root MSE        =    26.353
+
+------------------------------------------------------------------------------
+         air | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       lnair |   265.1603   4.992043    53.12   0.000      255.292    275.0287
+       _cons |  -1189.267    27.7538   -42.85   0.000    -1244.131   -1134.403
+------------------------------------------------------------------------------
+
+. predict u, residual
+
+. generate u_lag = u[_n-1]
+(1 missing value generated)
+
+. scatter u u_lag, title("Residuales vs Residuales rezagados")
+
+. graph export "/home/emanuel/org/grafico_autocorr.png", replace
+(file /home/emanuel/org/grafico_autocorr.png not found)
+file /home/emanuel/org/grafico_autocorr.png saved as PNG format
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_14027.log
+  log type:  text
+ closed on:   1 May 2026, 22:50:05
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
+- Correlacion Serial: Correlacion rezagada entre dos series diferentes
