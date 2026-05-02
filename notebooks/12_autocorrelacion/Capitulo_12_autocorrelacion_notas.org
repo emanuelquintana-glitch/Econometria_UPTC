@@ -998,3 +998,5 @@ Existen tres tipos de datos para el analisis empirico:
 *** Autocorrelacion espacioal; es decir es una correlacion en el espacio mas que en el tiempo. Sin emabrgo, es importante recordar que en el analisis transversal la ordenacion de los datos debe tener alguna logica, o algun interes economico a fin de que cobre sentido la conclusion de la presencia o ausencia de autocorrelacion (espacial).
 
 Obvio, en esta clase de situaciones se viola el supuesto del MCRL en cuanto a que /*no existe autocorrelacion, ni correlacion serial*/ en los terminos de error.
+
+En presencia tanto de autocorrelacion como de heteroscedasticidad, los estimadores de MCO usales, a pesar de ser lineales, insesgados y tener distrucion asintoticamente normal (es decir, en muestras grandes), dejan de tener varianza minima entre todos los estimadores lineales insesgados. En resumen, no son eficientes en relacion con los demas estimadores
