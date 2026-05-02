@@ -1011,4 +1011,4 @@ El modelo clasico supone que el termino de perturbacion relacionado con una obse
 
 Sin emabargo, si existe tal dependencia, hay autocorrelacion. Simbolicamente,
 
-$$E(u_{i}u_{j}) != 0$$
+$$E(u_{i}u_{j}) != 0$$ $$i != 0$$
