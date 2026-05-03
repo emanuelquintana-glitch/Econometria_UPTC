@@ -1150,4 +1150,8 @@ file /home/emanuel/org/grafico_autocorr.png saved as PNG format
 
   - Inercia: En series de tiempo economicas se refiere a la tendencia de estas series a mantener su direccion y ritmo una vez que han iniciado un movimiento, lo que genera interdependencia entre observaciones sucesivas
 
-    - Sesgo de especificacion: caso de variables excluida: La exclusion social y economica puede ser una barrera significatica oara el acceso a oportunidades y recursos, afectados negativamente a individuos y comunidades marginadas
+    - Sesgo de especificacion: caso de variables excluida: La exclusion social y economica puede ser una barrera significatica oara el acceso a oportunidades y recursos, afectados negativamente a individuos y comunidades marginadas.
+
+La exclusion se refiere a la situacion en la que un individuo o grupo es privado de participar plenamente en la sociedad, debido a factores como la pobreza, la dicapacidad, la raza, el genero, la religion o la orientacion sexual, Esto puede llevar a una falta de acceso a recursos basicos como la educacion, el empleo, la atencian medica y a vivienda. Por ejemplo, si consideramos la tasa de participacion laboral $\lambda$ y la tasa de desempleo $\delta$, podemos modelar la exclusion laboral como:
+
+$$Y_{t} = \beta_{1} + \beta_{2}X_{2t }_{}+ \beta_{3}X_{4t} + Ut_{}$$
