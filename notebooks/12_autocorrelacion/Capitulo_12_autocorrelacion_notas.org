@@ -1148,4 +1148,4 @@ file /home/emanuel/org/grafico_autocorr.png saved as PNG format
 
   *** ¿Por que ocurre la correlacion serial?
 
-  - Inercia
+  - Inercia: En series de tiempo economicas se refiere a la tendencia de estas series a mantener su direccion y ritmo una vez que han iniciado un movimiento, lo que genera interdependencia entre observaciones sucesivas
