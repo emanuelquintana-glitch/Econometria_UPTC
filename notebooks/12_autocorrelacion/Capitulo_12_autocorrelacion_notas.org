@@ -1144,4 +1144,4 @@ file /home/emanuel/org/grafico_autocorr.png saved as PNG format
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
-- Correlacion Serial: Correlacion rezagada entre dos series diferentes, asi la correlacuin entre dos series de tiempo como $u_{1}$, $u_{2}$, ... , u
+- Correlacion Serial: Correlacion rezagada entre dos series diferentes, asi la correlacuin entre dos series de tiempo como $u_{1}$, $u_{2}$, ... , $u_{10}$ y $u_{2}$, $u_{3}$, ... , $u_{11}$ donde la primera es igual a la ultima rezagada un periodo en autocorrelacion, mientras que la correlacion entre dos series de tiempo como $u_{1}$, $u_{2}$, ... , $u_{10}$ y $v_{2}$, $v_{3}$, ... ,$v_{11}$,
