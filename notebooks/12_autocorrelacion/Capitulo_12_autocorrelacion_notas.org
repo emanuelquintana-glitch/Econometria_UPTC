@@ -1144,4 +1144,4 @@ file /home/emanuel/org/grafico_autocorr.png saved as PNG format
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
-- Correlacion Serial: Correlacion rezagada entre dos series diferentes
+- Correlacion Serial: Correlacion rezagada entre dos series diferentes, asi la correlacuin entre dos series de tiempo como $u_{1}$, $u_{2}$, ... , u
