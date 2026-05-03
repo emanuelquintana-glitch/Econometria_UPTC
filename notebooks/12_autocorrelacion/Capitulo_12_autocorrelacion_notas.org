@@ -1158,7 +1158,9 @@ $$
 \lambda = \frac{\text{Poblacion ocupada}}{\text{Poblacion en edad laboral}} = 1 - \delta
 $$
 
-donde $\delta$ representa la tasa de desmpleo. La exclusion laboral puede ser aun mas pronunciada en sectores especificos, como en el caso de personas con discapacidad, donde la tasa de desempleo puede ser significativamente mas alta que la del resto de la poblacion
+donde $\delta$ representa la tasa de desmpleo. La exclusion laboral puede ser aun mas pronunciada en sectores especificos, como en el caso de personas con discapacidad, donde la tasa de desempleo puede ser significativamente mas alta que la del resto de la poblacion.
+
+El concepto de exclusion social y economica se enmarca en la teoria de la justicia social y la sociologia. Autores como Amartya Sen y Martha Nussbaum han trabajado en el desarrollo sobre la justiciia y la igualdad, enfatizando la importancia de considerar las capacidades y oportunidades de los indicviduos. En el contexto de la exclusion, el debate actual se centra en encontrar soluciones para abordar las causas profundad de la marginalizacion y pormover la inclusion social y economica. Algunos de los debates clave involucran la implementacion de politicas publicas que promuevan la igualdad de oportunidades, la educacion y la formacion laboral.
 ---
 
 Supongamos que tenemos que tememos el siguiente modelo de demanda
