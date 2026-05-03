@@ -1150,4 +1150,4 @@ file /home/emanuel/org/grafico_autocorr.png saved as PNG format
 
   - Inercia: En series de tiempo economicas se refiere a la tendencia de estas series a mantener su direccion y ritmo una vez que han iniciado un movimiento, lo que genera interdependencia entre observaciones sucesivas
 
-    - Sesgo de especificacion: caso de variables excluida
+    - Sesgo de especificacion: caso de variables excluida: La exclusion social y economica puede ser una barrera significatica oara el acceso a oportunidades y recursos, afectados negativamente a individuos y comunidades marginadas
