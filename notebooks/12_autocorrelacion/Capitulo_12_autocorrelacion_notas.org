@@ -1154,8 +1154,11 @@ file /home/emanuel/org/grafico_autocorr.png saved as PNG format
 
 La exclusion se refiere a la situacion en la que un individuo o grupo es privado de participar plenamente en la sociedad, debido a factores como la pobreza, la dicapacidad, la raza, el genero, la religion o la orientacion sexual, Esto puede llevar a una falta de acceso a recursos basicos como la educacion, el empleo, la atencian medica y a vivienda. Por ejemplo, si consideramos la tasa de participacion laboral $\lambda$ y la tasa de desempleo $\delta$, podemos modelar la exclusion laboral como:
 
+$$
+\lambda = \frac{\text{Poblacion ocupada}}{\text{Poblacion en edad laboral}} = 1 - \delta
+$$
 
-
+donde $\delta$ representa la tasa de desmpleo. La exclusion laboral puede ser aun mas pronunciada en sectores especificos, como en el caso de personas con discapacidad, donde la tasa de desempleo puede ser significativamente mas alta que la del resto de la poblacion
 ---
 
 Supongamos que tenemos que tememos el siguiente modelo de demanda
