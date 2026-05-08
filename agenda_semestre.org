@@ -32,7 +32,7 @@
    - [ ] Redacción del informe
 
 * Recordatorios generales
-  - Datos del curso en =data/raw/= organizados por capítulo
+  - Datos del curso en =data/raw/= organizados por capítulo.
   - Scripts R en =scripts/r/=, Python en =scripts/python/=
   - Compilar LaTeX con =make= desde la raíz del proyecto
   - Bibliografía en =notebooks/notas_de_clase/referencias.bib=
