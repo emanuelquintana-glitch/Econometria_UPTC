@@ -4,7 +4,7 @@
 #+STARTUP: fold
 
 * Fechas de clase (sesiones registradas)
-  - [2026-02-13 Fri] Clase 02 — Multicolinealidad intro.
+  - [2026-02-13 Fri] Clase 02 — Multicolinealidad intro
   - [2026-02-18 Wed] Clase 03 — Multicolinealidad detección
   - [2026-02-20 Fri] Clase 04 — Multicolinealidad remedios
   - [2026-02-24 Tue] Taller multicolinealidad (entrega)
