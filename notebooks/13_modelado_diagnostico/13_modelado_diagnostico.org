@@ -24,7 +24,7 @@
 #                   McGraw-Hill. Capitulo 13.
 # ============================================================
 
-* Introduccion al Capitulo 13.
+* Introduccion al Capitulo 13
 :PROPERTIES:
 :CUSTOM_ID: introduccion
 :END:
