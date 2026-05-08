@@ -43,6 +43,15 @@ $$\hat{In(Y_{t})} = 2.1898 + 0.3425 In(X_{2t}_{}_{}) - 0.5046 In(X_{3t}_{}) + 0.
 
    No se discute si el modelo es capaz de explicar los resultados de modelos rivale (por ejemplo, un modelo lineal simple vs. el modelo log-log seleccionado). Bajo la prueba /*J de Davinson-Mackinnon*/, un modelo superior deberia dehar sin poder explicar adicionl a las edicciones de un modelo competidor.
 
+/*Veredicto del Examinador*/
+
+A pesar de su alto $R^{2}$(0.9823) y signos coherentes con la teoria /*no se puede afirmar que esta funcion este especificada correctamente*/ bajo los estandares de la seccion 13.1.
+
+La violacion principal es la /*falta/*Veredicto del Examinador*/
+
+A pesar de su alto $R^{2}(0.9823) y signos coherentes con la teoria /*no se puede afirmar que esta funcion este especificada correctamente*/ bajo los estandares de la seccion 13.1.
+
+La violacion principal es la /*falta$
 #+BEGIN_SRC rust :results output
 fn main() {
     println!("Expresiones y suscesiones");
