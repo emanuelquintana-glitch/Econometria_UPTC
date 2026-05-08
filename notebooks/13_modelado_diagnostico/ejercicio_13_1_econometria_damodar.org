@@ -17,18 +17,22 @@ $$\hat{In(Y_{t})} = 2.1898 + 0.3425 In(X_{2t}_{}_{}) - 0.5046 In(X_{3t}_{}) + 0.
 
    El modelo utiliza una forma /*log-log*/ (doble logaritmo). Esta especificacion garantiza que las predicciones de la cantidad demandada (Y) sean siempre /*positivas*/, lo cual es logicamente necesario para una mercancia fisica. Por lo tanto, cumple con este criterio de admisibilidad.
 
-   2. /*Consistencia con la teoria economica*/
+2. /*Consistencia con la teoria economica*/
 
       Desde la perspectica de la microeconomia, la demanda de un bien depende de su precio, del ingreso del consumidor y de los precios de los bienes sustitutos o complementarios.
 
 - /*Resultados:*/ El modelo arroja una elasticidad precio negativa y una elasticidad ingreso positiva, lo cual es coherente con la teoria de un bien normal.
   - /*Sin embargo,*/ aunque los preciod de sustitutos (cerdo y carne de res) se incluyeron en la version no restringida (8.7.23), resultaron se conjuntamente insignificantes (/*p-value = 0.3472*/), lo que llevo a su exclusion en modelos posteriores. Un examinador riguroso cuestionaria si esta insignificancia se debe a una /*especificacion erronea de la muestra*/ o a una /*multicolinealidad*/ que oculta la verdadera relacion teorica.
 
-    3. /*Regresores debilmente exogenos (Weak Exogeneity)*/
+3. /*Regresores debilmente exogenos (Weak Exogeneity)*/
 
-       Este es el punto mas critico
+       Este es el punto mas critico y donde el modelo probablemente /*falla.*/
 
+       - /*El problema:*/ En un equilibrio d emercado competitivo, el precio (P) y la cantidad (Q)  se determinan /*simultaneamente*/ medianyte la interseccion de las curvas de oferta y demanda.
 
+         - /*Consecuencias:*/ El precio en la ecuacion de demanda esta correlacionado con el termino de error de esa misma ecuacion (sesgo de multicolinealidad), violando el supuesto de exogeneidad. Al utilizzar /*Minimos Cuadrados Ordinarios (MCO) para estimar una sola ecuacion de un sistema simultaneo, los estimadores son /*sesgados e inconsistentes*/. Por lo tato, el modelo no satisface el criterio de ecogeneidad debil requerido en la seccion 13.1.
+
+4. /*Constancia de los parametros (Parameter Consyancy)
 #+BEGIN_SRC rust :results output
 fn main() {
     println!("Expresiones y suscesiones");
