@@ -1,0 +1,51 @@
+#+TITLE: Ejercicio de Econometria Damodar Gujarati Capitulo 13
+#+DATE: <08-05-2026>
+#+AUTHOR: Emanuel Quintana Silva
+
+** 13.1 Consulte la funcion de demanda de pollos estimado en la ecuacion (8.6.23). Considerando los atribitos de un buen modelo analizados en la seccion 13.1, ¿puede decir que esta funcion de demanda esta especificada "correctamente"?
+
+*** Contexto
+
+Para evaluar si la funcion de demanda de pollos - esyimada mediante la ecuacion (8.7.23), debemos someterla a los seis atributos de un "buen" modelado definidos en la seccion 13.1
+
+A continuacion, presento un analisis rigurosode dicha funcion:
+
+$$\hat{In(Y_{t})} = 2.1898 + 0.3425 In(X_{2t}_{}_{}) - 0.5046 In(X_{3t}_{}) + 0.1485 In(X_{4t}) + 0.091 In(X_{5t})$$
+
+
+1. /*Admisibilidad de los datos (Data Admissibility)*/
+
+   El modelo utiliza una forma /*log-log*/ (doble logaritmo). Esta especificacion garantiza que las predicciones de la cantidad demandada (Y) sean siempre /*positivas*/, lo cual es logicamente necesario para una mercancia fisica. Por lo tanto, cumple con este criterio de admisibilidad.
+
+   2. /*Consistencia con la teoria economica*/
+
+      Desde la perspectica de la microeconomia, la demanda de un bien depende de su precio, del ingreso del consumidor y de los precios de los bienes sustitutos o complementarios.
+
+- /*Resultados:*/ El modelo arroja una elasticidad precio negativa y una elasticidad ingreso positiva, lo cual es coherente con la teoria de un bien normal.
+  - /*Sin embargo,*/ aunque los preciod de sustitutos (cerdo y carne de res) se incluyeron en la version no restringida (8.7.23), resultaron se conjuntamente insignificantes (/*p-value = 0.3472*/), lo que llevo a su exclusion en modelos posteriores. Un examinador riguroso cuestionaria si esta insignificancia se debe a una /*especificacion erronea de la muestra*/ o a una /*multicolinealidad*/ que oculta la verdadera relacion teorica.
+
+    3. /*Regresores debilmente exogenos (Weak Exogeneity)*/
+
+       Este es el punto mas critico
+
+
+#+BEGIN_SRC rust :results output
+fn main() {
+    println!("Expresiones y suscesiones");
+}
+#+END_SRC
+
+#+RESULTS:
+: Expresiones y suscesiones
+
+      ,#+BEGIN_SRC  python :results outputs
+import pandas as pd
+import numpy as np
+import seaborn as sb
+a = X
+b = Y
+
+c = X * Y
+regress =
+if a = I
+      #+END_SRC
