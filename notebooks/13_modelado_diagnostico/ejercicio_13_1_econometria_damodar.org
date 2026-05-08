@@ -51,7 +51,16 @@ La violacion principal es la /*falta/*Veredicto del Examinador*/
 
 A pesar de su alto $R^{2}(0.9823) y signos coherentes con la teoria /*no se puede afirmar que esta funcion este especificada correctamente*/ bajo los estandares de la seccion 13.1.
 
-La violacion principal es la /*falta$
+La violacion principal es la /*falta de exogenidad debil*/ de los regresores debido a la /*simultaneidad*/ inherente a la determinacion del precio y  la cantidad en el mercado. Sin el uso de tecnicas como /*Variables instrumentales (IV)*/, o /*Minimos Cuadrados en Dos Etapas (MC2E)*/, los parametros estimados no representan las verdaderas elasticidades estructurales de la demanda.
+
+Datos
+
+#+BEGIN_SRC stata :results outputs
+
+
+#+END_SRC
+
+
 #+BEGIN_SRC rust :results output
 fn main() {
     println!("Expresiones y suscesiones");
