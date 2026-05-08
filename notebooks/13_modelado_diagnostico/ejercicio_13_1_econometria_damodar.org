@@ -32,7 +32,17 @@ $$\hat{In(Y_{t})} = 2.1898 + 0.3425 In(X_{2t}_{}_{}) - 0.5046 In(X_{3t}_{}) + 0.
 
          - /*Consecuencias:*/ El precio en la ecuacion de demanda esta correlacionado con el termino de error de esa misma ecuacion (sesgo de multicolinealidad), violando el supuesto de exogeneidad. Al utilizzar /*Minimos Cuadrados Ordinarios (MCO) para estimar una sola ecuacion de un sistema simultaneo, los estimadores son /*sesgados e inconsistentes*/. Por lo tato, el modelo no satisface el criterio de ecogeneidad debil requerido en la seccion 13.1.
 
-4. /*Constancia de los parametros (Parameter Consyancy)
+4. /*Constancia de los parametros (Parameter Constancy)
+   El modleo utiliza datos de 1960 a 1982. No se presentan pruebas de /*cambio estructural*/ (como la prueba de Chow) para verificar si los habitos de consumo o la estructura de la industria cambiaran tras eventos como la crisis del petroleo de 1973. Sin estas pruebas, no podemos asegurar que los coeficientes de elasticidad sena estables a lo largo de todo el periodo analizado.
+
+   5. /*Cobertura de los datos (Data Conherency)*/
+
+      Las fuentes confirman que en modelos de series de tiempo es comun encontrar autocorrelacion. Si los residuos no se comportan como /*ruido blanco*/, el valor del estadistico d de Durbin-Watson seria significativamente diferente de 2. La presencia de patrondes sitematicos en los residuales infdicaria que el modelo ha omitido informacion relevante o tiene una forma funcional inadecuada.
+
+6. /*Capacidad de inclusion (Encompassing)*/
+
+   No se discute si el modelo es capaz de explicar los resultados de modelos rivale (por ejemplo, un modelo lineal simple vs. el modelo log-log seleccionado). Bajo la prueba /*J de Davinson-Mackinnon*/, un modelo superior deberia dehar sin poder explicar adicionl a las edicciones de un modelo competidor.
+
 #+BEGIN_SRC rust :results output
 fn main() {
     println!("Expresiones y suscesiones");
