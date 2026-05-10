@@ -22,10 +22,8 @@ ecuación (8.6.23) está correctamente especificada, la sometemos a los
 
 El modelo estimado es:
 
-$$
-\widehat{\ln Y_t} = 2.1898 + 0.3425\,\ln X_{2t} - 0.5046\,\ln X_{3t}
-+ 0.1485\,\ln X_{4t} + 0.091\,\ln X_{5t}
-$$
+$$\widehat{\ln Y_t} = 2.1898 + 0.3425\,\ln X_{2t} - 0.5046\,\ln X_{3t}
++ 0.1485\,\ln X_{4t} + 0.091\,\ln X_{5t}$$
 
 donde las variables son:
 
