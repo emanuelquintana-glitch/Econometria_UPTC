@@ -302,13 +302,12 @@ La crisis del petroleo de 1973 es un candidato natural a quiebre estructural.
 Se define $D_t = \mathbf{1}(t > 1973)$ y se estima el modelo aumentado:
 
 \begin{equation}
-  \ln Y_t = \beta_0 + \beta_1 \ln X_{2t} + \beta_2 \ln X_{3t}
-            + \beta_3 \ln X_{4t} + \beta_4 \ln X_{5t}
-            + \delta_0 D_t
-            + \delta_1 D_t \ln X_{2t} + \delta_2 D_t \ln X_{3t}
-            + \delta_3 D_t \ln X_{4t} + \delta_4 D_t \ln X_{5t}
-            + u_t
-  \label{eq:chow}
+\begin{split}
+  \ln Y_t = \beta_0 & + \beta_1 \ln X_{2t} + \beta_2 \ln X_{3t} + \beta_3 \ln X_{4t} + \beta_4 \ln X_{5t} \\
+                    & + \delta_0 D_t + \delta_1 D_t \ln X_{2t} + \delta_2 D_t \ln X_{3t} \\
+                    & + \delta_3 D_t \ln X_{4t} + \delta_4 D_t \ln X_{5t} + u_t
+\end{split}
+\label{eq:chow}
 \end{equation}
 
 Los resultados de la estimacion son:
