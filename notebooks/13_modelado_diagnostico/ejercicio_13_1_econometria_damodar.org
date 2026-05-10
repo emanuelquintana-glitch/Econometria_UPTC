@@ -484,6 +484,7 @@ Un menor AIC/BIC indica mejor ajuste penalizado por complejidad.
 
 #+BEGIN_SRC stata
 use "C:\tmp\gujarati.dta", clear
+set linesize 120
 
 quietly regress ly lx2 lx3 lx4 lx5
 estimates store m_irrestricto
@@ -492,18 +493,20 @@ quietly regress ly lx2 lx3 lx6
 estimates store m_restringido
 
 estimates table m_irrestricto m_restringido, ///
-    stats(N r2 r2_a aic bic) b(%9.4f) se star
+    stats(N r2 r2_a aic bic) b(%9.4f) se
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_209652.log
+       log:  C:\tmp\stata_out_211259.log
   log type:  text
- opened on:   9 May 2026, 22:44:30
+ opened on:   9 May 2026, 22:49:32
 
 . use "C:\tmp\gujarati.dta", clear
+
+. set linesize 120
 
 .
 . quietly regress ly lx2 lx3 lx4 lx5
@@ -517,12 +520,40 @@ estimates table m_irrestricto m_restringido, ///
 
 .
 . estimates table m_irrestricto m_restringido, ///
->     stats(N r2 r2_a aic bic) b(%9.4f) se star
-option star may not be combined with se, t, or p
-r(198);
+>     stats(N r2 r2_a aic bic) b(%9.4f) se
 
-end of do-file
-r(198);
+--------------------------------------
+    Variable | m_irres~o   m_restr~o
+-------------+------------------------
+         lx2 |    0.3426      0.4813
+             |    0.0833      0.0682
+         lx3 |   -0.5046     -0.3506
+             |    0.1109      0.0794
+         lx4 |    0.1485
+             |    0.0997
+         lx5 |    0.0911
+             |    0.1007
+         lx6 |               -0.0610
+             |                0.1300
+       _cons |    2.1898      2.0299
+             |    0.1557      0.1187
+-------------+------------------------
+           N |        23          23
+          r2 |    0.9823      0.9803
+        r2_a |    0.9784      0.9772
+         aic |  -95.5187    -95.0428
+         bic |  -89.8412    -90.5008
+--------------------------------------
+                          Legend: b/se
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_211259.log
+  log type:  text
+ closed on:   9 May 2026, 22:49:34
+------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
 ** Paso 6 — Diagnóstico de autocorrelación
@@ -533,6 +564,8 @@ Verificamos el atributo 5 (coherencia de datos) con dos pruebas:
 
 #+BEGIN_SRC stata
 use "C:\tmp\gujarati.dta", clear
+set linesize 120
+tsset año
 
 regress ly lx2 lx3 lx4 lx5
 
@@ -545,11 +578,18 @@ estat bgodfrey, lags(1 2)
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_209376.log
+       log:  C:\tmp\stata_out_211655.log
   log type:  text
- opened on:   9 May 2026, 22:44:00
+ opened on:   9 May 2026, 22:50:36
 
 . use "C:\tmp\gujarati.dta", clear
+
+. set linesize 120
+
+. tsset año
+
+Time variable: año, 1960 to 1982
+        Delta: 1 unit
 
 .
 . regress ly lx2 lx3 lx4 lx5
@@ -573,11 +613,29 @@ estat bgodfrey, lags(1 2)
 
 .
 . estat dwatson
-time variable not set, use tsset varname ...
-r(111);
 
-end of do-file
-r(111);
+Durbin–Watson d-statistic(  5,    23) =   1.82607
+
+.
+. estat bgodfrey, lags(1 2)
+
+Breusch–Godfrey LM test for autocorrelation
+---------------------------------------------------------------------------
+    lags(p)  |          chi2               df                 Prob > chi2
+-------------+-------------------------------------------------------------
+       1     |          0.267               1                   0.6054
+       2     |          2.472               2                   0.2906
+---------------------------------------------------------------------------
+                        H0: no serial correlation
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_211655.log
+  log type:  text
+ closed on:   9 May 2026, 22:50:39
+------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
 ** Paso 7 — Prueba RESET de Ramsey
