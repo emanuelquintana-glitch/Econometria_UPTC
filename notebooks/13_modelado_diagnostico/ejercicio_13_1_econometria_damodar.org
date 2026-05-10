@@ -1,115 +1,420 @@
-#+TITLE: Ejercicio de Econometria Damodar Gujarati Capitulo 13
-#+DATE: <08-05-2026>
+#+TITLE: Econometría — Gujarati, Capítulo 13
+#+SUBTITLE: Especificación de Modelos y Errores de Especificación
+#+DATE: <2026-05-08>
 #+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both :session econometria
 
-** 13.1 Consulte la funcion de demanda de pollos estimado en la ecuacion (8.6.23). Considerando los atribitos de un buen modelo analizados en la seccion 13.1, ¿puede decir que esta funcion de demanda esta especificada "correctamente"?
+* Ejercicio 13.1
 
-*** Contexto
+#+BEGIN_QUOTE
+Consulte la función de demanda de pollos estimada en la ecuación (8.6.23).
+Considerando los atributos de un buen modelo analizados en la sección 13.1,
+¿puede decir que esta función de demanda está especificada "correctamente"?
+#+END_QUOTE
 
-Para evaluar si la funcion de demanda de pollos - esyimada mediante la ecuacion (8.7.23), debemos someterla a los seis atributos de un "buen" modelado definidos en la seccion 13.1
+** Contexto teórico
 
-A continuacion, presento un analisis rigurosode dicha funcion:
+Para evaluar si la función de demanda de pollos —estimada mediante la
+ecuación (8.6.23)— está correctamente especificada, la sometemos a los
+/seis atributos/ de un buen modelo definidos en la sección 13.1 de Gujarati.
 
-$$\hat{In(Y_{t})} = 2.1898 + 0.3425 In(X_{2t}_{}_{}) - 0.5046 In(X_{3t}_{}) + 0.1485 In(X_{4t}) + 0.091 In(X_{5t})$$
+El modelo estimado es:
 
+$$\widehat{\ln Y_t} = 2.1898 + 0.3425\,\ln X_{2t} - 0.5046\,\ln X_{3t}
++ 0.1485\,\ln X_{4t} + 0.091\,\ln X_{5t}$$
 
-1. /*Admisibilidad de los datos (Data Admissibility)*/
+donde las variables son:
 
-   El modelo utiliza una forma /*log-log*/ (doble logaritmo). Esta especificacion garantiza que las predicciones de la cantidad demandada (Y) sean siempre /*positivas*/, lo cual es logicamente necesario para una mercancia fisica. Por lo tanto, cumple con este criterio de admisibilidad.
+| Símbolo   | Definición                                                    |
+|-----------+---------------------------------------------------------------|
+| $Y_t$     | Consumo per cápita de carne de pollo (lbs.)                   |
+| $X_{2t}$  | Ingreso per cápita real disponible ($)                        |
+| $X_{3t}$  | Precio real al menudeo del pollo por lb. (¢)                  |
+| $X_{4t}$  | Precio real al menudeo del cerdo por lb. (¢)                  |
+| $X_{5t}$  | Precio real al menudeo de la carne de res por lb. (¢)         |
+| $X_{6t}$  | Precio compuesto ponderado de sustitutos por lb. (¢)          |
 
-2. /*Consistencia con la teoria economica*/
+** Evaluación de los seis atributos
 
-      Desde la perspectica de la microeconomia, la demanda de un bien depende de su precio, del ingreso del consumidor y de los precios de los bienes sustitutos o complementarios.
+*** 1. Admisibilidad de los datos (/Data Admissibility/)
 
-- /*Resultados:*/ El modelo arroja una elasticidad precio negativa y una elasticidad ingreso positiva, lo cual es coherente con la teoria de un bien normal.
-  - /*Sin embargo,*/ aunque los preciod de sustitutos (cerdo y carne de res) se incluyeron en la version no restringida (8.7.23), resultaron se conjuntamente insignificantes (/*p-value = 0.3472*/), lo que llevo a su exclusion en modelos posteriores. Un examinador riguroso cuestionaria si esta insignificancia se debe a una /*especificacion erronea de la muestra*/ o a una /*multicolinealidad*/ que oculta la verdadera relacion teorica.
+El modelo utiliza forma /log-log/ (doble logaritmo). Esta especificación
+garantiza que las predicciones de la cantidad demandada $\hat{Y}$ sean
+siempre *positivas*, condición necesaria para cualquier bien físico.
 
-3. /*Regresores debilmente exogenos (Weak Exogeneity)*/
+✓ *Cumple* este criterio.
 
-       Este es el punto mas critico y donde el modelo probablemente /*falla.*/
+*** 2. Consistencia con la teoría económica
 
-       - /*El problema:*/ En un equilibrio d emercado competitivo, el precio (P) y la cantidad (Q)  se determinan /*simultaneamente*/ medianyte la interseccion de las curvas de oferta y demanda.
+La microeconomía establece que la demanda de un bien depende de su precio,
+del ingreso del consumidor y de los precios de bienes sustitutos y
+complementarios.
 
-         - /*Consecuencias:*/ El precio en la ecuacion de demanda esta correlacionado con el termino de error de esa misma ecuacion (sesgo de multicolinealidad), violando el supuesto de exogeneidad. Al utilizzar /*Minimos Cuadrados Ordinarios (MCO) para estimar una sola ecuacion de un sistema simultaneo, los estimadores son /*sesgados e inconsistentes*/. Por lo tato, el modelo no satisface el criterio de ecogeneidad debil requerido en la seccion 13.1.
+- La *elasticidad precio* estimada es negativa ($-0.5046$): coherente con
+  la ley de la demanda.
+- La *elasticidad ingreso* es positiva ($+0.3425$): coherente con un bien
+  normal.
 
-4. /*Constancia de los parametros (Parameter Constancy)
-   El modleo utiliza datos de 1960 a 1982. No se presentan pruebas de /*cambio estructural*/ (como la prueba de Chow) para verificar si los habitos de consumo o la estructura de la industria cambiaran tras eventos como la crisis del petroleo de 1973. Sin estas pruebas, no podemos asegurar que los coeficientes de elasticidad sena estables a lo largo de todo el periodo analizado.
+Sin embargo, los precios de los sustitutos ($X_4$, $X_5$) resultaron
+*conjuntamente insignificantes* ($p = 0.3472$), lo que plantea dos
+posibilidades: (i) error de especificación muestral, o (ii) multicolinealidad
+que oculta la verdadera relación teórica.
 
-   5. /*Cobertura de los datos (Data Conherency)*/
+ *Cumplimiento parcial* — los signos son correctos pero la insignificancia
+de los sustitutos es teóricamente cuestionable.
 
-      Las fuentes confirman que en modelos de series de tiempo es comun encontrar autocorrelacion. Si los residuos no se comportan como /*ruido blanco*/, el valor del estadistico d de Durbin-Watson seria significativamente diferente de 2. La presencia de patrondes sitematicos en los residuales infdicaria que el modelo ha omitido informacion relevante o tiene una forma funcional inadecuada.
+*** 3. Regresores débilmente exógenos (/Weak Exogeneity/) — ★ Falla crítica
 
-6. /*Capacidad de inclusion (Encompassing)*/
+Este es el punto más débil del modelo.
 
-   No se discute si el modelo es capaz de explicar los resultados de modelos rivale (por ejemplo, un modelo lineal simple vs. el modelo log-log seleccionado). Bajo la prueba /*J de Davinson-Mackinnon*/, un modelo superior deberia dehar sin poder explicar adicionl a las edicciones de un modelo competidor.
+En un mercado competitivo, precio ($P$) y cantidad ($Q$) se determinan
+*simultáneamente* mediante la intersección de oferta y demanda. Al usar
+MCO para estimar una sola ecuación de un sistema simultáneo:
 
-/*Veredicto del Examinador*/
+$$\text{Cov}(X_{3t},\, u_t) \neq 0$$
 
-A pesar de su alto $R^{2}$(0.9823) y signos coherentes con la teoria /*no se puede afirmar que esta funcion este especificada correctamente*/ bajo los estandares de la seccion 13.1.
+Los estimadores MCO son *sesgados e inconsistentes*. Sin el uso de
+*Variables Instrumentales (VI)* o *Mínimos Cuadrados en Dos Etapas
+(MC2E)*, los parámetros estimados no representan las verdaderas
+elasticidades estructurales.
 
-La violacion principal es la /*falta/*Veredicto del Examinador*/
+✗ *No cumple* — violación del supuesto de exogeneidad débil.
 
-A pesar de su alto $R^{2}(0.9823) y signos coherentes con la teoria /*no se puede afirmar que esta funcion este especificada correctamente*/ bajo los estandares de la seccion 13.1.
+*** 4. Constancia de los parámetros (/Parameter Constancy/)
 
-La violacion principal es la /*falta de exogenidad debil*/ de los regresores debido a la /*simultaneidad*/ inherente a la determinacion del precio y  la cantidad en el mercado. Sin el uso de tecnicas como /*Variables instrumentales (IV)*/, o /*Minimos Cuadrados en Dos Etapas (MC2E)*/, los parametros estimados no representan las verdaderas elasticidades estructurales de la demanda.
+El modelo utiliza datos de *1960 a 1982*, período que incluye eventos
+estructurales relevantes (crisis del petróleo de 1973, cambios en patrones
+de consumo). No se presentan pruebas de cambio estructural como la
+*prueba de Chow* para verificar la estabilidad de los coeficientes.
 
-Datos
+ *No verificado* — ausencia de pruebas formales de estabilidad.
 
-label variable y "consumo per capita de carne de pollo, lbs"
-label variable x2 "ingreso per capita real disponible, $"
-label variable x3 "precio real al menudeo del pollo por lb, ¢"
-label variable x4 "precio real al menudeo del cerdo por lb, ¢"
-label variable x5 "precio real al menudeo de la carne de res por lb, ¢"
-label variable x6 "precio compuesto de los sustitutos de pollo por lb, ¢, el cual e sun promedio ponderado de los precios reales al menudeo por libra de carne de cerdo y de res; las ponderaciones son los consumos relativos de la carne de res y de cerdo en el consumo total de estos productos"
+*** 5. Coherencia de los datos (/Data Coherency/)
 
-reg y x2
-#+END_SRC
+En series de tiempo es común la *autocorrelación*. Si los residuos no
+se comportan como ruido blanco, el estadístico $d$ de Durbin-Watson
+diferirá significativamente de 2, indicando que el modelo omite
+información relevante o tiene forma funcional inadecuada.
 
-#+RESULTS:
-: ERROR: log no generado tras 2s
+ *Requiere verificación* empírica del estadístico $d$.
 
+*** 6. Capacidad de inclusión (/Encompassing/)
 
+No se discute si el modelo es capaz de explicar los resultados de modelos
+rivales. Bajo la *prueba J de Davidson-MacKinnon*, un modelo superior
+debe dejar sin poder explicativo adicional a las predicciones de un
+modelo competidor (e.g., especificación lineal vs. log-log).
 
+✗ *No evaluado* en el texto original.
 
-#+BEGIN_SRC stata :results output
+** Veredicto
+
+#+BEGIN_QUOTE
+A pesar del alto $R^2 = 0.9823$ y de los signos coherentes con la teoría,
+*no se puede afirmar que esta función esté especificada correctamente*
+bajo los estándares de la sección 13.1.
+#+END_QUOTE
+
+La violación principal es la *falta de exogeneidad débil* de los regresores
+debido a la *simultaneidad* inherente en la determinación del precio y la
+cantidad en el mercado. Sin el uso de VI o MC2E, los parámetros estimados
+son inconsistentes y no representan las verdaderas elasticidades
+estructurales de la demanda.
+
+* Ejercicio 13.2 — Verificación empírica con los datos de Gujarati
+
+** Datos (Tabla 8.7, Gujarati)
+
+#+NAME: datos-gujarati
+#+BEGIN_SRC stata
 clear
 input año y x2 x3 x4 x5 x6
-1960 27.8 397.5 42.2 50.7 78.3 65.8
-1961 29.9 413.3 38.1 52.0 79.2 66.9
-1962 29.8 439.2 40.3 54.0 79.2 67.8
-1963 30.8 459.7 39.5 55.3 79.2 69.6
-1964 31.2 492.9 37.3 54.7 77.4 68.7
-1965 33.3 528.6 38.1 63.7 80.2 73.6
-1966 35.6 560.3 39.3 69.8 80.4 76.3
-1967 36.4 624.6 37.8 65.9 83.9 77.2
-1968 36.7 666.4 38.4 64.5 85.5 78.1
-1969 38.4 717.8 40.1 70.0 93.7 84.7
-1970 40.4 768.2 38.6 73.2 106.1 93.3
-1971 40.3 843.3 39.8 67.8 104.8 89.7
-1972 41.8 911.6 39.7 79.1 114.0 100.7
-1973 40.4 931.1 52.1 95.4 124.1 113.5
-1974 40.7 1021.5 48.9 94.2 127.6 115.3
-1975 40.1 1165.9 58.3 123.5 142.9 136.7
-1976 42.7 1349.6 57.9 129.9 143.6 139.2
-1977 44.1 1449.4 56.5 117.6 139.2 132.0
-1978 46.7 1575.5 63.7 130.9 165.5 132.1
-1979 50.6 1759.1 61.6 129.8 203.3 154.4
-1980 50.1 1994.2 58.9 128.0 219.6 174.9
-1981 51.7 2258.1 66.4 141.0 221.6 180.8
-1982 52.9 2478.7 70.4 168.2 232.6 189.4
+1960  27.8  397.5   42.2   50.7   78.3   65.8
+1961  29.9  413.3   38.1   52.0   79.2   66.9
+1962  29.8  439.2   40.3   54.0   79.2   67.8
+1963  30.8  459.7   39.5   55.3   79.2   69.6
+1964  31.2  492.9   37.3   54.7   77.4   68.7
+1965  33.3  528.6   38.1   63.7   80.2   73.6
+1966  35.6  560.3   39.3   69.8   80.4   76.3
+1967  36.4  624.6   37.8   65.9   83.9   77.2
+1968  36.7  666.4   38.4   64.5   85.5   78.1
+1969  38.4  717.8   40.1   70.0   93.7   84.7
+1970  40.4  768.2   38.6   73.2  106.1   93.3
+1971  40.3  843.3   39.8   67.8  104.8   89.7
+1972  41.8  911.6   39.7   79.1  114.0  100.7
+1973  40.4  931.1   52.1   95.4  124.1  113.5
+1974  40.7 1021.5   48.9   94.2  127.6  115.3
+1975  40.1 1165.9   58.3  123.5  142.9  136.7
+1976  42.7 1349.6   57.9  129.9  143.6  139.2
+1977  44.1 1449.4   56.5  117.6  139.2  132.0
+1978  46.7 1575.5   63.7  130.9  165.5  132.1
+1979  50.6 1759.1   61.6  129.8  203.3  154.4
+1980  50.1 1994.2   58.9  128.0  219.6  174.9
+1981  51.7 2258.1   66.4  141.0  221.6  180.8
+1982  52.9 2478.7   70.4  168.2  232.6  189.4
 end
 
+label variable y  "Consumo per cápita de pollo (lbs.)"
+label variable x2 "Ingreso per cápita real ($)"
+label variable x3 "Precio real pollo (¢/lb.)"
+label variable x4 "Precio real cerdo (¢/lb.)"
+label variable x5 "Precio real res (¢/lb.)"
+label variable x6 "Precio compuesto sustitutos (¢/lb.)"
 
-regress y x2 x3 x4 x5
+
+gen ly  = ln(y)
+gen lx2 = ln(x2)
+gen lx3 = ln(x3)
+gen lx4 = ln(x4)
+gen lx5 = ln(x5)
+gen lx6 = ln(x6)
+
+describe
+summarize
+#+END_SRC
+
+#+RESULTS: datos-gujarati
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_117330.log
+  log type:  text
+ opened on:   8 May 2026, 11:40:04
+
+. clear
+
+. input año y x2 x3 x4 x5 x6
+
+          año          y         x2         x3         x4         x5         x6
+  1. 1960  27.8  397.5   42.2   50.7   78.3   65.8
+  2. 1961  29.9  413.3   38.1   52.0   79.2   66.9
+  3. 1962  29.8  439.2   40.3   54.0   79.2   67.8
+  4. 1963  30.8  459.7   39.5   55.3   79.2   69.6
+  5. 1964  31.2  492.9   37.3   54.7   77.4   68.7
+  6. 1965  33.3  528.6   38.1   63.7   80.2   73.6
+  7. 1966  35.6  560.3   39.3   69.8   80.4   76.3
+  8. 1967  36.4  624.6   37.8   65.9   83.9   77.2
+  9. 1968  36.7  666.4   38.4   64.5   85.5   78.1
+ 10. 1969  38.4  717.8   40.1   70.0   93.7   84.7
+ 11. 1970  40.4  768.2   38.6   73.2  106.1   93.3
+ 12. 1971  40.3  843.3   39.8   67.8  104.8   89.7
+ 13. 1972  41.8  911.6   39.7   79.1  114.0  100.7
+ 14. 1973  40.4  931.1   52.1   95.4  124.1  113.5
+ 15. 1974  40.7 1021.5   48.9   94.2  127.6  115.3
+ 16. 1975  40.1 1165.9   58.3  123.5  142.9  136.7
+ 17. 1976  42.7 1349.6   57.9  129.9  143.6  139.2
+ 18. 1977  44.1 1449.4   56.5  117.6  139.2  132.0
+ 19. 1978  46.7 1575.5   63.7  130.9  165.5  132.1
+ 20. 1979  50.6 1759.1   61.6  129.8  203.3  154.4
+ 21. 1980  50.1 1994.2   58.9  128.0  219.6  174.9
+ 22. 1981  51.7 2258.1   66.4  141.0  221.6  180.8
+ 23. 1982  52.9 2478.7   70.4  168.2  232.6  189.4
+ 24. end
+
+.
+. label variable y  "Consumo per cápita de pollo (lbs.)"
+
+. label variable x2 "Ingreso per cápita real ($)"
+
+. label variable x3 "Precio real pollo (¢/lb.)"
+
+. label variable x4 "Precio real cerdo (¢/lb.)"
+
+. label variable x5 "Precio real res (¢/lb.)"
+
+. label variable x6 "Precio compuesto sustitutos (¢/lb.)"
+
+.
+.
+. gen ly  = ln(y)
+
+. gen lx2 = ln(x2)
+
+. gen lx3 = ln(x3)
+
+. gen lx4 = ln(x4)
+
+. gen lx5 = ln(x5)
+
+. gen lx6 = ln(x6)
+
+.
+. describe
+
+Contains data
+ Observations:            23
+    Variables:            13
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+año             float   %9.0g
+y               float   %9.0g                 Consumo per cápita de pollo (lbs.)
+x2              float   %9.0g                 Ingreso per cápita real ($)
+x3              float   %9.0g                 Precio real pollo (¢/lb.)
+x4              float   %9.0g                 Precio real cerdo (¢/lb.)
+x5              float   %9.0g                 Precio real res (¢/lb.)
+x6              float   %9.0g                 Precio compuesto sustitutos (¢/lb.)
+ly              float   %9.0g
+lx2             float   %9.0g
+lx3             float   %9.0g
+lx4             float   %9.0g
+lx5             float   %9.0g
+lx6             float   %9.0g
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sorted by:
+     Note: Dataset has changed since last saved.
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+         año |         23        1971     6.78233       1960       1982
+           y |         23    39.66957     7.37295       27.8       52.9
+          x2 |         23    1035.065     617.847      397.5     2478.7
+          x3 |         23    47.99565    11.11721       37.3       70.4
+          x4 |         23        90.4    35.22369       50.7      168.2
+-------------+---------------------------------------------------------
+          x5 |         23    124.4304    51.49974       77.4      232.6
+          x6 |         23    107.8565    39.81467       65.8      189.4
+          ly |         23    3.663887    .1876594   3.325036   3.968403
+         lx2 |         23    6.783454    .5700692   5.985195   7.815489
+         lx3 |         23     3.84687    .2218151   3.618993   4.254193
+-------------+---------------------------------------------------------
+         lx4 |         23    4.434111    .3798881   3.925926   5.125154
+         lx5 |         23    4.750809    .3798952   4.348987    5.44932
+         lx6 |         23    4.619329    .3537303    4.18662   5.243861
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_117330.log
+  log type:  text
+ closed on:   8 May 2026, 11:40:04
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
+** Modelo irrestricto: ecuación (8.6.23)
+
+#+BEGIN_SRC stata
+
+regress ly lx2 lx3 lx4 lx5
 estat ic
-
-regress y x2 x3 x6
-estat ic
-
-
-regress y x2 x3 x4 x5
-test x4 x5
 #+END_SRC
 
 #+RESULTS:
-: ERROR: log no generado tras 2s
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_117628.log
+  log type:  text
+ opened on:   8 May 2026, 11:40:18
+
+.
+. regress ly lx2 lx3 lx4 lx5
+no variables defined
+r(111);
+
+end of do-file
+r(111);
+#+end_example
+
+** Prueba de variable redundante — H₀: X₄ y X₅ son conjuntamente insignificantes
+
+#+BEGIN_SRC stata
+regress ly lx2 lx3 lx4 lx5
+test lx4 lx5
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_117976.log
+  log type:  text
+ opened on:   8 May 2026, 11:40:37
+
+. regress ly lx2 lx3 lx4 lx5
+no variables defined
+r(111);
+
+end of do-file
+r(111);
+#+end_example
+
+** Modelo con precio compuesto de sustitutos
+
+#+BEGIN_SRC stata
+regress ly lx2 lx3 lx6
+estat ic
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_118382.log
+  log type:  text
+ opened on:   8 May 2026, 11:40:58
+
+. regress ly lx2 lx3 lx6
+no variables defined
+r(111);
+
+end of do-file
+r(111);
+#+end_example
+
+** Comparación de modelos (AIC / BIC)
+
+#+BEGIN_SRC stata
+quietly regress ly lx2 lx3 lx4 lx5
+estimates store m_irrestricto
+
+quietly regress ly lx2 lx3 lx6
+estimates store m_restringido
+
+estimates table m_irrestricto m_restringido, ///
+    stats(N r2 r2_a aic bic) b(%9.4f) se star
+#+END_SRC
+
+** Diagnóstico de autocorrelación (Durbin-Watson)
+
+#+BEGIN_SRC stata
+regress ly lx2 lx3 lx4 lx5
+estat dwatson
+
+regress ly lx2 lx3 lx4 lx5
+estat bgodfrey, lags(1 2)
+#+END_SRC
+
+** Prueba RESET de Ramsey (especificación funcional)
+
+#+BEGIN_SRC stata
+regress ly lx2 lx3 lx4 lx5
+estat ovtest
+#+END_SRC
+
+** Prueba de Chow (estabilidad estructural — 1973 como punto de quiebre)
+
+#+BEGIN_SRC stata
+gen post73 = (año > 1973)
+
+regress ly lx2 lx3 lx4 lx5 ///
+    c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
+test c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
+#+END_SRC
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulos 8 y 13.
+- Davidson, R., & MacKinnon, J. G. (1981). Several tests for model
+  specification in the presence of alternative hypotheses.
+  /Econometrica/, 49(3), 781–793.
+- Ramsey, J. B. (1969). Tests for specification errors in classical
+  linear least-squares regression analysis. /Journal of the Royal
+  Statistical Society, Series B/, 31(2), 350–371.
