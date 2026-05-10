@@ -710,24 +710,28 @@ conjuntamente significativos, los parámetros cambiaron en 1973.
 
 #+BEGIN_SRC stata
 use "C:\tmp\gujarati.dta", clear
+set linesize 120
 
 gen post73 = (año > 1973)
 
 regress ly lx2 lx3 lx4 lx5 ///
     c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
 
-test c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
+
+test 1.post73#c.lx2 1.post73#c.lx3 1.post73#c.lx4 1.post73#c.lx5 post73
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_210118.log
+       log:  C:\tmp\stata_out_212315.log
   log type:  text
- opened on:   9 May 2026, 22:45:47
+ opened on:   9 May 2026, 22:51:56
 
 . use "C:\tmp\gujarati.dta", clear
+
+. set linesize 120
 
 .
 . gen post73 = (año > 1973)
@@ -768,12 +772,26 @@ post73#c.lx5 |
 ------------------------------------------------------------------------------
 
 .
-. test c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
-c.lx2#post73 not found
-r(111);
+.
+. test 1.post73#c.lx2 1.post73#c.lx3 1.post73#c.lx4 1.post73#c.lx5 post73
 
-end of do-file
-r(111);
+ ( 1)  1.post73#c.lx2 = 0
+ ( 2)  1.post73#c.lx3 = 0
+ ( 3)  1.post73#c.lx4 = 0
+ ( 4)  1.post73#c.lx5 = 0
+ ( 5)  post73 = 0
+
+       F(  5,    13) =    3.93
+            Prob > F =    0.0217
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_212315.log
+  log type:  text
+ closed on:   9 May 2026, 22:51:58
+------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
 * Referencias
