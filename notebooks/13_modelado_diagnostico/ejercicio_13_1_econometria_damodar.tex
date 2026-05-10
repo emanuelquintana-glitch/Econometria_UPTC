@@ -1,0 +1,419 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometria --- Gujarati --- Ejercicio 13.2}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Demanda de Carne de Pollo en Estados Unidos:}\\[6pt]
+  {\LARGE\bfseries Especificacion, Diagnosticos y Estabilidad Estructural}\\[12pt]
+  {\large\itshape Modelo log-log, pruebas de autocorrelacion, RESET de Ramsey}\\
+  {\large\itshape y quiebre estructural de Chow (1973)}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.2 --- \textit{Econometria}, Gujarati \& Porter, 5.a ed.\
+  por Emanuel Quintana Silva}\\[4pt]
+  {\small\textsc{Datos: tabla 8.7, Gujarati (1960--1982), $n = 23$ observaciones anuales}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento del problema}
+%------------------------------------------------------------------------------
+
+Se estudia la demanda de carne de pollo en Estados Unidos con datos anuales
+de 1960 a 1982 ($n = 23$). Las variables son:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{cl}
+\toprule
+\textbf{Variable} & \textbf{Definicion} \\
+\midrule
+$Y_t$    & Consumo per capita de pollo (lbs.) \\
+$X_{2t}$ & Ingreso per capita real disponible (\$) \\
+$X_{3t}$ & Precio real al menudeo del pollo por lb.\ (\textcent) \\
+$X_{4t}$ & Precio real al menudeo del cerdo por lb.\ (\textcent) \\
+$X_{5t}$ & Precio real al menudeo de la res por lb.\ (\textcent) \\
+$X_{6t}$ & Precio compuesto ponderado de sustitutos (\textcent) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Se comparan dos especificaciones en forma doble-logaritmica (log-log):
+
+\begin{align}
+  \textbf{Modelo irrestricto:} \quad
+  \ln Y_t &= \beta_0 + \beta_1 \ln X_{2t} + \beta_2 \ln X_{3t}
+             + \beta_3 \ln X_{4t} + \beta_4 \ln X_{5t} + u_t
+  \label{eq:irrestricto}\\[6pt]
+  \textbf{Modelo restringido:} \quad
+  \ln Y_t &= \alpha_0 + \alpha_1 \ln X_{2t} + \alpha_2 \ln X_{3t}
+             + \alpha_3 \ln X_{6t} + u_t
+  \label{eq:restringido}
+\end{align}
+
+La especificacion log-log garantiza predicciones positivas para $Y_t$ y
+permite interpretar directamente los coeficientes como elasticidades.
+
+%------------------------------------------------------------------------------
+\section{Estimacion de los modelos}
+%------------------------------------------------------------------------------
+
+\subsection{Modelo irrestricto --- ecuacion (8.6.23)}
+
+\begin{align}
+  \widehat{\ln Y_t} &= 2.1898 + 0.3426\,\ln X_{2t} - 0.5046\,\ln X_{3t}
+                       + 0.1485\,\ln X_{4t} + 0.0911\,\ln X_{5t}
+  \label{eq:estimA}
+\end{align}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error est.} & \textbf{Razon $t$} & \textbf{$P(>|t|)$} \\
+\midrule
+$\ln X_{2t}$ (ingreso)  &  0.3426 & 0.0833 &  4.11 & 0.001 \\
+$\ln X_{3t}$ (pollo)    & -0.5046 & 0.1109 & -4.55 & 0.000 \\
+$\ln X_{4t}$ (cerdo)    &  0.1485 & 0.0997 &  1.49 & 0.153 \\
+$\ln X_{5t}$ (res)      &  0.0911 & 0.1007 &  0.90 & 0.378 \\
+Constante               &  2.1898 & 0.1557 & 14.06 & 0.000 \\
+\midrule
+\multicolumn{5}{l}{$R^2 = 0.9823$\quad $\bar{R}^2 = 0.9784$\quad
+  $\text{AIC} = -95.52$\quad $\text{BIC} = -89.84$\quad $n = 23$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Modelo restringido --- precio compuesto de sustitutos}
+
+En lugar de $X_{4t}$ y $X_{5t}$ por separado, se usa el indice compuesto $X_{6t}$:
+
+\begin{align}
+  \widehat{\ln Y_t} &= 2.0299 + 0.4813\,\ln X_{2t} - 0.3506\,\ln X_{3t}
+                       - 0.0610\,\ln X_{6t}
+  \label{eq:estimB}
+\end{align}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error est.} & \textbf{Razon $t$} & \textbf{$P(>|t|)$} \\
+\midrule
+$\ln X_{2t}$ (ingreso)     &  0.4813 & 0.0682 &  7.06 & 0.000 \\
+$\ln X_{3t}$ (pollo)       & -0.3506 & 0.0794 & -4.42 & 0.000 \\
+$\ln X_{6t}$ (sustitutos)  & -0.0610 & 0.1300 & -0.47 & 0.644 \\
+Constante                  &  2.0299 & 0.1187 & 17.10 & 0.000 \\
+\midrule
+\multicolumn{5}{l}{$R^2 = 0.9803$\quad $\bar{R}^2 = 0.9772$\quad
+  $\text{AIC} = -95.04$\quad $\text{BIC} = -90.50$\quad $n = 23$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Prueba de variables redundantes ($X_4$ y $X_5$ conjuntamente)}
+%------------------------------------------------------------------------------
+
+Se contrasta si los precios de cerdo y res aportan poder explicativo adicional:
+
+\begin{equation}
+  H_0: \beta_3 = \beta_4 = 0
+  \qquad \text{vs.} \qquad
+  H_1: \text{al menos uno} \neq 0
+\end{equation}
+
+La prueba $F$ de Wald arroja:
+
+\begin{equation}
+  F(2,\,18) = 1.07 \qquad p = 0.3625
+\end{equation}
+
+No se rechaza $H_0$ al nivel del $5\%$. Los precios de los sustitutos
+$X_{4t}$ y $X_{5t}$ son \textbf{conjuntamente insignificantes}.
+
+\begin{clave}
+  $p = 0.3625 > 0.05$ $\Rightarrow$ No rechazar $H_0$.
+  $X_{4t}$ y $X_{5t}$ no aportan poder explicativo adicional en presencia
+  de $X_{2t}$ y $X_{3t}$. Esto sugiere multicolinealidad entre los precios
+  de los sustitutos, no que la teoria economica sea incorrecta.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Comparacion de modelos: AIC y BIC}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Modelo} & $R^2$ & $\bar{R}^2$ & \textbf{AIC} & \textbf{BIC} \\
+\midrule
+Irrestricto ($X_2, X_3, X_4, X_5$) & 0.9823 & 0.9784 & $-95.52$ & $-89.84$ \\
+Restringido ($X_2, X_3, X_6$)       & 0.9803 & 0.9772 & $-95.04$ & $-90.50$ \\
+\midrule
+\multicolumn{5}{l}{Menor AIC/BIC $\Rightarrow$ mejor ajuste penalizado por numero de parametros} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El modelo irrestricto tiene AIC marginalmente menor ($-95.52$ vs.\ $-95.04$),
+pero el modelo restringido tiene BIC menor ($-90.50$ vs.\ $-89.84$). La
+diferencia es practicamente insignificante ($\Delta\text{AIC} = 0.48$,
+$\Delta\text{BIC} = 0.66$). Dado que $X_4$ y $X_5$ son conjuntamente
+insignificantes, el principio de parsimonia favorece el modelo restringido.
+
+%------------------------------------------------------------------------------
+\section{Diagnostico de autocorrelacion}
+%------------------------------------------------------------------------------
+
+\subsection{Estadistico de Durbin-Watson}
+
+\begin{equation}
+  d = 1.8261
+\end{equation}
+
+Para $n = 23$, $k' = 4$ regresores, al nivel del $5\%$:
+$d_L = 1.021$, $d_U = 1.776$.
+
+\begin{equation}
+  d_U = 1.776 \;<\; d = 1.826 \;<\; 4 - d_U = 2.224
+\end{equation}
+
+El estadistico cae en la \textbf{region de no rechazo}.
+
+\begin{clave}
+  $d = 1.826 > d_U = 1.776$ $\Rightarrow$ No rechazar $H_0$.
+  Sin evidencia de autocorrelacion de primer orden al nivel del $5\%$.
+\end{clave}
+
+\subsection{Prueba de Breusch-Godfrey (LM)}
+
+La prueba LM es mas general que Durbin-Watson pues detecta autocorrelacion
+de cualquier orden sin requerir que los regresores sean estrictamente exogenos.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{cccc}
+\toprule
+\textbf{Rezagos} & $\chi^2$ & \textbf{gl} & \textbf{$p$-valor} \\
+\midrule
+1 & 0.267 & 1 & 0.6054 \\
+2 & 2.472 & 2 & 0.2906 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{equation}
+  H_0: \text{no hay correlacion serial} \qquad
+  \chi^2(1) = 0.267\ (p = 0.605),\quad
+  \chi^2(2) = 2.472\ (p = 0.291)
+\end{equation}
+
+No se rechaza $H_0$ en ninguno de los dos ordenes. Los residuos se comportan
+como ruido blanco.
+
+\begin{clave}
+  Ambas pruebas --- Durbin-Watson y Breusch-Godfrey --- coinciden:
+  \textbf{no hay evidencia de autocorrelacion} en el modelo irrestricto.
+  El atributo 5 de Gujarati (coherencia de datos) se satisface.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Prueba RESET de Ramsey (especificacion funcional)}
+%------------------------------------------------------------------------------
+
+La prueba RESET contrasta si potencias de $\hat{Y}_t$ tienen poder explicativo
+adicional, lo que indicaria forma funcional incorrecta o variables omitidas:
+
+\begin{equation}
+  H_0: \text{la forma funcional es correcta}
+  \qquad \text{vs.} \qquad
+  H_1: \text{existe mala especificacion}
+\end{equation}
+
+\begin{equation}
+  F(3,\,15) = 1.15 \qquad p = 0.3612
+\end{equation}
+
+No se rechaza $H_0$ al $5\%$.
+
+\begin{clave}
+  $p = 0.3612 > 0.05$ $\Rightarrow$ No rechazar $H_0$.
+  La especificacion log-log \textbf{no presenta evidencia de mala especificacion
+  funcional}. La forma doble-logaritmica es adecuada para estos datos.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Prueba de Chow: estabilidad estructural (quiebre en 1973)}
+%------------------------------------------------------------------------------
+
+La crisis del petroleo de 1973 es un candidato natural a quiebre estructural.
+Se define $D_t = \mathbf{1}(t > 1973)$ y se estima el modelo aumentado:
+
+\begin{equation}
+  \ln Y_t = \beta_0 + \beta_1 \ln X_{2t} + \beta_2 \ln X_{3t}
+            + \beta_3 \ln X_{4t} + \beta_4 \ln X_{5t}
+            + \delta_0 D_t
+            + \delta_1 D_t \ln X_{2t} + \delta_2 D_t \ln X_{3t}
+            + \delta_3 D_t \ln X_{4t} + \delta_4 D_t \ln X_{5t}
+            + u_t
+  \label{eq:chow}
+\end{equation}
+
+Los resultados de la estimacion son:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coef.} & \textbf{Error est.} & \textbf{Razon $t$} & \textbf{$P(>|t|)$} \\
+\midrule
+$\ln X_{2t}$             &  0.3347 & 0.0876 &  3.82 & 0.002 \\
+$\ln X_{3t}$             & -0.4017 & 0.1235 & -3.25 & 0.006 \\
+$\ln X_{4t}$             &  0.2698 & 0.1021 &  2.64 & 0.020 \\
+$\ln X_{5t}$             &  0.0177 & 0.1235 &  0.14 & 0.888 \\
+$D_t \cdot \ln X_{2t}$   & -0.0435 & 0.1313 & -0.33 & 0.746 \\
+$D_t \cdot \ln X_{3t}$   &  0.6817 & 0.2944 &  2.32 & 0.038 \\
+$D_t \cdot \ln X_{4t}$   & -0.5909 & 0.2042 & -2.89 & 0.013 \\
+$D_t \cdot \ln X_{5t}$   &  0.1257 & 0.1601 &  0.78 & 0.447 \\
+$D_t$                    & -0.3295 & 0.4440 & -0.74 & 0.471 \\
+Constante                &  1.6894 & 0.2848 &  5.93 & 0.000 \\
+\midrule
+\multicolumn{5}{l}{$R^2 = 0.9930$\quad $\bar{R}^2 = 0.9881$\quad $F(9,13) = 203.59$\quad $n = 23$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La prueba de estabilidad conjunta es:
+
+\begin{equation}
+  H_0: \delta_0 = \delta_1 = \delta_2 = \delta_3 = \delta_4 = 0
+  \qquad \text{(no hay quiebre estructural en 1973)}
+\end{equation}
+
+\begin{equation}
+  F(5,\,13) = 3.93 \qquad p = 0.0217
+\end{equation}
+
+Se rechaza $H_0$ al nivel del $5\%$.
+
+\begin{clave}
+  $p = 0.0217 < 0.05$ $\Rightarrow$ Rechazar $H_0$.
+  \textbf{Existe quiebre estructural significativo en 1973.}
+  Al menos un parametro cambio tras la crisis del petroleo.
+  Inspeccionando los coeficientes individuales: $\delta_2$ ($\ln X_{3t}$,
+  precio del pollo post-73) y $\delta_3$ ($\ln X_{4t}$, precio del cerdo
+  post-73) son significativos, lo que sugiere que las elasticidades-precio
+  cambiaron tras 1973.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Sintesis: evaluacion de los seis atributos de Gujarati}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{clcc}
+\toprule
+\textbf{Atributo} & \textbf{Criterio} & \textbf{Resultado} & \textbf{Veredicto} \\
+\midrule
+1 & Admisibilidad de datos (predicciones $> 0$)
+  & Forma log-log garantiza $\hat{Y} > 0$
+  & \checkmark\ Cumple \\
+2 & Consistencia con la teoria economica
+  & Signos correctos; sustitutos insignificantes
+  & $\sim$ Parcial \\
+3 & Exogeneidad debil de los regresores
+  & Simultaneidad precio-cantidad; MCO sesgado
+  & $\times$ No cumple \\
+4 & Constancia de los parametros
+  & Prueba de Chow: $F(5,13)=3.93$, $p=0.022$
+  & $\times$ No cumple \\
+5 & Coherencia de datos (no autocorrelacion)
+  & $d=1.826$; BG: $p=0.605/0.291$
+  & \checkmark\ Cumple \\
+6 & Capacidad de inclusion
+  & No evaluada en el texto original
+  & --- No evaluado \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{clave}
+  \textbf{Veredicto general:} A pesar del alto $R^2 = 0.9823$ y de los signos
+  coherentes con la teoria, el modelo \textbf{no esta correctamente especificado}
+  bajo los seis atributos de Gujarati. Las fallas principales son la
+  \emph{falta de exogeneidad debil} (sesgo de simultaneidad MCO) y la
+  \emph{inestabilidad estructural} en 1973. Los residuos no exhiben
+  autocorrelacion y la forma funcional log-log es apropiada, pero estas
+  virtudes no compensan la endogeneidad del precio ni el quiebre estructural.
+  El remedio correcto es Minimos Cuadrados en Dos Etapas (MC2E) o Variables
+  Instrumentales (VI), con un modelo separado para cada subperiodo.
+\end{clave}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota metodologica.}
+La jerarquia diagnostica recomendada por Gujarati es: (1) verificar la
+especificacion funcional (RESET), (2) comprobar la estabilidad de parametros
+(Chow), (3) examinar la exogeneidad de los regresores, y solo entonces
+(4) diagnosticar autocorrelacion. En este ejercicio, los pasos 1 y 3
+(RESET y autocorrelacion) se superan satisfactoriamente, pero los pasos 2
+y 3 (estabilidad y exogeneidad) revelan problemas estructurales que
+ninguna correccion de errores estandar puede resolver por si sola.}
+
+\end{document}
