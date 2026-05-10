@@ -4,7 +4,7 @@
 #+AUTHOR: Emanuel Quintana Silva
 #+LANGUAGE: es
 #+OPTIONS: toc:2 num:t ^:nil
-#+PROPERTY: header-args:stata :results output :exports both :session econometria
+#+PROPERTY: header-args:stata :results output :exports both
 
 * Ejercicio 13.1
 
@@ -16,8 +16,8 @@ Considerando los atributos de un buen modelo analizados en la sección 13.1,
 
 ** Contexto teórico
 
-Para evaluar si la función de demanda de pollos —estimada mediante la
-ecuación (8.6.23)— está correctamente especificada, la sometemos a los
+Para evaluar si la función de demanda de pollos estimada mediante la
+ecuación (8.6.23) está correctamente especificada, la sometemos a los
 /seis atributos/ de un buen modelo definidos en la sección 13.1 de Gujarati.
 
 El modelo estimado es:
@@ -44,7 +44,7 @@ El modelo utiliza forma /log-log/ (doble logaritmo). Esta especificación
 garantiza que las predicciones de la cantidad demandada $\hat{Y}$ sean
 siempre *positivas*, condición necesaria para cualquier bien físico.
 
-✓ *Cumple* este criterio.
+*Cumple* este criterio.
 
 *** 2. Consistencia con la teoría económica
 
@@ -62,10 +62,10 @@ Sin embargo, los precios de los sustitutos ($X_4$, $X_5$) resultaron
 posibilidades: (i) error de especificación muestral, o (ii) multicolinealidad
 que oculta la verdadera relación teórica.
 
- *Cumplimiento parcial* — los signos son correctos pero la insignificancia
+*Cumplimiento parcial* — los signos son correctos pero la insignificancia
 de los sustitutos es teóricamente cuestionable.
 
-*** 3. Regresores débilmente exógenos (/Weak Exogeneity/) — ★ Falla crítica
+*** 3. Regresores débilmente exógenos (/Weak Exogeneity/) — Falla crítica
 
 Este es el punto más débil del modelo.
 
@@ -80,7 +80,7 @@ Los estimadores MCO son *sesgados e inconsistentes*. Sin el uso de
 (MC2E)*, los parámetros estimados no representan las verdaderas
 elasticidades estructurales.
 
-✗ *No cumple* — violación del supuesto de exogeneidad débil.
+*No cumple* — violación del supuesto de exogeneidad débil.
 
 *** 4. Constancia de los parámetros (/Parameter Constancy/)
 
@@ -89,7 +89,7 @@ estructurales relevantes (crisis del petróleo de 1973, cambios en patrones
 de consumo). No se presentan pruebas de cambio estructural como la
 *prueba de Chow* para verificar la estabilidad de los coeficientes.
 
- *No verificado* — ausencia de pruebas formales de estabilidad.
+*No verificado* — ausencia de pruebas formales de estabilidad.
 
 *** 5. Coherencia de los datos (/Data Coherency/)
 
@@ -98,7 +98,7 @@ se comportan como ruido blanco, el estadístico $d$ de Durbin-Watson
 diferirá significativamente de 2, indicando que el modelo omite
 información relevante o tiene forma funcional inadecuada.
 
- *Requiere verificación* empírica del estadístico $d$.
+*Requiere verificación* empírica del estadístico $d$.
 
 *** 6. Capacidad de inclusión (/Encompassing/)
 
@@ -107,13 +107,13 @@ rivales. Bajo la *prueba J de Davidson-MacKinnon*, un modelo superior
 debe dejar sin poder explicativo adicional a las predicciones de un
 modelo competidor (e.g., especificación lineal vs. log-log).
 
-✗ *No evaluado* en el texto original.
+*No evaluado* en el texto original.
 
 ** Veredicto
 
 #+BEGIN_QUOTE
 A pesar del alto $R^2 = 0.9823$ y de los signos coherentes con la teoría,
-*no se puede afirmar que esta función esté especificada correctamente*
+*no se puede afirmar que esta función está especificada correctamente*
 bajo los estándares de la sección 13.1.
 #+END_QUOTE
 
@@ -125,7 +125,11 @@ estructurales de la demanda.
 
 * Ejercicio 13.2 — Verificación empírica con los datos de Gujarati
 
-** Datos (Tabla 8.7, Gujarati)
+** Paso 1 — Cargar datos y guardar archivo de trabajo
+
+Este es el bloque base. Carga los datos, genera los logaritmos
+y los guarda en =C:\tmp\gujarati.dta= para que todos los bloques
+siguientes puedan usarlos sin repetir la entrada de datos.
 
 #+NAME: datos-gujarati
 #+BEGIN_SRC stata
@@ -156,13 +160,12 @@ input año y x2 x3 x4 x5 x6
 1982  52.9 2478.7   70.4  168.2  232.6  189.4
 end
 
-label variable y  "Consumo per cápita de pollo (lbs.)"
-label variable x2 "Ingreso per cápita real ($)"
-label variable x3 "Precio real pollo (¢/lb.)"
-label variable x4 "Precio real cerdo (¢/lb.)"
-label variable x5 "Precio real res (¢/lb.)"
-label variable x6 "Precio compuesto sustitutos (¢/lb.)"
-
+label variable y   "Consumo per cápita de pollo (lbs.)"
+label variable x2  "Ingreso per cápita real ($)"
+label variable x3  "Precio real pollo (¢/lb.)"
+label variable x4  "Precio real cerdo (¢/lb.)"
+label variable x5  "Precio real res (¢/lb.)"
+label variable x6  "Precio compuesto sustitutos (¢/lb.)"
 
 gen ly  = ln(y)
 gen lx2 = ln(x2)
@@ -171,206 +174,58 @@ gen lx4 = ln(x4)
 gen lx5 = ln(x5)
 gen lx6 = ln(x6)
 
+* Guardar para bloques siguientes
+save "C:\tmp\gujarati.dta", replace
+
 describe
 summarize
 #+END_SRC
 
-#+RESULTS: datos-gujarati
-#+begin_example
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      name:  <unnamed>
-       log:  C:\tmp\stata_out_117330.log
-  log type:  text
- opened on:   8 May 2026, 11:40:04
+** Paso 2 — Modelo irrestricto: ecuación (8.6.23)
 
-. clear
-
-. input año y x2 x3 x4 x5 x6
-
-          año          y         x2         x3         x4         x5         x6
-  1. 1960  27.8  397.5   42.2   50.7   78.3   65.8
-  2. 1961  29.9  413.3   38.1   52.0   79.2   66.9
-  3. 1962  29.8  439.2   40.3   54.0   79.2   67.8
-  4. 1963  30.8  459.7   39.5   55.3   79.2   69.6
-  5. 1964  31.2  492.9   37.3   54.7   77.4   68.7
-  6. 1965  33.3  528.6   38.1   63.7   80.2   73.6
-  7. 1966  35.6  560.3   39.3   69.8   80.4   76.3
-  8. 1967  36.4  624.6   37.8   65.9   83.9   77.2
-  9. 1968  36.7  666.4   38.4   64.5   85.5   78.1
- 10. 1969  38.4  717.8   40.1   70.0   93.7   84.7
- 11. 1970  40.4  768.2   38.6   73.2  106.1   93.3
- 12. 1971  40.3  843.3   39.8   67.8  104.8   89.7
- 13. 1972  41.8  911.6   39.7   79.1  114.0  100.7
- 14. 1973  40.4  931.1   52.1   95.4  124.1  113.5
- 15. 1974  40.7 1021.5   48.9   94.2  127.6  115.3
- 16. 1975  40.1 1165.9   58.3  123.5  142.9  136.7
- 17. 1976  42.7 1349.6   57.9  129.9  143.6  139.2
- 18. 1977  44.1 1449.4   56.5  117.6  139.2  132.0
- 19. 1978  46.7 1575.5   63.7  130.9  165.5  132.1
- 20. 1979  50.6 1759.1   61.6  129.8  203.3  154.4
- 21. 1980  50.1 1994.2   58.9  128.0  219.6  174.9
- 22. 1981  51.7 2258.1   66.4  141.0  221.6  180.8
- 23. 1982  52.9 2478.7   70.4  168.2  232.6  189.4
- 24. end
-
-.
-. label variable y  "Consumo per cápita de pollo (lbs.)"
-
-. label variable x2 "Ingreso per cápita real ($)"
-
-. label variable x3 "Precio real pollo (¢/lb.)"
-
-. label variable x4 "Precio real cerdo (¢/lb.)"
-
-. label variable x5 "Precio real res (¢/lb.)"
-
-. label variable x6 "Precio compuesto sustitutos (¢/lb.)"
-
-.
-.
-. gen ly  = ln(y)
-
-. gen lx2 = ln(x2)
-
-. gen lx3 = ln(x3)
-
-. gen lx4 = ln(x4)
-
-. gen lx5 = ln(x5)
-
-. gen lx6 = ln(x6)
-
-.
-. describe
-
-Contains data
- Observations:            23
-    Variables:            13
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Variable      Storage   Display    Value
-    name         type    format    label      Variable label
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-año             float   %9.0g
-y               float   %9.0g                 Consumo per cápita de pollo (lbs.)
-x2              float   %9.0g                 Ingreso per cápita real ($)
-x3              float   %9.0g                 Precio real pollo (¢/lb.)
-x4              float   %9.0g                 Precio real cerdo (¢/lb.)
-x5              float   %9.0g                 Precio real res (¢/lb.)
-x6              float   %9.0g                 Precio compuesto sustitutos (¢/lb.)
-ly              float   %9.0g
-lx2             float   %9.0g
-lx3             float   %9.0g
-lx4             float   %9.0g
-lx5             float   %9.0g
-lx6             float   %9.0g
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sorted by:
-     Note: Dataset has changed since last saved.
-
-. summarize
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-         año |         23        1971     6.78233       1960       1982
-           y |         23    39.66957     7.37295       27.8       52.9
-          x2 |         23    1035.065     617.847      397.5     2478.7
-          x3 |         23    47.99565    11.11721       37.3       70.4
-          x4 |         23        90.4    35.22369       50.7      168.2
--------------+---------------------------------------------------------
-          x5 |         23    124.4304    51.49974       77.4      232.6
-          x6 |         23    107.8565    39.81467       65.8      189.4
-          ly |         23    3.663887    .1876594   3.325036   3.968403
-         lx2 |         23    6.783454    .5700692   5.985195   7.815489
-         lx3 |         23     3.84687    .2218151   3.618993   4.254193
--------------+---------------------------------------------------------
-         lx4 |         23    4.434111    .3798881   3.925926   5.125154
-         lx5 |         23    4.750809    .3798952   4.348987    5.44932
-         lx6 |         23    4.619329    .3537303    4.18662   5.243861
-
-. clear
-
-. log close
-      name:  <unnamed>
-       log:  C:\tmp\stata_out_117330.log
-  log type:  text
- closed on:   8 May 2026, 11:40:04
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#+end_example
-
-** Modelo irrestricto: ecuación (8.6.23)
+Estimamos el modelo completo con los cuatro regresores.
+=estat ic= reporta AIC y BIC para comparación posterior.
 
 #+BEGIN_SRC stata
+use "C:\tmp\gujarati.dta", clear
 
 regress ly lx2 lx3 lx4 lx5
 estat ic
 #+END_SRC
 
-#+RESULTS:
-#+begin_example
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      name:  <unnamed>
-       log:  C:\tmp\stata_out_117628.log
-  log type:  text
- opened on:   8 May 2026, 11:40:18
+** Paso 3 — Prueba de variable redundante
 
-.
-. regress ly lx2 lx3 lx4 lx5
-no variables defined
-r(111);
-
-end of do-file
-r(111);
-#+end_example
-
-** Prueba de variable redundante — H₀: X₄ y X₅ son conjuntamente insignificantes
+$H_0$: $X_4$ y $X_5$ son conjuntamente insignificantes.
+Si no rechazamos $H_0$, los precios de los sustitutos no aportan
+poder explicativo adicional al modelo.
 
 #+BEGIN_SRC stata
+use "C:\tmp\gujarati.dta", clear
+
 regress ly lx2 lx3 lx4 lx5
 test lx4 lx5
 #+END_SRC
 
-#+RESULTS:
-#+begin_example
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      name:  <unnamed>
-       log:  C:\tmp\stata_out_117976.log
-  log type:  text
- opened on:   8 May 2026, 11:40:37
+** Paso 4 — Modelo restringido con precio compuesto de sustitutos
 
-. regress ly lx2 lx3 lx4 lx5
-no variables defined
-r(111);
-
-end of do-file
-r(111);
-#+end_example
-
-** Modelo con precio compuesto de sustitutos
+En lugar de dos precios separados ($X_4$, $X_5$), usamos el índice
+compuesto $X_6$ que los resume en una sola variable.
 
 #+BEGIN_SRC stata
+use "C:\tmp\gujarati.dta", clear
+
 regress ly lx2 lx3 lx6
 estat ic
 #+END_SRC
 
-#+RESULTS:
-#+begin_example
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      name:  <unnamed>
-       log:  C:\tmp\stata_out_118382.log
-  log type:  text
- opened on:   8 May 2026, 11:40:58
+** Paso 5 — Comparación formal de modelos (AIC / BIC)
 
-. regress ly lx2 lx3 lx6
-no variables defined
-r(111);
-
-end of do-file
-r(111);
-#+end_example
-
-** Comparación de modelos (AIC / BIC)
+Estimamos ambos modelos y los comparamos en una tabla unificada.
+Un menor AIC/BIC indica mejor ajuste penalizado por complejidad.
 
 #+BEGIN_SRC stata
+use "C:\tmp\gujarati.dta", clear
+
 quietly regress ly lx2 lx3 lx4 lx5
 estimates store m_irrestricto
 
@@ -381,30 +236,53 @@ estimates table m_irrestricto m_restringido, ///
     stats(N r2 r2_a aic bic) b(%9.4f) se star
 #+END_SRC
 
-** Diagnóstico de autocorrelación (Durbin-Watson)
+** Paso 6 — Diagnóstico de autocorrelación
+
+Verificamos el atributo 5 (coherencia de datos) con dos pruebas:
+- *Durbin-Watson*: detecta autocorrelación de primer orden.
+- *Breusch-Godfrey*: más general, detecta órdenes 1 y 2.
 
 #+BEGIN_SRC stata
-regress ly lx2 lx3 lx4 lx5
-estat dwatson
+use "C:\tmp\gujarati.dta", clear
 
 regress ly lx2 lx3 lx4 lx5
+
+* Durbin-Watson (H0: no autocorrelación de orden 1)
+estat dwatson
+
+* Breusch-Godfrey (H0: no autocorrelación hasta orden 2)
 estat bgodfrey, lags(1 2)
 #+END_SRC
 
-** Prueba RESET de Ramsey (especificación funcional)
+** Paso 7 — Prueba RESET de Ramsey
+
+Verifica si la forma funcional log-log es adecuada.
+$H_0$: el modelo no tiene variables omitidas ni forma funcional incorrecta.
+Un rechazo sugiere que deberíamos probar otras transformaciones.
 
 #+BEGIN_SRC stata
+use "C:\tmp\gujarati.dta", clear
+
 regress ly lx2 lx3 lx4 lx5
 estat ovtest
 #+END_SRC
 
-** Prueba de Chow (estabilidad estructural — 1973 como punto de quiebre)
+** Paso 8 — Prueba de Chow (estabilidad estructural, 1973)
+
+La crisis del petróleo de 1973 es un candidato natural para quiebre
+estructural. Creamos una dummy =post73= e interactuamos todos los
+regresores con ella. Si los coeficientes de interacción son
+conjuntamente significativos, los parámetros cambiaron en 1973.
 
 #+BEGIN_SRC stata
+use "C:\tmp\gujarati.dta", clear
+
 gen post73 = (año > 1973)
 
 regress ly lx2 lx3 lx4 lx5 ///
     c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
+
+* H0: los parámetros no cambiaron en 1973
 test c.lx2#post73 c.lx3#post73 c.lx4#post73 c.lx5#post73 post73
 #+END_SRC
 
