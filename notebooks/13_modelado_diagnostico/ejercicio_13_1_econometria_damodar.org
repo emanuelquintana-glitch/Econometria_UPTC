@@ -447,6 +447,36 @@ estimates table m_irrestricto m_restringido, ///
     stats(N r2 r2_a aic bic) b(%9.4f) se star
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_209652.log
+  log type:  text
+ opened on:   9 May 2026, 22:44:30
+
+. use "C:\tmp\gujarati.dta", clear
+
+.
+. quietly regress ly lx2 lx3 lx4 lx5
+
+. estimates store m_irrestricto
+
+.
+. quietly regress ly lx2 lx3 lx6
+
+. estimates store m_restringido
+
+.
+. estimates table m_irrestricto m_restringido, ///
+>     stats(N r2 r2_a aic bic) b(%9.4f) se star
+option star may not be combined with se, t, or p
+r(198);
+
+end of do-file
+r(198);
+#+end_example
+
 ** Paso 6 — Diagnóstico de autocorrelación
 
 Verificamos el atributo 5 (coherencia de datos) con dos pruebas:
