@@ -312,20 +312,22 @@ Estimamos el modelo completo con los cuatro regresores.
 
 #+BEGIN_SRC stata
 use "C:\tmp\gujarati.dta", clear
+set linesize 120
 
 regress ly lx2 lx3 lx4 lx5
 estat ic
 #+END_SRC
-
 #+RESULTS:
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_207125.log
+       log:  C:\tmp\stata_out_210648.log
   log type:  text
- opened on:   9 May 2026, 22:41:55
+ opened on:   9 May 2026, 22:47:47
 
 . use "C:\tmp\gujarati.dta", clear
+
+. set linesize 120
 
 .
 . regress ly lx2 lx3 lx4 lx5
@@ -337,10 +339,35 @@ estat ic
 -------------+----------------------------------   Adj R-squared   =    0.9784
        Total |   .77475309        22   .03521605   Root MSE        =    .02759
 
-r(198);
+------------------------------------------------------------------------------
+          ly | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         lx2 |   .3425546   .0832663     4.11   0.001     .1676186    .5174907
+         lx3 |  -.5045934   .1108943    -4.55   0.000    -.7375737   -.2716132
+         lx4 |   .1485461   .0996726     1.49   0.153    -.0608583    .3579505
+         lx5 |   .0911056   .1007164     0.90   0.378    -.1204917     .302703
+       _cons |   2.189793   .1557149    14.06   0.000     1.862648    2.516938
+------------------------------------------------------------------------------
 
-end of do-file
-r(198);
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |          N   ll(null)  ll(model)      df        AIC        BIC
+-------------+---------------------------------------------------------------
+           . |         23   6.357523   52.75934       5  -95.51868  -89.84121
+-----------------------------------------------------------------------------
+Note: BIC uses N = number of observations. See [R] IC note.
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_210648.log
+  log type:  text
+ closed on:   9 May 2026, 22:47:49
+------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
 ** Paso 3 — Prueba de variable redundante
@@ -392,6 +419,7 @@ compuesto $X_6$ que los resume en una sola variable.
 
 #+BEGIN_SRC stata
 use "C:\tmp\gujarati.dta", clear
+set linesize 120
 
 regress ly lx2 lx3 lx6
 estat ic
@@ -401,11 +429,13 @@ estat ic
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_209033.log
+       log:  C:\tmp\stata_out_210910.log
   log type:  text
- opened on:   9 May 2026, 22:43:02
+ opened on:   9 May 2026, 22:48:41
 
 . use "C:\tmp\gujarati.dta", clear
+
+. set linesize 120
 
 .
 . regress ly lx2 lx3 lx6
@@ -420,13 +450,31 @@ estat ic
 ------------------------------------------------------------------------------
           ly | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-         lx2 |    _b_table::di_eq_el():  3499  member _b_table::di_eq_el_u() not found
---Break--
-r(1);
+         lx2 |   .4812864   .0681879     7.06   0.000     .3385675    .6240053
+         lx3 |  -.3506282   .0793939    -4.42   0.000    -.5168016   -.1844548
+         lx6 |  -.0610352   .1299604    -0.47   0.644    -.3330454    .2109751
+       _cons |   2.029865   .1186822    17.10   0.000      1.78146     2.27827
+------------------------------------------------------------------------------
 
-end of do-file
---Break--
-r(1);
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |          N   ll(null)  ll(model)      df        AIC        BIC
+-------------+---------------------------------------------------------------
+           . |         23   6.357523   51.52139       4  -95.04278   -90.5008
+-----------------------------------------------------------------------------
+Note: BIC uses N = number of observations. See [R] IC note.
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_210910.log
+  log type:  text
+ closed on:   9 May 2026, 22:48:43
+------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
 ** Paso 5 — Comparación formal de modelos (AIC / BIC)
