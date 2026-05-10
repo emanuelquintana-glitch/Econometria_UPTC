@@ -356,6 +356,35 @@ regress ly lx2 lx3 lx4 lx5
 test lx4 lx5
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_208901.log
+  log type:  text
+ opened on:   9 May 2026, 22:42:43
+
+. use "C:\tmp\gujarati.dta", clear
+
+.
+. regress ly lx2 lx3 lx4 lx5
+
+      Source |       SS           df       MS      Number of obs   =        23
+-------------+----------------------------------   F(4, 18)        =    249.93
+       Model |  .761050242         4  .190262561   Prob > F        =    0.0000
+    Residual |  .013702848        18  .000761269   R-squared       =    0.9823
+-------------+----------------------------------   Adj R-squared   =    0.9784
+       Total |   .77475309        22   .03521605   Root MSE        =    .02759
+
+_b_table::do_equations():  3499  member _b_table::titles() not found
+--Break--
+r(1);
+
+end of do-file
+--Break--
+r(1);
+#+end_example
+
 ** Paso 4 — Modelo restringido con precio compuesto de sustitutos
 
 En lugar de dos precios separados ($X_4$, $X_5$), usamos el índice
@@ -367,6 +396,38 @@ use "C:\tmp\gujarati.dta", clear
 regress ly lx2 lx3 lx6
 estat ic
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_209033.log
+  log type:  text
+ opened on:   9 May 2026, 22:43:02
+
+. use "C:\tmp\gujarati.dta", clear
+
+.
+. regress ly lx2 lx3 lx6
+
+      Source |       SS           df       MS      Number of obs   =        23
+-------------+----------------------------------   F(3, 19)        =    315.21
+       Model |  .759492836         3  .253164279   Prob > F        =    0.0000
+    Residual |  .015260254        19  .000803171   R-squared       =    0.9803
+-------------+----------------------------------   Adj R-squared   =    0.9772
+       Total |   .77475309        22   .03521605   Root MSE        =    .02834
+
+------------------------------------------------------------------------------
+          ly | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         lx2 |    _b_table::di_eq_el():  3499  member _b_table::di_eq_el_u() not found
+--Break--
+r(1);
+
+end of do-file
+--Break--
+r(1);
+#+end_example
 
 ** Paso 5 — Comparación formal de modelos (AIC / BIC)
 
