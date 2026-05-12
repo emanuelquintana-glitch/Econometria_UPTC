@@ -306,7 +306,6 @@ scalar sumX2  = r(sum)
 quietly summarize xdev
 scalar sumx2  = r(sum)
 
-* Varianzas teoricas
 scalar var_beta_teo  = sigma2 / sumX2
 scalar var_alpha_teo = sigma2 / sumx2
 
@@ -318,6 +317,106 @@ di as text "Var teorica beta  = s2/SumX2:  " as result %9.6f var_beta_teo
 di as text "Var teorica alpha = s2/Sumx2:  " as result %9.6f var_alpha_teo
 di as text "Razon (debe ser >= 1):         " as result %9.4f var_alpha_teo/var_beta_teo
 #+END_SRC
+
+#+RESULTS: var-formula
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_19492.log
+  log type:  text
+ opened on:  11 May 2026, 21:39:19
+
+. clear
+
+. set seed 12345
+
+. set obs 50
+Number of observations (_N) was 0, now 50.
+
+.
+. gen X = runiform(1, 10)
+
+. gen u = rnormal(0, 1)
+
+. gen Y = 2 * X + u
+
+.
+. regress Y X, noconstant
+
+      Source |       SS           df       MS      Number of obs   =        50
+-------------+----------------------------------   F(1, 49)        =   7725.51
+       Model |  7076.16358         1  7076.16358   Prob > F        =    0.0000
+    Residual |  44.8814354        49  .915947662   R-squared       =    0.9937
+-------------+----------------------------------   Adj R-squared   =    0.9936
+       Total |  7121.04502        50    142.4209   Root MSE        =    .95705
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |   1.996822   .0227183    87.89   0.000     1.951168    2.042476
+------------------------------------------------------------------------------
+
+. scalar sigma2 = e(rss) / e(df_r)
+
+.
+. quietly summarize X
+
+. scalar Xbar   = r(mean)
+
+. scalar n      = r(N)
+
+.
+. gen X2   = X^2
+
+. gen xdev = (X - Xbar)^2
+
+.
+. quietly summarize X2
+
+. scalar sumX2  = r(sum)
+
+.
+. quietly summarize xdev
+
+. scalar sumx2  = r(sum)
+
+.
+. scalar var_beta_teo  = sigma2 / sumX2
+
+. scalar var_alpha_teo = sigma2 / sumx2
+
+.
+. di as text _newline "=== Verificacion algebraica ==="
+
+=== Verificacion algebraica ===
+
+. di as text "sigma^2 estimado:              " as result %9.6f sigma2
+sigma^2 estimado:               0.915948
+
+. di as text "SumX^2  (modelo origen):       " as result %9.2f sumX2
+SumX^2  (modelo origen):         1774.68
+
+. di as text "Sumx^2  (modelo intercepto):   " as result %9.2f sumx2
+Sumx^2  (modelo intercepto):      385.55
+
+. di as text "Var teorica beta  = s2/SumX2:  " as result %9.6f var_beta_teo
+Var teorica beta  = s2/SumX2:   0.000516
+
+. di as text "Var teorica alpha = s2/Sumx2:  " as result %9.6f var_alpha_teo
+Var teorica alpha = s2/Sumx2:   0.002376
+
+. di as text "Razon (debe ser >= 1):         " as result %9.4f var_alpha_teo/var_beta_teo
+Razon (debe ser >= 1):            4.6029
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_19492.log
+  log type:  text
+ closed on:  11 May 2026, 21:39:22
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
 
 ** Conclusión
 
