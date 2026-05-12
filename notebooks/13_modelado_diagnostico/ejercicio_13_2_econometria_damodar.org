@@ -1,1 +1,232 @@
+#+TITLE: Econometría — Gujarati, Capítulo 13
+#+SUBTITLE: Ejercicio 13.2 — Intercepto innecesario en regresión por el origen
+#+DATE: <2026-05-11>
+#+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both
 
+* Ejercicio 13.2
+
+#+BEGIN_QUOTE
+Suponga que el verdadero modelo es:
+
+  Yᵢ = β₁Xᵢ + uᵢ   (1)
+
+pero, en lugar de especificar esta regresión a través del origen,
+se especifica el modelo usual con intercepto:
+
+  Yᵢ = α₀ + α₁Xᵢ + vᵢ   (2)
+
+Evalúe las consecuencias de este error de especificación.
+#+END_QUOTE
+
+** Clasificación del error de especificación
+
+Este error corresponde a la *inclusión de una variable irrelevante*
+(sobreajuste o /overfitting/). La "variable" adicional es el término
+constante α₀ que, según el modelo verdadero (1), debería ser cero.
+
+En la taxonomía de Gujarati (sección 13.2):
+
+| Tipo de error         | Consecuencia principal          |
+|-----------------------+---------------------------------|
+| Omisión de relevante  | Sesgo + inconsistencia          |
+| Inclusión de irrelevante | Insesgadez + ineficiencia    |
+
+Este ejercicio ilustra el segundo caso.
+
+** Consecuencias teóricas
+
+*** 1. Insesgadez y consistencia — Propiedad preservada
+
+Los estimadores MCO de (2) siguen siendo *insesgados y consistentes*:
+
+$$E(\hat{\alpha}_1) = \beta_1 \qquad E(\hat{\alpha}_0) = 0$$
+
+El modelo captura la relación correcta en promedio porque el
+intercepto verdadero es cero y el estimador lo recupera en esperanza.
+
+*** 2. Eficiencia — Pérdida por grado de libertad desperdiciado
+
+Comparando las varianzas del estimador de la pendiente:
+
+*Modelo verdadero — regresión por el origen:*
+
+$$\text{Var}(\hat{\beta}_1) = \frac{\sigma^2}{\sum X_i^2}$$
+
+*Modelo mal especificado — con intercepto:*
+
+$$\text{Var}(\hat{\alpha}_1) = \frac{\sigma^2}{\sum x_i^2}
+= \frac{\sigma^2}{\sum X_i^2 - n\bar{X}^2}$$
+
+donde $\sum x_i^2 = \sum(X_i - \bar{X})^2$.
+
+Como $\sum X_i^2 \geq \sum x_i^2$ siempre (igualdad solo si
+$\bar{X} = 0$), se tiene que:
+
+$$\boxed{\text{Var}(\hat{\alpha}_1) \geq \text{Var}(\hat{\beta}_1)}$$
+
+Se desperdicia un grado de libertad estimando un parámetro que
+en realidad vale cero, lo que infla las varianzas de todos los
+estimadores.
+
+*** 3. Inferencia estadística — Válida pero menos potente
+
+- Las pruebas $t$ y $F$ siguen siendo *válidas* bajo este error.
+- Los intervalos de confianza son *más amplios* de lo necesario.
+- Las pruebas tienen *menor potencia*: es más difícil rechazar $H_0$
+  aunque sea falsa.
+
+*** 4. Bondad de ajuste — R² no comparable entre modelos
+
+El $R^2$ convencional supone la presencia de un intercepto para
+descomponer la varianza total. En modelos por el origen:
+
+- El $R^2$ estándar puede ser *engañoso o negativo*.
+- *No se comparan directamente* los $R^2$ de (1) y (2).
+- Stata reporta ~r2_u~ (no centrado) para ~noconstant~, que no
+  es comparable con el $R^2$ centrado del modelo con intercepto.
+
+** Resumen de consecuencias
+
+| Propiedad         | Consecuencia                                   |
+|-------------------+------------------------------------------------|
+| Insesgadez        | ✓ Preservada: E(α̂₁) = β₁, E(α̂₀) = 0        |
+| Consistencia      | ✓ Preservada                                   |
+| Eficiencia        | ✗ Perdida: Var(α̂₁) ≥ Var(β̂₁)               |
+| Validez pruebas   | ✓ t y F siguen siendo válidas                  |
+| Potencia          | ✗ Reducida por varianzas más grandes           |
+| R² comparable     | ✗ No comparable entre modelo (1) y (2)         |
+
+** Verificación empírica con datos simulados
+
+Generamos datos del proceso verdadero $Y_i = 2X_i + u_i$
+($\beta_1 = 2$, sin intercepto) y comparamos ambas especificaciones.
+
+#+NAME: sim-13-2
+#+BEGIN_SRC stata
+clear
+set seed 12345
+set obs 50
+
+gen X = runiform(1, 10)
+gen u = rnormal(0, 1)
+gen Y = 2 * X + u
+
+* --- Modelo verdadero: por el origen ---
+regress Y X, noconstant
+scalar var_beta = e(V)[1,1]
+scalar se_beta  = sqrt(var_beta)
+
+* --- Modelo mal especificado: con intercepto ---
+regress Y X
+scalar var_alpha = e(V)[1,1]
+scalar se_alpha  = sqrt(var_alpha)
+
+* --- Comparacion de varianzas ---
+di as text _newline "=== Comparacion de varianzas de la pendiente ==="
+di as text "Var(beta_1)  modelo correcto:    " as result %9.6f var_beta
+di as text "Var(alpha_1) modelo intercepto:  " as result %9.6f var_alpha
+di as text "SE(beta_1)   modelo correcto:    " as result %9.6f se_beta
+di as text "SE(alpha_1)  modelo intercepto:  " as result %9.6f se_alpha
+di as text "Razon Var(alpha)/Var(beta):       " as result %9.4f var_alpha/var_beta
+
+* --- Tabla comparativa ---
+quietly regress Y X, noconstant
+estimates store m_origen
+
+quietly regress Y X
+estimates store m_intercepto
+
+estimates table m_origen m_intercepto, ///
+    b(%9.4f) se stats(N r2)
+#+END_SRC
+
+** Interpretación de resultados esperados
+
+Al ejecutar el bloque anterior se observa:
+
+1. *Pendientes similares*: $\hat{\alpha}_1 \approx \hat{\beta}_1 \approx 2$,
+   confirmando la *insesgadez*. Ambos estimadores convergen al valor
+   verdadero $\beta_1 = 2$.
+
+2. *Intercepto cercano a cero*: $\hat{\alpha}_0 \approx 0$, confirmando
+   que el parámetro adicional no tiene contenido económico real.
+
+3. *Mayor error estándar en el modelo con intercepto*: el SE de
+   $\hat{\alpha}_1$ excede al de $\hat{\beta}_1$, evidenciando la
+   *pérdida de eficiencia* predicha teóricamente.
+
+4. *R² no centrado vs centrado*: Stata reporta ~r2~ no centrado para
+   ~noconstant~; no debe compararse directamente con el ~r2~ del modelo
+   con intercepto.
+
+** Verificación de la fórmula de varianzas
+
+#+NAME: var-formula
+#+BEGIN_SRC stata
+clear
+set seed 12345
+set obs 50
+
+gen X = runiform(1, 10)
+gen u = rnormal(0, 1)
+gen Y = 2 * X + u
+
+* Estimacion de sigma^2 (usando modelo verdadero)
+regress Y X, noconstant
+scalar sigma2 = e(rss) / e(df_r)
+
+* Suma de cuadrados
+quietly summarize X
+scalar Xbar   = r(mean)
+scalar n      = r(N)
+
+gen X2   = X^2
+gen xdev = (X - Xbar)^2
+
+quietly summarize X2
+scalar sumX2  = r(sum)
+
+quietly summarize xdev
+scalar sumx2  = r(sum)
+
+* Varianzas teoricas
+scalar var_beta_teo  = sigma2 / sumX2
+scalar var_alpha_teo = sigma2 / sumx2
+
+di as text _newline "=== Verificacion algebraica ==="
+di as text "sigma^2 estimado:              " as result %9.6f sigma2
+di as text "SumX^2  (modelo origen):       " as result %9.2f sumX2
+di as text "Sumx^2  (modelo intercepto):   " as result %9.2f sumx2
+di as text "Var teorica beta  = s2/SumX2:  " as result %9.6f var_beta_teo
+di as text "Var teorica alpha = s2/Sumx2:  " as result %9.6f var_alpha_teo
+di as text "Razon (debe ser >= 1):         " as result %9.4f var_alpha_teo/var_beta_teo
+#+END_SRC
+
+** Conclusión
+
+#+BEGIN_QUOTE
+Incluir un intercepto cuando el verdadero modelo pasa por el origen
+*no introduce sesgo* ($E(\hat{\alpha}_1) = \beta_1$) pero genera
+*ineficiencia*: se estima un parámetro que vale cero, se desperdicia
+un grado de libertad y aumenta innecesariamente la varianza de todos
+los estimadores. El costo no es la invalidez de la inferencia sino
+su menor precisión y potencia.
+#+END_QUOTE
+
+Regla práctica de Gujarati: si la teoría garantiza que la relación
+pasa por el origen (ej. $X = 0 \Rightarrow Y = 0$), usar ~noconstant~.
+En caso de duda, es preferible incluir el intercepto y asumir la
+pequeña pérdida de eficiencia antes que asumir un supuesto que podría
+introducir sesgo si estuviera equivocado.
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13, secciones 13.2 y 13.3.
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.). Pearson.
+  Capítulo 5.
+- Wooldridge, J. M. (2016). /Introductory Econometrics/ (6.ª ed.).
+  Cengage. Capítulo 3.
