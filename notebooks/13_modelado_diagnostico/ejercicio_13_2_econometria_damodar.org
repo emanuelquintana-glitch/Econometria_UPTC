@@ -290,11 +290,9 @@ gen X = runiform(1, 10)
 gen u = rnormal(0, 1)
 gen Y = 2 * X + u
 
-* Estimacion de sigma^2 (usando modelo verdadero)
 regress Y X, noconstant
 scalar sigma2 = e(rss) / e(df_r)
 
-* Suma de cuadrados
 quietly summarize X
 scalar Xbar   = r(mean)
 scalar n      = r(N)
