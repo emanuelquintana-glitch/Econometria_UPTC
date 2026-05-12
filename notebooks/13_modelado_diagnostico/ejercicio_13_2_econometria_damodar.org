@@ -114,17 +114,14 @@ gen X = runiform(1, 10)
 gen u = rnormal(0, 1)
 gen Y = 2 * X + u
 
-* --- Modelo verdadero: por el origen ---
 regress Y X, noconstant
 scalar var_beta = e(V)[1,1]
 scalar se_beta  = sqrt(var_beta)
 
-* --- Modelo mal especificado: con intercepto ---
 regress Y X
 scalar var_alpha = e(V)[1,1]
 scalar se_alpha  = sqrt(var_alpha)
 
-* --- Comparacion de varianzas ---
 di as text _newline "=== Comparacion de varianzas de la pendiente ==="
 di as text "Var(beta_1)  modelo correcto:    " as result %9.6f var_beta
 di as text "Var(alpha_1) modelo intercepto:  " as result %9.6f var_alpha
@@ -132,7 +129,6 @@ di as text "SE(beta_1)   modelo correcto:    " as result %9.6f se_beta
 di as text "SE(alpha_1)  modelo intercepto:  " as result %9.6f se_alpha
 di as text "Razon Var(alpha)/Var(beta):       " as result %9.4f var_alpha/var_beta
 
-* --- Tabla comparativa ---
 quietly regress Y X, noconstant
 estimates store m_origen
 
@@ -142,6 +138,126 @@ estimates store m_intercepto
 estimates table m_origen m_intercepto, ///
     b(%9.4f) se stats(N r2)
 #+END_SRC
+
+#+RESULTS: sim-13-2
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_18978.log
+  log type:  text
+ opened on:  11 May 2026, 21:38:15
+
+. clear
+
+. set seed 12345
+
+. set obs 50
+Number of observations (_N) was 0, now 50.
+
+.
+. gen X = runiform(1, 10)
+
+. gen u = rnormal(0, 1)
+
+. gen Y = 2 * X + u
+
+.
+. regress Y X, noconstant
+
+      Source |       SS           df       MS      Number of obs   =        50
+-------------+----------------------------------   F(1, 49)        =   7725.51
+       Model |  7076.16358         1  7076.16358   Prob > F        =    0.0000
+    Residual |  44.8814354        49  .915947662   R-squared       =    0.9937
+-------------+----------------------------------   Adj R-squared   =    0.9936
+       Total |  7121.04502        50    142.4209   Root MSE        =    .95705
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |   1.996822   .0227183    87.89   0.000     1.951168    2.042476
+------------------------------------------------------------------------------
+
+. scalar var_beta = e(V)[1,1]
+
+. scalar se_beta  = sqrt(var_beta)
+
+.
+. regress Y X
+
+      Source |       SS           df       MS      Number of obs   =        50
+-------------+----------------------------------   F(1, 48)        =   1682.58
+       Model |  1566.93272         1  1566.93272   Prob > F        =    0.0000
+    Residual |  44.7008881        48  .931268501   R-squared       =    0.9723
+-------------+----------------------------------   Adj R-squared   =    0.9717
+       Total |  1611.63361        49  32.8904818   Root MSE        =    .96502
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |   2.015967   .0491469    41.02   0.000     1.917151    2.114783
+       _cons |  -.1289224   .2927995    -0.44   0.662    -.7176353    .4597905
+------------------------------------------------------------------------------
+
+. scalar var_alpha = e(V)[1,1]
+
+. scalar se_alpha  = sqrt(var_alpha)
+
+.
+. di as text _newline "=== Comparacion de varianzas de la pendiente ==="
+
+=== Comparacion de varianzas de la pendiente ===
+
+. di as text "Var(beta_1)  modelo correcto:    " as result %9.6f var_beta
+Var(beta_1)  modelo correcto:     0.000516
+
+. di as text "Var(alpha_1) modelo intercepto:  " as result %9.6f var_alpha
+Var(alpha_1) modelo intercepto:   0.002415
+
+. di as text "SE(beta_1)   modelo correcto:    " as result %9.6f se_beta
+SE(beta_1)   modelo correcto:     0.022718
+
+. di as text "SE(alpha_1)  modelo intercepto:  " as result %9.6f se_alpha
+SE(alpha_1)  modelo intercepto:   0.049147
+
+. di as text "Razon Var(alpha)/Var(beta):       " as result %9.4f var_alpha/var_beta
+Razon Var(alpha)/Var(beta):          4.6799
+
+.
+. quietly regress Y X, noconstant
+
+. estimates store m_origen
+
+.
+. quietly regress Y X
+
+. estimates store m_intercepto
+
+.
+. estimates table m_origen m_intercepto, ///
+>     b(%9.4f) se stats(N r2)
+
+--------------------------------------
+    Variable | m_origen    m_inter~o
+-------------+------------------------
+           X |    1.9968      2.0160
+             |    0.0227      0.0491
+       _cons |               -0.1289
+             |                0.2928
+-------------+------------------------
+           N |        50          50
+          r2 |    0.9937      0.9723
+--------------------------------------
+                          Legend: b/se
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_18978.log
+  log type:  text
+ closed on:  11 May 2026, 21:38:18
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
 
 ** Interpretación de resultados esperados
 
