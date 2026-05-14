@@ -1476,3 +1476,7 @@ En relacion con el modleo verdadero el que acabamos de escribir, tambien present
 aparece linealmentre mientras que para este ultimo modelo aparece en forma log-lineal.
 
 Por ultimo consideremos que un investigador utiliza el siguiente modelo:
+
+$$Y_{i}^{*} = \beta_{2}^{*}X_{i}^{*} + \beta_{3}^{*}X_{i}^{*2} + \beta_{4}^{*}X_{i}^{*3} + u_{i}^{*}$$
+
+donde $Y_{i}^{*} = Y_{i} \epsilon_{i}$ y 
