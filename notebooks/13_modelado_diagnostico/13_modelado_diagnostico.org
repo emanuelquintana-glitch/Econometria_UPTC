@@ -1475,3 +1475,4 @@ $$In Y_{i} = \gamma_{1} + \gamma_{2}X_{i} + \gamma_{3}X_{i}^{2} + \gamma_{4}X_{i
 En relacion con el modleo verdadero el que acabamos de escribir, tambien presenta un sesgo de especificacion, en este caso originado por una *forma funcional incorrecta*: recordando que para el primer modleo $Y$
 aparece linealmentre mientras que para este ultimo modelo aparece en forma log-lineal.
 
+Por ultimo consideremos que un investigador utiliza el siguiente modelo:
