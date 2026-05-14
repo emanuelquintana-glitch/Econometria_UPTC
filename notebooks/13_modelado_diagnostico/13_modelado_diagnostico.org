@@ -1449,5 +1449,16 @@ $$Y_{i} = \beta_{2}X_{i} + \beta{3}X^{2} _{i} + \beta_{4}X^{3}_{i} + u_{1i}$$
 
 donde Y = costo total de produccion y X = produccio. La ecuacion es un ejemplo de la funcion cubica del costo total frecuente en los libros de texto.
 
-Pero suponga que, por alguna razon (por ejemplo, por pereza la grafica el diagrama de dispersion), un investigador decide utilizar el siguiente modelo.
+Pero suponga que, por alguna razon (por ejemplo, por pereza la grafica el diagrama de dispersion), un investigador decide utilizar el siguiente modelo:
 
+$$Y_i = \alpha_{1} + \alpha_{2}X_{i} + \alpha_{3}X_{i}^{2} + u_{2i}$$
+
+Observe que cambiamos la notcion para distinguir este modleo del modelo verdadero.
+Como se supone que el primer modleo es verdadero, la adopcion de el segundo contituiria un error de especificacion, que consiste en la *omision de una variable relevante* (X_{i}^3). Por consiguiente, el termino de error $u_{2i}$ es un hecho.
+
+$$u_{2i} = u_{1i} + \beta_{4}X_{i}^3$$
+
+Pronto veremos la importancia de esta relacion.
+Ahora supongamos que otro investigador utiliza el siguiente modelo:
+
+$$Y_i = \lambda_{1} + \lambda$$
