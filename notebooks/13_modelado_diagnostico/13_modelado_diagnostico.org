@@ -1439,3 +1439,6 @@ fn main() {
 
 #+RESULTS:
 : error: Could not compile `cargobSDLk7`.
+
+
+** 13.2 Tipos de errores de especificacion.
