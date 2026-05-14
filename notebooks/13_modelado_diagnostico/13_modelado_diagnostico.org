@@ -1485,3 +1485,7 @@ Otro tipo de error de especificacion se relaciona con la forma como el error est
 
 $$Y_i = \betaX_{i}u_{i}$$
 
+donde el termino de error estocastico entra de forma multiplicativa y tiene la propiedad de que $In(u_i)$ satisface los supuestos del MCRL, en comparacion con el siguiente modelo,
+
+$$Y_i = \alphaX_{i} + u_{i}$$
+ donde el termino de error entra en forma aditiva. Aunque las variables son las mismas en ambos modelos, se denoto el coeficiente de la pendiente de la ecuacion penultima con $\beta$, el coeficiente de la pendiente con $\alpha$. 
