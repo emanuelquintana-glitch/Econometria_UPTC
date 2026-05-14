@@ -1479,4 +1479,4 @@ Por ultimo consideremos que un investigador utiliza el siguiente modelo:
 
 $$Y_{i}^{*} = \beta_{2}^{*}X_{i}^{*} + \beta_{3}^{*}X_{i}^{*2} + \beta_{4}^{*}X_{i}^{*3} + u_{i}^{*}$$
 
-donde $Y_{i}^{*} = Y_{i} \epsilon_{i}$ y 
+donde $Y_{i}^{*} = Y_{i} \epsilon_{i}$ y $X_{i}^{*} = X_{i} + w_{i}$, con $\epsilon_{i}$ y $w_{i}$ como errores de medicion. Lo que plantea que la equacion ajustada es que, en lugar de los verdaderon $Y_{i}$ y $X_{i}$, se utilizan sus valores sustitutos, $Y_{i}^{*}$ y $X_{i}^{*}$,  
