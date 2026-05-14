@@ -1448,3 +1448,6 @@ Supongamos que con base en los criterios recien enumerados llegamos a un modelo 
 $$Y_{i} = \beta_{2}X_{i} + \beta{3}X^{2} _{i} + \beta_{4}X^{3}_{i} + u_{1i}$$
 
 donde Y = costo total de produccion y X = produccio. La ecuacion es un ejemplo de la funcion cubica del costo total frecuente en los libros de texto.
+
+Pero suponga que, por alguna razon (por ejemplo, por pereza la grafica el diagrama de dispersion), un investigador decide utilizar el siguiente modelo.
+
