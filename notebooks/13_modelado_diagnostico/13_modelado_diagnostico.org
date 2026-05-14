@@ -60,7 +60,7 @@ Segun Hendry y Richard, un modelo econometrico bien especificado debe satisfacer
 seis criterios fundamentales. La eleccion no es un procedimiento mecanico: exige
 que el investigador combine rigor estadistico con fundamento economico.
 
-** 13.1.1 Admisibilidad de los Datos
+** 13.1 Admisibilidad de los Datos
 :PROPERTIES:
 :CUSTOM_ID: admisibilidad
 :END:
@@ -164,7 +164,7 @@ cat("\nTodas las predicciones son admisibles (entre 0 y 100).\n")
 :
 : Todas las predicciones son admisibles (entre 0 y 100).
 
-** 13.1.2 Consistencia con la Teoria Economica
+** 13.2 Consistencia con la Teoria Economica
 :PROPERTIES:
 :CUSTOM_ID: consistencia-teoria
 :END:
