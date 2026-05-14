@@ -1442,3 +1442,7 @@ fn main() {
 
 
 ** 13.2 Tipos de errores de especificacion.
+
+Supongamos que con base en los criterios recien enumerados llegamos a un modelo que aceptamos como bueno. En concreto, ese modelo es
+
+$$Y_{i} = \beta_{2}X_{i} + \beta$$
