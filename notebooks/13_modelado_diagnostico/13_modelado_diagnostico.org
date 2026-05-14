@@ -1461,4 +1461,17 @@ $$u_{2i} = u_{1i} + \beta_{4}X_{i}^3$$
 Pronto veremos la importancia de esta relacion.
 Ahora supongamos que otro investigador utiliza el siguiente modelo:
 
-$$Y_i = \lambda_{1} + \lambda$$
+$$Y_i = \lambda_{1} + \lambda_{2}X_{i} + \lambda_{3}X_{i}^{2} + \lamba_{4}X_{i}^{3} + \lambda_{5}X_{i}^{4} + u_{3i}$$
+
+Si en la ecuacion 1 es el verdadero respecto a la ultima ecuacion, tambien contituye un error de especificacion que consisten en *incluir una variable innecesaria o irrelevante* en el sentido de que el modelo verdadeo supone que $\lambda_5$ es cero. El nueco termino de error es de hecho.
+
+$$u_{3i} = u_{1i} - \lambda_{5}X_{i}^{4}$$
+$$ = u_{1i}$$ pues $\lambda_{5} = 0$ en el modleo verdadero.
+
+Suponga ahora que otro investigador postula el siguiente modelo:
+
+$$In Y_{i} = \gamma_{1} + \gamma_{2}X_{i} + \gamma_{3}X_{i}^{2} + \gamma_{4}X_{i}^3 + u_{4i}$$
+
+En relacion con el modleo verdadero el que acabamos de escribir, tambien presenta un sesgo de especificacion, en este caso originado por una *forma funcional incorrecta*: recordando que para el primer modleo $Y$
+aparece linealmentre mientras que para este ultimo modelo aparece en forma log-lineal.
+
