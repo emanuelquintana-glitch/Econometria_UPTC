@@ -10,4 +10,8 @@ Las consecuencias de este error son grave sy se detallan a continuacion:
 
 *1. Sesgo e inconsistencia del estimador de la pendiente*
 
-A diferencia del caso
+A diferencia del caso anterior (donde incluir un intercepto innecesario no causa sesgo) omitir un intercepto que si eciste en la realidad provoca que el estimador de la pendiente (\beta_{1}) sea *sesgado e inconsistente*.
+
+- *Formula del sesgo*: El valor esperado del estimador d ela pendiente en el modleo (1) sera:
+
+$$E(\beta_{1}_{}) = \alpha_{1} + \alpha_{0}(\frac{})$$
