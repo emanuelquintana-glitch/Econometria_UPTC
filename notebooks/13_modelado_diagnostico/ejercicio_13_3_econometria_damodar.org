@@ -177,6 +177,157 @@ estimates table m_intercepto m_origen, ///
     b(%9.4f) se stats(N r2)
 #+END_SRC
 
+#+RESULTS: sim-13-3
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_14993.log
+  log type:  text
+ opened on:  15 May 2026, 21:30:15
+
+. clear
+
+. set seed 12345
+
+. set obs 50
+Number of observations (_N) was 0, now 50.
+
+.
+. gen X = runiform(1, 10)
+
+. gen v = rnormal(0, 1)
+
+. gen Y = 3 + 2 * X + v
+
+.
+. regress Y X
+
+      Source |       SS           df       MS      Number of obs   =        50
+-------------+----------------------------------   F(1, 48)        =   1682.58
+       Model |  1566.93272         1  1566.93272   Prob > F        =    0.0000
+    Residual |  44.7008911        48  .931268564   R-squared       =    0.9723
+-------------+----------------------------------   Adj R-squared   =    0.9717
+       Total |  1611.63361        49  32.8904819   Root MSE        =    .96502
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |   2.015967   .0491469    41.02   0.000     1.917151    2.114784
+       _cons |   2.871078   .2927995     9.81   0.000     2.282365    3.459791
+------------------------------------------------------------------------------
+
+.
+. scalar alpha0_hat = _b[_cons]
+
+. scalar alpha1_hat = _b[X]
+
+. scalar se_alpha1  = _se[X]
+
+. scalar var_alpha1 = se_alpha1^2
+
+.
+. regress Y X, noconstant
+
+      Source |       SS           df       MS      Number of obs   =        50
+-------------+----------------------------------   F(1, 49)        =   3863.98
+       Model |  10585.9202         1  10585.9202   Prob > F        =    0.0000
+    Residual |  134.242323        49  2.73963924   R-squared       =    0.9875
+-------------+----------------------------------   Adj R-squared   =    0.9872
+       Total |  10720.1625        50  214.403249   Root MSE        =    1.6552
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |   2.442332   .0392905    62.16   0.000     2.363375    2.521289
+------------------------------------------------------------------------------
+
+.
+. scalar beta1_hat = _b[X]
+
+. scalar se_beta1  = _se[X]
+
+. scalar var_beta1 = se_beta1^2
+
+.
+. gen X2 = X^2
+
+. quietly summarize X
+
+. scalar sumXi  = r(sum)
+
+. quietly summarize X2
+
+. scalar sumX2i = r(sum)
+
+.
+. scalar sesgo_teo = 3 * (sumXi / sumX2i)
+
+. scalar sesgo_emp = beta1_hat - alpha1_hat
+
+.
+. di as text _newline "=== Comparación de estimadores ==="
+
+=== Comparación de estimadores ===
+
+. di as text "alpha_1 (modelo correcto):      " as result %9.4f alpha1_hat
+alpha_1 (modelo correcto):         2.0160
+
+. di as text "beta_1  (modelo sin intercepto):" as result %9.4f beta1_hat
+beta_1  (modelo sin intercepto):   2.4423
+
+. di as text "Sesgo teórico esperado:         " as result %9.4f sesgo_teo
+Sesgo teórico esperado:            0.4455
+
+. di as text "Sesgo empírico (beta-alpha):     " as result %9.4f sesgo_emp
+Sesgo empírico (beta-alpha):        0.4264
+
+. di as text _newline "=== Error estándar de la pendiente ==="
+
+=== Error estándar de la pendiente ===
+
+. di as text "SE(alpha_1) modelo correcto:    " as result %9.4f se_alpha1
+SE(alpha_1) modelo correcto:       0.0491
+
+. di as text "SE(beta_1)  modelo origen:      " as result %9.4f se_beta1
+SE(beta_1)  modelo origen:         0.0393
+
+.
+. quietly regress Y X
+
+. estimates store m_intercepto
+
+.
+. quietly regress Y X, noconstant
+
+. estimates store m_origen
+
+.
+. estimates table m_intercepto m_origen, ///
+>     b(%9.4f) se stats(N r2)
+
+--------------------------------------
+    Variable | m_inter~o   m_origen
+-------------+------------------------
+           X |    2.0160      2.4423
+             |    0.0491      0.0393
+       _cons |    2.8711
+             |    0.2928
+-------------+------------------------
+           N |        50          50
+          r2 |    0.9723      0.9875
+--------------------------------------
+                          Legend: b/se
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_14993.log
+  log type:  text
+ closed on:  15 May 2026, 21:30:18
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
 ** Interpretación de resultados esperados
 
 Al ejecutar el bloque anterior se observa:
