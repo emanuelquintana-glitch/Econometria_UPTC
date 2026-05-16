@@ -132,7 +132,6 @@ clear
 set seed 12345
 set obs 50
 
-* Modelo verdadero: Y = 3 + 2*X + v
 gen X = runiform(1, 10)
 gen v = rnormal(0, 1)
 gen Y = 3 + 2 * X + v
