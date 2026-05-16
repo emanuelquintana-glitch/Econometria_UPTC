@@ -390,6 +390,100 @@ di as text "Sesgo empírico (beta-alpha):     " as result %9.4f beta1 - alpha1
 di as text "Diferencia (emp - teo):         " as result %9.4f (beta1 - alpha1) - sesgo_teo
 #+END_SRC
 
+#+RESULTS: sesgo-formula
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_15637.log
+  log type:  text
+ opened on:  15 May 2026, 21:32:31
+
+. clear
+
+. set seed 12345
+
+. set obs 50
+Number of observations (_N) was 0, now 50.
+
+.
+. gen X  = runiform(1, 10)
+
+. gen v  = rnormal(0, 1)
+
+. gen Y  = 3 + 2 * X + v
+
+. gen X2 = X^2
+
+.
+. quietly summarize X
+
+. scalar Xbar  = r(mean)
+
+. scalar sumXi = r(sum)
+
+.
+. quietly summarize X2
+
+. scalar sumX2i = r(sum)
+
+.
+. scalar alpha0    = 3
+
+. scalar sesgo_teo = alpha0 * (sumXi / sumX2i)
+
+.
+. quietly regress Y X
+
+. scalar alpha1 = _b[X]
+
+.
+. quietly regress Y X, noconstant
+
+. scalar beta1 = _b[X]
+
+.
+. di as text _newline "=== Verificación algebraica del sesgo ==="
+
+=== Verificación algebraica del sesgo ===
+
+. di as text "alpha_0 verdadero:              " as result %9.4f alpha0
+alpha_0 verdadero:                 3.0000
+
+. di as text "sum(X_i):                       " as result %9.2f sumXi
+sum(X_i):                          263.55
+
+. di as text "sum(X_i^2):                     " as result %9.2f sumX2i
+sum(X_i^2):                       1774.68
+
+. di as text "Ratio sum(X)/sum(X^2):          " as result %9.6f sumXi/sumX2i
+Ratio sum(X)/sum(X^2):           0.148503
+
+. di as text "Sesgo teórico = a0*ratio:       " as result %9.4f sesgo_teo
+Sesgo teórico = a0*ratio:          0.4455
+
+. di as text _newline "alpha_1 (modelo correcto):      " as result %9.4f alpha1
+
+alpha_1 (modelo correcto):         2.0160
+
+. di as text "beta_1  (modelo origen):        " as result %9.4f beta1
+beta_1  (modelo origen):           2.4423
+
+. di as text "Sesgo empírico (beta-alpha):     " as result %9.4f beta1 - alpha1
+Sesgo empírico (beta-alpha):        0.4264
+
+. di as text "Diferencia (emp - teo):         " as result %9.4f (beta1 - alpha1) - sesgo_teo
+Diferencia (emp - teo):           -0.0191
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_15637.log
+  log type:  text
+ closed on:  15 May 2026, 21:32:32
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
 ** Conclusión
 
 #+BEGIN_QUOTE
