@@ -149,7 +149,6 @@ scalar beta1_hat = _b[X]
 scalar se_beta1  = _se[X]
 scalar var_beta1 = se_beta1^2
 
-* --- Verificación del sesgo teórico ---
 gen X2 = X^2
 quietly summarize X
 scalar sumXi  = r(sum)
