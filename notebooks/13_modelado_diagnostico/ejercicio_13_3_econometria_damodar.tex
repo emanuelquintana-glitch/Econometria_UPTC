@@ -1,0 +1,436 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.3}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Ejercicio 13.3 --- Omisión del Intercepto}\\[6pt]
+  {\LARGE\bfseries cuando el Modelo Verdadero lo Incluye}\\[12pt]
+  {\large\itshape Consecuencias del error de especificación por omisión}\\
+  {\large\itshape de una variable relevante: el término constante}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.3 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.\
+  por Emanuel Quintana Silva}\\[4pt]
+  {\small\textsc{Verificación empírica con datos simulados, $n = 50$, semilla 12345}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento del problema}
+%------------------------------------------------------------------------------
+
+Se continúa con el ejercicio 13.2, pero ahora el modelo \textbf{(2) es el
+verdadero}:
+
+\begin{align}
+  \textbf{Modelo verdadero:} \quad
+  Y_i &= \alpha_0 + \alpha_1 X_i + v_i \label{eq:verdadero}\\[6pt]
+  \textbf{Modelo mal especificado:} \quad
+  Y_i &= \beta_1 X_i + u_i \label{eq:origen}
+\end{align}
+
+El modelo~\eqref{eq:origen} obliga a la línea de regresión a pasar por el
+origen, omitiendo el término constante $\alpha_0 \neq 0$ que sí existe en
+la realidad.
+
+En la taxonomía de Gujarati (sección~13.2), este error corresponde a la
+\textbf{omisión de una variable relevante}, donde la ``variable'' omitida
+es el término constante $\alpha_0$. Es el caso opuesto al ejercicio anterior:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Tipo de error} & \textbf{Consecuencia principal} & \textbf{Ejercicio} \\
+\midrule
+Inclusión de irrelevante & Insesgadez + ineficiencia & 13.2 \\
+\textbf{Omisión de relevante} & \textbf{Sesgo + inconsistencia} & \textbf{13.3} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Consecuencias teóricas}
+%------------------------------------------------------------------------------
+
+\subsection{Sesgo e inconsistencia del estimador de la pendiente}
+
+El estimador MCO de $\beta_1$ en el modelo~\eqref{eq:origen}, forzado a
+pasar por el origen, es:
+
+\begin{equation}
+  \hat{\beta}_1 = \frac{\sum X_i Y_i}{\sum X_i^2}
+\end{equation}
+
+Sustituyendo el modelo verdadero $Y_i = \alpha_0 + \alpha_1 X_i + v_i$:
+
+\begin{align}
+  E(\hat{\beta}_1)
+  &= \frac{\sum X_i\,E(Y_i)}{\sum X_i^2}
+   = \frac{\sum X_i(\alpha_0 + \alpha_1 X_i)}{\sum X_i^2} \notag \\[4pt]
+  &= \alpha_1 + \alpha_0\left(\frac{\sum X_i}{\sum X_i^2}\right)
+\end{align}
+
+El sesgo resultante es:
+
+\begin{equation}
+  \boxed{
+    \operatorname{Sesgo}(\hat{\beta}_1)
+    = \alpha_0 \cdot \frac{\sum X_i}{\sum X_i^2}
+  }
+\end{equation}
+
+El estimador $\hat{\beta}_1$ solo sería insesgado si:
+
+\begin{itemize}[leftmargin=1.8em]
+  \item $\alpha_0 = 0$ \quad (contradice el supuesto del modelo verdadero), o
+  \item $\sum X_i = 0$ \quad (raramente plausible con datos económicos, donde $X_i > 0$).
+\end{itemize}
+
+Dado que ninguna de estas condiciones se cumple en general, el sesgo
+\textbf{no desaparece al aumentar $n$}: el estimador también es
+\textbf{inconsistente}.
+
+\begin{clave}
+  A diferencia del Ej.~13.2, donde $E(\hat{\alpha}_1) = \beta_1$ se
+  preservaba, aquí $E(\hat{\beta}_1) \neq \alpha_1$ de forma sistemática.
+  La dirección del sesgo depende del signo de $\alpha_0$: si $\alpha_0 > 0$
+  y $\sum X_i > 0$ (el caso típico), el sesgo es \textbf{positivo} y se
+  sobreestima la pendiente.
+\end{clave}
+
+\subsection{Estimación incorrecta de la varianza del error}
+
+El estimador de $\sigma^2$ en el modelo~\eqref{eq:origen} usa $n - 1$
+grados de libertad:
+
+\begin{equation}
+  \hat{\sigma}^2_{(1)} = \frac{\sum \hat{u}_i^2}{n - 1}
+\end{equation}
+
+Al forzar la línea a pasar por el origen, los residuos $\hat{u}_i$ deben
+absorber el efecto del intercepto omitido $\alpha_0$, produciendo residuos
+sistemáticamente más grandes que en el modelo correcto. Esto conduce a una
+\textbf{sobreestimación} de $\sigma^2$ y, en consecuencia, a varianzas
+estimadas incorrectas para todos los coeficientes.
+
+\subsection{Inferencia estadística inválida}
+
+Dado que tanto los coeficientes como sus varianzas estimadas están sesgados:
+
+\begin{itemize}[leftmargin=1.8em]
+  \item Las pruebas $t$ y $F$ \textbf{dejan de ser válidas} y pueden llevar
+    a conclusiones erróneas sobre la significancia de $X$.
+  \item Los intervalos de confianza \textbf{no tienen la cobertura nominal}:
+    no contendrán el verdadero $\alpha_1$ con la probabilidad deseada $(1-\alpha)$.
+  \item Los errores de Tipo~I y Tipo~II se cometen de forma sistemática,
+    no aleatoria.
+\end{itemize}
+
+\subsection{$R^2$ potencialmente negativo}
+
+En regresión por el origen, los residuos no necesariamente suman cero
+($\sum \hat{u}_i \neq 0$), por lo que la descomposición estándar de la
+varianza total no se sostiene:
+
+\begin{equation}
+  \underbrace{\sum(Y_i - \bar{Y})^2}_{SCT}
+  \;\neq\;
+  \underbrace{SCM}_{\text{explicada}}
+  +
+  \underbrace{SCR}_{\text{residual}}
+\end{equation}
+
+El $R^2$ convencional puede ser \textbf{negativo}, indicando que el modelo
+ajustado predice peor que el simple promedio $\bar{Y}$. Stata reporta
+$R^2$ no centrado (\texttt{r2\_u}) para \texttt{noconstant}, que no es
+comparable con el $R^2$ centrado del modelo con intercepto.
+
+\subsection{Predicciones sesgadas}
+
+Los pronósticos $\hat{Y}_i = \hat{\beta}_1 X_i$ estarán sistemáticamente
+desplazados respecto a los valores reales. El sesgo es especialmente
+pronunciado para valores de $X$ cercanos a cero, donde el intercepto
+omitido tiene mayor peso relativo.
+
+%------------------------------------------------------------------------------
+\section{Resumen de consecuencias}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{4.2cm}p{4.0cm}p{4.2cm}}
+\toprule
+\textbf{Propiedad}
+  & \textbf{Ej.~13.2} \newline (intercepto innecesario)
+  & \textbf{Ej.~13.3} \newline (intercepto omitido) \\
+\midrule
+Insesgadez          & \checkmark\ Preservada        & $\times$\ Perdida \\
+Consistencia        & \checkmark\ Preservada        & $\times$\ Perdida \\
+Eficiencia          & $\sim$\ Reducida              & --- No aplica \\
+Validez $t$ y $F$   & \checkmark\ Válidas           & $\times$\ Inválidas \\
+Intervalos de conf. & $\sim$\ Más amplios           & $\times$\ Cobertura incorrecta \\
+$R^2$ comparable    & $\sim$\ No comparable         & $\times$\ Puede ser negativo \\
+Predicciones        & \checkmark\ Insesgadas        & $\times$\ Sesgadas sistemáticamente \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Verificación empírica con datos simulados}
+%------------------------------------------------------------------------------
+
+Se generan datos del proceso verdadero $Y_i = 3 + 2X_i + v_i$
+($\alpha_0 = 3$, $\alpha_1 = 2$, $v_i \sim N(0,1)$, $n = 50$) y se
+comparan ambas especificaciones.
+
+\subsection{Modelo correcto --- con intercepto}
+
+\begin{align}
+  \widehat{Y}_i &= 2.8711 + 2.0160\,X_i
+\end{align}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error est.} & \textbf{Razón $t$} & \textbf{$P(>|t|)$} \\
+\midrule
+$X_i$      &  2.0160 & 0.0491 &  41.02 & 0.000 \\
+Constante  &  2.8711 & 0.2928 &   9.81 & 0.000 \\
+\midrule
+\multicolumn{5}{l}{$R^2 = 0.9723$\quad $\bar{R}^2 = 0.9717$\quad $F(1,48) = 1682.58$\quad $n = 50$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Modelo mal especificado --- regresión por el origen}
+
+\begin{align}
+  \widehat{Y}_i &= 2.4423\,X_i
+\end{align}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Variable} & \textbf{Coeficiente} & \textbf{Error est.} & \textbf{Razón $t$} & \textbf{$P(>|t|)$} \\
+\midrule
+$X_i$  &  2.4423 & 0.0393 & 62.16 & 0.000 \\
+\midrule
+\multicolumn{5}{l}{$R^2_u = 0.9875$ (no centrado)\quad $F(1,49) = 3863.98$\quad $n = 50$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{clave}
+  El $R^2 = 0.9875$ del modelo por el origen es \textbf{no centrado} y no
+  es comparable con el $R^2 = 0.9723$ del modelo con intercepto. La
+  apariencia de ``mejor ajuste'' en el modelo restringido es un artefacto
+  numérico, no evidencia de superioridad.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Verificación de la fórmula del sesgo}
+%------------------------------------------------------------------------------
+
+Con los resultados de Stata se verifica algebraicamente la fórmula del sesgo:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lr}
+\toprule
+\textbf{Cantidad} & \textbf{Valor} \\
+\midrule
+$\alpha_0$ verdadero                              &  3.0000 \\
+$\sum X_i$                                        & 263.55 \\
+$\sum X_i^2$                                      & 1774.68 \\
+$\sum X_i / \sum X_i^2$                           &  0.148503 \\
+Sesgo teórico $= \alpha_0 \cdot \frac{\sum X_i}{\sum X_i^2}$ & 0.4455 \\
+\midrule
+$\hat{\alpha}_1$ (modelo correcto)                &  2.0160 \\
+$\hat{\beta}_1$  (modelo por el origen)           &  2.4423 \\
+Sesgo empírico $= \hat{\beta}_1 - \hat{\alpha}_1$ &  0.4264 \\
+Diferencia (empírico $-$ teórico)                 & $-$0.0191 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La pequeña diferencia de $-0.0191$ entre el sesgo empírico ($0.4264$) y el
+teórico ($0.4455$) se debe a que $\hat{\alpha}_1 \neq \alpha_1 = 2$ exactamente
+por variación muestral. La fórmula se verifica con alta precisión.
+
+\begin{clave}
+  $\hat{\beta}_1 = 2.4423 \neq 2.0160 \approx \hat{\alpha}_1$. La
+  sobreestimación de la pendiente en el modelo restringido
+  ($\Delta = 0.4264$) coincide estrechamente con el sesgo teórico predicho
+  ($0.4455 = 3 \times 263.55/1774.68$). El intercepto estimado en el modelo
+  correcto ($\hat{\alpha}_0 = 2.871$, $t = 9.81$, $p < 0.001$) confirma que
+  el término constante era \textbf{necesario} y estadísticamente significativo.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Tabla comparativa de estimadores}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lcc}
+\toprule
+                              & \textbf{Modelo correcto} & \textbf{Modelo origen} \\
+\textbf{Variable}             & $(\alpha_0, \alpha_1 X)$   & $(\beta_1 X)$         \\
+\midrule
+$X_i$ (pendiente)             & 2.0160  & 2.4423  \\
+Error estándar                & 0.0491  & 0.0393  \\
+Constante                     & 2.8711  & ---     \\
+Error estándar                & 0.2928  & ---     \\
+\midrule
+$n$                           & 50      & 50      \\
+$R^2$                         & 0.9723  & 0.9875* \\
+Root MSE                      & 0.9650  & 1.6552  \\
+\midrule
+Sesgo de $\hat{\beta}_1$      & 0       & $+0.4264$ \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize * $R^2$ no centrado; no comparable con el $R^2$ centrado del modelo con intercepto.}
+\end{tabular}
+\end{center}
+
+Nótese que el Root MSE del modelo por el origen ($1.6552$) es
+\textbf{considerablemente mayor} que el del modelo correcto ($0.9650$),
+evidenciando la sobreestimación de $\sigma^2$ predicha teóricamente:
+los residuos deben absorber el efecto del intercepto omitido.
+
+%------------------------------------------------------------------------------
+\section{Síntesis: comparación de los dos errores de especificación}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{3.8cm}p{3.8cm}p{3.8cm}}
+\toprule
+\textbf{Criterio}
+  & \textbf{Ej.~13.2} \newline (intercepto innecesario)
+  & \textbf{Ej.~13.3} \newline (intercepto omitido) \\
+\midrule
+Error cometido        & Incluir $\alpha_0$ cuando $\alpha_0 = 0$ & Omitir $\alpha_0$ cuando $\alpha_0 \neq 0$ \\
+Tipo en taxonomía     & Variable irrelevante incluida            & Variable relevante omitida \\
+$E(\hat{\beta}_1)$    & $= \beta_1$ (insesgado)                  & $\neq \alpha_1$ (sesgado) \\
+$\hat{\sigma}^2$      & Levemente inflada                        & Fuertemente sobreestimada \\
+Pruebas $t$, $F$      & Válidas                                  & Inválidas \\
+Costo principal       & Menor eficiencia                         & Sesgo + inferencia inválida \\
+Gravedad              & Leve                                     & \textbf{Grave} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Conclusión}
+%------------------------------------------------------------------------------
+
+\begin{clave}
+  Omitir un intercepto relevante es un error de especificación
+  \textbf{mucho más grave} que incluir uno irrelevante. Mientras que el
+  segundo (Ej.~13.2) solo genera \textit{ineficiencia} --- estimadores
+  insesgados pero con mayor varianza ---, el primero invalida las
+  propiedades fundamentales del estimador MCO: se pierde la
+  \textbf{insesgadez} y la \textbf{consistencia}, la inferencia estadística
+  deja de ser válida y las predicciones estarán sistemáticamente sesgadas.
+
+  Los datos de Stata confirman la teoría con precisión:
+  $\hat{\beta}_1 = 2.4423$ sobreestima la pendiente verdadera en
+  $+0.4264$, cifra muy cercana al sesgo teórico de $0.4455$. El Root MSE
+  se incrementa de $0.9650$ a $1.6552$ al restringir el modelo, evidencia
+  directa de la sobreestimación de $\sigma^2$.
+
+  La regla práctica de Gujarati cobra aquí su pleno sentido: \textit{ante la
+  duda sobre si incluir o no un intercepto, es preferible incluirlo y
+  asumir la pequeña pérdida de eficiencia}. Omitirlo cuando realmente
+  existe en el proceso generador de datos produce un error sistemático que
+  no se corrige con muestras más grandes.
+\end{clave}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota metodológica.}
+La asimetría entre los dos errores de especificación tiene implicaciones
+prácticas directas. En la estrategia de modelación econométrica, la
+\textit{regla general} es partir del modelo más general (con intercepto)
+y reducirlo solo si la teoría económica y las pruebas estadísticas lo
+justifican conjuntamente. Restringir el modelo a priori sin fundamento
+teórico sólido expone al investigador al sesgo documentado en este
+ejercicio. Los únicos casos donde la regresión por el origen es
+apropiada son aquellos en que la teoría garantiza inequívocamente que
+$Y = 0$ cuando $X = 0$ (ej.\ ingresos nulos implican consumo nulo en
+ciertos modelos), y aun en estos casos la restricción debería
+contrastarse formalmente.}
+
+\vspace{14pt}
+
+\begin{center}
+\small
+\textsc{Referencias}\\[6pt]
+\end{center}
+
+\noindent Gujarati, D.~N., \& Porter, D.~C. (2010). \textit{Econometría}
+(5.ª~ed.). McGraw-Hill. Capítulo~13, secciones~13.2 y~13.3.
+
+\noindent Greene, W.~H. (2018). \textit{Econometric Analysis} (8.ª~ed.).
+Pearson. Capítulo~5.
+
+\noindent Wooldridge, J.~M. (2016). \textit{Introductory Econometrics}
+(6.ª~ed.). Cengage. Capítulo~3.
+
+\end{document}
