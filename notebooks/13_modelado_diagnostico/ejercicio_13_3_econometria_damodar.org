@@ -136,7 +136,6 @@ gen X = runiform(1, 10)
 gen v = rnormal(0, 1)
 gen Y = 3 + 2 * X + v
 
-* --- Modelo correcto: con intercepto ---
 regress Y X
 
 scalar alpha0_hat = _b[_cons]
