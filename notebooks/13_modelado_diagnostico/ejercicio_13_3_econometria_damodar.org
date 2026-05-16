@@ -1,0 +1,13 @@
+#+TITLE: Ejercicio 13.4 del Libro de econometria de Damodar Gujarati.
+#+DATE: <15/05/2026>
+
+* Continue con el ejercicio 13.2, pero suponga que el modelo (2) es el verdadero. Analice las consecuencias de ajustar el modelo mal especificado (1).
+
+
+Si el *modelo (2)* es el verdadero, (*$Y_{i} = \alpha_{0} + \alpha_{1}X_{1 }+ v_{i}$*) pero se ajusta el *modelo* ($Y_{i} = \beta_{1}X_{i} + u_{i}$), se esta cometiendo un error de especificacion por *omision de una variable relevante*, donde la variable omitida es el intercepto o termino constante (\alpha_{0})
+
+Las consecuencias de este error son grave sy se detallan a continuacion:
+
+*1. Sesgo e inconsistencia del estimador de la pendiente*
+
+A diferencia del caso
