@@ -143,7 +143,6 @@ scalar alpha1_hat = _b[X]
 scalar se_alpha1  = _se[X]
 scalar var_alpha1 = se_alpha1^2
 
-* --- Modelo mal especificado: sin intercepto ---
 regress Y X, noconstant
 
 scalar beta1_hat = _b[X]
