@@ -14,4 +14,4 @@ A diferencia del caso anterior (donde incluir un intercepto innecesario no causa
 
 - *Formula del sesgo*: El valor esperado del estimador d ela pendiente en el modleo (1) sera:
 
-$$E(\beta_{1}_{}) = \alpha_{1} + \alpha_{0}(\frac{})$$
+$$E(\beta_{1}_{}) = \alpha_{1} + \alpha_{0}(\frac{}{})$$
