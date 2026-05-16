@@ -369,7 +369,6 @@ scalar sumXi = r(sum)
 quietly summarize X2
 scalar sumX2i = r(sum)
 
-* Sesgo teórico: alpha_0 * sum(X_i) / sum(X_i^2)
 scalar alpha0    = 3
 scalar sesgo_teo = alpha0 * (sumXi / sumX2i)
 
