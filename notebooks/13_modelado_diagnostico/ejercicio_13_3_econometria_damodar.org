@@ -1,17 +1,272 @@
-#+TITLE: Ejercicio 13.4 del Libro de econometria de Damodar Gujarati.
-#+DATE: <15/05/2026>
+#+TITLE: Econometría — Gujarati, Capítulo 13
+#+SUBTITLE: Ejercicio 13.3 — Omisión del intercepto cuando el modelo verdadero lo incluye
+#+DATE: <2026-05-15>
+#+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both
 
-* Continue con el ejercicio 13.2, pero suponga que el modelo (2) es el verdadero. Analice las consecuencias de ajustar el modelo mal especificado (1).
+* Ejercicio 13.3
 
+#+BEGIN_QUOTE
+Continúe con el ejercicio 13.2, pero suponga que el modelo (2) es el
+verdadero:
 
-Si el *modelo (2)* es el verdadero, (*$Y_{i} = \alpha_{0} + \alpha_{1}X_{1 }+ v_{i}$*) pero se ajusta el *modelo* ($Y_{i} = \beta_{1}X_{i} + u_{i}$), se esta cometiendo un error de especificacion por *omision de una variable relevante*, donde la variable omitida es el intercepto o termino constante (\alpha_{0})
+  Y_i = α₀ + α₁ X_i + v_i    (2)
 
-Las consecuencias de este error son grave sy se detallan a continuacion:
+Analice las consecuencias de ajustar el modelo mal especificado (1):
 
-*1. Sesgo e inconsistencia del estimador de la pendiente*
+  Y_i = β₁ X_i + u_i          (1)
+#+END_QUOTE
 
-A diferencia del caso anterior (donde incluir un intercepto innecesario no causa sesgo) omitir un intercepto que si eciste en la realidad provoca que el estimador de la pendiente (\beta_{1}) sea *sesgado e inconsistente*.
+** Clasificación del error de especificación
 
-- *Formula del sesgo*: El valor esperado del estimador d ela pendiente en el modleo (1) sera:
+Este es el caso *opuesto* al ejercicio 13.2. El modelo verdadero contiene
+un intercepto $\alpha_0 \neq 0$, pero se ajusta una regresión forzada a
+pasar por el origen.
 
-$$E(\beta_{1}_{}) = \alpha_{1} + \alpha_{0}(\frac{}{})$$
+En la taxonomía de Gujarati (sección 13.2), este error corresponde a la
+*omisión de una variable relevante*, donde la "variable" omitida es el
+término constante $\alpha_0$.
+
+| Tipo de error            | Consecuencia principal               |
+|--------------------------+--------------------------------------|
+| Inclusión de irrelevante | Insesgadez + ineficiencia (Ej. 13.2) |
+| *Omisión de relevante*   | *Sesgo + inconsistencia (Ej. 13.3)*  |
+
+** Consecuencias teóricas
+
+*** 1. Sesgo e inconsistencia del estimador de la pendiente
+
+El estimador MCO de $\beta_1$ en el modelo (1), forzado a pasar por el
+origen, es:
+
+$$\hat{\beta}_1 = \frac{\sum X_i Y_i}{\sum X_i^2}$$
+
+Sustituyendo el modelo verdadero $Y_i = \alpha_0 + \alpha_1 X_i + v_i$:
+
+$$E(\hat{\beta}_1)
+  = \alpha_1 + \alpha_0 \left(\frac{\sum X_i}{\sum X_i^2}\right)$$
+
+El sesgo resultante es:
+
+$$\boxed{\text{Sesgo}(\hat{\beta}_1)
+  = \alpha_0 \cdot \frac{\sum X_i}{\sum X_i^2}}$$
+
+El estimador $\hat{\beta}_1$ solo sería insesgado si:
+
+- $\alpha_0 = 0$ (contradice el modelo verdadero), o
+- $\sum X_i = 0$ (raramente plausible con datos económicos, donde $X > 0$).
+
+Dado que ninguna de estas condiciones se cumple en general, el sesgo
+*no desaparece al aumentar $n$*: el estimador también es *inconsistente*.
+
+*** 2. Estimación incorrecta de la varianza del error
+
+El estimador de $\sigma^2$ en el modelo (1) usa $n - 1$ grados de libertad:
+
+$$\hat{\sigma}^2_{(1)} = \frac{\sum \hat{u}_i^2}{n - 1}$$
+
+Al forzar la línea a pasar por el origen, los residuos $\hat{u}_i$ deben
+absorber el efecto del intercepto omitido $\alpha_0$, produciendo residuos
+sistemáticamente más grandes que en el modelo correcto. Esto conduce a una
+*sobreestimación* de $\sigma^2$ y, en consecuencia, a varianzas estimadas
+incorrectas para todos los coeficientes.
+
+*** 3. Inferencia estadística inválida
+
+Dado que tanto los coeficientes como sus varianzas estimadas están sesgados:
+
+- Las pruebas $t$ y $F$ *dejan de ser válidas*, y pueden llevar a
+  conclusiones erróneas sobre la significancia de $X$.
+- Los intervalos de confianza *no tienen la cobertura nominal*: no
+  contendrán el verdadero $\alpha_1$ con la probabilidad deseada
+  $(1 - \alpha)$.
+- Es posible cometer errores de Tipo I y Tipo II de forma sistemática,
+  no aleatoria.
+
+*** 4. Bondad de ajuste — R² potencialmente negativo
+
+En regresión por el origen, los residuos no necesariamente suman cero
+($\sum \hat{u}_i \neq 0$), por lo que la descomposición estándar de la
+varianza total no se sostiene:
+
+$$\underbrace{\sum(Y_i - \bar{Y})^2}_{SCT}
+  \neq \underbrace{SCM}_{\text{explicada}}
+  + \underbrace{SCR}_{\text{residual}}$$
+
+Consecuencias directas:
+
+- El $R^2$ convencional puede ser *negativo*, indicando que el modelo
+  ajustado predice peor que el simple promedio $\bar{Y}$.
+- Stata reporta $R^2$ no centrado (~r2_u~) para ~noconstant~, que no es
+  comparable con el $R^2$ centrado del modelo con intercepto.
+
+*** 5. Predicciones sesgadas
+
+Los pronósticos $\hat{Y}_i = \hat{\beta}_1 X_i$ estarán sistemáticamente
+desplazados respecto a los valores reales. El sesgo en las predicciones
+es especialmente pronunciado para valores de $X$ cercanos a cero, donde
+el intercepto omitido tiene mayor peso relativo.
+
+** Resumen de consecuencias
+
+| Propiedad              | Ej. 13.2 (intercepto innecesario) | *Ej. 13.3 (intercepto omitido)* |
+|------------------------+-----------------------------------+----------------------------------|
+| Insesgadez             | Preservada                        | *Perdida*                        |
+| Consistencia           | Preservada                        | *Perdida*                        |
+| Eficiencia             | Reducida                          | No aplica (ya hay sesgo)         |
+| Validez pruebas t y F  | Válidas                           | *Inválidas*                      |
+| Intervalos de confianza| Más amplios                       | *Cobertura incorrecta*           |
+| R² comparable          | No comparable                     | *Puede ser negativo*             |
+| Predicciones           | Insesgadas                        | *Sesgadas sistemáticamente*      |
+
+** Verificación empírica con datos simulados
+
+Generamos datos del proceso verdadero $Y_i = 3 + 2X_i + v_i$
+($\alpha_0 = 3$, $\alpha_1 = 2$) y comparamos ambas especificaciones.
+
+#+NAME: sim-13-3
+#+BEGIN_SRC stata
+clear
+set seed 12345
+set obs 50
+
+* Modelo verdadero: Y = 3 + 2*X + v
+gen X = runiform(1, 10)
+gen v = rnormal(0, 1)
+gen Y = 3 + 2 * X + v
+
+* --- Modelo correcto: con intercepto ---
+regress Y X
+
+scalar alpha0_hat = _b[_cons]
+scalar alpha1_hat = _b[X]
+scalar se_alpha1  = _se[X]
+scalar var_alpha1 = se_alpha1^2
+
+* --- Modelo mal especificado: sin intercepto ---
+regress Y X, noconstant
+
+scalar beta1_hat = _b[X]
+scalar se_beta1  = _se[X]
+scalar var_beta1 = se_beta1^2
+
+* --- Verificación del sesgo teórico ---
+gen X2 = X^2
+quietly summarize X
+scalar sumXi  = r(sum)
+quietly summarize X2
+scalar sumX2i = r(sum)
+
+scalar sesgo_teo = 3 * (sumXi / sumX2i)
+scalar sesgo_emp = beta1_hat - alpha1_hat
+
+di as text _newline "=== Comparación de estimadores ==="
+di as text "alpha_1 (modelo correcto):      " as result %9.4f alpha1_hat
+di as text "beta_1  (modelo sin intercepto):" as result %9.4f beta1_hat
+di as text "Sesgo teórico esperado:         " as result %9.4f sesgo_teo
+di as text "Sesgo empírico (beta-alpha):     " as result %9.4f sesgo_emp
+di as text _newline "=== Error estándar de la pendiente ==="
+di as text "SE(alpha_1) modelo correcto:    " as result %9.4f se_alpha1
+di as text "SE(beta_1)  modelo origen:      " as result %9.4f se_beta1
+
+quietly regress Y X
+estimates store m_intercepto
+
+quietly regress Y X, noconstant
+estimates store m_origen
+
+estimates table m_intercepto m_origen, ///
+    b(%9.4f) se stats(N r2)
+#+END_SRC
+
+** Interpretación de resultados esperados
+
+Al ejecutar el bloque anterior se observa:
+
+1. *Pendiente sesgada*: $\hat{\beta}_1 > \hat{\alpha}_1 \approx 2$,
+   confirmando el *sesgo positivo* predicho. El estimador del modelo
+   restringido sobreestima la verdadera pendiente porque absorbe parte
+   del efecto del intercepto omitido ($\alpha_0 = 3 > 0$, $\sum X_i > 0$).
+
+2. *Sesgo empírico cercano al teórico*: la diferencia
+   $\hat{\beta}_1 - \hat{\alpha}_1$ debe aproximarse a
+   $\alpha_0 \cdot \tfrac{\sum X_i}{\sum X_i^2}$, verificando la fórmula
+   derivada teóricamente.
+
+3. *Intercepto estadísticamente significativo*: en el modelo correcto,
+   $\hat{\alpha}_0 \approx 3$ y su prueba $t$ rechaza $H_0: \alpha_0 = 0$,
+   confirmando que era necesario incluirlo.
+
+4. *R² no comparable*: Stata reporta ~r2~ no centrado para ~noconstant~;
+   no debe compararse con el ~r2~ del modelo con intercepto.
+
+** Verificación de la fórmula del sesgo
+
+#+NAME: sesgo-formula
+#+BEGIN_SRC stata
+clear
+set seed 12345
+set obs 50
+
+gen X  = runiform(1, 10)
+gen v  = rnormal(0, 1)
+gen Y  = 3 + 2 * X + v
+gen X2 = X^2
+
+quietly summarize X
+scalar Xbar  = r(mean)
+scalar sumXi = r(sum)
+
+quietly summarize X2
+scalar sumX2i = r(sum)
+
+* Sesgo teórico: alpha_0 * sum(X_i) / sum(X_i^2)
+scalar alpha0    = 3
+scalar sesgo_teo = alpha0 * (sumXi / sumX2i)
+
+quietly regress Y X
+scalar alpha1 = _b[X]
+
+quietly regress Y X, noconstant
+scalar beta1 = _b[X]
+
+di as text _newline "=== Verificación algebraica del sesgo ==="
+di as text "alpha_0 verdadero:              " as result %9.4f alpha0
+di as text "sum(X_i):                       " as result %9.2f sumXi
+di as text "sum(X_i^2):                     " as result %9.2f sumX2i
+di as text "Ratio sum(X)/sum(X^2):          " as result %9.6f sumXi/sumX2i
+di as text "Sesgo teórico = a0*ratio:       " as result %9.4f sesgo_teo
+di as text _newline "alpha_1 (modelo correcto):      " as result %9.4f alpha1
+di as text "beta_1  (modelo origen):        " as result %9.4f beta1
+di as text "Sesgo empírico (beta-alpha):     " as result %9.4f beta1 - alpha1
+di as text "Diferencia (emp - teo):         " as result %9.4f (beta1 - alpha1) - sesgo_teo
+#+END_SRC
+
+** Conclusión
+
+#+BEGIN_QUOTE
+Omitir un intercepto relevante es un error de especificación mucho más
+grave que incluir uno irrelevante. Mientras que el segundo (Ej. 13.2)
+solo genera *ineficiencia* —estimadores insesgados pero con mayor
+varianza—, el primero invalida las propiedades fundamentales del estimador
+MCO: se pierde la *insesgadez* y la *consistencia*, la inferencia
+estadística deja de ser válida y las predicciones estarán
+sistemáticamente sesgadas.
+
+La regla práctica de Gujarati cobra aquí su pleno sentido: ante la duda
+sobre si incluir o no un intercepto, es preferible incluirlo y asumir la
+pequeña pérdida de eficiencia. Omitirlo cuando realmente existe en el
+proceso generador de datos produce un error sistemático que no se corrige
+con muestras más grandes.
+#+END_QUOTE
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13, secciones 13.2 y 13.3.
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.). Pearson.
+  Capítulo 5.
+- Wooldridge, J. M. (2016). /Introductory Econometrics/ (6.ª ed.).
+  Cengage. Capítulo 3.
