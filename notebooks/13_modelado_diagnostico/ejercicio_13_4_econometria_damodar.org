@@ -748,26 +748,32 @@ se utilizan las siguientes herramientas:
 #+BEGIN_SRC stata
 quietly regress Y X2 X3_low
 
-* 1. Prueba t individual sobre alpha_3
-* Si p > 0.10 aproximadamente, X3 es candidata a ser irrelevante
-* (el resultado ya aparece en la salida de regress)
-
-* 2. Factor de Inflacion de la Varianza
 estat vif
 
-* 3. Prueba F de restriccion lineal: H0: alpha_3 = 0
-* Si no se rechaza, X3 no aporta poder explicativo
 test X3_low
 
-* 4. Criterios de informacion (AIC, BIC)
-* Modelo correcto vs. ampliado
 quietly regress Y X2
 estat ic
 
 quietly regress Y X2 X3_low
 estat ic
-* El modelo con menor AIC/BIC es preferido
 #+END_SRC
+
+#+RESULTS: diagnostico
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_47923.log
+  log type:  text
+ opened on:  16 May 2026, 22:46:41
+
+. quietly regress Y X2 X3_low
+no variables defined
+r(111);
+
+end of do-file
+r(111);
+#+end_example
 
 ** Conclusión
 
