@@ -12,4 +12,4 @@ $$Y_{i}_{} + \beta_{1} + \beta_{2}X_{2t} + u_{t}$$
 
 a) ¿$R^{2}$ y $R^{2}$ ajustado para el modelo (2) serian mas grandes que las del modelo (1)?
 b) ¿Las estimaciones de \beta_{1} y \beta_{2}, obetenidas de (2) son insesgadas?
-c) ¿La inclusion de la variable "irrelevante" X_{3} afecta las varianzas de $\hat{\beta_{{1}}}$ y
+c) ¿La inclusion de la variable "irrelevante" X_{3} afecta las varianzas de $\hat{\beta_{1}}$ y $\hat{\beta_{2}}$?
