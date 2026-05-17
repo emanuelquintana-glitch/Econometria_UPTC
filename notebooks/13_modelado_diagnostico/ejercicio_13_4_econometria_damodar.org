@@ -5,3 +5,5 @@
 * Enunciado Suponga que le "verdadero" modelo es
 
 $$Y_{t} = \beta_{1} + \beta_{2}X_{2t }+ u_{t}$$
+
+pero añadimoos una variable "irrelevante", X3, al modelo (irrelevante en el sentido que el verdadero coeficiente \beta_{3} que acompaña a la variable X_{3} es cero) y estime.
