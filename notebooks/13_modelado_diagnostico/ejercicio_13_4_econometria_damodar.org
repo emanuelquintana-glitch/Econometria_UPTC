@@ -280,22 +280,16 @@ clear
 set seed 2026
 set obs 200
 
-* Variable relevante
 gen X2 = runiform(1, 10)
 gen u  = rnormal(0, 1)
 gen Y  = 2 + 3 * X2 + u
 
-* Variable irrelevante con distintos niveles de correlacion con X2
-* r23 ≈ 0 (ortogonal)
 gen X3_low = 0.05 * X2 + rnormal(0, 2)
 
-* r23 ≈ 0.50
 gen X3_mid = 0.50 * X2 + rnormal(0, 1.5)
 
-* r23 ≈ 0.90
 gen X3_hi  = 0.90 * X2 + rnormal(0, 0.5)
 
-* ---- Modelo (1): correcto ----
 quietly regress Y X2
 scalar b2_correct = _b[X2]
 scalar se_b2      = _se[X2]
@@ -310,7 +304,6 @@ di as text "Var(beta_2):        " as result %9.6f var_b2
 di as text "R2:                 " as result %9.4f r2_1
 di as text "R2 ajustado:        " as result %9.4f r2a_1
 
-* ---- Modelo (2a): con X3 ortogonal ----
 di as text _newline "=== Modelo (2a): X3 con correlacion baja con X2 ==="
 quietly regress Y X2 X3_low
 scalar b2_low  = _b[X2]
@@ -323,7 +316,6 @@ di as text "VIF aprox (var_low/var_b2): " as result %9.4f var_low/var_b2
 di as text "R2:                 " as result %9.4f e(r2)
 di as text "R2 ajustado:        " as result %9.4f e(r2_a)
 
-* ---- Modelo (2b): con X3 correlacion moderada ----
 di as text _newline "=== Modelo (2b): X3 con correlacion moderada con X2 ==="
 quietly regress Y X2 X3_mid
 scalar b2_mid  = _b[X2]
@@ -336,7 +328,6 @@ di as text "VIF aprox (var_mid/var_b2): " as result %9.4f var_mid/var_b2
 di as text "R2:                 " as result %9.4f e(r2)
 di as text "R2 ajustado:        " as result %9.4f e(r2_a)
 
-* ---- Modelo (2c): con X3 altamente correlacionada ----
 di as text _newline "=== Modelo (2c): X3 con correlacion alta con X2 ==="
 quietly regress Y X2 X3_hi
 scalar b2_hi  = _b[X2]
@@ -349,7 +340,6 @@ di as text "VIF aprox (var_hi/var_b2):  " as result %9.4f var_hi/var_b2
 di as text "R2:                 " as result %9.4f e(r2)
 di as text "R2 ajustado:        " as result %9.4f e(r2_a)
 
-* ---- Tabla comparativa de estimadores ----
 quietly regress Y X2
 estimates store m_correcto
 
