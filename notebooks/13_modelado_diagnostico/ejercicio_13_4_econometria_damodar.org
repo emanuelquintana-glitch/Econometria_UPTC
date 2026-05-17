@@ -17,3 +17,9 @@ c) ¿La inclusion de la variable "irrelevante" X_{3} afecta las varianzas de $\h
    ** Solucion
 
    Este esenario se define tecnicamente como *sobreajuste de un modelo* o *inclusion de una variable irrelevante*. A continuacion, se detallan las consecuencias esyadisticas para cada una de las preguntas:
+
+   *a). ¿$R^{2}$ y $R^{2}$ ajustado para el modelo (2) serian mas grandes que las del modelo (1)?*
+
+   - *R^2 convencional*: El valor de $R^{2}$ del modelo (2) sera *mayor o al menos igual* al del modelo (1). Esto es un hecho algebraico: la suma de los residuales cuadrados (SRC) nunca añadir regresores, que signidica que el $R^{2}$ nunca disminuye independientemente de si la variable tienen sentido economico o no.
+
+- *R^2 ajustada (\bar{R\(^{2}\)})*: El valor de $R^{2}$ del modelo (2) sea *menor* que la del modelo (1)
