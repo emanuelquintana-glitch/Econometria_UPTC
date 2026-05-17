@@ -1,0 +1,3 @@
+#+TITLE: Ejercicio 13.4 de el libro de Econometria de Damodar Gujarati
+#+SUBTITLE: Este es un ejercicio desarrorado por un estudinate de econometria de la UPTC.
+#+DATE <16/05/2026>
