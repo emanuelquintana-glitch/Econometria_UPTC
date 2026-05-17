@@ -1,3 +1,7 @@
 #+TITLE: Ejercicio 13.4 de el libro de Econometria de Damodar Gujarati
 #+SUBTITLE: Este es un ejercicio desarrorado por un estudinate de econometria de la UPTC.
 #+DATE <16/05/2026>
+
+* Enunciado Suponga que le "verdadero" modelo es
+
+$$Y_{t} = \beta_{1} + \beta_{2}X_{2t }+ u_{t}$$
