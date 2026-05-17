@@ -1,0 +1,531 @@
+#+TITLE: Econometría — Gujarati, Capítulo 13
+#+SUBTITLE: Ejercicio 13.4 — Inclusión de una variable irrelevante en regresión múltiple
+#+DATE: <2026-05-16>
+#+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both
+
+* Ejercicio 13.4
+
+#+BEGIN_QUOTE
+Suponga que el verdadero modelo es:
+
+  Y_i = β₁ + β₂X₂ᵢ + uᵢ    (1)
+
+pero se añade una variable *irrelevante* X₃ al modelo (irrelevante en el
+sentido de que el verdadero coeficiente β₃ que acompaña a X₃ es cero)
+y se estima:
+
+  Y_i = α₁ + α₂X₂ᵢ + α₃X₃ᵢ + vᵢ    (2)
+
+a) ¿R² y R² ajustado para el modelo (2) serían más grandes que los del modelo (1)?
+b) ¿Las estimaciones de β₁ y β₂ obtenidas de (2) son insesgadas?
+c) ¿La inclusión de la variable "irrelevante" X₃ afecta las varianzas
+   de β̂₁ y β̂₂?
+#+END_QUOTE
+
+** Clasificación del error de especificación
+
+Este escenario se denomina técnicamente *sobreajuste del modelo* o
+*inclusión de una variable irrelevante*. En la taxonomía de Gujarati
+(sección 13.2), corresponde al caso de *sobre-especificación*:
+
+| Tipo de error                | Consecuencia principal                      |
+|------------------------------+---------------------------------------------|
+| Omisión de variable relevante | Sesgo + inconsistencia (Ej. 13.3)          |
+| *Inclusión de variable irrelevante* | *Insesgadez + ineficiencia (Ej. 13.4)* |
+
+La comparación con el ejercicio 13.3 es conceptualmente crucial: omitir
+una variable relevante es un error mucho más grave que incluir una
+irrelevante. En el primer caso se pierde la insesgadez y consistencia; en
+el segundo, solo se pierde eficiencia.
+
+** Solución detallada
+
+*** a) ¿R² y R² ajustado serían más grandes en el modelo (2)?
+
+**** R² convencional (no penalizado)
+
+El $R^2$ del modelo (2) *será mayor o al menos igual* al del modelo (1).
+Este resultado es un *hecho algebraico*, no estadístico, derivado
+directamente de la fórmula del coeficiente de determinación:
+
+$$R^2 = 1 - \frac{SCR}{SCT} = 1 - \frac{\sum \hat{v}_i^2}{\sum(Y_i - \bar{Y})^2}$$
+
+La Suma de Cuadrados de los Residuales ($SCR = \sum \hat{v}_i^2$) *nunca
+puede aumentar* al añadir un regresor adicional a un modelo MCO, porque
+el conjunto de parámetros del modelo (1) es un subconjunto de los del
+modelo (2). En el peor caso, el estimador del nuevo coeficiente MCO puede
+ser exactamente cero, replicando la $SCR$ del modelo restringido.
+
+Formalmente, si $SCR_1$ y $SCR_2$ son las sumas de cuadrados residuales
+de los modelos (1) y (2) respectivamente:
+
+$$SCR_2 \leq SCR_1 \implies R^2_{(2)} \geq R^2_{(1)}$$
+
+Esta propiedad es la razón por la que el $R^2$ convencional es una
+medida de bondad de ajuste *deficiente* para comparar modelos con
+distinto número de regresores: siempre "premia" la inclusión de variables,
+independientemente de su relevancia teórica o estadística.
+
+**** R² ajustado o corregido ($\bar{R}^2$)
+
+El $\bar{R}^2$ del modelo (2) *probablemente será menor* que el del
+modelo (1). A diferencia del $R^2$ convencional, el ajustado incorpora
+una penalización explícita por el número de parámetros estimados:
+
+$$\bar{R}^2 = 1 - \frac{SCR/(n-k)}{SCT/(n-1)}$$
+
+donde $k$ es el número de parámetros (incluyendo el intercepto). Al
+añadir $X_3$, el denominador del cociente $SCR/(n-k)$ disminuye (pasa
+de $n-2$ a $n-3$), lo que *tiende a aumentar la varianza estimada del
+error* aunque $SCR$ se reduzca marginalmente.
+
+Puede demostrarse que el $\bar{R}^2$ *aumenta si, y solo si*, el valor
+absoluto del estadístico $t$ de la variable añadida es mayor que 1 en
+valor absoluto:
+
+$$\bar{R}^2_{(2)} > \bar{R}^2_{(1)} \iff |t_{\hat{\alpha}_3}| > 1$$
+
+Dado que el verdadero $\beta_3 = 0$, el estadístico $t$ de $\hat{\alpha}_3$
+tenderá a ser pequeño (en el límite, con muestras grandes, convergirá a
+cero en valor esperado). Por lo tanto, se espera que:
+
+$$\bar{R}^2_{(2)} \leq \bar{R}^2_{(1)}$$
+
+Esta es precisamente la función del $\bar{R}^2$: penalizar la inclusión
+de variables irrelevantes, algo que el $R^2$ ordinario es incapaz de hacer.
+
+**** Resumen
+
+| Medida           | Modelo (1) correcto | Modelo (2) sobre-especificado | Relación esperada              |
+|------------------+---------------------+-------------------------------+--------------------------------|
+| $R^2$            | $R^2_{(1)}$         | $R^2_{(2)}$                   | $R^2_{(2)} \geq R^2_{(1)}$    |
+| $\bar{R}^2$      | $\bar{R}^2_{(1)}$   | $\bar{R}^2_{(2)}$             | $\bar{R}^2_{(2)} \leq \bar{R}^2_{(1)}$ |
+
+*** b) ¿Las estimaciones de β₁ y β₂ obtenidas de (2) son insesgadas?
+
+*Sí, los estimadores MCO de (2) son insesgados y consistentes.*
+
+Esta es la propiedad central que distingue la sobre-especificación de la
+sub-especificación. La demostración formal es la siguiente.
+
+**** Derivación algebraica
+
+El estimador MCO del vector de coeficientes en el modelo (2) es:
+
+$$\hat{\boldsymbol{\alpha}} = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}$$
+
+donde $\mathbf{X} = [\mathbf{1}, \mathbf{X}_2, \mathbf{X}_3]$.
+
+Sustituyendo el modelo verdadero $\mathbf{Y} = \beta_1\mathbf{1} + \beta_2\mathbf{X}_2 + \mathbf{u}$:
+
+$$\hat{\boldsymbol{\alpha}} = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'
+  (\beta_1\mathbf{1} + \beta_2\mathbf{X}_2 + \mathbf{u})$$
+
+$$= \beta_1(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{1}
+  + \beta_2(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{X}_2
+  + (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{u}$$
+
+Tomando la esperanza y usando el supuesto clásico $E(\mathbf{u}|\mathbf{X}) = \mathbf{0}$:
+
+$$E(\hat{\boldsymbol{\alpha}}) = \beta_1(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{1}
+  + \beta_2(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{X}_2$$
+
+Nótese que $\mathbf{X}'\mathbf{1}$ es la primera columna de $\mathbf{X}'\mathbf{X}$, y
+$\mathbf{X}'\mathbf{X}_2$ es la segunda. Luego:
+
+$$(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{1} = \mathbf{e}_1, \quad
+  (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{X}_2 = \mathbf{e}_2$$
+
+donde $\mathbf{e}_j$ es el $j$-ésimo vector canónico. Por tanto:
+
+$$E(\hat{\boldsymbol{\alpha}}) = \beta_1\mathbf{e}_1 + \beta_2\mathbf{e}_2
+  = \begin{pmatrix}\beta_1 \\ \beta_2 \\ 0\end{pmatrix}$$
+
+Esto confirma que:
+
+$$\boxed{E(\hat{\alpha}_1) = \beta_1, \quad E(\hat{\alpha}_2) = \beta_2, \quad E(\hat{\alpha}_3) = 0}$$
+
+Los tres estimadores son insesgados: los dos primeros recuperan los
+verdaderos parámetros del modelo, y el tercero estima correctamente su
+valor poblacional (que es cero).
+
+**** Intuición económica
+
+La insesgadez se preserva porque los supuestos del modelo clásico de
+regresión lineal (MCRL) se mantienen intactos en el modelo (2). La única
+violación sería si $X_3$ estuviese correlacionada con el término de error
+$u_i$, pero como $X_3$ es una variable generada externamente y su
+verdadero coeficiente es simplemente cero (no que "no exista" la variable),
+la exogeneidad del regresor no se viola.
+
+**** Consistencia
+
+Dado que los estimadores son insesgados y sus varianzas tienden a cero
+cuando $n \to \infty$ (la varianza de estimadores MCO decrece en $1/n$),
+también son *consistentes*:
+
+$$\hat{\alpha}_j \xrightarrow{p} \beta_j \quad \text{cuando } n \to \infty$$
+
+*** c) ¿La inclusión de X₃ afecta las varianzas de β̂₁ y β̂₂?
+
+*Sí, las varianzas aumentan. Esta es la consecuencia estadística más
+importante del sobreajuste.*
+
+**** Demostración general
+
+La matriz de varianzas y covarianzas de los estimadores MCO es:
+
+$$\text{Var}(\hat{\boldsymbol{\alpha}}) = \sigma^2 (\mathbf{X}'\mathbf{X})^{-1}$$
+
+Al añadir $X_3$, la matriz $\mathbf{X}'\mathbf{X}$ se expande de dimensión
+$2 \times 2$ a $3 \times 3$. La inversa de una matriz más grande no
+preserva necesariamente los elementos de la inversa original, y en
+general los elementos diagonales de $(\mathbf{X}'\mathbf{X})^{-1}$
+*aumentan* cuando se añaden columnas a $\mathbf{X}$.
+
+**** Caso bivariado: efecto sobre la varianza de β̂₂
+
+Para ilustrarlo concretamente, en una regresión con dos regresores
+($X_2$ y $X_3$), la varianza de $\hat{\alpha}_2$ es:
+
+$$\text{Var}(\hat{\alpha}_2) = \frac{\sigma^2}{\sum x_{2i}^2 (1 - r_{23}^2)}
+  = \frac{\sigma^2}{\sum x_{2i}^2} \cdot \frac{1}{1 - r_{23}^2}$$
+
+donde $r_{23}$ es el coeficiente de correlación entre $X_2$ y $X_3$,
+y $x_{2i} = X_{2i} - \bar{X}_2$.
+
+En el modelo correcto (1):
+
+$$\text{Var}(\hat{\beta}_2) = \frac{\sigma^2}{\sum x_{2i}^2}$$
+
+Por tanto, la razón de varianzas es:
+
+$$\frac{\text{Var}(\hat{\alpha}_2)}{\text{Var}(\hat{\beta}_2)}
+  = \frac{1}{1 - r_{23}^2} \geq 1$$
+
+Este cociente $\text{VIF}_2 = \dfrac{1}{1 - r_{23}^2}$ es el *Factor de
+Inflación de la Varianza* (FIV o VIF por sus siglas en inglés). Se
+interpreta como el factor multiplicativo por el cual se infla la varianza
+del estimador debido a la correlación con el regresor adicional.
+
+**** Análisis por escenarios de correlación
+
+| Correlación $r_{23}$ | $r_{23}^2$ | VIF  | Efecto sobre Var(β̂₂) |
+|---------------------+-----------+------+-----------------------|
+| 0.00                | 0.00      | 1.00 | Sin cambio (caso límite) |
+| 0.30                | 0.09      | 1.10 | Aumento del 10%        |
+| 0.50                | 0.25      | 1.33 | Aumento del 33%        |
+| 0.70                | 0.49      | 1.96 | Aumento del 96%        |
+| 0.90                | 0.81      | 5.26 | Aumento del 426%       |
+| 0.99                | 0.98      | 50.25| Aumento del 4925%      |
+
+*Caso especial*: si $r_{23} = 0$ (ortogonalidad perfecta entre $X_2$ y
+$X_3$), el VIF = 1 y las varianzas *no cambian*. En este único caso
+límite, incluir una variable irrelevante ortogonal no perjudica la
+eficiencia. Sin embargo, este caso es prácticamente imposible en datos
+económicos reales.
+
+**** Efecto sobre el intercepto (β̂₁)
+
+La varianza del intercepto también se ve afectada, aunque de forma más
+compleja. En general:
+
+$$\text{Var}(\hat{\alpha}_1) \geq \text{Var}(\hat{\beta}_1)$$
+
+con igualdad solo bajo la misma condición de ortogonalidad $r_{23} = 0$.
+
+**** Consecuencias para la inferencia estadística
+
+Aunque los estimadores siguen siendo válidos (insesgados), la inflación
+de las varianzas tiene efectos directos sobre la inferencia:
+
+1. *Errores estándar más grandes*: $SE(\hat{\alpha}_j) \geq SE(\hat{\beta}_j)$,
+   lo que produce estadísticos $t$ más pequeños.
+
+2. *Intervalos de confianza más amplios*: el mismo nivel de confianza
+   $(1-\alpha)$ requiere intervalos más anchos, reduciendo la precisión.
+
+3. *Menor potencia de las pruebas*: es más difícil rechazar $H_0: \beta_j = 0$
+   aunque sea falsa, aumentando la probabilidad de errores de Tipo II.
+
+4. *Paradoja de la multicolinealidad inducida*: al añadir $X_3$ que puede
+   estar correlacionada con $X_2$, se induce artificialmente un problema
+   de multicolinealidad que no existía en el modelo correcto.
+
+** Resumen comparativo de consecuencias
+
+| Propiedad            | Modelo (1) correcto | Modelo (2) sobre-especificado     |
+|----------------------+---------------------+-----------------------------------|
+| Insesgadez           | ✓ Preservada        | ✓ Preservada                      |
+| Consistencia         | ✓ Preservada        | ✓ Preservada                      |
+| Eficiencia (MELI)    | ✓ Óptima (Gauss-Markov) | ✗ Perdida: Var(α̂) ≥ Var(β̂)  |
+| Validez pruebas t, F | ✓ Válidas           | ✓ Válidas (pero menos potentes)   |
+| R² convencional      | Valor base          | ≥ al del modelo (1)               |
+| R² ajustado          | Valor base          | ≤ al del modelo (1)               |
+| VIF                  | 1 (base)            | ≥ 1 (se infla por $r_{23}^2$)    |
+| Predicciones         | Insesgadas y eficientes | Insesgadas pero menos precisas |
+
+** Verificación empírica con datos simulados
+
+Generamos datos del proceso verdadero $Y_i = 2 + 3X_{2i} + u_i$
+($\beta_1 = 2$, $\beta_2 = 3$, $\beta_3 = 0$) con distintos niveles
+de correlación entre $X_2$ y $X_3$ para verificar el efecto VIF.
+
+#+NAME: sim-13-4
+#+BEGIN_SRC stata
+clear
+set seed 2026
+set obs 200
+
+* Variable relevante
+gen X2 = runiform(1, 10)
+gen u  = rnormal(0, 1)
+gen Y  = 2 + 3 * X2 + u
+
+* Variable irrelevante con distintos niveles de correlacion con X2
+* r23 ≈ 0 (ortogonal)
+gen X3_low = 0.05 * X2 + rnormal(0, 2)
+
+* r23 ≈ 0.50
+gen X3_mid = 0.50 * X2 + rnormal(0, 1.5)
+
+* r23 ≈ 0.90
+gen X3_hi  = 0.90 * X2 + rnormal(0, 0.5)
+
+* ---- Modelo (1): correcto ----
+quietly regress Y X2
+scalar b2_correct = _b[X2]
+scalar se_b2      = _se[X2]
+scalar var_b2     = se_b2^2
+scalar r2_1       = e(r2)
+scalar r2a_1      = e(r2_a)
+
+di as text _newline "=== Modelo (1): correcto ==="
+di as text "beta_2  estimado:   " as result %9.4f b2_correct
+di as text "SE(beta_2):         " as result %9.4f se_b2
+di as text "Var(beta_2):        " as result %9.6f var_b2
+di as text "R2:                 " as result %9.4f r2_1
+di as text "R2 ajustado:        " as result %9.4f r2a_1
+
+* ---- Modelo (2a): con X3 ortogonal ----
+di as text _newline "=== Modelo (2a): X3 con correlacion baja con X2 ==="
+quietly regress Y X2 X3_low
+scalar b2_low  = _b[X2]
+scalar se_low  = _se[X2]
+scalar var_low = se_low^2
+di as text "alpha_2 estimado:   " as result %9.4f b2_low
+di as text "SE(alpha_2):        " as result %9.4f se_low
+di as text "Var(alpha_2):       " as result %9.6f var_low
+di as text "VIF aprox (var_low/var_b2): " as result %9.4f var_low/var_b2
+di as text "R2:                 " as result %9.4f e(r2)
+di as text "R2 ajustado:        " as result %9.4f e(r2_a)
+
+* ---- Modelo (2b): con X3 correlacion moderada ----
+di as text _newline "=== Modelo (2b): X3 con correlacion moderada con X2 ==="
+quietly regress Y X2 X3_mid
+scalar b2_mid  = _b[X2]
+scalar se_mid  = _se[X2]
+scalar var_mid = se_mid^2
+di as text "alpha_2 estimado:   " as result %9.4f b2_mid
+di as text "SE(alpha_2):        " as result %9.4f se_mid
+di as text "Var(alpha_2):       " as result %9.6f var_mid
+di as text "VIF aprox (var_mid/var_b2): " as result %9.4f var_mid/var_b2
+di as text "R2:                 " as result %9.4f e(r2)
+di as text "R2 ajustado:        " as result %9.4f e(r2_a)
+
+* ---- Modelo (2c): con X3 altamente correlacionada ----
+di as text _newline "=== Modelo (2c): X3 con correlacion alta con X2 ==="
+quietly regress Y X2 X3_hi
+scalar b2_hi  = _b[X2]
+scalar se_hi  = _se[X2]
+scalar var_hi = se_hi^2
+di as text "alpha_2 estimado:   " as result %9.4f b2_hi
+di as text "SE(alpha_2):        " as result %9.4f se_hi
+di as text "Var(alpha_2):       " as result %9.6f var_hi
+di as text "VIF aprox (var_hi/var_b2):  " as result %9.4f var_hi/var_b2
+di as text "R2:                 " as result %9.4f e(r2)
+di as text "R2 ajustado:        " as result %9.4f e(r2_a)
+
+* ---- Tabla comparativa de estimadores ----
+quietly regress Y X2
+estimates store m_correcto
+
+quietly regress Y X2 X3_low
+estimates store m_bajo
+
+quietly regress Y X2 X3_mid
+estimates store m_medio
+
+quietly regress Y X2 X3_hi
+estimates store m_alto
+
+estimates table m_correcto m_bajo m_medio m_alto, ///
+    b(%9.4f) se stats(N r2 r2_a)
+#+END_SRC
+
+** Verificación algebraica del VIF
+
+#+NAME: vif-13-4
+#+BEGIN_SRC stata
+clear
+set seed 2026
+set obs 200
+
+gen X2     = runiform(1, 10)
+gen X3_hi  = 0.90 * X2 + rnormal(0, 0.5)
+gen u      = rnormal(0, 1)
+gen Y      = 2 + 3 * X2 + u
+
+* Correlacion muestral entre X2 y X3
+correlate X2 X3_hi
+scalar r23 = r(rho)
+scalar vif_teo = 1 / (1 - r23^2)
+
+* Varianza del modelo correcto
+quietly regress Y X2
+scalar var_b2 = _se[X2]^2
+scalar sigma2 = e(rss) / e(df_r)
+
+quietly summarize X2
+scalar Xbar = r(mean)
+gen x2dev = (X2 - Xbar)^2
+quietly summarize x2dev
+scalar sumx2 = r(sum)
+scalar var_b2_teo = sigma2 / sumx2
+
+* Varianza del modelo sobreespecificado
+quietly regress Y X2 X3_hi
+scalar var_a2 = _se[X2]^2
+scalar vif_emp = var_a2 / var_b2
+
+di as text _newline "=== Verificacion algebraica VIF ==="
+di as text "Correlacion r(X2,X3):          " as result %9.4f r23
+di as text "r23^2:                         " as result %9.4f r23^2
+di as text "VIF teorico = 1/(1-r23^2):     " as result %9.4f vif_teo
+di as text "Var(beta_2) modelo correcto:   " as result %9.6f var_b2
+di as text "Var(alpha_2) modelo ampliado:  " as result %9.6f var_a2
+di as text "VIF empirico (var_a2/var_b2):  " as result %9.4f vif_emp
+di as text "Diferencia VIF (emp-teo):      " as result %9.4f vif_emp - vif_teo
+#+END_SRC
+
+** Interpretación de los resultados esperados
+
+Al ejecutar los bloques anteriores se deberá observar:
+
+1. *Insesgadez confirmada*: Los estimadores $\hat{\alpha}_1$ y $\hat{\alpha}_2$
+   son aproximadamente iguales a los verdaderos valores $\beta_1 = 2$ y
+   $\beta_2 = 3$ en todos los modelos, independientemente del nivel de
+   correlación entre $X_2$ y $X_3$.
+
+2. *Coeficiente de la variable irrelevante cercano a cero*:
+   $\hat{\alpha}_3 \approx 0$ con un estadístico $t$ no significativo en
+   todos los escenarios, confirmando que el estimador MCO "descubre"
+   correctamente que $X_3$ no pertenece al verdadero modelo.
+
+3. *Inflación de varianzas proporcional a la correlación*: el error
+   estándar de $\hat{\alpha}_2$ crece a medida que aumenta $|r_{23}|$,
+   siguiendo el patrón teórico del VIF.
+
+4. *R² convencional no decrece*: el $R^2$ del modelo ampliado es mayor
+   o igual al del modelo correcto en los tres escenarios.
+
+5. *R² ajustado puede decrecer*: el $\bar{R}^2$ del modelo ampliado
+   probablemente será menor que el del modelo correcto, evidenciando
+   la penalización por el parámetro innecesario.
+
+6. *VIF empírico aproxima el teórico*: la razón
+   $\text{Var}(\hat{\alpha}_2)/\text{Var}(\hat{\beta}_2)$ debe
+   aproximarse a $1/(1 - r_{23}^2)$, verificando la fórmula derivada.
+
+** Diagnóstico empírico recomendado
+
+En la práctica, para detectar si una variable incluida es irrelevante,
+se utilizan las siguientes herramientas:
+
+#+NAME: diagnostico
+#+BEGIN_SRC stata
+* Supuesto: modelo con X3 de baja correlacion
+quietly regress Y X2 X3_low
+
+* 1. Prueba t individual sobre alpha_3
+* Si p > 0.10 aproximadamente, X3 es candidata a ser irrelevante
+* (el resultado ya aparece en la salida de regress)
+
+* 2. Factor de Inflacion de la Varianza
+estat vif
+
+* 3. Prueba F de restriccion lineal: H0: alpha_3 = 0
+* Si no se rechaza, X3 no aporta poder explicativo
+test X3_low
+
+* 4. Criterios de informacion (AIC, BIC)
+* Modelo correcto vs. ampliado
+quietly regress Y X2
+estat ic
+
+quietly regress Y X2 X3_low
+estat ic
+* El modelo con menor AIC/BIC es preferido
+#+END_SRC
+
+** Conclusión
+
+#+BEGIN_QUOTE
+La inclusión de una variable irrelevante en un modelo de regresión
+múltiple tiene consecuencias asimétricas y bien definidas:
+
+1. *No introduce sesgo*: los estimadores MCO de los coeficientes
+   verdaderos ($\beta_1$ y $\beta_2$) mantienen su propiedad de
+   insesgadez y consistencia. En promedio, el modelo sobreajustado
+   recupera los parámetros correctos.
+
+2. *Sí produce ineficiencia*: las varianzas de todos los estimadores
+   se inflan por un factor $1/(1 - r_{23}^2)$, donde $r_{23}$ es la
+   correlación entre la variable relevante $X_2$ y la irrelevante $X_3$.
+   Cuanto mayor sea esta correlación, mayor será la pérdida de precisión.
+
+3. *El R² convencional es engañoso*: siempre aumenta o permanece igual
+   al añadir variables. El $\bar{R}^2$ ajustado corrige este sesgo de
+   selección y tiende a disminuir cuando la variable añadida no aporta
+   poder explicativo real.
+
+4. *La inferencia sigue siendo formalmente válida*, pero es menos
+   potente: los intervalos de confianza son innecesariamente amplios y
+   las pruebas de hipótesis tienen menor capacidad para detectar efectos
+   reales.
+
+La regla práctica de Gujarati (cf. ejercicios 13.2 y 13.3) queda
+completamente justificada: ante la duda sobre si incluir una variable,
+el costo de incluirla es solo ineficiencia (correctable con más datos),
+mientras que el costo de omitirla es sesgo (que no desaparece con
+muestras más grandes). No obstante, incluir variables claramente
+irrelevantes con alta correlación con los regresores verdaderos puede
+producir errores estándar tan grandes que hagan imposible detectar
+efectos estadísticamente, lo que también es problemático en la práctica.
+#+END_QUOTE
+
+* Conexión con los ejercicios anteriores
+
+| Ejercicio | Error de especificación        | Insesgadez | Eficiencia | Validez inferencia |
+|-----------+--------------------------------+------------+------------+--------------------|
+| 13.2      | Intercepto innecesario incluido | ✓          | ✗ (menor)  | ✓ (menos potente)  |
+| 13.3      | Intercepto relevante omitido    | ✗          | N/A        | ✗                  |
+| *13.4*    | *Variable irrelevante incluida* | *✓*        | *✗ (menor)*| *✓ (menos potente)*|
+
+Los ejercicios 13.2 y 13.4 son análogos: ambos corresponden a
+sobre-especificación y comparten las mismas consecuencias cualitativas.
+La diferencia cuantitativa es que en 13.2 solo se desperdicia un grado
+de libertad (el intercepto), mientras que en 13.4 el daño a la eficiencia
+depende crucialmente de la correlación $r_{23}$ entre las variables.
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13, secciones 13.2 y 13.3.
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.). Pearson.
+  Capítulo 5.
+- Wooldridge, J. M. (2016). /Introductory Econometrics/ (6.ª ed.).
+  Cengage. Capítulo 3.
