@@ -356,6 +356,217 @@ estimates table m_correcto m_bajo m_medio m_alto, ///
     b(%9.4f) se stats(N r2 r2_a)
 #+END_SRC
 
+#+RESULTS: sim-13-4
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_47395.log
+  log type:  text
+ opened on:  16 May 2026, 22:45:13
+
+. clear
+
+. set seed 2026
+
+. set obs 200
+Number of observations (_N) was 0, now 200.
+
+.
+. gen X2 = runiform(1, 10)
+
+. gen u  = rnormal(0, 1)
+
+. gen Y  = 2 + 3 * X2 + u
+
+.
+. gen X3_low = 0.05 * X2 + rnormal(0, 2)
+
+.
+. gen X3_mid = 0.50 * X2 + rnormal(0, 1.5)
+
+.
+. gen X3_hi  = 0.90 * X2 + rnormal(0, 0.5)
+
+.
+. quietly regress Y X2
+
+. scalar b2_correct = _b[X2]
+
+. scalar se_b2      = _se[X2]
+
+. scalar var_b2     = se_b2^2
+
+. scalar r2_1       = e(r2)
+
+. scalar r2a_1      = e(r2_a)
+
+.
+. di as text _newline "=== Modelo (1): correcto ==="
+
+=== Modelo (1): correcto ===
+
+. di as text "beta_2  estimado:   " as result %9.4f b2_correct
+beta_2  estimado:      2.9797
+
+. di as text "SE(beta_2):         " as result %9.4f se_b2
+SE(beta_2):            0.0276
+
+. di as text "Var(beta_2):        " as result %9.6f var_b2
+Var(beta_2):         0.000761
+
+. di as text "R2:                 " as result %9.4f r2_1
+R2:                    0.9833
+
+. di as text "R2 ajustado:        " as result %9.4f r2a_1
+R2 ajustado:           0.9832
+
+.
+. di as text _newline "=== Modelo (2a): X3 con correlacion baja con X2 ==="
+
+=== Modelo (2a): X3 con correlacion baja con X2 ===
+
+. quietly regress Y X2 X3_low
+
+. scalar b2_low  = _b[X2]
+
+. scalar se_low  = _se[X2]
+
+. scalar var_low = se_low^2
+
+. di as text "alpha_2 estimado:   " as result %9.4f b2_low
+alpha_2 estimado:      2.9795
+
+. di as text "SE(alpha_2):        " as result %9.4f se_low
+SE(alpha_2):           0.0274
+
+. di as text "Var(alpha_2):       " as result %9.6f var_low
+Var(alpha_2):        0.000749
+
+. di as text "VIF aprox (var_low/var_b2): " as result %9.4f var_low/var_b2
+VIF aprox (var_low/var_b2):    0.9841
+
+. di as text "R2:                 " as result %9.4f e(r2)
+R2:                    0.9837
+
+. di as text "R2 ajustado:        " as result %9.4f e(r2_a)
+R2 ajustado:           0.9835
+
+.
+. di as text _newline "=== Modelo (2b): X3 con correlacion moderada con X2 ==="
+
+=== Modelo (2b): X3 con correlacion moderada con X2 ===
+
+. quietly regress Y X2 X3_mid
+
+. scalar b2_mid  = _b[X2]
+
+. scalar se_mid  = _se[X2]
+
+. scalar var_mid = se_mid^2
+
+. di as text "alpha_2 estimado:   " as result %9.4f b2_mid
+alpha_2 estimado:      2.9858
+
+. di as text "SE(alpha_2):        " as result %9.4f se_mid
+SE(alpha_2):           0.0392
+
+. di as text "Var(alpha_2):       " as result %9.6f var_mid
+Var(alpha_2):        0.001540
+
+. di as text "VIF aprox (var_mid/var_b2): " as result %9.4f var_mid/var_b2
+VIF aprox (var_mid/var_b2):    2.0219
+
+. di as text "R2:                 " as result %9.4f e(r2)
+R2:                    0.9833
+
+. di as text "R2 ajustado:        " as result %9.4f e(r2_a)
+R2 ajustado:           0.9831
+
+.
+. di as text _newline "=== Modelo (2c): X3 con correlacion alta con X2 ==="
+
+=== Modelo (2c): X3 con correlacion alta con X2 ===
+
+. quietly regress Y X2 X3_hi
+
+. scalar b2_hi  = _b[X2]
+
+. scalar se_hi  = _se[X2]
+
+. scalar var_hi = se_hi^2
+
+. di as text "alpha_2 estimado:   " as result %9.4f b2_hi
+alpha_2 estimado:      2.8618
+
+. di as text "SE(alpha_2):        " as result %9.4f se_hi
+SE(alpha_2):           0.1330
+
+. di as text "Var(alpha_2):       " as result %9.6f var_hi
+Var(alpha_2):        0.017688
+
+. di as text "VIF aprox (var_hi/var_b2):  " as result %9.4f var_hi/var_b2
+VIF aprox (var_hi/var_b2):    23.2296
+
+. di as text "R2:                 " as result %9.4f e(r2)
+R2:                    0.9834
+
+. di as text "R2 ajustado:        " as result %9.4f e(r2_a)
+R2 ajustado:           0.9832
+
+.
+. quietly regress Y X2
+
+. estimates store m_correcto
+
+.
+. quietly regress Y X2 X3_low
+
+. estimates store m_bajo
+
+.
+. quietly regress Y X2 X3_mid
+
+. estimates store m_medio
+
+.
+. quietly regress Y X2 X3_hi
+
+. estimates store m_alto
+
+.
+. estimates table m_correcto m_bajo m_medio m_alto, ///
+>     b(%9.4f) se stats(N r2 r2_a)
+
+--------------------------------------------------------------
+    Variable | m_corre~o    m_bajo      m_medio     m_alto
+-------------+------------------------------------------------
+          X2 |    2.9797      2.9795      2.9858      2.8618
+             |    0.0276      0.0274      0.0392      0.1330
+      X3_low |               -0.0809
+             |                0.0395
+      X3_mid |                           -0.0110
+             |                            0.0496
+       X3_hi |                                        0.1296
+             |                                        0.1431
+       _cons |    2.0436      2.0731      2.0399      2.0542
+             |    0.1657      0.1650      0.1670      0.1662
+-------------+------------------------------------------------
+           N |       200         200         200         200
+          r2 |    0.9833      0.9837      0.9833      0.9834
+        r2_a |    0.9832      0.9835      0.9831      0.9832
+--------------------------------------------------------------
+                                                  Legend: b/se
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_47395.log
+  log type:  text
+ closed on:  16 May 2026, 22:45:16
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
 ** Verificación algebraica del VIF
 
 #+NAME: vif-13-4
@@ -369,12 +580,10 @@ gen X3_hi  = 0.90 * X2 + rnormal(0, 0.5)
 gen u      = rnormal(0, 1)
 gen Y      = 2 + 3 * X2 + u
 
-* Correlacion muestral entre X2 y X3
 correlate X2 X3_hi
 scalar r23 = r(rho)
 scalar vif_teo = 1 / (1 - r23^2)
 
-* Varianza del modelo correcto
 quietly regress Y X2
 scalar var_b2 = _se[X2]^2
 scalar sigma2 = e(rss) / e(df_r)
@@ -386,7 +595,6 @@ quietly summarize x2dev
 scalar sumx2 = r(sum)
 scalar var_b2_teo = sigma2 / sumx2
 
-* Varianza del modelo sobreespecificado
 quietly regress Y X2 X3_hi
 scalar var_a2 = _se[X2]^2
 scalar vif_emp = var_a2 / var_b2
@@ -400,6 +608,107 @@ di as text "Var(alpha_2) modelo ampliado:  " as result %9.6f var_a2
 di as text "VIF empirico (var_a2/var_b2):  " as result %9.4f vif_emp
 di as text "Diferencia VIF (emp-teo):      " as result %9.4f vif_emp - vif_teo
 #+END_SRC
+
+#+RESULTS: vif-13-4
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_47587.log
+  log type:  text
+ opened on:  16 May 2026, 22:45:53
+
+. clear
+
+. set seed 2026
+
+. set obs 200
+Number of observations (_N) was 0, now 200.
+
+.
+. gen X2     = runiform(1, 10)
+
+. gen X3_hi  = 0.90 * X2 + rnormal(0, 0.5)
+
+. gen u      = rnormal(0, 1)
+
+. gen Y      = 2 + 3 * X2 + u
+
+.
+. correlate X2 X3_hi
+(obs=200)
+
+             |       X2    X3_hi
+-------------+------------------
+          X2 |   1.0000
+       X3_hi |   0.9770   1.0000
+
+
+. scalar r23 = r(rho)
+
+. scalar vif_teo = 1 / (1 - r23^2)
+
+.
+. quietly regress Y X2
+
+. scalar var_b2 = _se[X2]^2
+
+. scalar sigma2 = e(rss) / e(df_r)
+
+.
+. quietly summarize X2
+
+. scalar Xbar = r(mean)
+
+. gen x2dev = (X2 - Xbar)^2
+
+. quietly summarize x2dev
+
+. scalar sumx2 = r(sum)
+
+. scalar var_b2_teo = sigma2 / sumx2
+
+.
+. quietly regress Y X2 X3_hi
+
+. scalar var_a2 = _se[X2]^2
+
+. scalar vif_emp = var_a2 / var_b2
+
+.
+. di as text _newline "=== Verificacion algebraica VIF ==="
+
+=== Verificacion algebraica VIF ===
+
+. di as text "Correlacion r(X2,X3):          " as result %9.4f r23
+Correlacion r(X2,X3):             0.9770
+
+. di as text "r23^2:                         " as result %9.4f r23^2
+r23^2:                            0.9546
+
+. di as text "VIF teorico = 1/(1-r23^2):     " as result %9.4f vif_teo
+VIF teorico = 1/(1-r23^2):       22.0074
+
+. di as text "Var(beta_2) modelo correcto:   " as result %9.6f var_b2
+Var(beta_2) modelo correcto:    0.000608
+
+. di as text "Var(alpha_2) modelo ampliado:  " as result %9.6f var_a2
+Var(alpha_2) modelo ampliado:   0.013157
+
+. di as text "VIF empirico (var_a2/var_b2):  " as result %9.4f vif_emp
+VIF empirico (var_a2/var_b2):    21.6570
+
+. di as text "Diferencia VIF (emp-teo):      " as result %9.4f vif_emp - vif_teo
+Diferencia VIF (emp-teo):        -0.3504
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_47587.log
+  log type:  text
+ closed on:  16 May 2026, 22:45:54
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
 
 ** Interpretación de los resultados esperados
 
@@ -437,7 +746,6 @@ se utilizan las siguientes herramientas:
 
 #+NAME: diagnostico
 #+BEGIN_SRC stata
-* Supuesto: modelo con X3 de baja correlacion
 quietly regress Y X2 X3_low
 
 * 1. Prueba t individual sobre alpha_3
