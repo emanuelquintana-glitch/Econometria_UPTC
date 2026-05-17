@@ -264,16 +264,13 @@ gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion positiva con L1
 gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
 gen u    = rnormal(0, 0.3)
 
-* Verdadero: alpha0=0.5, alpha1=0.4, alpha2=0.3, alpha3=0.3
 gen lnY = 0.5 + 0.4 * lnL1 + 0.3 * lnL2 + 0.3 * lnK + u
 
-* ---- Regresion auxiliar de lnL2 sobre lnL1 y lnK ----
 di as text _newline "=== Regresion auxiliar: lnL2 sobre lnL1 y lnK ==="
 regress lnL2 lnL1 lnK
 scalar d1 = _b[lnL1]   // delta_1
 scalar dk = _b[lnK]    // delta_k
 
-* Sesgo teorico predicho
 scalar sesgo_b1 = 0.3 * d1
 scalar sesgo_b2 = 0.3 * dk
 
@@ -283,14 +280,12 @@ di as text "delta_k (coef. lnL2 sobre lnK):  " as result %8.4f dk
 di as text "Sesgo teorico en beta_1:          " as result %8.4f sesgo_b1
 di as text "Sesgo teorico en beta_2:          " as result %8.4f sesgo_b2
 
-* ---- Modelo (1): largo (correcto) ----
 di as text _newline "=== Modelo (1): Cobb-Douglas largo (correcto) ==="
 regress lnY lnL1 lnL2 lnK
 scalar a1_hat = _b[lnL1]
 scalar a2_hat = _b[lnL2]
 scalar a3_hat = _b[lnK]
 
-* ---- Modelo (2): corto (omite lnL2) ---- caso a): alpha2 != 0
 di as text _newline "=== Modelo (2): corto, omite lnL2 --- inciso a) ==="
 regress lnY lnL1 lnK
 scalar b1_hat = _b[lnL1]
@@ -308,7 +303,6 @@ di as text "beta2_hat  (modelo corto):      " as result %8.4f b2_hat
 di as text "Sesgo empirico beta2-alpha3:    " as result %8.4f b2_hat - a3_hat
 di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b2
 
-* ---- Tabla comparativa ----
 quietly regress lnY lnL1 lnL2 lnK
 estimates store m_largo
 quietly regress lnY lnL1 lnK
@@ -317,9 +311,214 @@ estimates store m_corto
 estimates table m_largo m_corto, b(%9.4f) se stats(N r2 r2_a)
 #+END_SRC
 
+#+RESULTS: sim-13-5
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_56490.log
+  log type:  text
+ opened on:  16 May 2026, 23:20:26
+
+. clear
+
+. set seed 1305
+
+. set obs 500
+Number of observations (_N) was 0, now 500.
+
+.
+. gen lnL1 = runiform(2, 6)
+
+. gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion positiva con L1
+
+. gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
+
+. gen u    = rnormal(0, 0.3)
+
+.
+. gen lnY = 0.5 + 0.4 * lnL1 + 0.3 * lnL2 + 0.3 * lnK + u
+
+.
+. di as text _newline "=== Regresion auxiliar: lnL2 sobre lnL1 y lnK ==="
+
+=== Regresion auxiliar: lnL2 sobre lnL1 y lnK ===
+
+. regress lnL2 lnL1 lnK
+
+      Source |       SS           df       MS      Number of obs   =       500
+-------------+----------------------------------   F(2, 497)       =    539.08
+       Model |  235.370632         2  117.685316   Prob > F        =    0.0000
+    Residual |  108.499669       497  .218309194   R-squared       =    0.6845
+-------------+----------------------------------   Adj R-squared   =    0.6832
+       Total |  343.870301       499   .68911884   Root MSE        =    .46724
+
+------------------------------------------------------------------------------
+        lnL2 | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        lnL1 |   .4955621   .0250192    19.81   0.000     .4464056    .5447186
+         lnK |   .1299172   .0259927     5.00   0.000     .0788482    .1809863
+       _cons |   .0545972   .0758195     0.72   0.472    -.0943691    .2035635
+------------------------------------------------------------------------------
+
+. scalar d1 = _b[lnL1]   // delta_1
+
+. scalar dk = _b[lnK]    // delta_k
+
+.
+. scalar sesgo_b1 = 0.3 * d1
+
+. scalar sesgo_b2 = 0.3 * dk
+
+.
+. di as text _newline "=== Sesgos teoricos predichos ==="
+
+=== Sesgos teoricos predichos ===
+
+. di as text "delta_1 (coef. lnL2 sobre lnL1): " as result %8.4f d1
+delta_1 (coef. lnL2 sobre lnL1):   0.4956
+
+. di as text "delta_k (coef. lnL2 sobre lnK):  " as result %8.4f dk
+delta_k (coef. lnL2 sobre lnK):    0.1299
+
+. di as text "Sesgo teorico en beta_1:          " as result %8.4f sesgo_b1
+Sesgo teorico en beta_1:            0.1487
+
+. di as text "Sesgo teorico en beta_2:          " as result %8.4f sesgo_b2
+Sesgo teorico en beta_2:            0.0390
+
+.
+. di as text _newline "=== Modelo (1): Cobb-Douglas largo (correcto) ==="
+
+=== Modelo (1): Cobb-Douglas largo (correcto) ===
+
+. regress lnY lnL1 lnL2 lnK
+
+      Source |       SS           df       MS      Number of obs   =       500
+-------------+----------------------------------   F(3, 496)       =   1586.72
+       Model |  437.979201         3  145.993067   Prob > F        =    0.0000
+    Residual |  45.6365019       496  .092009076   R-squared       =    0.9056
+-------------+----------------------------------   Adj R-squared   =    0.9051
+       Total |  483.615703       499  .969169745   Root MSE        =    .30333
+
+------------------------------------------------------------------------------
+         lnY | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        lnL1 |   .4272169   .0217273    19.66   0.000      .384528    .4699057
+        lnL2 |   .2587398   .0291207     8.89   0.000     .2015247    .3159548
+         lnK |   .2821036   .0172934    16.31   0.000     .2481263    .3160809
+       _cons |   .5482942   .0492478    11.13   0.000     .4515342    .6450542
+------------------------------------------------------------------------------
+
+. scalar a1_hat = _b[lnL1]
+
+. scalar a2_hat = _b[lnL2]
+
+. scalar a3_hat = _b[lnK]
+
+.
+. di as text _newline "=== Modelo (2): corto, omite lnL2 --- inciso a) ==="
+
+=== Modelo (2): corto, omite lnL2 --- inciso a) ===
+
+. regress lnY lnL1 lnK
+
+      Source |       SS           df       MS      Number of obs   =       500
+-------------+----------------------------------   F(2, 497)       =   2023.30
+       Model |  430.715554         2  215.357777   Prob > F        =    0.0000
+    Residual |  52.9001489       497  .106438931   R-squared       =    0.8906
+-------------+----------------------------------   Adj R-squared   =    0.8902
+       Total |  483.615703       499  .969169745   Root MSE        =    .32625
+
+------------------------------------------------------------------------------
+         lnY | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        lnL1 |   .5554385   .0174698    31.79   0.000     .5211147    .5897622
+         lnK |   .3157184   .0181495    17.40   0.000     .2800592    .3513776
+       _cons |   .5624207   .0529414    10.62   0.000     .4584042    .6664372
+------------------------------------------------------------------------------
+
+. scalar b1_hat = _b[lnL1]
+
+. scalar b2_hat = _b[lnK]
+
+.
+. di as text _newline "=== Comparacion de estimadores ==="
+
+=== Comparacion de estimadores ===
+
+. di as text "Verdadero alpha1:               " as result %8.4f 0.4
+Verdadero alpha1:                 0.4000
+
+. di as text "alpha1_hat (modelo largo):      " as result %8.4f a1_hat
+alpha1_hat (modelo largo):        0.4272
+
+. di as text "beta1_hat  (modelo corto):      " as result %8.4f b1_hat
+beta1_hat  (modelo corto):        0.5554
+
+. di as text "Sesgo empirico beta1-alpha1:    " as result %8.4f b1_hat - a1_hat
+Sesgo empirico beta1-alpha1:      0.1282
+
+. di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b1
+Sesgo teorico predicho:           0.1487
+
+. di as text _newline "Verdadero alpha3:               " as result %8.4f 0.3
+
+Verdadero alpha3:                 0.3000
+
+. di as text "alpha3_hat (modelo largo):      " as result %8.4f a3_hat
+alpha3_hat (modelo largo):        0.2821
+
+. di as text "beta2_hat  (modelo corto):      " as result %8.4f b2_hat
+beta2_hat  (modelo corto):        0.3157
+
+. di as text "Sesgo empirico beta2-alpha3:    " as result %8.4f b2_hat - a3_hat
+Sesgo empirico beta2-alpha3:      0.0336
+
+. di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b2
+Sesgo teorico predicho:           0.0390
+
+.
+. quietly regress lnY lnL1 lnL2 lnK
+
+. estimates store m_largo
+
+. quietly regress lnY lnL1 lnK
+
+. estimates store m_corto
+
+.
+. estimates table m_largo m_corto, b(%9.4f) se stats(N r2 r2_a)
+
+--------------------------------------
+    Variable |  m_largo     m_corto
+-------------+------------------------
+        lnL1 |    0.4272      0.5554
+             |    0.0217      0.0175
+        lnL2 |    0.2587
+             |    0.0291
+         lnK |    0.2821      0.3157
+             |    0.0173      0.0181
+       _cons |    0.5483      0.5624
+             |    0.0492      0.0529
+-------------+------------------------
+           N |       500         500
+          r2 |    0.9056      0.8906
+        r2_a |    0.9051      0.8902
+--------------------------------------
+                          Legend: b/se
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_56490.log
+  log type:  text
+ closed on:  16 May 2026, 23:20:29
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
 #+NAME: sim-13-5b
 #+BEGIN_SRC stata
-* ---- Inciso b): L2 irrelevante, alpha2 = 0 ----
 clear
 set seed 1305
 set obs 500
@@ -329,12 +528,10 @@ gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion identica al caso a)
 gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
 gen u    = rnormal(0, 0.3)
 
-* Verdadero: alpha2 = 0
 gen lnY_b = 0.5 + 0.4 * lnL1 + 0.0 * lnL2 + 0.3 * lnK + u
 
 di as text _newline "=== Inciso b): alpha2 = 0 --- L2 es irrelevante ==="
 
-* Modelo largo (incluye lnL2 innecesariamente)
 quietly regress lnY_b lnL1 lnL2 lnK
 scalar a1b = _b[lnL1]
 scalar a2b = _b[lnL2]
@@ -342,7 +539,6 @@ scalar a3b = _b[lnK]
 scalar se_a1b = _se[lnL1]
 scalar se_a3b = _se[lnK]
 
-* Modelo corto (omite lnL2, que aqui si es irrelevante)
 quietly regress lnY_b lnL1 lnK
 scalar b1b = _b[lnL1]
 scalar b2b = _b[lnK]
@@ -369,6 +565,140 @@ estimates store m_corto_b
 
 estimates table m_largo_b m_corto_b, b(%9.4f) se stats(N r2 r2_a)
 #+END_SRC
+
+#+RESULTS: sim-13-5b
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_56662.log
+  log type:  text
+ opened on:  16 May 2026, 23:20:53
+
+. clear
+
+. set seed 1305
+
+. set obs 500
+Number of observations (_N) was 0, now 500.
+
+.
+. gen lnL1 = runiform(2, 6)
+
+. gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion identica al caso a)
+
+. gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
+
+. gen u    = rnormal(0, 0.3)
+
+.
+. gen lnY_b = 0.5 + 0.4 * lnL1 + 0.0 * lnL2 + 0.3 * lnK + u
+
+.
+. di as text _newline "=== Inciso b): alpha2 = 0 --- L2 es irrelevante ==="
+
+=== Inciso b): alpha2 = 0 --- L2 es irrelevante ===
+
+.
+. quietly regress lnY_b lnL1 lnL2 lnK
+
+. scalar a1b = _b[lnL1]
+
+. scalar a2b = _b[lnL2]
+
+. scalar a3b = _b[lnK]
+
+. scalar se_a1b = _se[lnL1]
+
+. scalar se_a3b = _se[lnK]
+
+.
+. quietly regress lnY_b lnL1 lnK
+
+. scalar b1b = _b[lnL1]
+
+. scalar b2b = _b[lnK]
+
+. scalar se_b1b = _se[lnL1]
+
+. scalar se_b2b = _se[lnK]
+
+.
+. di as text "--- Coeficientes ---"
+--- Coeficientes ---
+
+. di as text "alpha1_hat modelo largo: " as result %8.4f a1b "  (verdadero: 0.4000)"
+alpha1_hat modelo largo:   0.4272  (verdadero: 0.4000)
+
+. di as text "beta1_hat  modelo corto: " as result %8.4f b1b "  (verdadero: 0.4000)"
+beta1_hat  modelo corto:   0.4068  (verdadero: 0.4000)
+
+. di as text "alpha3_hat modelo largo: " as result %8.4f a3b "  (verdadero: 0.3000)"
+alpha3_hat modelo largo:   0.2821  (verdadero: 0.3000)
+
+. di as text "beta2_hat  modelo corto: " as result %8.4f b2b "  (verdadero: 0.3000)"
+beta2_hat  modelo corto:   0.2767  (verdadero: 0.3000)
+
+. di as text "alpha2_hat modelo largo: " as result %8.4f a2b "  (verdadero: 0.0000)"
+alpha2_hat modelo largo:  -0.0413  (verdadero: 0.0000)
+
+. di as text _newline "--- Errores estandar (ineficiencia del modelo largo) ---"
+
+--- Errores estandar (ineficiencia del modelo largo) ---
+
+. di as text "SE(alpha1) modelo largo: " as result %8.4f se_a1b
+SE(alpha1) modelo largo:   0.0217
+
+. di as text "SE(beta1)  modelo corto: " as result %8.4f se_b1b
+SE(beta1)  modelo corto:   0.0163
+
+. di as text "SE(alpha3) modelo largo: " as result %8.4f se_a3b
+SE(alpha3) modelo largo:   0.0173
+
+. di as text "SE(beta2)  modelo corto: " as result %8.4f se_b2b
+SE(beta2)  modelo corto:   0.0169
+
+. di as text "VIF aprox. lnL1 largo/corto: " as result %8.4f (se_a1b/se_b1b)^2
+VIF aprox. lnL1 largo/corto:   1.7858
+
+.
+. quietly regress lnY_b lnL1 lnL2 lnK
+
+. estimates store m_largo_b
+
+. quietly regress lnY_b lnL1 lnK
+
+. estimates store m_corto_b
+
+.
+. estimates table m_largo_b m_corto_b, b(%9.4f) se stats(N r2 r2_a)
+
+--------------------------------------
+    Variable | m_largo_b   m_corto_b
+-------------+------------------------
+        lnL1 |    0.4272      0.4068
+             |    0.0217      0.0163
+        lnL2 |   -0.0413
+             |    0.0291
+         lnK |    0.2821      0.2767
+             |    0.0173      0.0169
+       _cons |    0.5483      0.5460
+             |    0.0492      0.0493
+-------------+------------------------
+           N |       500         500
+          r2 |    0.8519      0.8513
+        r2_a |    0.8510      0.8507
+--------------------------------------
+                          Legend: b/se
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_56662.log
+  log type:  text
+ closed on:  16 May 2026, 23:20:55
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
 
 ** Interpretación de los resultados esperados
 
