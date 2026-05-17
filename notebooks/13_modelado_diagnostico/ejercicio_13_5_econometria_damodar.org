@@ -774,6 +774,7 @@ pérdida de eficiencia antes que asumir el riesgo de sesgo sistemático.
 | *13.5a*   | *Insumo L₂ relevante omitido*      | *Perdida*    | *N/A (hay sesgo)*   | *Inválida*                |
 | *13.5b*   | *Insumo L₂ irrelevante omitido*    | *Preservada* | *Mayor eficiencia*  | *Válida y más eficiente*  |
 
+
 El ejercicio~13.5 es la generalización del ejercicio~13.3 al contexto de
 regresión múltiple y con contenido económico explícito. El inciso~b)
 conecta directamente con el ejercicio~13.4: omitir una variable irrelevante
