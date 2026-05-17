@@ -1,0 +1,460 @@
+#+TITLE: Econometría — Gujarati, Capítulo 13
+#+SUBTITLE: Ejercicio 13.5 — Omisión de un insumo en la función de producción Cobb-Douglas
+#+DATE: <2026-05-16>
+#+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both
+
+* Ejercicio 13.5
+
+#+BEGIN_QUOTE
+Considere la siguiente función de producción (Cobb-Douglas) *verdadera*:
+
+  ln Yᵢ = α₀ + α₁ ln L₁ᵢ + α₂ ln L₂ᵢ + α₃ ln Kᵢ + uᵢ    (1)
+
+donde:
+  Y  = producción
+  L₁ = trabajo contenido en la producción
+  L₂ = trabajo no contenido en la producción
+  K  = capital
+
+Pero suponga que la regresión realmente utilizada en la investigación
+empírica es:
+
+  ln Yᵢ = β₀ + β₁ ln L₁ᵢ + β₂ ln Kᵢ + vᵢ    (2)
+
+Conforme al supuesto de que se tiene información de corte transversal
+sobre las variables relevantes:
+
+a) ¿Será E(β̂₁) = α₁ y E(β̂₂) = α₃?
+b) Si se sabe que L₂ es un insumo irrelevante en la función de
+   producción, ¿aún es válida la respuesta en a)? Muestre las
+   derivaciones necesarias.
+#+END_QUOTE
+
+** Clasificación del error de especificación
+
+El modelo~(2) omite la variable $\ln L_{2i}$, que en la especificación
+verdadera (1) entra con coeficiente $\alpha_2$. En la taxonomía de
+Gujarati (sección~13.2) esto corresponde a la *omisión de una variable
+relevante* (siempre que $\alpha_2 \neq 0$):
+
+| Tipo de error                       | Consecuencia principal               |
+|-------------------------------------+--------------------------------------|
+| Inclusión de variable irrelevante   | Insesgadez + ineficiencia (Ej. 13.4) |
+| *Omisión de variable relevante*     | *Sesgo + inconsistencia (Ej. 13.5)*  |
+
+Este ejercicio generaliza el resultado del ejercicio~13.3 (donde la
+variable omitida era el intercepto) al contexto de regresión múltiple y
+le da contenido económico concreto: la función de producción Cobb-Douglas
+con dos categorías de trabajo.
+
+** Contexto económico
+
+La función de producción verdadera (1) distingue entre dos tipos de
+trabajo: $L_1$ (trabajo directamente productivo, /production labor/) y
+$L_2$ (trabajo de soporte, /non-production labor/). Ambos son insumos
+distintos con elasticidades-producto propias ($\alpha_1$ y $\alpha_2$).
+
+Al estimar el modelo~(2) se impone la restricción $\alpha_2 = 0$ sin que
+la teoría económica la justifique. Esta restricción es la fuente del
+sesgo que se analiza a continuación.
+
+** Solución detallada
+
+*** a) ¿Será E(β̂₁) = α₁ y E(β̂₂) = α₃?
+
+*No, en general E(β̂₁) ≠ α₁ y E(β̂₂) ≠ α₃.* Al estimar el modelo~(2)
+se comete un error de *sub-especificación* o *sesgo por variable omitida*.
+
+**** Derivación algebraica del sesgo
+
+Sea el modelo verdadero en notación vectorial:
+
+$$\mathbf{y} = \alpha_0\mathbf{1} + \alpha_1\mathbf{x}_1
+             + \alpha_2\mathbf{x}_2 + \alpha_3\mathbf{x}_3 + \mathbf{u}$$
+
+donde $\mathbf{y} = \ln Y$, $\mathbf{x}_1 = \ln L_1$,
+$\mathbf{x}_2 = \ln L_2$, $\mathbf{x}_3 = \ln K$.
+
+El modelo estimado~(2) omite $\mathbf{x}_2$ y obtiene MCO sobre la
+regresión corta:
+
+$$\mathbf{y} = \beta_0\mathbf{1} + \beta_1\mathbf{x}_1
+             + \beta_2\mathbf{x}_3 + \mathbf{v}$$
+
+El estimador MCO de $(\hat{\beta}_0, \hat{\beta}_1, \hat{\beta}_2)'$ es:
+
+$$\hat{\boldsymbol{\beta}} = (\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{y}$$
+
+donde $\mathbf{Z} = [\mathbf{1},\; \mathbf{x}_1,\; \mathbf{x}_3]$.
+Sustituyendo el modelo verdadero:
+
+$$\hat{\boldsymbol{\beta}}
+  = (\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'
+    (\alpha_0\mathbf{1} + \alpha_1\mathbf{x}_1
+     + \alpha_2\mathbf{x}_2 + \alpha_3\mathbf{x}_3 + \mathbf{u})$$
+
+Tomando la esperanza bajo $E(\mathbf{u}\mid\mathbf{Z}) = \mathbf{0}$:
+
+$$E(\hat{\boldsymbol{\beta}})
+  = \alpha_0(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{1}
+  + \alpha_1(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{x}_1
+  + \alpha_2(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{x}_2
+  + \alpha_3(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{x}_3$$
+
+Los tres primeros términos corresponden a los coeficientes que
+$(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'$ proyectaría exactamente si
+$\mathbf{x}_2$ no existiese:
+
+$$E(\hat{\boldsymbol{\beta}})
+  = \boldsymbol{\alpha}_{(-2)}
+  + \alpha_2(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{x}_2$$
+
+donde $\boldsymbol{\alpha}_{(-2)} = (\alpha_0, \alpha_1, \alpha_3)'$ son
+los verdaderos parámetros del modelo restringido. El segundo sumando es
+el *sesgo*: depende de $\alpha_2$ y de la proyección de $\mathbf{x}_2$
+sobre el espacio columna de $\mathbf{Z}$.
+
+**** Fórmula del sesgo en términos de regresiones auxiliares
+
+Definamos la *regresión auxiliar* de $\ln L_{2i}$ sobre $(\mathbf{1},\ln L_{1i}, \ln K_i)$:
+
+$$\ln L_{2i} = \delta_0 + \delta_1 \ln L_{1i} + \delta_k \ln K_i + \epsilon_i$$
+
+Los coeficientes $\delta_1$ y $\delta_k$ son las pendientes parciales de
+$\ln L_2$ sobre los regresores incluidos. La proyección que aparece en el
+sesgo se puede escribir en términos de estas pendientes, obteniéndose la
+fórmula estándar del sesgo por variable omitida:
+
+$$\boxed{E(\hat{\beta}_1) = \alpha_1 + \alpha_2\,\delta_1}$$
+$$\boxed{E(\hat{\beta}_2) = \alpha_3 + \alpha_2\,\delta_k}$$
+
+donde:
+
+- $\alpha_2$ es el coeficiente verdadero de $\ln L_{2i}$ en la función~(1).
+- $\delta_1$ es la pendiente de $\ln L_{2i}$ sobre $\ln L_{1i}$
+  (controlando por $\ln K_i$) en la regresión auxiliar.
+- $\delta_k$ es la pendiente de $\ln L_{2i}$ sobre $\ln K_i$
+  (controlando por $\ln L_{1i}$) en la regresión auxiliar.
+
+**** Condiciones de insesgadez
+
+Los estimadores $\hat{\beta}_1$ y $\hat{\beta}_2$ serían insesgados
+*si y solo si* se cumple alguna de las siguientes condiciones:
+
+1. $\alpha_2 = 0$: el trabajo $L_2$ es irrelevante en la función de
+   producción verdadera, es decir, no tiene efecto causal sobre el
+   producto. Se analiza en el inciso~b).
+
+2. $\delta_1 = 0$ y $\delta_k = 0$: $\ln L_{2i}$ no está correlacionado
+   con $\ln L_{1i}$ ni con $\ln K_i$ en la muestra (ortogonalidad
+   perfecta de la variable omitida con todos los regresores incluidos).
+
+**** Evaluación de las condiciones en el contexto económico
+
+En datos reales de empresas (corte transversal), ambas condiciones son
+*sumamente improbables*:
+
+- Empresas con mayor volumen de producción tienden a emplear más trabajo
+  en todas las categorías simultáneamente: $\delta_1 > 0$ probablemente.
+
+- El capital y el trabajo de soporte suelen ser complementarios:
+  empresas más intensivas en capital emplean más personal administrativo,
+  de mantenimiento y supervisión: $\delta_k \neq 0$ probablemente.
+
+Por tanto, omitir $\ln L_{2i}$ produce *estimadores sesgados e
+inconsistentes* para $\alpha_1$ y $\alpha_3$.
+
+**** Dirección del sesgo
+
+La dirección del sesgo sobre cada coeficiente depende del signo del
+producto $\alpha_2 \cdot \delta_j$:
+
+| Signo de $\alpha_2$ | Signo de $\delta_j$ | Sesgo en $\hat{\beta}_j$  | Consecuencia económica               |
+|---------------------+---------------------+---------------------------+--------------------------------------|
+| $+$                 | $+$                 | Positivo (sobreestima)    | Elasticidad de $L_1$ o $K$ inflada  |
+| $+$                 | $-$                 | Negativo (subestima)      | Elasticidad de $L_1$ o $K$ deflada  |
+| $-$                 | $+$                 | Negativo (subestima)      | Elasticidad de $L_1$ o $K$ deflada  |
+| $-$                 | $-$                 | Positivo (sobreestima)    | Elasticidad de $L_1$ o $K$ inflada  |
+
+En la práctica, si $\alpha_2 > 0$ (ambos tipos de trabajo contribuyen
+positivamente a la producción) y $\delta_1 > 0$ ($L_1$ y $L_2$ están
+correlacionados positivamente), entonces $\hat{\beta}_1$ sobrestimará la
+verdadera elasticidad-producto de $L_1$: parte del efecto de $L_2$ se
+atribuye incorrectamente a $L_1$.
+
+*** b) Si L₂ es irrelevante (α₂ = 0), ¿aún es válida la respuesta en a)?
+
+*No: si $\alpha_2 = 0$, la conclusión cambia. Los estimadores pasan a
+ser insesgados.*
+
+**** Derivación
+
+Partiendo de las fórmulas del sesgo derivadas en el inciso~a):
+
+$$E(\hat{\beta}_1) = \alpha_1 + \alpha_2\,\delta_1$$
+
+Si $\alpha_2 = 0$:
+
+$$E(\hat{\beta}_1) = \alpha_1 + (0)\cdot\delta_1 = \alpha_1$$
+
+Igualmente:
+
+$$E(\hat{\beta}_2) = \alpha_3 + \alpha_2\,\delta_k = \alpha_3 + (0)\cdot\delta_k = \alpha_3$$
+
+$$\boxed{E(\hat{\beta}_1) = \alpha_1 \quad \text{y} \quad E(\hat{\beta}_2) = \alpha_3}$$
+
+El sesgo desaparece *independientemente* del valor de $\delta_1$ y
+$\delta_k$, es decir, *independientemente de la correlación que $L_2$
+tenga con $L_1$ y $K$ en la muestra*. Esto es el resultado general de
+los ejercicios 13.2 y 13.4: si la variable omitida es genuinamente
+irrelevante ($\alpha_2 = 0$), omitirla no introduce sesgo.
+
+**** Interpretación económica
+
+Si $\alpha_2 = 0$, el modelo~(2) es en realidad el modelo *correcto*:
+el trabajo de soporte $L_2$ no tiene efecto causal sobre la producción,
+y estimarlo como si lo tuviese (modelo~1) solo generaría pérdida de
+eficiencia sin ningún beneficio en términos de sesgo.
+
+**** Eficiencia en el caso α₂ = 0
+
+Aunque los estimadores son insesgados, el modelo~(2) con $\alpha_2 = 0$
+sigue siendo *más eficiente* que el modelo~(1) con $\alpha_2 = 0$
+impuesto:
+
+- Estimar el modelo~(1) incluyendo $\ln L_{2i}$ cuando $\alpha_2 = 0$
+  equivale al ejercicio~13.4: se incluye una variable irrelevante, lo que
+  infla las varianzas de todos los estimadores según el VIF correspondiente.
+
+- El modelo~(2) es más *parsimonioso* y produce estimadores con menor
+  varianza (mayor eficiencia).
+
+$$\operatorname{Var}(\hat{\alpha}_1)_{\text{modelo largo}} \geq
+  \operatorname{Var}(\hat{\beta}_1)_{\text{modelo corto}}$$
+
+con igualdad solo si $\ln L_{2i} \perp \ln L_{1i}$ y
+$\ln L_{2i} \perp \ln K_i$ en la muestra.
+
+** Resumen de resultados
+
+| Situación                    | E(β̂₁)                    | E(β̂₂)                    | Eficiencia                          |
+|------------------------------+----------------------------+----------------------------+-------------------------------------|
+| α₂ ≠ 0, δ₁ ≠ 0 o δₖ ≠ 0   | α₁ + α₂δ₁ ≠ α₁ (sesgado) | α₃ + α₂δₖ ≠ α₃ (sesgado) | No aplica (hay sesgo)               |
+| α₂ ≠ 0, δ₁ = δₖ = 0        | α₁ (insesgado)            | α₃ (insesgado)            | Igual al modelo largo               |
+| α₂ = 0 (cualquier δ)        | α₁ (insesgado)            | α₃ (insesgado)            | Mayor que modelo largo (más eficiente) |
+
+** Verificación empírica con datos simulados
+
+Se generan datos del proceso verdadero (1) con $\alpha_0 = 0.5$,
+$\alpha_1 = 0.4$, $\alpha_2 = 0.3$, $\alpha_3 = 0.3$ y se comparan tres
+escenarios: modelo correcto (largo), modelo corto con $\alpha_2 \neq 0$
+(sesgo esperado), y modelo corto con $\alpha_2 = 0$ (sin sesgo).
+
+#+NAME: sim-13-5
+#+BEGIN_SRC stata
+clear
+set seed 1305
+set obs 500
+
+gen lnL1 = runiform(2, 6)
+gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion positiva con L1
+gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
+gen u    = rnormal(0, 0.3)
+
+* Verdadero: alpha0=0.5, alpha1=0.4, alpha2=0.3, alpha3=0.3
+gen lnY = 0.5 + 0.4 * lnL1 + 0.3 * lnL2 + 0.3 * lnK + u
+
+* ---- Regresion auxiliar de lnL2 sobre lnL1 y lnK ----
+di as text _newline "=== Regresion auxiliar: lnL2 sobre lnL1 y lnK ==="
+regress lnL2 lnL1 lnK
+scalar d1 = _b[lnL1]   // delta_1
+scalar dk = _b[lnK]    // delta_k
+
+* Sesgo teorico predicho
+scalar sesgo_b1 = 0.3 * d1
+scalar sesgo_b2 = 0.3 * dk
+
+di as text _newline "=== Sesgos teoricos predichos ==="
+di as text "delta_1 (coef. lnL2 sobre lnL1): " as result %8.4f d1
+di as text "delta_k (coef. lnL2 sobre lnK):  " as result %8.4f dk
+di as text "Sesgo teorico en beta_1:          " as result %8.4f sesgo_b1
+di as text "Sesgo teorico en beta_2:          " as result %8.4f sesgo_b2
+
+* ---- Modelo (1): largo (correcto) ----
+di as text _newline "=== Modelo (1): Cobb-Douglas largo (correcto) ==="
+regress lnY lnL1 lnL2 lnK
+scalar a1_hat = _b[lnL1]
+scalar a2_hat = _b[lnL2]
+scalar a3_hat = _b[lnK]
+
+* ---- Modelo (2): corto (omite lnL2) ---- caso a): alpha2 != 0
+di as text _newline "=== Modelo (2): corto, omite lnL2 --- inciso a) ==="
+regress lnY lnL1 lnK
+scalar b1_hat = _b[lnL1]
+scalar b2_hat = _b[lnK]
+
+di as text _newline "=== Comparacion de estimadores ==="
+di as text "Verdadero alpha1:               " as result %8.4f 0.4
+di as text "alpha1_hat (modelo largo):      " as result %8.4f a1_hat
+di as text "beta1_hat  (modelo corto):      " as result %8.4f b1_hat
+di as text "Sesgo empirico beta1-alpha1:    " as result %8.4f b1_hat - a1_hat
+di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b1
+di as text _newline "Verdadero alpha3:               " as result %8.4f 0.3
+di as text "alpha3_hat (modelo largo):      " as result %8.4f a3_hat
+di as text "beta2_hat  (modelo corto):      " as result %8.4f b2_hat
+di as text "Sesgo empirico beta2-alpha3:    " as result %8.4f b2_hat - a3_hat
+di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b2
+
+* ---- Tabla comparativa ----
+quietly regress lnY lnL1 lnL2 lnK
+estimates store m_largo
+quietly regress lnY lnL1 lnK
+estimates store m_corto
+
+estimates table m_largo m_corto, b(%9.4f) se stats(N r2 r2_a)
+#+END_SRC
+
+#+NAME: sim-13-5b
+#+BEGIN_SRC stata
+* ---- Inciso b): L2 irrelevante, alpha2 = 0 ----
+clear
+set seed 1305
+set obs 500
+
+gen lnL1 = runiform(2, 6)
+gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion identica al caso a)
+gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
+gen u    = rnormal(0, 0.3)
+
+* Verdadero: alpha2 = 0
+gen lnY_b = 0.5 + 0.4 * lnL1 + 0.0 * lnL2 + 0.3 * lnK + u
+
+di as text _newline "=== Inciso b): alpha2 = 0 --- L2 es irrelevante ==="
+
+* Modelo largo (incluye lnL2 innecesariamente)
+quietly regress lnY_b lnL1 lnL2 lnK
+scalar a1b = _b[lnL1]
+scalar a2b = _b[lnL2]
+scalar a3b = _b[lnK]
+scalar se_a1b = _se[lnL1]
+scalar se_a3b = _se[lnK]
+
+* Modelo corto (omite lnL2, que aqui si es irrelevante)
+quietly regress lnY_b lnL1 lnK
+scalar b1b = _b[lnL1]
+scalar b2b = _b[lnK]
+scalar se_b1b = _se[lnL1]
+scalar se_b2b = _se[lnK]
+
+di as text "--- Coeficientes ---"
+di as text "alpha1_hat modelo largo: " as result %8.4f a1b "  (verdadero: 0.4000)"
+di as text "beta1_hat  modelo corto: " as result %8.4f b1b "  (verdadero: 0.4000)"
+di as text "alpha3_hat modelo largo: " as result %8.4f a3b "  (verdadero: 0.3000)"
+di as text "beta2_hat  modelo corto: " as result %8.4f b2b "  (verdadero: 0.3000)"
+di as text "alpha2_hat modelo largo: " as result %8.4f a2b "  (verdadero: 0.0000)"
+di as text _newline "--- Errores estandar (ineficiencia del modelo largo) ---"
+di as text "SE(alpha1) modelo largo: " as result %8.4f se_a1b
+di as text "SE(beta1)  modelo corto: " as result %8.4f se_b1b
+di as text "SE(alpha3) modelo largo: " as result %8.4f se_a3b
+di as text "SE(beta2)  modelo corto: " as result %8.4f se_b2b
+di as text "VIF aprox. lnL1 largo/corto: " as result %8.4f (se_a1b/se_b1b)^2
+
+quietly regress lnY_b lnL1 lnL2 lnK
+estimates store m_largo_b
+quietly regress lnY_b lnL1 lnK
+estimates store m_corto_b
+
+estimates table m_largo_b m_corto_b, b(%9.4f) se stats(N r2 r2_a)
+#+END_SRC
+
+** Interpretación de los resultados esperados
+
+Al ejecutar los bloques anteriores se observará:
+
+*Inciso a) --- α₂ ≠ 0:*
+
+1. *Sesgo empírico cercano al teórico*: la diferencia
+   $\hat{\beta}_1 - \hat{\alpha}_1$ aproxima $\alpha_2 \cdot \delta_1$
+   y $\hat{\beta}_2 - \hat{\alpha}_3$ aproxima $\alpha_2 \cdot \delta_k$,
+   verificando la fórmula del sesgo.
+
+2. *Sesgo positivo en β̂₁*: como $\alpha_2 = 0.3 > 0$ y $\delta_1 > 0$
+   (ambos tipos de trabajo correlacionados positivamente), $\hat{\beta}_1$
+   sobreestima $\alpha_1$. Parte del efecto productivo de $L_2$ se
+   atribuye incorrectamente a $L_1$.
+
+3. *Sesgo en β̂₂*: el signo depende de $\delta_k$; si $L_2$ y $K$ son
+   complementarios ($\delta_k > 0$), $\hat{\beta}_2$ sobreestimará
+   $\alpha_3$.
+
+*Inciso b) --- α₂ = 0:*
+
+4. *Insesgadez confirmada*: con $\alpha_2 = 0$, ambos modelos producen
+   estimadores próximos a $\alpha_1 = 0.4$ y $\alpha_3 = 0.3$,
+   independientemente de la correlación entre $L_2$, $L_1$ y $K$.
+
+5. *Ineficiencia del modelo largo*: el SE de $\hat{\alpha}_1$ en el
+   modelo largo supera al de $\hat{\beta}_1$ en el modelo corto, ya que
+   incluir $\ln L_{2i}$ con $\alpha_2 = 0$ introduce multicolinealidad
+   innecesaria (ejercicio~13.4).
+
+6. *Coeficiente de $\ln L_{2i}$ no significativo*: $\hat{\alpha}_2
+   \approx 0$ con un estadístico $t$ pequeño, confirmando la irrelevancia
+   de $L_2$ en el modelo verdadero.
+
+** Conclusión
+
+#+BEGIN_QUOTE
+La respuesta al inciso~a) es *no*: en general $E(\hat{\beta}_1) \neq \alpha_1$
+y $E(\hat{\beta}_2) \neq \alpha_3$. Omitir el trabajo de soporte $\ln L_{2i}$
+cuando es un insumo relevante ($\alpha_2 \neq 0$) introduce sesgo en los
+estimadores de las elasticidades-producto de $L_1$ y $K$, cuya magnitud y
+dirección dependen de:
+
+$$E(\hat{\beta}_1) = \alpha_1 + \alpha_2\,\delta_1 \qquad
+  E(\hat{\beta}_2) = \alpha_3 + \alpha_2\,\delta_k$$
+
+Este sesgo *no desaparece con muestras más grandes*: los estimadores
+también son inconsistentes.
+
+La respuesta al inciso~b) es que *sí cambia*: si $\alpha_2 = 0$, el sesgo
+se anula algebraicamente independientemente de la correlación entre las
+variables, y el modelo~(2) es en realidad el modelo correcto. Estimarlo
+con $\ln L_{2i}$ incluido (modelo largo) no generaría sesgo, pero sí
+produciría pérdida de eficiencia debido a la multicolinealidad inducida
+artificialmente.
+
+En la práctica econométrica, la decisión de incluir o excluir $\ln L_{2i}$
+debe basarse en teoría económica sólida, no solo en criterios estadísticos.
+Si la teoría no puede descartar $\alpha_2 = 0$ con certeza, la regla
+prudente de Gujarati recomienda incluir la variable y asumir la pequeña
+pérdida de eficiencia antes que asumir el riesgo de sesgo sistemático.
+#+END_QUOTE
+
+* Conexión con los ejercicios anteriores del Capítulo 13
+
+| Ejercicio | Error de especificación            | Insesgadez   | Eficiencia          | Validez de la inferencia  |
+|-----------+------------------------------------+--------------+---------------------+---------------------------|
+| 13.2      | Intercepto innecesario incluido    | Preservada   | Reducida            | Válida (menos potente)    |
+| 13.3      | Intercepto relevante omitido       | Perdida      | N/A (hay sesgo)     | Inválida                  |
+| 13.4      | Variable irrelevante X₃ incluida   | Preservada   | Reducida (VIF)      | Válida (menos potente)    |
+| *13.5a*   | *Insumo L₂ relevante omitido*      | *Perdida*    | *N/A (hay sesgo)*   | *Inválida*                |
+| *13.5b*   | *Insumo L₂ irrelevante omitido*    | *Preservada* | *Mayor eficiencia*  | *Válida y más eficiente*  |
+
+El ejercicio~13.5 es la generalización del ejercicio~13.3 al contexto de
+regresión múltiple y con contenido económico explícito. El inciso~b)
+conecta directamente con el ejercicio~13.4: omitir una variable irrelevante
+(sobre el modelo verdadero sin esa variable) no produce sesgo y, de hecho,
+mejora la eficiencia respecto a incluirla innecesariamente.
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13, secciones 13.2 y 13.3.
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.). Pearson.
+  Capítulo 5.
+- Wooldridge, J. M. (2016). /Introductory Econometrics/ (6.ª ed.).
+  Cengage. Capítulo 3.
