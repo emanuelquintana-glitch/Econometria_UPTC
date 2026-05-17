@@ -7,3 +7,8 @@
 $$Y_{t} = \beta_{1} + \beta_{2}X_{2t }+ u_{t}$$
 
 pero añadimoos una variable "irrelevante", X3, al modelo (irrelevante en el sentido que el verdadero coeficiente \beta_{3} que acompaña a la variable X_{3} es cero) y estime.
+
+$$Y_{i}_{} + \beta_{1} + \beta_{2}X_{2t} + u_{t}$$
+
+a) ¿$R^{2}$ y $R^{2}$ ajustado para el modelo (2) serian mas grandes que las del modelo (1)?
+b) ¿Las estimaciones de \beta_{1}
