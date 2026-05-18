@@ -179,37 +179,30 @@ clear
 set seed 1306
 set obs 200
 
-* Parámetros verdaderos
 local b1 = 2
 local b2 = 3
 local b3 = 1        // efecto real de X3 (cambiar a 0.1 para caso de sesgo pequeño)
 local r23 = 0.8     // correlación entre X2 y X3 (cambiar para distintos escenarios)
 
-* Generar variables
 gen X2 = rnormal(5, 2)
 gen X3 = `r23' * X2 + sqrt(1 - `r23'^2) * rnormal(0, 2)
 gen u  = rnormal(0, 1)
 gen Y  = `b1' + `b2' * X2 + `b3' * X3 + u
 
-* ---- Regresión auxiliar: b32 ----
 quietly regress X3 X2
 scalar b32 = _b[X2]
 
-* ---- Modelo corto (omite X3): alpha2 sesgado ----
 quietly regress Y X2
 scalar a2_hat = _b[X2]
 scalar var_a2 = _se[X2]^2
 
-* ---- Modelo largo (incluye X3): beta2 insesgado ----
 quietly regress Y X2 X3
 scalar b2_hat = _b[X2]
 scalar var_b2 = _se[X2]^2
 
-* ---- Correlación muestral ----
 quietly correlate X2 X3
 scalar r23_hat = r(rho)
 
-* ---- ECM teórico ----
 quietly regress Y X2 X3
 scalar sigma2 = e(rmse)^2
 quietly summarize X2
@@ -218,9 +211,6 @@ scalar sum_x2 = (r(N)-1) * r(Var)
 scalar ecm_a2_teo = sigma2/sum_x2 + (`b3' * b32)^2
 scalar ecm_b2_teo = sigma2/(sum_x2 * (1 - r23_hat^2))
 
-* ---- Programa para Monte Carlo ----
-* Nota: el cuerpo del programa usa líneas separadas para if/else
-* para evitar el error r(198) "code follows on the same line as close brace"
 capture program drop sim_ej136
 program define sim_ej136, rclass
     args b3 r23
@@ -236,16 +226,13 @@ program define sim_ej136, rclass
     return scalar b2 = _b[X2]
 end
 
-* ---- Simulación Monte Carlo: 1000 réplicas ----
 simulate a2=r(a2) b2=r(b2), reps(1000) seed(1306): sim_ej136 `b3' `r23'
 
-* ---- ECM empírico ----
 quietly summarize a2
 scalar ecm_a2_emp = r(Var) + (r(mean) - 3)^2
 quietly summarize b2
 scalar ecm_b2_emp = r(Var) + (r(mean) - 3)^2
 
-* ---- Resultados ----
 di as text _newline "=== Escenario: b3 = " `b3' ", r23 = " `r23' " ==="
 di as text "b32 (regresion auxiliar):      " as result %8.4f b32
 di as text "VIF = 1/(1-r23^2):             " as result %8.4f 1/(1 - r23_hat^2)
@@ -256,7 +243,6 @@ di as text _newline "--- ECM empirico (MC, 1000 reps) ---"
 di as text "ECM(alpha2) empirico:          " as result %8.6f ecm_a2_emp
 di as text "ECM(beta2)  empirico:          " as result %8.6f ecm_b2_emp
 di as text _newline "Estimador preferible (menor ECM):"
-* Separar if y else en bloques independientes (evita r(198))
 scalar _pref = (ecm_a2_emp < ecm_b2_emp)
 if _pref == 1 {
     di as text "  --> alpha2 (sesgado) tiene menor ECM"
@@ -266,15 +252,176 @@ if _pref == 0 {
 }
 #+END_SRC
 
+#+RESULTS: sim-13-6
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_40064.log
+  log type:  text
+ opened on:  17 May 2026, 20:53:58
+
+. clear
+
+. set seed 1306
+
+. set obs 200
+Number of observations (_N) was 0, now 200.
+
+.
+. local b1 = 2
+
+. local b2 = 3
+
+. local b3 = 1        // efecto real de X3 (cambiar a 0.1 para caso de sesgo pequeño)
+
+. local r23 = 0.8     // correlación entre X2 y X3 (cambiar para distintos escenarios)
+
+.
+. gen X2 = rnormal(5, 2)
+
+. gen X3 = `r23' * X2 + sqrt(1 - `r23'^2) * rnormal(0, 2)
+
+. gen u  = rnormal(0, 1)
+
+. gen Y  = `b1' + `b2' * X2 + `b3' * X3 + u
+
+.
+. quietly regress X3 X2
+
+. scalar b32 = _b[X2]
+
+.
+. quietly regress Y X2
+
+. scalar a2_hat = _b[X2]
+
+. scalar var_a2 = _se[X2]^2
+
+.
+. quietly regress Y X2 X3
+
+. scalar b2_hat = _b[X2]
+
+. scalar var_b2 = _se[X2]^2
+
+.
+. quietly correlate X2 X3
+
+. scalar r23_hat = r(rho)
+
+.
+. quietly regress Y X2 X3
+
+. scalar sigma2 = e(rmse)^2
+
+. quietly summarize X2
+
+. scalar sum_x2 = (r(N)-1) * r(Var)
+
+.
+. scalar ecm_a2_teo = sigma2/sum_x2 + (`b3' * b32)^2
+
+. scalar ecm_b2_teo = sigma2/(sum_x2 * (1 - r23_hat^2))
+
+.
+. capture program drop sim_ej136
+
+. program define sim_ej136, rclass
+  1.     args b3 r23
+  2.     clear
+  3.     set obs 200
+  4.     gen X2 = rnormal(5, 2)
+  5.     gen X3 = `r23' * X2 + sqrt(1 - `r23'^2) * rnormal(0, 2)
+  6.     gen u  = rnormal(0, 1)
+  7.     gen Y  = 2 + 3 * X2 + `b3' * X3 + u
+  8.     quietly regress Y X2
+  9.     return scalar a2 = _b[X2]
+ 10.     quietly regress Y X2 X3
+ 11.     return scalar b2 = _b[X2]
+ 12. end
+
+.
+. simulate a2=r(a2) b2=r(b2), reps(1000) seed(1306): sim_ej136 `b3' `r23'
+
+      Command: sim_ej136 1 .8
+           a2: r(a2)
+           b2: r(b2)
+
+Simulations (1,000): .........10.........20.........30.........40.........50.........60.........70.........80.........90.........100.........110.........120.........130.........140.........150........
+> .160.........170.........180.........190.........200.........210.........220.........230.........240.........250.........260.........270.........280.........290.........300.........310.........320..
+> .......330.........340.........350.........360.........370.........380.........390.........400.........410.........420.........430.........440.........450.........460.........470.........480........
+> .490.........500.........510.........520.........530.........540.........550.........560.........570.........580.........590.........600.........610.........620.........630.........640.........650..
+> .......660.........670.........680.........690.........700.........710.........720.........730.........740.........750.........760.........770.........780.........790.........800.........810........
+> .820.........830.........840.........850.........860.........870.........880.........890.........900.........910.........920.........930.........940.........950.........960.........970.........980..
+> .......990.........1,000 done
+
+.
+. quietly summarize a2
+
+. scalar ecm_a2_emp = r(Var) + (r(mean) - 3)^2
+
+. quietly summarize b2
+
+. scalar ecm_b2_emp = r(Var) + (r(mean) - 3)^2
+
+.
+. di as text _newline "=== Escenario: b3 = " `b3' ", r23 = " `r23' " ==="
+
+=== Escenario: b3 = 1, r23 = .8 ===
+
+. di as text "b32 (regresion auxiliar):      " as result %8.4f b32
+b32 (regresion auxiliar):        0.7677
+
+. di as text "VIF = 1/(1-r23^2):             " as result %8.4f 1/(1 - r23_hat^2)
+VIF = 1/(1-r23^2):               2.4451
+
+. di as text _newline "--- ECM teorico ---"
+
+--- ECM teorico ---
+
+. di as text "ECM(alpha2) teorico:           " as result %8.6f ecm_a2_teo
+ECM(alpha2) teorico:           0.590715
+
+. di as text "ECM(beta2)  teorico:           " as result %8.6f ecm_b2_teo
+ECM(beta2)  teorico:           0.003453
+
+. di as text _newline "--- ECM empirico (MC, 1000 reps) ---"
+
+--- ECM empirico (MC, 1000 reps) ---
+
+. di as text "ECM(alpha2) empirico:          " as result %8.6f ecm_a2_emp
+ECM(alpha2) empirico:          0.641232
+
+. di as text "ECM(beta2)  empirico:          " as result %8.6f ecm_b2_emp
+ECM(beta2)  empirico:          0.003517
+
+. di as text _newline "Estimador preferible (menor ECM):"
+
+Estimador preferible (menor ECM):
+
+. scalar _pref = (ecm_a2_emp < ecm_b2_emp)
+
+. if _pref == 1 {
+.     di as text "  --> alpha2 (sesgado) tiene menor ECM"
+. }
+
+. if _pref == 0 {
+.     di as text "  --> beta2 (insesgado) tiene menor ECM"
+  --> beta2 (insesgado) tiene menor ECM
+. }
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_40064.log
+  log type:  text
+ closed on:  17 May 2026, 20:54:14
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
 #+NAME: sim-13-6-escenarios
 #+BEGIN_SRC stata
-* ---- Comparación de cuatro escenarios ----
-* Requiere que sim_ej136 esté definido (ejecutar primero el bloque sim-13-6)
-*
-* Escenario A: sesgo pequeño  (b3=0.1), correlación moderada (r23=0.50)
-* Escenario B: sesgo grande   (b3=2.0), correlación moderada (r23=0.50)
-* Escenario C: sesgo moderado (b3=1.0), correlación alta     (r23=0.95)
-* Escenario D: sesgo moderado (b3=1.0), correlación baja     (r23=0.10)
 
 local b3_A  = 0.1  ;  local r23_A = 0.50
 local b3_B  = 2.0  ;  local r23_B = 0.50
@@ -301,7 +448,6 @@ foreach scen in A B C D {
        "  ECM_b=" as result %7.5f `ecm_b'
 }
 
-* Mostrar preferencias en bloque separado (if/else en líneas distintas)
 di as text _newline "=== Estimador preferible por escenario ==="
 foreach scen in A B C D {
     if _pref_`scen' == 1 {
@@ -312,6 +458,23 @@ foreach scen in A B C D {
     }
 }
 #+END_SRC
+
+#+RESULTS: sim-13-6-escenarios
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_40276.log
+  log type:  text
+ opened on:  17 May 2026, 20:54:35
+
+.
+. local b3_A  = 0.1  ;  local r23_A = 0.50
+invalid ';'
+r(198);
+
+end of do-file
+r(198);
+#+end_example
 
 ** Interpretación de los resultados esperados
 
