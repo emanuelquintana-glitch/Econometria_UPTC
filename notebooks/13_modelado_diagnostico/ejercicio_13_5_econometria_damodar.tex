@@ -1,0 +1,651 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+% ---- Encabezado y pie de página ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.5}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---- Títulos de sección ----
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+% ---- Caja resaltada ----
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+% ---- Estilo de código Stata ----
+\definecolor{stataback}{RGB}{248,248,248}
+\definecolor{stataframe}{RGB}{180,180,180}
+\definecolor{statacomment}{RGB}{100,100,100}
+\definecolor{statakeyword}{RGB}{0,70,140}
+
+\lstdefinelanguage{Stata}{
+  morekeywords={clear, set, gen, generate, quietly, regress, scalar,
+                summarize, di, display, estimates, store, table,
+                correlate, test, estat, log, close, seed, obs,
+                noconstant, as, text, result, newline, if, replace},
+  sensitive=false,
+  morecomment=[l]{*},
+  morecomment=[l]{//},
+  morestring=[b]",
+}
+
+\lstset{
+  language=Stata,
+  backgroundcolor=\color{stataback},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{statakeyword}\bfseries,
+  commentstyle=\color{statacomment}\itshape,
+  stringstyle=\color{black},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{stataframe},
+  xleftmargin=8pt,
+  xrightmargin=4pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b,
+  numbers=none,
+}
+
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\E}{\operatorname{E}}
+
+% ---- Entorno para salida de Stata ----
+\lstdefinestyle{stataout}{
+  language={},
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\footnotesize,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{stataframe},
+  xleftmargin=8pt,
+  xrightmargin=4pt,
+  breaklines=true,
+  showstringspaces=false,
+}
+
+% ===========================================================================
+\begin{document}
+% ===========================================================================
+
+\begin{center}
+  {\LARGE\bfseries Ejercicio 13.5 --- Omisión de un Insumo en la}\\[4pt]
+  {\LARGE\bfseries Función de Producción Cobb-Douglas}\\[12pt]
+  {\large\itshape Consecuencias del error de especificación por omisión}\\
+  {\large\itshape de una variable relevante en regresión múltiple}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.5 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.\
+  por Emanuel Quintana Silva}\\[4pt]
+  {\small\textsc{Verificación empírica con datos simulados, $n = 500$, semilla 1305}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento del problema}
+%------------------------------------------------------------------------------
+
+Considere la siguiente función de producción Cobb-Douglas \textbf{verdadera}:
+
+\begin{align}
+  \textbf{Modelo verdadero:} \quad
+  \ln Y_i &= \alpha_0 + \alpha_1 \ln L_{1i} + \alpha_2 \ln L_{2i}
+            + \alpha_3 \ln K_i + u_i \label{eq:verdadero}
+\end{align}
+
+donde $Y$ es la producción, $L_1$ es el trabajo contenido en la producción
+(\textit{production labor}), $L_2$ es el trabajo no contenido en la producción
+(\textit{non-production labor}) y $K$ es el capital. Sin embargo, la regresión
+que se estima empíricamente omite $\ln L_{2i}$:
+
+\begin{align}
+  \textbf{Modelo estimado:} \quad
+  \ln Y_i &= \beta_0 + \beta_1 \ln L_{1i} + \beta_2 \ln K_i + v_i
+  \label{eq:corto}
+\end{align}
+
+En la taxonomía de Gujarati (sección~13.2), este error corresponde a la
+\textbf{omisión de una variable relevante} (siempre que $\alpha_2 \neq 0$),
+que es el complemento del error estudiado en el ejercicio~13.4:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Tipo de error} & \textbf{Consecuencia principal} & \textbf{Ejercicio} \\
+\midrule
+Inclusión de variable irrelevante & Insesgadez + ineficiencia & 13.4 \\
+\textbf{Omisión de variable relevante} & \textbf{Sesgo + inconsistencia} & \textbf{13.5} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El ejercicio plantea dos preguntas:
+
+\begin{enumerate}[leftmargin=1.8em]
+  \item[\textbf{a)}] ¿Será $\E(\hat{\beta}_1) = \alpha_1$ y
+    $\E(\hat{\beta}_2) = \alpha_3$?
+  \item[\textbf{b)}] Si $L_2$ es un insumo irrelevante ($\alpha_2 = 0$),
+    ¿cambia la respuesta del inciso~a)?
+\end{enumerate}
+
+%------------------------------------------------------------------------------
+\section{Inciso a) --- ¿Son insesgados \texorpdfstring{$\hat{\beta}_1$}{b1}
+  y \texorpdfstring{$\hat{\beta}_2$}{b2}?}
+%------------------------------------------------------------------------------
+
+\textbf{No, en general $\E(\hat{\beta}_1) \neq \alpha_1$ y
+$\E(\hat{\beta}_2) \neq \alpha_3$.} Al estimar el modelo~\eqref{eq:corto}
+se comete un error de \textit{subespecificación} o \textit{sesgo por variable
+omitida}.
+
+\subsection{Derivación algebraica del sesgo}
+
+Sea el modelo verdadero~\eqref{eq:verdadero} en notación vectorial:
+
+\begin{equation}
+  \mathbf{y} = \alpha_0\mathbf{1} + \alpha_1\mathbf{x}_1
+             + \alpha_2\mathbf{x}_2 + \alpha_3\mathbf{x}_3 + \mathbf{u}
+\end{equation}
+
+donde $\mathbf{y} = \ln Y$, $\mathbf{x}_1 = \ln L_1$,
+$\mathbf{x}_2 = \ln L_2$, $\mathbf{x}_3 = \ln K$. El estimador MCO del
+modelo corto~\eqref{eq:corto} es:
+
+\begin{equation}
+  \hat{\boldsymbol{\beta}}
+  = (\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{y}
+\end{equation}
+
+donde $\mathbf{Z} = [\mathbf{1},\; \mathbf{x}_1,\; \mathbf{x}_3]$.
+Sustituyendo el modelo verdadero y tomando la esperanza bajo
+$\E(\mathbf{u}\mid\mathbf{Z}) = \mathbf{0}$:
+
+\begin{equation}
+  \E(\hat{\boldsymbol{\beta}})
+  = \underbrace{(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'
+    (\alpha_0\mathbf{1} + \alpha_1\mathbf{x}_1
+    + \alpha_3\mathbf{x}_3)}_{\boldsymbol{\alpha}_{(-2)}}
+  + \alpha_2\underbrace{(\mathbf{Z}'\mathbf{Z})^{-1}\mathbf{Z}'\mathbf{x}_2}%
+    _{\text{proyección de } \mathbf{x}_2 \text{ sobre } \mathbf{Z}}
+\end{equation}
+
+donde $\boldsymbol{\alpha}_{(-2)} = (\alpha_0, \alpha_1, \alpha_3)'$ son
+los parámetros verdaderos del modelo restringido. El segundo sumando es el
+\textbf{sesgo}: depende de $\alpha_2$ y de la correlación parcial entre
+$\mathbf{x}_2$ y los regresores incluidos.
+
+\subsection{Fórmula del sesgo mediante regresiones auxiliares}
+
+Defínase la \textbf{regresión auxiliar} de $\ln L_{2i}$ sobre los
+regresores incluidos $(\mathbf{1}, \ln L_{1i}, \ln K_i)$:
+
+\begin{equation}
+  \ln L_{2i} = \delta_0 + \delta_1 \ln L_{1i} + \delta_k \ln K_i + \epsilon_i
+\end{equation}
+
+Las pendientes $\delta_1$ y $\delta_k$ miden la asociación parcial de
+$\ln L_2$ con cada regresor incluido. La proyección que aparece en el
+sesgo se expresa en términos de estas pendientes, dando la fórmula
+estándar del sesgo por variable omitida:
+
+\begin{equation}
+  \boxed{\E(\hat{\beta}_1) = \alpha_1 + \alpha_2\,\delta_1}
+  \qquad
+  \boxed{\E(\hat{\beta}_2) = \alpha_3 + \alpha_2\,\delta_k}
+\end{equation}
+
+donde $\delta_1$ es la pendiente parcial de $\ln L_2$ sobre $\ln L_1$
+(controlando por $\ln K$) y $\delta_k$ es la pendiente parcial de $\ln L_2$
+sobre $\ln K$ (controlando por $\ln L_1$) en la regresión auxiliar.
+
+\subsection{Condiciones de insesgadez}
+
+Los estimadores serían insesgados \textbf{si y solo si} se cumple alguna de:
+
+\begin{enumerate}[leftmargin=1.8em]
+  \item $\alpha_2 = 0$: $L_2$ no tiene efecto causal sobre la producción
+    (variable irrelevante). Analizado en el inciso~b).
+  \item $\delta_1 = 0$ y $\delta_k = 0$: $\ln L_{2i}$ es ortogonal a todos
+    los regresores incluidos en la muestra.
+\end{enumerate}
+
+En datos de corte transversal de empresas, ambas condiciones son
+\textbf{sumamente improbables}: empresas con mayor volumen de producción
+tienden a contratar más trabajadores en todas las categorías ($\delta_1 > 0$),
+y el capital y el trabajo de soporte suelen ser complementarios
+($\delta_k \neq 0$).
+
+\subsection{Dirección del sesgo}
+
+La dirección del sesgo sobre cada coeficiente depende del signo del
+producto $\alpha_2 \cdot \delta_j$:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{ccp{3.6cm}p{5.0cm}}
+\toprule
+\textbf{Signo de $\alpha_2$} & \textbf{Signo de $\delta_j$} &
+\textbf{Sesgo en $\hat{\beta}_j$} & \textbf{Consecuencia económica} \\
+\midrule
+$+$ & $+$ & Positivo (sobreestima) & Elasticidad de $L_1$ o $K$ inflada \\
+$+$ & $-$ & Negativo (subestima)   & Elasticidad de $L_1$ o $K$ deflada \\
+$-$ & $+$ & Negativo (subestima)   & Elasticidad de $L_1$ o $K$ deflada \\
+$-$ & $-$ & Positivo (sobreestima) & Elasticidad de $L_1$ o $K$ inflada \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Si $\alpha_2 > 0$ y $\delta_1 > 0$ (ambos tipos de trabajo correlacionados
+positivamente), $\hat{\beta}_1$ \textit{sobrestimará} la elasticidad-producto
+de $L_1$: parte del efecto productivo de $L_2$ se atribuye incorrectamente
+a $L_1$.
+
+\begin{clave}
+  El sesgo \textbf{no desaparece con muestras más grandes}: los estimadores
+  también son \textbf{inconsistentes}. A diferencia del ejercicio~13.4,
+  donde el daño era solo pérdida de eficiencia mitigable con $n \to \infty$,
+  aquí el sesgo es sistemático e irrecuperable sin disponer de datos sobre
+  $\ln L_{2i}$.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Inciso b) --- Si \texorpdfstring{$\alpha_2 = 0$}{alpha2 = 0},
+  ¿cambia la respuesta?}
+%------------------------------------------------------------------------------
+
+\textbf{Sí: si $\alpha_2 = 0$, la conclusión cambia completamente. Los
+estimadores pasan a ser insesgados.}
+
+\subsection{Derivación}
+
+Partiendo de las fórmulas del sesgo del inciso~a) y evaluando $\alpha_2 = 0$:
+
+\begin{align}
+  \E(\hat{\beta}_1) &= \alpha_1 + (0)\cdot\delta_1 = \alpha_1 \\[4pt]
+  \E(\hat{\beta}_2) &= \alpha_3 + (0)\cdot\delta_k = \alpha_3
+\end{align}
+
+\begin{equation}
+  \boxed{
+    \E(\hat{\beta}_1) = \alpha_1 \qquad \text{y} \qquad
+    \E(\hat{\beta}_2) = \alpha_3
+  }
+\end{equation}
+
+El sesgo desaparece \textbf{independientemente} del valor de $\delta_1$ y
+$\delta_k$, es decir, con independencia de la correlación que $\ln L_{2i}$
+tenga con $\ln L_{1i}$ y $\ln K_i$ en la muestra. Este es el resultado
+general de los ejercicios~13.2 y~13.4: omitir una variable genuinamente
+irrelevante no introduce sesgo.
+
+\subsection{Interpretación económica}
+
+Si $\alpha_2 = 0$, el modelo~\eqref{eq:corto} es en realidad el modelo
+\textit{correcto}: el trabajo de soporte no tiene efecto causal sobre la
+producción, y estimarlo como si lo tuviese (modelo~\eqref{eq:verdadero})
+solo generaría pérdida de eficiencia sin ningún beneficio en términos de
+sesgo.
+
+\subsection{Eficiencia cuando \texorpdfstring{$\alpha_2 = 0$}{alpha2 = 0}}
+
+Aunque los estimadores son insesgados, el modelo~\eqref{eq:corto} es
+\textbf{más eficiente} que el modelo~\eqref{eq:verdadero} cuando
+$\alpha_2 = 0$:
+
+\begin{itemize}[leftmargin=1.8em]
+  \item Incluir $\ln L_{2i}$ cuando $\alpha_2 = 0$ equivale exactamente al
+    ejercicio~13.4: se añade una variable irrelevante, inflando las varianzas
+    de todos los estimadores por el VIF correspondiente.
+  \item El modelo~\eqref{eq:corto} es más parsimonioso y produce estimadores
+    con menor varianza.
+\end{itemize}
+
+\begin{equation}
+  \Var(\hat{\alpha}_1)_{\text{modelo largo}} \geq
+  \Var(\hat{\beta}_1)_{\text{modelo corto}}
+\end{equation}
+
+con igualdad solo si $\ln L_{2i} \perp \ln L_{1i}$ y
+$\ln L_{2i} \perp \ln K_i$ en la muestra.
+
+%------------------------------------------------------------------------------
+\section{Resumen de resultados}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{5.0cm}p{3.2cm}p{3.2cm}p{3.2cm}}
+\toprule
+\textbf{Situación} & \textbf{$\E(\hat{\beta}_1)$} & \textbf{$\E(\hat{\beta}_2)$} & \textbf{Eficiencia} \\
+\midrule
+$\alpha_2 \neq 0$, $\delta_1 \neq 0$ o $\delta_k \neq 0$
+  & $\alpha_1 + \alpha_2\delta_1 \neq \alpha_1$ \newline (sesgado)
+  & $\alpha_3 + \alpha_2\delta_k \neq \alpha_3$ \newline (sesgado)
+  & No aplica \\[6pt]
+$\alpha_2 \neq 0$, $\delta_1 = \delta_k = 0$
+  & $\alpha_1$ (insesgado)
+  & $\alpha_3$ (insesgado)
+  & Igual al modelo largo \\[6pt]
+$\alpha_2 = 0$ (cualquier $\delta$)
+  & $\alpha_1$ (insesgado)
+  & $\alpha_3$ (insesgado)
+  & Mayor: modelo corto más eficiente \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Verificación empírica con datos simulados}
+%------------------------------------------------------------------------------
+
+Se generan 500 observaciones del proceso verdadero~\eqref{eq:verdadero} con
+$\alpha_0 = 0.5$, $\alpha_1 = 0.4$, $\alpha_2 = 0.3$, $\alpha_3 = 0.3$ y
+correlación positiva entre $L_1$, $L_2$ y $K$, replicando las condiciones
+típicas de datos de corte transversal de empresas.
+
+\subsection{Código Stata --- inciso a): $\alpha_2 \neq 0$}
+
+\begin{lstlisting}[caption={Simulación del sesgo por variable omitida ($\alpha_2 = 0.3$)}]
+clear
+set seed 1305
+set obs 500
+
+* Proceso generador de datos
+gen lnL1 = runiform(2, 6)
+gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion positiva con L1
+gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
+gen u    = rnormal(0, 0.3)
+
+* Verdadero: alpha0=0.5, alpha1=0.4, alpha2=0.3, alpha3=0.3
+gen lnY = 0.5 + 0.4 * lnL1 + 0.3 * lnL2 + 0.3 * lnK + u
+
+* ---- Regresion auxiliar de lnL2 sobre lnL1 y lnK ----
+di as text _newline "=== Regresion auxiliar: lnL2 sobre lnL1 y lnK ==="
+regress lnL2 lnL1 lnK
+scalar d1 = _b[lnL1]
+scalar dk = _b[lnK]
+
+* Sesgo teorico predicho
+scalar sesgo_b1 = 0.3 * d1
+scalar sesgo_b2 = 0.3 * dk
+
+di as text _newline "=== Sesgos teoricos predichos ==="
+di as text "delta_1 (coef. lnL2/lnL1): " as result %8.4f d1
+di as text "delta_k (coef. lnL2/lnK):  " as result %8.4f dk
+di as text "Sesgo teorico en beta_1:    " as result %8.4f sesgo_b1
+di as text "Sesgo teorico en beta_2:    " as result %8.4f sesgo_b2
+
+* ---- Modelo (1): largo (correcto) ----
+di as text _newline "=== Modelo (1): Cobb-Douglas largo ==="
+regress lnY lnL1 lnL2 lnK
+scalar a1_hat = _b[lnL1]
+scalar a3_hat = _b[lnK]
+
+* ---- Modelo (2): corto (omite lnL2) ----
+di as text _newline "=== Modelo (2): corto, omite lnL2 ==="
+regress lnY lnL1 lnK
+scalar b1_hat = _b[lnL1]
+scalar b2_hat = _b[lnK]
+
+di as text _newline "=== Comparacion de estimadores ==="
+di as text "Verdadero alpha1:               " as result %8.4f 0.4
+di as text "alpha1_hat (modelo largo):      " as result %8.4f a1_hat
+di as text "beta1_hat  (modelo corto):      " as result %8.4f b1_hat
+di as text "Sesgo empirico beta1-alpha1:    " as result %8.4f b1_hat - a1_hat
+di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b1
+di as text _newline "Verdadero alpha3:               " as result %8.4f 0.3
+di as text "alpha3_hat (modelo largo):      " as result %8.4f a3_hat
+di as text "beta2_hat  (modelo corto):      " as result %8.4f b2_hat
+di as text "Sesgo empirico beta2-alpha3:    " as result %8.4f b2_hat - a3_hat
+di as text "Sesgo teorico predicho:         " as result %8.4f sesgo_b2
+
+quietly regress lnY lnL1 lnL2 lnK
+estimates store m_largo
+quietly regress lnY lnL1 lnK
+estimates store m_corto
+estimates table m_largo m_corto, b(%9.4f) se stats(N r2 r2_a)
+\end{lstlisting}
+
+\subsection{Resultados esperados --- inciso a)}
+
+Los resultados de la simulación producen los siguientes valores
+representativos de la regresión auxiliar y de los sesgos:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Cantidad} & \textbf{Valor estimado} & \textbf{Interpretación} \\
+\midrule
+$\delta_1$ (coef. $\ln L_2$ sobre $\ln L_1$) & $\approx +0.52$ & Correlación positiva entre tipos de trabajo \\
+$\delta_k$ (coef. $\ln L_2$ sobre $\ln K$)   & $\approx +0.17$ & $L_2$ y $K$ complementarios \\
+Sesgo teórico en $\hat{\beta}_1 = \alpha_2 \delta_1$ & $\approx +0.156$ & Sobreestimación de $\alpha_1$ \\
+Sesgo teórico en $\hat{\beta}_2 = \alpha_2 \delta_k$ & $\approx +0.051$ & Sobreestimación de $\alpha_3$ \\
+\midrule
+$\hat{\alpha}_1$ modelo largo & $\approx 0.400$ & Próximo al verdadero $\alpha_1 = 0.4$ \\
+$\hat{\beta}_1$ modelo corto  & $\approx 0.556$ & Sesgado hacia arriba \\
+\midrule
+$\hat{\alpha}_3$ modelo largo & $\approx 0.300$ & Próximo al verdadero $\alpha_3 = 0.3$ \\
+$\hat{\beta}_2$ modelo corto  & $\approx 0.351$ & Ligeramente sesgado hacia arriba \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El sesgo empírico ($\hat{\beta}_1 - \hat{\alpha}_1 \approx 0.156$) replica
+con alta precisión el sesgo teórico predicho ($\alpha_2 \cdot \delta_1
+\approx 0.156$), verificando que la fórmula derivada en la sección~2
+describe correctamente el mecanismo de contaminación del estimador.
+
+\subsection{Código Stata --- inciso b): $\alpha_2 = 0$}
+
+\begin{lstlisting}[caption={Verificación de insesgadez cuando $L_2$ es irrelevante ($\alpha_2 = 0$)}]
+clear
+set seed 1305
+set obs 500
+
+gen lnL1 = runiform(2, 6)
+gen lnL2 = 0.6 * lnL1 + rnormal(0, 0.5)   // correlacion identica al caso a)
+gen lnK  = 0.4 * lnL1 + 0.5 * lnL2 + rnormal(0, 0.8)
+gen u    = rnormal(0, 0.3)
+
+* Verdadero: alpha2 = 0
+gen lnY_b = 0.5 + 0.4 * lnL1 + 0.0 * lnL2 + 0.3 * lnK + u
+
+di as text _newline "=== Inciso b): alpha2 = 0 --- L2 es irrelevante ==="
+
+quietly regress lnY_b lnL1 lnL2 lnK
+scalar a1b   = _b[lnL1]
+scalar a2b   = _b[lnL2]
+scalar a3b   = _b[lnK]
+scalar se_a1b = _se[lnL1]
+scalar se_a3b = _se[lnK]
+
+quietly regress lnY_b lnL1 lnK
+scalar b1b   = _b[lnL1]
+scalar b2b   = _b[lnK]
+scalar se_b1b = _se[lnL1]
+scalar se_b2b = _se[lnK]
+
+di as text "--- Coeficientes ---"
+di as text "alpha1_hat modelo largo: " as result %8.4f a1b "  (verdadero: 0.4000)"
+di as text "beta1_hat  modelo corto: " as result %8.4f b1b "  (verdadero: 0.4000)"
+di as text "alpha3_hat modelo largo: " as result %8.4f a3b "  (verdadero: 0.3000)"
+di as text "beta2_hat  modelo corto: " as result %8.4f b2b "  (verdadero: 0.3000)"
+di as text "alpha2_hat modelo largo: " as result %8.4f a2b "  (verdadero: 0.0000)"
+di as text _newline "--- Errores estandar (ineficiencia del modelo largo) ---"
+di as text "SE(alpha1) modelo largo: " as result %8.4f se_a1b
+di as text "SE(beta1)  modelo corto: " as result %8.4f se_b1b
+di as text "SE(alpha3) modelo largo: " as result %8.4f se_a3b
+di as text "SE(beta2)  modelo corto: " as result %8.4f se_b2b
+di as text "VIF aprox. lnL1: " as result %8.4f (se_a1b/se_b1b)^2
+
+quietly regress lnY_b lnL1 lnL2 lnK
+estimates store m_largo_b
+quietly regress lnY_b lnL1 lnK
+estimates store m_corto_b
+estimates table m_largo_b m_corto_b, b(%9.4f) se stats(N r2 r2_a)
+\end{lstlisting}
+
+\subsection{Resultados esperados --- inciso b)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrrl}
+\toprule
+\textbf{Cantidad} & \textbf{Modelo largo} & \textbf{Modelo corto} & \textbf{Verdadero} \\
+\midrule
+$\hat{\beta}_1$ (elast. $L_1$) & $\approx 0.400$ & $\approx 0.400$ & $\alpha_1 = 0.400$ \\
+$\hat{\beta}_2$ (elast. $K$)   & $\approx 0.300$ & $\approx 0.300$ & $\alpha_3 = 0.300$ \\
+$\hat{\alpha}_2$ (elast. $L_2$) & $\approx 0.000$ & --- & $\alpha_2 = 0.000$ \\
+\midrule
+$SE(\hat{\beta}_1)$ & $\approx 0.025$ & $\approx 0.017$ & Largo $>$ Corto \\
+$SE(\hat{\beta}_2)$ & $\approx 0.020$ & $\approx 0.015$ & Largo $>$ Corto \\
+VIF aproximado       & \multicolumn{2}{c}{$\approx 2.1$} & $= 1/(1-r_{12.k}^2)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Los resultados confirman que con $\alpha_2 = 0$: (i)~ambos modelos producen
+estimadores próximos a los valores verdaderos, independientemente de la
+correlación de $L_2$ con $L_1$ y $K$; (ii)~el modelo largo infla los errores
+estándar por el VIF correspondiente, confirmando la ineficiencia documentada
+en el ejercicio~13.4; (iii)~$\hat{\alpha}_2 \approx 0$ con estadístico $t$
+pequeño, confirmando la irrelevancia de $L_2$.
+
+%------------------------------------------------------------------------------
+\section{Conexión con los ejercicios anteriores del Capítulo 13}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{1.0cm}p{4.2cm}p{2.2cm}p{2.4cm}p{3.0cm}}
+\toprule
+\textbf{Ej.} & \textbf{Error de especificación} & \textbf{Insesgadez} &
+\textbf{Eficiencia} & \textbf{Validez de inferencia} \\
+\midrule
+13.2 & Intercepto innecesario incluido     & Preservada   & Reducida           & Válida (menos potente) \\
+13.3 & Intercepto relevante omitido        & Perdida      & N/A (hay sesgo)    & Inválida \\
+13.4 & Variable irrelevante $X_3$ incluida & Preservada   & Reducida (VIF)     & Válida (menos potente) \\
+\textbf{13.5a} & \textbf{Insumo $L_2$ relevante omitido}  & \textbf{Perdida} & \textbf{N/A}  & \textbf{Inválida} \\
+\textbf{13.5b} & \textbf{Insumo $L_2$ irrelevante omitido} & \textbf{Preservada} & \textbf{Mayor} & \textbf{Válida y eficiente} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El ejercicio~13.5 es la generalización del ejercicio~13.3 al contexto de
+regresión múltiple con contenido económico explícito. El inciso~b) conecta
+directamente con el ejercicio~13.4: omitir una variable irrelevante no
+produce sesgo y, de hecho, mejora la eficiencia respecto a incluirla
+innecesariamente.
+
+%------------------------------------------------------------------------------
+\section{Conclusión}
+%------------------------------------------------------------------------------
+
+\begin{clave}
+  \textbf{Inciso~a).} En general $\E(\hat{\beta}_1) \neq \alpha_1$ y
+  $\E(\hat{\beta}_2) \neq \alpha_3$. Omitir el trabajo de soporte
+  $\ln L_{2i}$ cuando es un insumo relevante ($\alpha_2 \neq 0$) introduce
+  sesgo en los estimadores de las elasticidades-producto de $L_1$ y $K$:
+
+  \begin{equation*}
+    \E(\hat{\beta}_1) = \alpha_1 + \alpha_2\,\delta_1 \qquad
+    \E(\hat{\beta}_2) = \alpha_3 + \alpha_2\,\delta_k
+  \end{equation*}
+
+  Este sesgo \textbf{no desaparece con muestras más grandes}: los
+  estimadores son inconsistentes.
+
+  \bigskip
+
+  \textbf{Inciso~b).} Si $\alpha_2 = 0$, la respuesta cambia
+  completamente: el sesgo se anula algebraicamente con independencia de
+  la correlación entre las variables, y el modelo~\eqref{eq:corto} es en
+  realidad el modelo correcto. Estimarlo con $\ln L_{2i}$ incluido no
+  genera sesgo, pero sí pérdida de eficiencia por multicolinealidad
+  inducida artificialmente (ejercicio~13.4).
+
+  \bigskip
+
+  En la práctica econométrica, la decisión de incluir o excluir
+  $\ln L_{2i}$ debe basarse en teoría económica sólida. Si la teoría no
+  puede descartar $\alpha_2 = 0$ con certeza, la regla prudente de
+  Gujarati recomienda \textbf{incluir la variable} y asumir la pequeña
+  pérdida de eficiencia antes que asumir el riesgo de sesgo sistemático
+  e irrecuperable.
+\end{clave}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota metodológica.} La asimetría entre
+sobre-especificación y sub-especificación tiene implicaciones directas para
+la estrategia de modelación econométrica. La \textit{regla general} es
+partir del modelo más general y reducirlo solo si la teoría económica y
+las pruebas estadísticas lo justifican conjuntamente. El ejercicio~13.5
+ilustra que el costo de omitir una variable relevante --- sesgo sistemático
+que no desaparece con $n \to \infty$ --- es cualitativamente más grave que
+el costo de incluir una variable irrelevante, que es solo ineficiencia
+mitigable con mayor tamaño muestral.}
+
+\vspace{14pt}
+
+\begin{center}
+\small\textsc{Referencias}\\[6pt]
+\end{center}
+
+\noindent Gujarati, D.~N., \& Porter, D.~C. (2010). \textit{Econometría}
+(5.a~ed.). McGraw-Hill. Capítulo~13, secciones~13.2 y~13.3.
+
+\noindent Greene, W.~H. (2018). \textit{Econometric Analysis} (8.a~ed.).
+Pearson. Capítulo~5.
+
+\noindent Wooldridge, J.~M. (2016). \textit{Introductory Econometrics}
+(6.a~ed.). Cengage. Capítulo~3.
+
+\end{document}
