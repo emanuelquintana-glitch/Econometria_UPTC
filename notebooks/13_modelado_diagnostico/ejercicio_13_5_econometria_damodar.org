@@ -1,5 +1,5 @@
 #+TITLE: Econometría — Gujarati, Capítulo 13
-#+SUBTITLE: Ejercicio 13.5 — Omisión de un insumo en la función de producción Cobb-Douglas
+#+SUBTITLE: Ejercicio 13.5 — Omisión de un insumo en la función de producción Cobb-Douglas.
 #+DATE: <2026-05-16>
 #+AUTHOR: Emanuel Quintana Silva.
 #+LANGUAGE: es
