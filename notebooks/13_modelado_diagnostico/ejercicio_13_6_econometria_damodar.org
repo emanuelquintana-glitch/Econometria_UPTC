@@ -1,0 +1,3 @@
+#+TITLE: Ejercicio 13-6 de Econometria del Libro Damodar Gujarati
+#+AUTHOR: Emanuel Quintana Silva.
+#+DATE: <17/05/2026>
