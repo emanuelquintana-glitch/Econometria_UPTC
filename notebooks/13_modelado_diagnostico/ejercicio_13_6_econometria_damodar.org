@@ -1,3 +1,11 @@
 #+TITLE: Ejercicio 13-6 de Econometria del Libro Damodar Gujarati
 #+AUTHOR: Emanuel Quintana Silva.
 #+DATE: <17/05/2026>
+
+** Enunciado: Consulte las ecuaciones (13.3.4) y (13.3.5). Como se ve, $\hat{\alpha_{2}}$, aunque sesgada, tiene una varianza menor que $\hat{\beta_{2}}$ que es insesgada. ¿Como decidiria respecto de un intercambio de un sesgo por una varianza? /Sugerencia/: El ECM (error cuadratico medio) para los estimadores se expresa como
+
+$$ECM(\hat{\alpha_{2}}) = (\frac{\sigma^{2}}{\sum{}{x_{2i}^{2}}) + \beta_{3}^{2}b^{2}_{32}$$
+= varianza muestral + sesgo al cuadrado
+
+$$ECM(\hat{\beta_{2}}) = \frac{\sigma^{2}}{\sum{}{x_{2}^{2}(1-r^{2}^{}_{23})}$$
+Respecto de ECM, vease el *apendice A.*
