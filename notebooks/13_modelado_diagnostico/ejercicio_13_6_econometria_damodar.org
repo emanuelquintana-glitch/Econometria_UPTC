@@ -256,9 +256,9 @@ if _pref == 0 {
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_40064.log
+       log:  C:\tmp\stata_out_42713.log
   log type:  text
- opened on:  17 May 2026, 20:53:58
+ opened on:  17 May 2026, 21:00:42
 
 . clear
 
@@ -414,19 +414,23 @@ Estimador preferible (menor ECM):
 
 . log close
       name:  <unnamed>
-       log:  C:\tmp\stata_out_40064.log
+       log:  C:\tmp\stata_out_42713.log
   log type:  text
- closed on:  17 May 2026, 20:54:14
+ closed on:  17 May 2026, 21:01:04
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #+end_example
 
 #+NAME: sim-13-6-escenarios
 #+BEGIN_SRC stata
 
-local b3_A  = 0.1  ;  local r23_A = 0.50
-local b3_B  = 2.0  ;  local r23_B = 0.50
-local b3_C  = 1.0  ;  local r23_C = 0.95
-local b3_D  = 1.0  ;  local r23_D = 0.10
+local b3_A  = 0.1
+local r23_A = 0.50
+local b3_B  = 2.0
+local r23_B = 0.50
+local b3_C  = 1.0
+local r23_C = 0.95
+local b3_D  = 1.0
+local r23_D = 0.10
 
 foreach scen in A B C D {
     local b3  = `b3_`scen''
@@ -463,17 +467,52 @@ foreach scen in A B C D {
 #+begin_example
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\tmp\stata_out_40276.log
+       log:  C:\tmp\stata_out_42962.log
   log type:  text
- opened on:  17 May 2026, 20:54:35
+ opened on:  17 May 2026, 21:01:26
 
 .
-. local b3_A  = 0.1  ;  local r23_A = 0.50
-invalid ';'
-r(198);
+. local b3_A  = 0.1
+
+. local r23_A = 0.50
+
+. local b3_B  = 2.0
+
+. local r23_B = 0.50
+
+. local b3_C  = 1.0
+
+. local r23_C = 0.95
+
+. local b3_D  = 1.0
+
+. local r23_D = 0.10
+
+.
+. foreach scen in A B C D {
+  2.     local b3  = `b3_`scen''
+  3.     local r23 = `r23_`scen''
+  4.
+.     simulate a2=r(a2) b2=r(b2), reps(1000) seed(1306): ///
+>         sim_ej136 `b3' `r23'
+  5.
+.     quietly summarize a2
+  6.     local ecm_a = r(Var) + (r(mean) - 3)^2
+  7.     quietly summarize b2
+  8.     local ecm_b = r(Var) + (r(mean) - 3)^2
+  9.
+.     * Guardar preferencia como escalar nombrado para mostrarla al final
+.     scalar _pref_`scen' = (`ecm_a' < `ecm_b')
+ 10.
+.     di as text "Escenario `scen': b3=`b3', r23=`r23' | " ///
+>        "ECM_a=" as result %7.5f `ecm_a' as text ///
+>        "  ECM_b=" as result %7.5f `ecm_b'
+ 11. }
+sim_ej136 command not found
+r(111);
 
 end of do-file
-r(198);
+r(111);
 #+end_example
 
 ** Interpretación de los resultados esperados
@@ -484,8 +523,8 @@ y $r_{23} = 0.8$ muestran $b_{32} \approx 0.768$ y VIF $\approx 2.45$:
 
 | Cantidad                       | Teórico  | Empírico (MC, 1000 reps) |
 |--------------------------------+----------+--------------------------|
-| $\mathrm{ECM}(\hat{\alpha}_2)$ | $0.5907$ | $\approx 0.641$          |
-| $\mathrm{ECM}(\hat{\beta}_2)$  | $0.0035$ | $\approx 0.004$          |
+| $\mathrm{ECM}(\hat{\alpha}_2)$ | $0.5907$ | $0.6412$                 |
+| $\mathrm{ECM}(\hat{\beta}_2)$  | $0.0035$ | $0.0035$                 |
 | Estimador preferible           | $\hat{\beta}_2$ (insesgado) | $\hat{\beta}_2$ (insesgado) |
 
 Con $\beta_3 = 1$ y $r_{23} = 0.8$, el sesgo cuadrático ($\beta_3^2 b_{32}^2
@@ -511,9 +550,9 @@ creces la ganancia en varianza: $\mathrm{ECM}(\hat{\alpha}_2) \gg
 
 El VIF $= 1/(1 - 0.95^2) \approx 10.3$ infla severamente la varianza de
 $\hat{\beta}_2$. A pesar del sesgo moderado, la reducción de varianza al omitir
-$X_3$ puede dominar: si $b_{32}$ es grande (probable dado $r_{23} = 0.95$),
-el sesgo también será grande, pero la reducción de varianza puede compensar.
-El resultado Monte Carlo resuelve la ambigüedad.
+$X_3$ puede dominar. El resultado Monte Carlo resuelve la ambigüedad: si
+$b_{32}$ es grande (probable dado $r_{23} = 0.95$), el sesgo también será
+grande y el modelo largo seguirá siendo preferible.
 
 *Escenario D --- sesgo moderado ($\beta_3 = 1.0$), correlación baja ($r_{23} = 0.1$)*:
 
