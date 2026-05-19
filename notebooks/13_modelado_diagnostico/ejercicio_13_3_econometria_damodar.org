@@ -1,7 +1,7 @@
 #+TITLE: Econometría — Gujarati, Capítulo 13
 #+SUBTITLE: Ejercicio 13.3 — Omisión del intercepto cuando el modelo verdadero lo incluye
 #+DATE: <2026-05-15>
-#+AUTHOR: Emanuel Quintana Silva
+#+AUTHOR: Emanuel Quintana Silva.
 #+LANGUAGE: es
 #+OPTIONS: toc:2 num:t ^:nil
 #+PROPERTY: header-args:stata :results output :exports both
