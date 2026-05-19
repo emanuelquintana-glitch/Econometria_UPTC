@@ -1,7 +1,7 @@
 #+TITLE: Econometría — Gujarati, Capítulo 13
 #+SUBTITLE: Especificación de Modelos y Errores de Especificación
 #+DATE: <2026-05-08>
-#+AUTHOR: Emanuel Quintana Silva
+#+AUTHOR: Emanuel Quintana Silva.
 #+LANGUAGE: es
 #+OPTIONS: toc:2 num:t ^:nil
 #+PROPERTY: header-args:stata :results output :exports both
