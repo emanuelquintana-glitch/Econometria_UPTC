@@ -204,7 +204,6 @@ suficientes para verificar insesgadez con precisión adecuada.
 
 #+NAME: sim-13-7
 #+BEGIN_SRC stata
-* ---- Definición del programa (común a los tres escenarios) ----
 capture program drop sim_ej137
 program define sim_ej137, rclass
     args sigma_eps
@@ -219,19 +218,13 @@ program define sim_ej137, rclass
     return scalar b_hat = _b[X]
 end
 
-* ---- Escenario 1: sin error de medición (sigma_eps = 0) ----
-simulate b=r(b_hat), reps(500) seed(1307): sim_ej137 0
-quietly summarize b
-scalar m1 = r(mean)
 scalar v1 = r(Var)
 
-* ---- Escenario 2: error moderado (sigma_eps = 1 = sigma_u) ----
 simulate b=r(b_hat), reps(500) seed(1307): sim_ej137 1
 quietly summarize b
 scalar m2 = r(mean)
 scalar v2 = r(Var)
 
-* ---- Escenario 3: error severo (sigma_eps = 3) ----
 simulate b=r(b_hat), reps(500) seed(1307): sim_ej137 3
 quietly summarize b
 scalar m3 = r(mean)
