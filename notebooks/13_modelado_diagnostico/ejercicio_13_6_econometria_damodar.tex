@@ -1,0 +1,605 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+% ---- Encabezado y pie de página ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.6}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---- Títulos de sección ----
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+% ---- Caja resaltada ----
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+% ---- Estilo de código Stata ----
+\definecolor{stataback}{RGB}{248,248,248}
+\definecolor{stataframe}{RGB}{180,180,180}
+\definecolor{statacomment}{RGB}{100,100,100}
+\definecolor{statakeyword}{RGB}{0,70,140}
+
+\lstdefinelanguage{Stata}{
+  morekeywords={clear, set, gen, generate, quietly, regress, scalar,
+                summarize, di, display, estimates, store, table,
+                correlate, test, estat, log, close, seed, obs,
+                noconstant, as, text, result, newline, if, replace,
+                simulate, program, define, rclass, args, end,
+                return, foreach, in, local, capture, drop},
+  sensitive=false,
+  morecomment=[l]{*},
+  morecomment=[l]{//},
+  morestring=[b]",
+}
+
+\lstset{
+  language=Stata,
+  backgroundcolor=\color{stataback},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{statakeyword}\bfseries,
+  commentstyle=\color{statacomment}\itshape,
+  stringstyle=\color{black},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{stataframe},
+  xleftmargin=8pt,
+  xrightmargin=4pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b,
+  numbers=none,
+}
+
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\E}{\operatorname{E}}
+
+% ---- Entorno para salida de Stata ----
+\lstdefinestyle{stataout}{
+  language={},
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\footnotesize,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{stataframe},
+  xleftmargin=8pt,
+  xrightmargin=4pt,
+  breaklines=true,
+  showstringspaces=false,
+}
+
+% ===========================================================================
+\begin{document}
+% ===========================================================================
+
+\begin{center}
+  {\LARGE\bfseries Ejercicio 13.6 --- Intercambio Sesgo-Varianza}\\[4pt]
+  {\LARGE\bfseries mediante el Error Cuadrático Medio}\\[12pt]
+  {\large\itshape Criterio del mínimo ECM para decidir entre un estimador}\\
+  {\large\itshape sesgado con varianza pequeña y uno insesgado con varianza mayor}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.6 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.\
+  por Emanuel Quintana Silva}\\[4pt]
+  {\small\textsc{Verificación empírica con datos simulados, $n = 200$, semilla 1306}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento del problema}
+%------------------------------------------------------------------------------
+
+Consulte las ecuaciones (13.3.4) y (13.3.5). Como se ve, $\hat{\alpha}_2$,
+aunque sesgada, tiene una varianza menor que $\hat{\beta}_2$, que es
+insesgada. ¿Cómo decidiría respecto de un intercambio de un sesgo por una
+varianza pequeña?
+
+\textbf{Sugerencia}: El ECM (error cuadrático medio) para los dos estimadores
+se expresa como:
+
+\begin{align}
+  \mathrm{ECM}(\hat{\alpha}_2)
+    &= \frac{\sigma^2}{\sum x_{2i}^2} + \beta_3^2\,b_{32}^2
+    \quad \text{(varianza muestral + sesgo al cuadrado)} \label{eq:ecm_a}\\[6pt]
+  \mathrm{ECM}(\hat{\beta}_2)
+    &= \frac{\sigma^2}{\sum x_{2i}^2\,(1 - r_{23}^2)} \label{eq:ecm_b}
+\end{align}
+
+Este ejercicio es la síntesis del capítulo~13: en lugar de clasificar el error
+de especificación como ``bueno'' o ``malo'', introduce el ECM como métrica
+continua para decidir cuándo el sesgo es un precio razonable por reducir la
+varianza.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Estimador} & \textbf{Sesgo} & \textbf{Varianza} & \textbf{Origen} \\
+\midrule
+$\hat{\alpha}_2$ (modelo corto) & $\beta_3\,b_{32}$ & $\sigma^2/\sum x_{2i}^2$ & Omite $X_3$ \\
+$\hat{\beta}_2$ (modelo largo)  & $0$               & $\sigma^2/[\sum x_{2i}^2\,(1-r_{23}^2)]$ & Incluye $X_3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{El criterio del Error Cuadrático Medio}
+%------------------------------------------------------------------------------
+
+El ECM mide la exactitud total de un estimador al combinar su dispersión
+aleatoria (varianza) y su error sistemático (sesgo):
+
+\begin{equation}
+  \mathrm{ECM}(\hat{\theta})
+  = \Var(\hat{\theta}) + [\mathrm{Sesgo}(\hat{\theta})]^2
+\end{equation}
+
+La \textbf{regla de decisión} es: preferir el estimador con menor ECM, es
+decir, aquel que minimiza el error total de predicción
+(varianza$\,+\,$sesgo$^2$).
+
+\subsection{ECM del estimador sesgado $\hat{\alpha}_2$ (modelo corto)}
+
+\begin{equation}
+  \mathrm{ECM}(\hat{\alpha}_2)
+  = \underbrace{\frac{\sigma^2}{\sum x_{2i}^2}}_{\text{varianza}}
+  + \underbrace{\beta_3^2\,b_{32}^2}_{\text{sesgo}^2}
+\end{equation}
+
+La varianza es la del estimador MCO simple, no afectada por multicolinealidad.
+El sesgo cuadrático depende de cuán relevante sea $X_3$ ($\beta_3$) y de su
+correlación con $X_2$ ($b_{32}$, pendiente de la regresión auxiliar de $X_3$
+sobre $X_2$).
+
+\subsection{ECM del estimador insesgado $\hat{\beta}_2$ (modelo largo)}
+
+\begin{equation}
+  \mathrm{ECM}(\hat{\beta}_2)
+  = \Var(\hat{\beta}_2) + 0
+  = \frac{\sigma^2}{\sum x_{2i}^2\,(1 - r_{23}^2)}
+\end{equation}
+
+El sesgo es cero. La varianza está inflada por el factor $1/(1-r_{23}^2)\geq 1$
+(VIF), que crece con la correlación $r_{23}$ entre $X_2$ y $X_3$.
+
+%------------------------------------------------------------------------------
+\section{Condición de preferencia del estimador sesgado}
+%------------------------------------------------------------------------------
+
+Se prefiere $\hat{\alpha}_2$ si y solo si
+$\mathrm{ECM}(\hat{\alpha}_2) < \mathrm{ECM}(\hat{\beta}_2)$. Sustituyendo
+las expresiones~\eqref{eq:ecm_a} y~\eqref{eq:ecm_b} y restando
+$\sigma^2/\sum x_{2i}^2$ en ambos lados:
+
+\begin{equation}
+  \beta_3^2\,b_{32}^2
+  < \frac{\sigma^2}{\sum x_{2i}^2}
+    \left(\frac{1}{1 - r_{23}^2} - 1\right)
+  = \frac{\sigma^2}{\sum x_{2i}^2} \cdot \frac{r_{23}^2}{1 - r_{23}^2}
+\end{equation}
+
+\begin{clave}
+  \textbf{Resultado}: el estimador sesgado tiene menor ECM cuando el cuadrado
+  del sesgo es menor que la ganancia en varianza obtenida al omitir $X_3$:
+
+  \begin{equation}
+    \boxed{\beta_3^2\,b_{32}^2
+      < \frac{\sigma^2\,r_{23}^2}{\sum x_{2i}^2\,(1 - r_{23}^2)}}
+  \end{equation}
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Análisis del intercambio (tradeoff)}
+%------------------------------------------------------------------------------
+
+\subsection{Cuándo preferir el estimador sesgado $\hat{\alpha}_2$}
+
+La omisión de $X_3$ es preferible cuando el sesgo introducido es pequeño en
+relación con la ganancia en precisión:
+
+\begin{enumerate}[leftmargin=1.8em]
+  \item \textbf{$\beta_3 \approx 0$}: la variable omitida tiene efecto real
+    débil sobre $Y$; el sesgo es despreciable.
+  \item \textbf{$b_{32} \approx 0$}: $X_3$ está poco correlacionada con $X_2$;
+    su omisión transfiere poco sesgo hacia $\hat{\alpha}_2$.
+  \item \textbf{$r_{23}^2 \approx 1$}: alta multicolinealidad infla
+    drásticamente la varianza de $\hat{\beta}_2$. Si el VIF es muy elevado,
+    omitir $X_3$ puede reducir el ECM total a pesar del sesgo.
+\end{enumerate}
+
+\subsection{Cuándo preferir el estimador insesgado $\hat{\beta}_2$}
+
+\begin{enumerate}[leftmargin=1.8em]
+  \item \textbf{$\beta_3$ grande}: la variable omitida es teóricamente muy
+    relevante.
+  \item \textbf{$b_{32}$ grande}: $X_3$ tiene fuerte asociación con $X_2$;
+    su omisión contamina severamente $\hat{\alpha}_2$.
+  \item \textbf{Multicolinealidad moderada}: si $r_{23}^2$ no es cercano a~1,
+    la inflación de varianza del modelo largo es manejable.
+\end{enumerate}
+
+\subsection{El papel del tamaño de muestra}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{p{2.2cm}p{3.2cm}p{3.2cm}p{4.8cm}}
+\toprule
+\textbf{Situación} & \textbf{Var($\hat{\beta}_2$)} &
+\textbf{Sesgo($\hat{\alpha}_2$)} & \textbf{Recomendación} \\
+\midrule
+$n$ pequeño & Grande & Persistente & ECM puede favorecer sesgado \\
+$n$ grande  & $\to 0$ & Persistente ($\neq 0$) &
+  ECM dominado por sesgo; insesgado preferible \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+En muestras grandes, las varianzas de estimadores consistentes tienden a cero,
+pero el sesgo por omisión \textbf{no desaparece con} $n\to\infty$. El ECM de
+$\hat{\alpha}_2$ converge al cuadrado del sesgo fijo, mientras el ECM de
+$\hat{\beta}_2$ converge a cero.
+
+\subsection{Resumen del intercambio}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{p{5.2cm}p{3.4cm}p{4.2cm}}
+\toprule
+\textbf{Condición} & \textbf{ECM favorece} & \textbf{Razón} \\
+\midrule
+$\beta_3$ pequeño, $b_{32}$ pequeño
+  & $\hat{\alpha}_2$ (sesgado)  & Sesgo$^2 \ll$ ganancia en varianza \\
+$r_{23}^2$ muy alto (multicolinealidad severa)
+  & $\hat{\alpha}_2$ (sesgado)  & VIF infla varianza del insesgado \\
+$\beta_3$ grande, $b_{32}$ grande
+  & $\hat{\beta}_2$ (insesgado) & Sesgo$^2$ domina el ECM del corto \\
+$n$ grande
+  & $\hat{\beta}_2$ (insesgado) & Sesgo persiste; varianza $\to 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Verificación empírica con datos simulados}
+%------------------------------------------------------------------------------
+
+Se generan datos del proceso verdadero $Y_i = \beta_1 + \beta_2 X_{2i}
++ \beta_3 X_{3i} + u_i$ bajo distintos escenarios de $\beta_3$ y $r_{23}$
+para comparar los ECM empíricos de $\hat{\alpha}_2$ y $\hat{\beta}_2$.
+
+\subsection{Código Stata --- simulación principal ($\beta_3 = 1$, $r_{23} = 0.8$)}
+
+\begin{lstlisting}[caption={Escenario base: sesgo moderado y correlación alta}]
+clear
+set seed 1306
+set obs 200
+
+* Parámetros verdaderos
+local b1 = 2
+local b2 = 3
+local b3 = 1        // efecto real de X3
+local r23 = 0.8     // correlación entre X2 y X3
+
+* Generar variables
+gen X2 = rnormal(5, 2)
+gen X3 = `r23' * X2 + sqrt(1 - `r23'^2) * rnormal(0, 2)
+gen u  = rnormal(0, 1)
+gen Y  = `b1' + `b2' * X2 + `b3' * X3 + u
+
+* ---- Regresión auxiliar: b32 ----
+quietly regress X3 X2
+scalar b32 = _b[X2]
+
+* ---- Modelos corto y largo ----
+quietly regress Y X2
+scalar var_a2 = _se[X2]^2
+
+quietly regress Y X2 X3
+scalar var_b2 = _se[X2]^2
+
+quietly correlate X2 X3
+scalar r23_hat = r(rho)
+
+* ---- ECM teórico ----
+quietly regress Y X2 X3
+scalar sigma2 = e(rmse)^2
+quietly summarize X2
+scalar sum_x2 = (r(N)-1) * r(Var)
+
+scalar ecm_a2_teo = sigma2/sum_x2 + (`b3' * b32)^2
+scalar ecm_b2_teo = sigma2/(sum_x2 * (1 - r23_hat^2))
+
+* ---- Programa Monte Carlo ----
+* Nota: if/else en bloques separados (evita r(198))
+* Nota: cada local en su propia línea (';' no válido en .do)
+capture program drop sim_ej136
+program define sim_ej136, rclass
+    args b3 r23
+    clear
+    set obs 200
+    gen X2 = rnormal(5, 2)
+    gen X3 = `r23' * X2 + sqrt(1 - `r23'^2) * rnormal(0, 2)
+    gen u  = rnormal(0, 1)
+    gen Y  = 2 + 3 * X2 + `b3' * X3 + u
+    quietly regress Y X2
+    return scalar a2 = _b[X2]
+    quietly regress Y X2 X3
+    return scalar b2 = _b[X2]
+end
+
+* ---- Simulación Monte Carlo: 1000 réplicas ----
+simulate a2=r(a2) b2=r(b2), reps(1000) seed(1306): sim_ej136 `b3' `r23'
+
+* ---- ECM empírico ----
+quietly summarize a2
+scalar ecm_a2_emp = r(Var) + (r(mean) - 3)^2
+quietly summarize b2
+scalar ecm_b2_emp = r(Var) + (r(mean) - 3)^2
+
+* ---- Resultados ----
+di as text _newline "=== Escenario: b3 = " `b3' ", r23 = " `r23' " ==="
+di as text "b32 (regresion auxiliar):      " as result %8.4f b32
+di as text "VIF = 1/(1-r23^2):             " as result %8.4f 1/(1 - r23_hat^2)
+di as text _newline "--- ECM teorico ---"
+di as text "ECM(alpha2) teorico:           " as result %8.6f ecm_a2_teo
+di as text "ECM(beta2)  teorico:           " as result %8.6f ecm_b2_teo
+di as text _newline "--- ECM empirico (MC, 1000 reps) ---"
+di as text "ECM(alpha2) empirico:          " as result %8.6f ecm_a2_emp
+di as text "ECM(beta2)  empirico:          " as result %8.6f ecm_b2_emp
+di as text _newline "Estimador preferible (menor ECM):"
+scalar _pref = (ecm_a2_emp < ecm_b2_emp)
+if _pref == 1 {
+    di as text "  --> alpha2 (sesgado) tiene menor ECM"
+}
+if _pref == 0 {
+    di as text "  --> beta2 (insesgado) tiene menor ECM"
+}
+\end{lstlisting}
+
+\subsection{Resultados --- escenario base}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Cantidad} & \textbf{Teórico} & \textbf{Empírico (MC, 1000 reps)} \\
+\midrule
+$b_{32}$ (regresión auxiliar)        & ---      & $0.7677$ \\
+VIF $= 1/(1 - r_{23}^2)$             & ---      & $2.4451$ \\
+\midrule
+$\mathrm{ECM}(\hat{\alpha}_2)$        & $0.5907$ & $0.6412$ \\
+$\mathrm{ECM}(\hat{\beta}_2)$         & $0.0035$ & $0.0035$ \\
+\midrule
+Estimador preferible & $\hat{\beta}_2$ (insesgado) & $\hat{\beta}_2$ (insesgado) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Con $\beta_3 = 1$ y $r_{23} = 0.8$, el sesgo cuadrático
+($\beta_3^2 b_{32}^2 \approx 0.59$) domina ampliamente la ganancia en
+varianza ($\approx 0.002$); el modelo largo es claramente preferible.
+
+\subsection{Código Stata --- comparación de cuatro escenarios}
+
+\begin{lstlisting}[caption={Cuatro escenarios de tradeoff sesgo-varianza
+  (requiere ejecutar el bloque anterior primero para definir sim\_ej136)}]
+* ---- Comparación de cuatro escenarios ----
+* Nota: sim_ej136 debe estar definido; se redefine aquí para asegurar
+* que el bloque sea autónomo cuando se ejecuta desde un .do separado.
+capture program drop sim_ej136
+program define sim_ej136, rclass
+    args b3 r23
+    clear
+    set obs 200
+    gen X2 = rnormal(5, 2)
+    gen X3 = `r23' * X2 + sqrt(1 - `r23'^2) * rnormal(0, 2)
+    gen u  = rnormal(0, 1)
+    gen Y  = 2 + 3 * X2 + `b3' * X3 + u
+    quietly regress Y X2
+    return scalar a2 = _b[X2]
+    quietly regress Y X2 X3
+    return scalar b2 = _b[X2]
+end
+
+* Escenario A: sesgo pequeño  (b3=0.1), correlación moderada (r23=0.50)
+* Escenario B: sesgo grande   (b3=2.0), correlación moderada (r23=0.50)
+* Escenario C: sesgo moderado (b3=1.0), correlación alta     (r23=0.95)
+* Escenario D: sesgo moderado (b3=1.0), correlación baja     (r23=0.10)
+* Nota: cada local en su propia línea (';' no es separador en .do)
+local b3_A  = 0.1
+local r23_A = 0.50
+local b3_B  = 2.0
+local r23_B = 0.50
+local b3_C  = 1.0
+local r23_C = 0.95
+local b3_D  = 1.0
+local r23_D = 0.10
+
+foreach scen in A B C D {
+    local b3  = `b3_`scen''
+    local r23 = `r23_`scen''
+
+    simulate a2=r(a2) b2=r(b2), reps(1000) seed(1306): ///
+        sim_ej136 `b3' `r23'
+
+    quietly summarize a2
+    local ecm_a = r(Var) + (r(mean) - 3)^2
+    quietly summarize b2
+    local ecm_b = r(Var) + (r(mean) - 3)^2
+
+    scalar _pref_`scen' = (`ecm_a' < `ecm_b')
+
+    di as text "Escenario `scen': b3=`b3', r23=`r23' | " ///
+       "ECM_a=" as result %7.5f `ecm_a' as text ///
+       "  ECM_b=" as result %7.5f `ecm_b'
+}
+
+* ---- Preferencias (if en bloques separados, evita r(198)) ----
+di as text _newline "=== Estimador preferible por escenario ==="
+foreach scen in A B C D {
+    if _pref_`scen' == 1 {
+        di as text "  Escenario `scen': alpha2 (sesgado)"
+    }
+    if _pref_`scen' == 0 {
+        di as text "  Escenario `scen': beta2  (insesgado)"
+    }
+}
+\end{lstlisting}
+
+\subsection{Interpretación de los cuatro escenarios}
+
+\paragraph{Escenario A --- sesgo pequeño ($\beta_3 = 0.1$), correlación
+moderada ($r_{23} = 0.5$).}
+El sesgo cuadrático es ínfimo ($\beta_3^2 b_{32}^2 \approx 0.0025$) y el VIF
+es solo $1.33$. El ECM del modelo corto está dominado por su varianza base,
+prácticamente igual a la del modelo largo. En este caso
+$\mathrm{ECM}(\hat{\alpha}_2) < \mathrm{ECM}(\hat{\beta}_2)$: el estimador
+sesgado es preferible porque apenas hay sesgo que pagar.
+
+\paragraph{Escenario B --- sesgo grande ($\beta_3 = 2.0$), correlación
+moderada ($r_{23} = 0.5$).}
+El sesgo cuadrático domina el ECM del modelo corto
+($\beta_3^2 b_{32}^2 \approx 1.0$). Aunque el VIF es solo $1.33$, el cuadrado
+del sesgo supera con creces la ganancia en varianza:
+$\mathrm{ECM}(\hat{\alpha}_2) \gg \mathrm{ECM}(\hat{\beta}_2)$ y se prefiere
+el estimador insesgado.
+
+\paragraph{Escenario C --- sesgo moderado ($\beta_3 = 1.0$), correlación alta
+($r_{23} = 0.95$).}
+El VIF $= 1/(1 - 0.95^2) \approx 10.3$ infla severamente la varianza de
+$\hat{\beta}_2$. A pesar del sesgo moderado, la reducción de varianza al omitir
+$X_3$ puede dominar. El resultado Monte Carlo resuelve la ambigüedad: si
+$b_{32}$ es grande (probable dado $r_{23} = 0.95$), el sesgo también será
+grande y el modelo largo seguirá siendo preferible.
+
+\paragraph{Escenario D --- sesgo moderado ($\beta_3 = 1.0$), correlación baja
+($r_{23} = 0.1$).}
+El VIF $\approx 1.01$ es prácticamente 1; incluir $X_3$ casi no infla la
+varianza. El sesgo cuadrático domina y se prefiere sin duda el estimador
+insesgado $\hat{\beta}_2$.
+
+%------------------------------------------------------------------------------
+\section{Conexión con los ejercicios anteriores del Capítulo 13}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{1.0cm}p{4.0cm}p{2.2cm}p{2.4cm}p{3.0cm}}
+\toprule
+\textbf{Ej.} & \textbf{Error de especificación} & \textbf{Insesgadez} &
+\textbf{Eficiencia} & \textbf{Criterio de elección} \\
+\midrule
+13.2 & Intercepto innecesario incluido     & Preservada  & Reducida           & Parsimonia con respaldo teórico \\
+13.3 & Intercepto relevante omitido        & Perdida     & N/A                & Incluir siempre \\
+13.4 & Variable irrelevante $X_3$ incluida & Preservada  & Reducida (VIF)     & Excluir con respaldo teórico \\
+13.5a & Insumo $L_2$ relevante omitido    & Perdida     & N/A                & Incluir con respaldo teórico \\
+13.5b & Insumo $L_2$ irrelevante omitido  & Preservada  & Mayor eficiencia   & Excluir; modelo corto correcto \\
+\textbf{13.6} & \textbf{Tradeoff sesgo-varianza (ECM)} & \textbf{Depende} &
+  \textbf{Mínimo ECM} & \textbf{Comparar ECM; teoría + $n$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Conclusión}
+%------------------------------------------------------------------------------
+
+\begin{clave}
+  La decisión entre $\hat{\alpha}_2$ (sesgado, varianza menor) y
+  $\hat{\beta}_2$ (insesgado, varianza mayor) no es mecánica. El criterio del
+  \textbf{mínimo ECM} guía al investigador de la siguiente manera:
+
+  \begin{equation*}
+    \text{Preferir } \hat{\alpha}_2 \iff
+    \beta_3^2\,b_{32}^2 <
+    \frac{\sigma^2\,r_{23}^2}{\sum x_{2i}^2\,(1-r_{23}^2)}
+  \end{equation*}
+
+  En la práctica:
+  \begin{enumerate}[leftmargin=1.4em]
+    \item Si $X_3$ es casi irrelevante ($\beta_3 \approx 0$) o poco
+      correlacionada con $X_2$ ($b_{32} \approx 0$), omitirla puede ser
+      preferible.
+    \item Si hay multicolinealidad severa ($r_{23}^2 \to 1$), el VIF infla la
+      varianza del modelo largo y puede justificar aceptar el sesgo.
+    \item En muestras grandes, el sesgo persiste pero la varianza tiende a
+      cero; el estimador insesgado es casi siempre preferible.
+    \item La teoría económica debe ser el primer criterio: si existe razón
+      teórica sólida para incluir $X_3$, la insesgadez vale el costo de la
+      varianza mayor.
+  \end{enumerate}
+\end{clave}
+
+\vspace{14pt}
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\small\textit{Nota sobre la implementación en Stata.}
+Dos restricciones del intérprete de Stata en archivos \texttt{.do} son
+relevantes para este ejercicio: (i)~el operador~\texttt{;} no funciona como
+separador de comandos fuera del modo \texttt{#delimit}; cada \texttt{local}
+debe ocupar su propia línea. (ii)~La sintaxis \texttt{if \ldots\{\ \}\ else\ \{}
+en una sola línea produce \texttt{r(198)} (\textit{code follows on the same line
+as close brace}); la solución es reemplazar \texttt{if/else} por dos bloques
+\texttt{if} independientes usando un escalar auxiliar de valor 0/1.
+Adicionalmente, los programas definidos con \texttt{program define} no
+persisten entre bloques de Org-Babel ejecutados en sesiones separadas, por lo
+que el segundo bloque redefine \texttt{sim\_ej136} con \texttt{capture program drop}
+antes de usarlo.}
+
+\vspace{14pt}
+
+\begin{center}
+\small\textsc{Referencias}\\[6pt]
+\end{center}
+
+\noindent Gujarati, D.~N., \& Porter, D.~C. (2010). \textit{Econometría}
+(5.a~ed.). McGraw-Hill. Capítulo~13, secciones~13.2--13.3, y apéndice~A.
+
+\noindent Greene, W.~H. (2018). \textit{Econometric Analysis} (8.a~ed.).
+Pearson. Capítulo~5.
+
+\noindent Wooldridge, J.~M. (2016). \textit{Introductory Econometrics}
+(6.a~ed.). Cengage. Capítulo~3.
+
+\end{document}
