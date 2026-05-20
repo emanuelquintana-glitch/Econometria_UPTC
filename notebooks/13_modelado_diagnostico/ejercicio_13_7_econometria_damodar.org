@@ -230,7 +230,6 @@ quietly summarize b
 scalar m3 = r(mean)
 scalar v3 = r(Var)
 
-* ---- Tabla de resultados ----
 di as text _newline "=== Insesgadez con error de medicion en Y ==="
 di as text "sigma_eps = 0 | E(b) = " as result %7.4f m1 as text ///
    "  Sesgo = " as result %7.4f m1-3 as text ///
