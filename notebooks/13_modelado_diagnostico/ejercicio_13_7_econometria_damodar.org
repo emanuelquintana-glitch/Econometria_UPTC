@@ -246,6 +246,81 @@ di as text "(Incremento empirico eps=1 vs eps=0): " as result %8.6f v2 - v1
 di as text "(Incremento empirico eps=3 vs eps=0): " as result %8.6f v3 - v1
 #+END_SRC
 
+#+RESULTS: sim-13-7
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_26104.log
+  log type:  text
+ opened on:  19 May 2026, 23:49:21
+
+. capture program drop sim_ej137
+
+. program define sim_ej137, rclass
+  1.     args sigma_eps
+  2.     clear
+  3.     set obs 500
+  4.     gen X     = rnormal(5, 2)
+  5.     gen u     = rnormal(0, 1)
+  6.     gen Ystar = 2 + 3 * X + u
+  7.     gen eps   = rnormal(0, `sigma_eps')
+  8.     gen Y     = Ystar + eps
+  9.     quietly regress Y X
+ 10.     return scalar b_hat = _b[X]
+ 11. end
+
+.
+. scalar v1 = r(Var)
+
+.
+. simulate b=r(b_hat), reps(500) seed(1307): sim_ej137 1
+
+      Command: sim_ej137 1
+            b: r(b_hat)
+
+Simulations (500): .........10.........20.........30.........40.........50.........60.........70.........80.........90.........100.........110.........120.........130.........140.........150.........1
+> 60.........170.........180.........190.........200.........210.........220.........230.........240.........250.........260.........270.........280.........290.........300.........310.........320....
+> .....330.........340.........350.........360.........370.........380.........390.........400.........410.........420.........430.........440.........450.........460.........470.........480.........4
+> 90.........500 done
+
+. quietly summarize b
+
+. scalar m2 = r(mean)
+
+. scalar v2 = r(Var)
+
+.
+. simulate b=r(b_hat), reps(500) seed(1307): sim_ej137 3
+
+      Command: sim_ej137 3
+            b: r(b_hat)
+
+Simulations (500): .........10.........20.........30.........40.........50.........60.........70.........80.........90.........100.........110.........120.........130.........140.........150.........1
+> 60.........170.........180.........190.........200.........210.........220.........230.........240.........250.........260.........270.........280.........290.........300.........310.........320....
+> .....330.........340.........350.........360.........370.........380.........390.........400.........410.........420.........430.........440.........450.........460.........470.........480.........4
+> 90.........500 done
+
+. quietly summarize b
+
+. scalar m3 = r(mean)
+
+. scalar v3 = r(Var)
+
+.
+. di as text _newline "=== Insesgadez con error de medicion en Y ==="
+
+=== Insesgadez con error de medicion en Y ===
+
+. di as text "sigma_eps = 0 | E(b) = " as result %7.4f m1 as text ///
+>    "  Sesgo = " as result %7.4f m1-3 as text ///
+>    "  Var = " as result %8.6f v1
+sigma_eps = 0 | E(b) = m1 not found
+r(111);
+
+end of do-file
+r(111);
+#+end_example
+
 #+NAME: sim-13-7-comparacion
 #+BEGIN_SRC stata
 * ---- Comparación: error en Y vs. error en X ----
