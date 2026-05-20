@@ -22,4 +22,6 @@ Si suponemos que 1) $E(u_{i})= E(v_{i})=0$, 2) $var(u_{i}) = \sigma_{u}^{2}$ y $
 
 $$plim(\hat{\beta}) = \frac{\beta}{1 + (\frac{\sigma_{v}^{2}}{\sigma_{x}^{2}})}$$
 
-a):w
+a) ¿Que puede decir sobre la naturaleza del sesgo en $\hat{\beta}?$
+
+b) Si el tamaño de la muestra aumenta indefinidamente, ¿tendera el $\beta$ estimado a igualar ek  \beta verdadero.
