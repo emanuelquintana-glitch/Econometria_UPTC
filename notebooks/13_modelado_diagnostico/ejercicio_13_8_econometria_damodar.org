@@ -2,4 +2,16 @@
 #+AUTHOR: Emanuel Quintana Silva
 #+DATE: <2026-05-20 Wed>
 
-**
+** Enunciado: Segun la hipotesis de ingreso permanente de Friedman, podemos escribir
+
+$$Y_{i}^{*} = \alpha + \beta X_{i}^{}$$
+
+donde $Y_{i}^{*}$ = gasto de consumo ""permanente" y $X_{i}$ = ingreso "permanente". EN lugar de las variables "permanentes", observamos
+
+$$Y_{i} = Y_{i}^{*} + u_{i}$$
+$$X_{i} = X_{i}^{* }+ v_{i}$$
+
+donde $Y_{i}$ y $X_{i}$ son las cantidades observables o mesurables, y donde $u_{i}$ y $v_{i}$ son los errores de medicion en $Y^{*}^{*}$ y $X^{*}$, respectivamente.
+Con las cantidades observables, escribimos la funcion de consumo como
+
+$$
