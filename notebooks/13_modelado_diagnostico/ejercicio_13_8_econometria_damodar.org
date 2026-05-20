@@ -16,3 +16,5 @@ Con las cantidades observables, escribimos la funcion de consumo como
 
 $$Y_{i} = \alpha + \beta(X_{i} - v_{i}) + u_{i}$$
 $$ = \alpha + \beta X_{i} + (u_{i }- \beta v_{i})$$
+
+Si suponemos que 1) $E(u_{i})= E(v_{i})=0$, 2) $var(u_{i}) = \sigma_{u}^{2}$ y $var(v_{i})= \sigma_{v}^{2}$, 3) $cov(Y_{i}_{}^{*},u_{i}) = 0$, 4) $cov(u_{i}, X_{i}^{*}) = cov(v_{i},Y_{i}^{*}) = cov(u_{i},v_{i}) = 0$, demuestre que, en muestras grandes, el \beta estimado de (2) se expresa como
