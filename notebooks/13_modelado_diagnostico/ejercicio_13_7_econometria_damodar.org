@@ -323,8 +323,6 @@ r(111);
 
 #+NAME: sim-13-7-comparacion
 #+BEGIN_SRC stata
-* ---- Comparación: error en Y vs. error en X ----
-* Ambos programas redefinidos para que el bloque sea autónomo
 
 capture program drop sim_ej137_Y
 program define sim_ej137_Y, rclass
@@ -354,21 +352,16 @@ program define sim_ej137_X, rclass
     return scalar b_hat = _b[X]
 end
 
-* ---- Error en Y: sigma_eps = 2 ----
 simulate b=r(b_hat), reps(500) seed(1307): sim_ej137_Y 2
 quietly summarize b
 scalar bY_mean = r(mean)
 scalar bY_var  = r(Var)
 
-* ---- Error en X: sigma_w = 2 ----
 simulate b=r(b_hat), reps(500) seed(1307): sim_ej137_X 2
 quietly summarize b
 scalar bX_mean = r(mean)
 scalar bX_var  = r(Var)
 
-* ---- Sesgo de atenuación teórico ----
-* Xstar ~ N(5,4), sigma_Xstar^2 = 4, sigma_w^2 = 4
-* plim(b_hat) = 3 * 4/(4+4) = 1.5
 scalar sesgo_teo = 1.5 - 3
 
 di as text _newline "=== Error de medicion en Y (sigma_eps = 2) ==="
@@ -382,6 +375,118 @@ di as text "E(beta_hat) = " as result %7.4f bX_mean as text ///
 di as text "Sesgo teorico (atenuacion) = " as result %7.4f sesgo_teo
 di as text "(Verdadero beta = 3; plim = 1.5 con sigma_Xstar^2 = sigma_w^2 = 4)"
 #+END_SRC
+
+#+RESULTS: sim-13-7-comparacion
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_26508.log
+  log type:  text
+ opened on:  19 May 2026, 23:50:25
+
+.
+. capture program drop sim_ej137_Y
+
+. program define sim_ej137_Y, rclass
+  1.     args sigma_eps
+  2.     clear
+  3.     set obs 500
+  4.     gen X     = rnormal(5, 2)
+  5.     gen u     = rnormal(0, 1)
+  6.     gen Ystar = 2 + 3 * X + u
+  7.     gen eps   = rnormal(0, `sigma_eps')
+  8.     gen Y     = Ystar + eps
+  9.     quietly regress Y X
+ 10.     return scalar b_hat = _b[X]
+ 11. end
+
+.
+. capture program drop sim_ej137_X
+
+. program define sim_ej137_X, rclass
+  1.     args sigma_w
+  2.     clear
+  3.     set obs 500
+  4.     gen Xstar = rnormal(5, 2)
+  5.     gen u     = rnormal(0, 1)
+  6.     gen Y     = 2 + 3 * Xstar + u
+  7.     gen w     = rnormal(0, `sigma_w')
+  8.     gen X     = Xstar + w
+  9.     quietly regress Y X
+ 10.     return scalar b_hat = _b[X]
+ 11. end
+
+.
+. simulate b=r(b_hat), reps(500) seed(1307): sim_ej137_Y 2
+
+      Command: sim_ej137_Y 2
+            b: r(b_hat)
+
+Simulations (500): .........10.........20.........30.........40.........50.........60.........70.........80.........90.........100.........110.........120.........130.........140.........150.........1
+> 60.........170.........180.........190.........200.........210.........220.........230.........240.........250.........260.........270.........280.........290.........300.........310.........320....
+> .....330.........340.........350.........360.........370.........380.........390.........400.........410.........420.........430.........440.........450.........460.........470.........480.........4
+> 90.........500 done
+
+. quietly summarize b
+
+. scalar bY_mean = r(mean)
+
+. scalar bY_var  = r(Var)
+
+.
+. simulate b=r(b_hat), reps(500) seed(1307): sim_ej137_X 2
+
+      Command: sim_ej137_X 2
+            b: r(b_hat)
+
+Simulations (500): .........10.........20.........30.........40.........50.........60.........70.........80.........90.........100.........110.........120.........130.........140.........150.........1
+> 60.........170.........180.........190.........200.........210.........220.........230.........240.........250.........260.........270.........280.........290.........300.........310.........320....
+> .....330.........340.........350.........360.........370.........380.........390.........400.........410.........420.........430.........440.........450.........460.........470.........480.........4
+> 90.........500 done
+
+. quietly summarize b
+
+. scalar bX_mean = r(mean)
+
+. scalar bX_var  = r(Var)
+
+.
+. scalar sesgo_teo = 1.5 - 3
+
+.
+. di as text _newline "=== Error de medicion en Y (sigma_eps = 2) ==="
+
+=== Error de medicion en Y (sigma_eps = 2) ===
+
+. di as text "E(beta_hat) = " as result %7.4f bY_mean as text ///
+>    "  Sesgo = " as result %7.4f bY_mean - 3 as text ///
+>    "  Var = " as result %8.6f bY_var
+E(beta_hat) =  3.0018  Sesgo =  0.0018  Var = 0.002343
+
+.
+. di as text _newline "=== Error de medicion en X (sigma_w = 2) ==="
+
+=== Error de medicion en X (sigma_w = 2) ===
+
+. di as text "E(beta_hat) = " as result %7.4f bX_mean as text ///
+>    "  Sesgo empirico  = " as result %7.4f bX_mean - 3
+E(beta_hat) =  1.4989  Sesgo empirico  = -1.5011
+
+. di as text "Sesgo teorico (atenuacion) = " as result %7.4f sesgo_teo
+Sesgo teorico (atenuacion) = -1.5000
+
+. di as text "(Verdadero beta = 3; plim = 1.5 con sigma_Xstar^2 = sigma_w^2 = 4)"
+(Verdadero beta = 3; plim = 1.5 con sigma_Xstar^2 = sigma_w^2 = 4)
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_26508.log
+  log type:  text
+ closed on:  19 May 2026, 23:50:37
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
 
 ** Resultados obtenidos
 
