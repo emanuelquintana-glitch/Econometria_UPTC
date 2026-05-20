@@ -1,0 +1,376 @@
+#+TITLE: Econometría — Gujarati, Capítulo 13
+#+SUBTITLE: Ejercicio 13.7 — Insesgadez del estimador MCO con errores de medición en Y
+#+DATE: <2026-05-20>
+#+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both
+
+* Ejercicio 13.7
+
+#+BEGIN_QUOTE
+Muestre que el $\hat{\beta}$ estimado de (13.5.1) o (13.5.3) constituye una
+estimación insesgada del verdadero $\beta$.
+#+END_QUOTE
+
+** Contexto: los modelos (13.5.1) y (13.5.3)
+
+El capítulo 13.5 de Gujarati analiza el impacto de los *errores de medición*
+sobre las propiedades de los estimadores MCO. Se distinguen dos casos:
+
+- *Errores de medición en la variable dependiente* $Y$ (ejercicio 13.7)
+- *Errores de medición en la variable independiente* $X$ (ejercicio 13.8)
+
+Este ejercicio trata el primer caso. La distinción es fundamental porque, como
+se demostrará, las consecuencias son cualitativamente distintas:
+
+| Tipo de error de medición | Insesgadez | Eficiencia       |
+|---------------------------+------------+------------------|
+| En $Y$ (ejercicio 13.7)   | Preservada | Reducida         |
+| En $X$ (ejercicio 13.8)   | Perdida    | N/A (hay sesgo)  |
+
+** Definición de los modelos
+
+*** Modelo verdadero --- ecuación (13.5.1)
+
+$$Y_i^* = \alpha + \beta X_i + u_i$$
+
+donde:
+
+- $Y_i^*$ es el valor *verdadero* (no observable) de la variable dependiente
+  (e.g., consumo permanente en la hipótesis de Friedman).
+- $X_i$ es el regresor observable y medido sin error.
+- $u_i$ es el término de perturbación estocástica de la ecuación, con las
+  propiedades clásicas del MCRL.
+
+*** Modelo con error de medición --- ecuación (13.5.3)
+
+Como $Y_i^*$ no es directamente observable, el investigador usa $Y_i$
+(consumo medido), que difiere del valor verdadero por un error aleatorio:
+
+$$Y_i = Y_i^* + \varepsilon_i$$
+
+donde $\varepsilon_i$ es el error de medición en $Y$. Sustituyendo (13.5.1):
+
+$$Y_i = \alpha + \beta X_i + u_i + \varepsilon_i = \alpha + \beta X_i + v_i$$
+
+donde $v_i = u_i + \varepsilon_i$ es el *término de error compuesto*, que
+recoge tanto el error de la ecuación estructural como el error de medición.
+
+** Supuestos necesarios
+
+Para establecer la insesgadez se requieren los siguientes supuestos, todos
+coherentes con las propiedades clásicas del MCRL extendidas al contexto de
+errores de medición:
+
+1. $E(u_i) = 0$ y $E(\varepsilon_i) = 0$: las medias de ambos errores son
+   cero; los errores son puramente aleatorios.
+
+2. $\mathrm{cov}(X_i, u_i) = 0$: el regresor no está correlacionado con el
+   error de la ecuación estructural (supuesto clásico de exogeneidad).
+
+3. $\mathrm{cov}(X_i, \varepsilon_i) = 0$: el error de medición en $Y$ no
+   está correlacionado con el regresor $X$. Este es el supuesto crítico que
+   distingue este caso del error de medición en $X$.
+
+4. $\mathrm{cov}(u_i, \varepsilon_i) = 0$: el error de la ecuación y el
+   error de medición son mutuamente independientes.
+
+#+BEGIN_QUOTE
+*Nota*: El supuesto 3 es el que separa cualitativamente los dos casos. Cuando
+el error de medición está en $Y$, la condición $\mathrm{cov}(X_i, \varepsilon_i) = 0$
+es plausible porque el error de registro de $Y$ no tiene por qué depender del
+valor de $X$. Cuando el error está en $X$, en cambio, el regresor observado
+$X_i^*$ está contaminado por el error, lo que genera correlación entre el
+regresor y el error compuesto de la ecuación estimada.
+#+END_QUOTE
+
+** Solución: demostración de insesgadez
+
+*** Expresión del estimador MCO
+
+El estimador de la pendiente por MCO aplicado al modelo (13.5.3), escrito en
+desviaciones respecto a las medias ($x_i = X_i - \bar{X}$,
+$y_i = Y_i - \bar{Y}$), es:
+
+$$\hat{\beta} = \frac{\sum x_i y_i}{\sum x_i^2}$$
+
+*** Sustitución del modelo verdadero
+
+En desviaciones, el modelo (13.5.3) se escribe:
+
+$$y_i = \beta x_i + v_i - \bar{v}$$
+
+donde $\bar{v} = n^{-1}\sum v_i$. Sustituyendo en el numerador:
+
+$$\sum x_i y_i = \sum x_i (\beta x_i + v_i - \bar{v})
+= \beta \sum x_i^2 + \sum x_i v_i - \bar{v}\sum x_i$$
+
+Como $\sum x_i = 0$ por construcción (desviaciones respecto a la media):
+
+$$\sum x_i y_i = \beta \sum x_i^2 + \sum x_i v_i$$
+
+Por tanto:
+
+$$\hat{\beta} = \frac{\beta \sum x_i^2 + \sum x_i v_i}{\sum x_i^2}
+= \beta + \frac{\sum x_i v_i}{\sum x_i^2}$$
+
+*** Cálculo de la esperanza
+
+Tomando la esperanza condicionada a los valores de $X$ (que son fijos en
+muestras repetidas):
+
+$$E(\hat{\beta} \mid X) = \beta + \frac{\sum x_i\, E(v_i \mid X)}{\sum x_i^2}$$
+
+Dado que $v_i = u_i + \varepsilon_i$ y usando los supuestos 1, 2 y 3:
+
+$$E(v_i \mid X) = E(u_i \mid X) + E(\varepsilon_i \mid X) = 0 + 0 = 0$$
+
+Por tanto:
+
+$$\boxed{E(\hat{\beta} \mid X) = \beta + \frac{\sum x_i \cdot 0}{\sum x_i^2} = \beta}$$
+
+Y por la ley de esperanzas iteradas:
+
+$$E(\hat{\beta}) = E\bigl[E(\hat{\beta} \mid X)\bigr] = \beta$$
+
+*** Conclusión de la demostración
+
+$\hat{\beta}$ es un estimador *insesgado* de $\beta$. Los errores de medición
+en la variable dependiente no destruyen la insesgadez del estimador MCO
+porque el error compuesto $v_i = u_i + \varepsilon_i$ sigue siendo ortogonal
+al regresor $X_i$ bajo los supuestos del MCRL extendidos.
+
+** Consecuencia sobre la varianza (ineficiencia)
+
+Aunque $\hat{\beta}$ es insesgado, los errores de medición en $Y$ *sí*
+aumentan su varianza. La varianza del estimador en el modelo estimado es:
+
+$$\mathrm{Var}(\hat{\beta}) = \frac{\sigma_v^2}{\sum x_i^2}$$
+
+donde $\sigma_v^2 = \mathrm{Var}(v_i) = \sigma_u^2 + \sigma_\varepsilon^2$,
+ya que $u_i$ y $\varepsilon_i$ son independientes (supuesto 4). En cambio,
+la varianza en el modelo verdadero sería:
+
+$$\mathrm{Var}^*(\hat{\beta}) = \frac{\sigma_u^2}{\sum x_i^2}$$
+
+Como $\sigma_v^2 > \sigma_u^2$:
+
+$$\boxed{\mathrm{Var}(\hat{\beta}) > \mathrm{Var}^*(\hat{\beta})}$$
+
+El estimador sigue siendo insesgado pero es *menos eficiente* que si se
+pudiera observar $Y_i^*$ directamente. La pérdida de eficiencia es
+proporcional a $\sigma_\varepsilon^2 / \sigma_u^2$: cuanto mayor sea el
+ruido de medición relativo al ruido estructural, mayor será la inflación
+de varianza.
+
+** Comparación con el error de medición en $X$
+
+La asimetría entre los dos casos es uno de los resultados más importantes
+del capítulo 13.5:
+
+*** Error de medición en $Y$: insesgado, menos eficiente
+
+Como se demostró, $\mathrm{cov}(X_i, \varepsilon_i) = 0$ implica que el
+término compuesto $v_i$ sigue siendo ortogonal a $X_i$. El sesgo de la
+fórmula del estimador es cero y solo se infla la varianza.
+
+*** Error de medición en $X$: sesgado e inconsistente
+
+Si en cambio el regresor verdadero es $X_i^*$ pero se observa
+$X_i = X_i^* + w_i$ (con $w_i$ el error de medición en $X$), el modelo
+estimado tiene un error compuesto $u_i - \beta w_i$ que está correlacionado
+con el regresor observado $X_i$:
+
+$$\mathrm{cov}(X_i,\; u_i - \beta w_i) = -\beta\,\sigma_w^2 \neq 0$$
+
+Esto genera el célebre *sesgo de atenuación* (/attenuation bias/):
+
+$$\mathrm{plim}(\hat{\beta}) = \beta \cdot \frac{\sigma_{X^*}^2}{\sigma_{X^*}^2 + \sigma_w^2} < \beta \quad (\text{si } \beta > 0)$$
+
+El estimador es inconsistente: el sesgo no desaparece con $n \to \infty$.
+
+** Verificación empírica con datos simulados
+
+Se generan datos del proceso verdadero $Y_i^* = \alpha + \beta X_i + u_i$
+con distintos niveles de error de medición $\varepsilon_i$ en $Y$, y se
+verifica que el estimador MCO sigue siendo insesgado mientras la varianza
+aumenta con $\sigma_\varepsilon^2$.
+
+#+NAME: sim-13-7
+#+BEGIN_SRC stata
+clear
+set seed 1307
+set obs 500
+
+* Parámetros verdaderos
+local alpha = 2
+local beta  = 3
+
+* Regresor observable sin error
+gen X = rnormal(5, 2)
+gen u = rnormal(0, 1)
+
+* Valor verdadero (no observable)
+gen Ystar = `alpha' + `beta' * X + u
+
+* ---- Programa Monte Carlo ----
+capture program drop sim_ej137
+program define sim_ej137, rclass
+    args sigma_eps
+    clear
+    set obs 500
+    gen X     = rnormal(5, 2)
+    gen u     = rnormal(0, 1)
+    gen Ystar = 2 + 3 * X + u
+    gen eps   = rnormal(0, `sigma_eps')
+    gen Y     = Ystar + eps
+    quietly regress Y X
+    return scalar b_hat = _b[X]
+end
+
+* ---- Simulación: tres niveles de error de medición ----
+* sigma_eps = 0   (sin error de medición, caso base)
+* sigma_eps = 1   (error moderado: sigma_eps = sigma_u)
+* sigma_eps = 3   (error severo: sigma_eps = 3*sigma_u)
+
+foreach s in 0 1 3 {
+    simulate b=r(b_hat), reps(2000) seed(1307): sim_ej137 `s'
+
+    quietly summarize b
+    local media  = r(mean)
+    local sesgo  = r(mean) - 3
+    local var_b  = r(Var)
+
+    di as text "sigma_eps = `s' | " ///
+       "E(beta_hat) = " as result %7.4f `media' as text ///
+       "  Sesgo = " as result %7.4f `sesgo' as text ///
+       "  Var = " as result %7.5f `var_b'
+}
+#+END_SRC
+
+#+NAME: sim-13-7-comparacion
+#+BEGIN_SRC stata
+* ---- Comparación insesgadez: error en Y vs. error en X ----
+* Redefinir programa para que el bloque sea autónomo
+capture program drop sim_ej137_Y
+program define sim_ej137_Y, rclass
+    args sigma_eps
+    clear
+    set obs 500
+    gen X     = rnormal(5, 2)
+    gen u     = rnormal(0, 1)
+    gen Ystar = 2 + 3 * X + u
+    gen eps   = rnormal(0, `sigma_eps')
+    gen Y     = Ystar + eps
+    quietly regress Y X
+    return scalar b_hat = _b[X]
+end
+
+capture program drop sim_ej137_X
+program define sim_ej137_X, rclass
+    args sigma_w
+    clear
+    set obs 500
+    gen Xstar = rnormal(5, 2)
+    gen u     = rnormal(0, 1)
+    gen Y     = 2 + 3 * Xstar + u
+    gen w     = rnormal(0, `sigma_w')
+    gen X     = Xstar + w      // regresor medido con error
+    quietly regress Y X
+    return scalar b_hat = _b[X]
+end
+
+di as text _newline "=== Error de medicion en Y (insesgado) ==="
+simulate b=r(b_hat), reps(2000) seed(1307): sim_ej137_Y 2
+quietly summarize b
+di as text "E(beta_hat) = " as result %7.4f r(mean) as text ///
+   "  Sesgo = " as result %7.4f r(mean) - 3 as text ///
+   "  Var = " as result %7.5f r(Var)
+
+di as text _newline "=== Error de medicion en X (sesgado: atenuacion) ==="
+simulate b=r(b_hat), reps(2000) seed(1307): sim_ej137_X 2
+quietly summarize b
+di as text "E(beta_hat) = " as result %7.4f r(mean) as text ///
+   "  Sesgo = " as result %7.4f r(mean) - 3 as text ///
+   "  Var = " as result %7.5f r(Var)
+di as text "(Verdadero beta = 3.0000; sesgo de atenuacion esperado < 0)"
+#+END_SRC
+
+** Interpretación de los resultados esperados
+
+*Bloque ~sim-13-7~*:
+
+| $\sigma_\varepsilon$ | $E(\hat{\beta})$ | Sesgo | $\mathrm{Var}(\hat{\beta})$ |
+|----------------------+------------------+-------+-----------------------------|
+| $0$ (sin error)      | $\approx 3.000$  | $\approx 0$ | Base                  |
+| $1$ (moderado)       | $\approx 3.000$  | $\approx 0$ | Mayor que base        |
+| $3$ (severo)         | $\approx 3.000$  | $\approx 0$ | Mucho mayor           |
+
+El sesgo permanece en cero independientemente de $\sigma_\varepsilon$,
+confirmando la insesgadez. La varianza crece con $\sigma_\varepsilon^2$
+porque $\sigma_v^2 = \sigma_u^2 + \sigma_\varepsilon^2$.
+
+*Bloque ~sim-13-7-comparacion~*:
+
+Con el mismo $\sigma = 2$ aplicado al error en $Y$ vs. error en $X$:
+
+- *Error en $Y$*: $E(\hat{\beta}) \approx 3.000$, sesgo $\approx 0$.
+- *Error en $X$*: $E(\hat{\beta}) \approx 3 \cdot \sigma_{X^*}^2 / (\sigma_{X^*}^2 + 4)$,
+  sesgo negativo significativo (sesgo de atenuación).
+
+La simulación confirma la asimetría teórica entre los dos tipos de error.
+
+** Conclusión
+
+#+BEGIN_QUOTE
+El estimador $\hat{\beta}$ obtenido de (13.5.1) o (13.5.3) es *insesgado*:
+$E(\hat{\beta}) = \beta$.
+
+La demostración descansa en que el error de medición $\varepsilon_i$ en $Y$
+es ortogonal al regresor $X_i$ (supuesto $\mathrm{cov}(X_i, \varepsilon_i) = 0$).
+Bajo esta condición, el término compuesto $v_i = u_i + \varepsilon_i$ hereda
+la propiedad de media cero y ortogonalidad con $X_i$, por lo que el estimador
+MCO mantiene su insesgadez.
+
+La única consecuencia negativa es un aumento en la varianza:
+
+$$\mathrm{Var}(\hat{\beta}) = \frac{\sigma_u^2 + \sigma_\varepsilon^2}{\sum x_i^2}
+> \frac{\sigma_u^2}{\sum x_i^2} = \mathrm{Var}^*(\hat{\beta})$$
+
+Este resultado contrasta con el caso de error de medición en $X$, donde la
+correlación entre el regresor observado y el error compuesto genera sesgo de
+atenuación que no desaparece con $n \to \infty$.
+
+La regla práctica que emerge del capítulo 13.5 es: los errores de medición
+en $Y$ son costosos en términos de eficiencia pero no comprometen la
+consistencia; los errores en $X$ son mucho más graves porque producen
+estimadores sesgados e inconsistentes.
+#+END_QUOTE
+
+* Conexión con los ejercicios anteriores del Capítulo 13
+
+| Ejercicio | Error de especificación / medición          | Insesgadez   | Eficiencia          | Validez de inferencia      |
+|-----------+---------------------------------------------+--------------+---------------------+----------------------------|
+| 13.2      | Intercepto innecesario incluido             | Preservada   | Reducida            | Válida (menos potente)     |
+| 13.3      | Intercepto relevante omitido               | Perdida      | N/A (hay sesgo)     | Inválida                   |
+| 13.4      | Variable irrelevante $X_3$ incluida         | Preservada   | Reducida (VIF)      | Válida (menos potente)     |
+| 13.5a     | Insumo $L_2$ relevante omitido             | Perdida      | N/A                 | Inválida                   |
+| 13.5b     | Insumo $L_2$ irrelevante omitido           | Preservada   | Mayor eficiencia    | Válida y eficiente         |
+| 13.6      | Tradeoff sesgo-varianza (ECM)              | Depende      | Mínimo ECM          | Comparar ECM               |
+| *13.7*    | *Error de medición en $Y$*                 | *Preservada* | *Reducida*          | *Válida (menos potente)*   |
+| /(13.8)/  | /Error de medición en $X$/                 | /Perdida/    | /N/A (hay sesgo)/   | /Inválida/                 |
+
+El ejercicio 13.7 es el análogo del ejercicio 13.4 en el contexto de errores
+de medición: en ambos casos la insesgadez se preserva y el costo es únicamente
+pérdida de eficiencia. El ejercicio 13.8 (no analizado aquí) es el análogo del
+ejercicio 13.3: el sesgo aparece y es sistemático.
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13, sección 13.5.
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.). Pearson.
+  Capítulo 5.
+- Wooldridge, J. M. (2016). /Introductory Econometrics/ (6.ª ed.).
+  Cengage. Capítulo 9.
