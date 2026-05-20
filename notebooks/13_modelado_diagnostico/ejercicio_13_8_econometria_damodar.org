@@ -14,4 +14,5 @@ $$X_{i} = X_{i}^{* }+ v_{i}$$
 donde $Y_{i}$ y $X_{i}$ son las cantidades observables o mesurables, y donde $u_{i}$ y $v_{i}$ son los errores de medicion en $Y^{*}^{*}$ y $X^{*}$, respectivamente.
 Con las cantidades observables, escribimos la funcion de consumo como
 
-$$
+$$Y_{i} = \alpha + \beta(X_{i} - v_{i}) + u_{i}$$
+$$ = \alpha + \beta X_{i} + (u_{i }- \beta v_{i})$$
