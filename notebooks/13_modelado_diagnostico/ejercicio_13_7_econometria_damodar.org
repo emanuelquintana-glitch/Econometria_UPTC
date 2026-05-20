@@ -1,5 +1,5 @@
 #+TITLE: Econometría — Gujarati, Capítulo 13
-#+SUBTITLE: Ejercicio 13.7 — Insesgadez del estimador MCO con errores de medición en Y
+#+SUBTITLE: Ejercicio 13.7 — Insesgadez del estimador MCO con errores de medición en Y.
 #+DATE: <2026-05-20>
 #+AUTHOR: Emanuel Quintana Silva.
 #+LANGUAGE: es
