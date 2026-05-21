@@ -26,4 +26,4 @@ a) ¿Que puede decir sobre la naturaleza del sesgo en $\hat{\beta}?$
 
 b) Si el tamaño de la muestra aumenta indefinidamente, ¿tendera el $\beta$ estimado a igualar ek  \beta verdadero?
 
-   ** Solucion
+   ** Solucion.
