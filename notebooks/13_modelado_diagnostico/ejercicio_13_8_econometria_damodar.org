@@ -452,3 +452,250 @@ grandes, el estimador no converge al verdadero parámetro poblacional.
 
 - Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.).
   Pearson.
+
+
+** Verificación empírica con Stata
+
+Para ilustrar el sesgo de atenuación, simulamos datos donde el
+verdadero modelo es:
+
+$$
+Y_i^{*}=1+2X_i^{*}+u_i
+$$
+
+pero observamos:
+
+$$
+X_i=X_i^{*}+v_i
+$$
+
+Estimamos entonces la regresión usando la variable observada $X_i$,
+que contiene error de medición.
+
+La teoría predice:
+
+$$
+plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+$$
+
+Por lo tanto, el coeficiente estimado debe ser menor que el verdadero
+valor $\beta=2$.
+
+#+NAME: medicion-error
+#+BEGIN_SRC stata
+clear
+set seed 12345
+set obs 5000
+
+gen X_star = rnormal(10, 2)
+
+gen u = rnormal(0,1)
+
+gen v = rnormal(0,2)
+
+gen Y = 1 + 2*X_star + u
+
+gen X = X_star + v
+
+regress Y X
+
+regress Y X_star
+
+quietly summarize X_star
+scalar sigmaX2 = r(Var)
+
+quietly summarize v
+scalar sigmav2 = r(Var)
+
+scalar beta_true = 2
+
+scalar beta_plim = beta_true / ///
+    (1 + (sigmav2/sigmaX2))
+
+display _newline ///
+"=== Resultado teorico ==="
+
+display ///
+"Var(X*)          = " %9.4f sigmaX2
+
+display ///
+"Var(v)           = " %9.4f sigmav2
+
+display ///
+"Beta verdadero   = " %9.4f beta_true
+
+display ///
+"plim teorico     = " %9.4f beta_plim
+#+END_SRC
+
+#+RESULTS: medicion-error
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_23545.log
+  log type:  text
+ opened on:  21 May 2026, 23:21:13
+
+. clear
+
+. set seed 12345
+
+. set obs 5000
+Number of observations (_N) was 0, now 5,000.
+
+.
+. gen X_star = rnormal(10, 2)
+
+.
+. gen u = rnormal(0,1)
+
+.
+. gen v = rnormal(0,2)
+
+.
+. gen Y = 1 + 2*X_star + u
+
+.
+. gen X = X_star + v
+
+.
+. regress Y X
+
+      Source |       SS           df       MS      Number of obs   =     5,000
+-------------+----------------------------------   F(1, 4998)      =   4249.17
+       Model |  38547.1075         1  38547.1075   Prob > F        =    0.0000
+    Residual |  45340.2837     4,998  9.07168541   R-squared       =    0.4595
+-------------+----------------------------------   Adj R-squared   =    0.4594
+       Total |  83887.3911     4,999  16.7808344   Root MSE        =    3.0119
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |   .9926048   .0152274    65.19   0.000     .9627525    1.022457
+       _cons |   11.07238   .1585462    69.84   0.000     10.76156     11.3832
+------------------------------------------------------------------------------
+
+.
+. regress Y X_star
+
+      Source |       SS           df       MS      Number of obs   =     5,000
+-------------+----------------------------------   F(1, 4998)      =  78323.77
+       Model |  78855.4624         1  78855.4624   Prob > F        =    0.0000
+    Residual |   5031.9287     4,998  1.00678846   R-squared       =    0.9400
+-------------+----------------------------------   Adj R-squared   =    0.9400
+       Total |  83887.3911     4,999  16.7808344   Root MSE        =    1.0034
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      X_star |    2.00526   .0071651   279.86   0.000     1.991213    2.019307
+       _cons |   .9711607   .0730555    13.29   0.000     .8279399    1.114381
+------------------------------------------------------------------------------
+
+.
+. quietly summarize X_star
+
+. scalar sigmaX2 = r(Var)
+
+.
+. quietly summarize v
+
+. scalar sigmav2 = r(Var)
+
+.
+. scalar beta_true = 2
+
+.
+. scalar beta_plim = beta_true / ///
+>     (1 + (sigmav2/sigmaX2))
+
+.
+. display _newline ///
+> "=== Resultado teorico ==="
+
+=== Resultado teorico ===
+
+.
+. display ///
+> "Var(X*)          = " %9.4f sigmaX2
+Var(X*)          =    3.9229
+
+.
+. display ///
+> "Var(v)           = " %9.4f sigmav2
+Var(v)           =    4.0122
+
+.
+. display ///
+> "Beta verdadero   = " %9.4f beta_true
+Beta verdadero   =    2.0000
+
+.
+. display ///
+> "plim teorico     = " %9.4f beta_plim
+plim teorico     =    0.9887
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_23545.log
+  log type:  text
+ closed on:  21 May 2026, 23:21:15
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
+** Interpretación de resultados
+
+La simulación confirma exactamente la teoría de errores en variables.
+
+1. Cuando usamos la variable verdadera $X_i^{*}$, el estimador MCO
+   recupera correctamente:
+
+$$
+\hat{\beta}\approx 2
+$$
+
+2. Cuando usamos la variable observada con error de medición:
+
+$$
+X_i=X_i^{*}+v_i
+$$
+
+el coeficiente cae aproximadamente a:
+
+$$
+\hat{\beta}\approx 1
+$$
+
+muy cerca del valor teórico:
+
+$$
+plim(\hat{\beta})\approx0.998
+$$
+
+3. El coeficiente estimado se desplaza hacia cero, mostrando el
+   clásico:
+
+#+BEGIN_QUOTE
+Sesgo de atenuación (attenuation bias)
+#+END_QUOTE
+
+4. Aunque la muestra es muy grande ($n=5000$), el sesgo no desaparece,
+   confirmando que el estimador MCO es inconsistente cuando existe
+   error de medición en la variable explicativa.
+
+** Conclusión empírica
+
+#+BEGIN_QUOTE
+La simulación Monte Carlo verifica que el error de medición en la
+variable independiente provoca una subestimación sistemática del
+verdadero parámetro poblacional.
+
+El estimador MCO no converge al verdadero valor de $\beta$, sino a una
+versión atenuada determinada por la razón entre la varianza de la
+variable verdadera y la varianza del error de medición.
+#+END_QUOTE
