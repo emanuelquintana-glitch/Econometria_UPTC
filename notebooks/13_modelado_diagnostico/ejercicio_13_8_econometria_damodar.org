@@ -430,7 +430,6 @@ $$
 
 y MCO recupera consistencia.
 
-* Conclusión
 
 * Referencias
 
