@@ -1,0 +1,454 @@
+#+TITLE: Econometría — Ejercicio 13.8 (Gujarati)
+#+AUTHOR: Emanuel Quintana Silva
+#+DATE: <2026-05-20 Wed>
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+
+* Ejercicio 13.8
+
+** Enunciado
+
+Según la hipótesis de ingreso permanente de Friedman, podemos escribir
+
+$$
+Y_i^{*} = \alpha + \beta X_i^{*}
+$$
+
+donde:
+
+- $Y_i^{*}$ = gasto de consumo “permanente”
+- $X_i^{*}$ = ingreso “permanente”
+
+En lugar de las variables permanentes observamos:
+
+$$
+Y_i = Y_i^{*} + u_i
+$$
+
+$$
+X_i = X_i^{*} + v_i
+$$
+
+donde $Y_i$ y $X_i$ son las cantidades observables, y donde
+$u_i$ y $v_i$ son los errores de medición en $Y_i^{*}$ y $X_i^{*}$,
+respectivamente.
+
+Con las cantidades observables, escribimos la función de consumo como
+
+$$
+Y_i = \alpha + \beta(X_i - v_i) + u_i
+$$
+
+o equivalentemente,
+
+$$
+Y_i = \alpha + \beta X_i + (u_i - \beta v_i)
+$$
+
+Si suponemos que:
+
+1. $E(u_i)=E(v_i)=0$
+2. $var(u_i)=\sigma_u^2$ y $var(v_i)=\sigma_v^2$
+3. $cov(Y_i^{*},u_i)=0$
+4. $cov(u_i,X_i^{*})=cov(v_i,Y_i^{*})=cov(u_i,v_i)=0$
+
+demuestre que, en muestras grandes,
+
+$$
+plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+$$
+
+donde $\sigma_X^2 = var(X_i^{*})$.
+
+a) ¿Qué puede decir sobre la naturaleza del sesgo en $\hat{\beta}$?
+
+b) Si el tamaño de la muestra aumenta indefinidamente,
+¿tenderá $\hat{\beta}$ a igualar el $\beta$ verdadero?
+
+* Solución
+
+** 1. Modelo observado
+
+El verdadero modelo poblacional es:
+
+$$
+Y_i^{*} = \alpha + \beta X_i^{*}
+$$
+
+Pero no observamos $X_i^{*}$ ni $Y_i^{*}$ directamente, sino:
+
+$$
+Y_i = Y_i^{*} + u_i
+$$
+
+$$
+X_i = X_i^{*} + v_i
+$$
+
+Sustituyendo:
+
+$$
+Y_i
+=
+\alpha + \beta X_i^{*} + u_i
+$$
+
+y como
+
+$$
+X_i^{*}=X_i-v_i
+$$
+
+entonces:
+
+$$
+Y_i
+=
+\alpha + \beta(X_i-v_i)+u_i
+$$
+
+por lo tanto,
+
+$$
+Y_i
+=
+\alpha+\beta X_i+(u_i-\beta v_i)
+$$
+
+Definimos el término de error compuesto:
+
+$$
+w_i = u_i-\beta v_i
+$$
+
+de modo que:
+
+$$
+Y_i=\alpha+\beta X_i+w_i
+$$
+
+** 2. Problema fundamental: correlación entre regresor y error
+
+El estimador MCO es consistente solamente si:
+
+$$
+cov(X_i,w_i)=0
+$$
+
+Sin embargo,
+
+$$
+X_i=X_i^{*}+v_i
+$$
+
+y
+
+$$
+w_i=u_i-\beta v_i
+$$
+
+Entonces:
+
+$$
+cov(X_i,w_i)
+=
+cov(X_i^{*}+v_i,\;u_i-\beta v_i)
+$$
+
+Expandiendo:
+
+$$
+=
+cov(X_i^{*},u_i)
+-\beta cov(X_i^{*},v_i)
++cov(v_i,u_i)
+-\beta cov(v_i,v_i)
+$$
+
+Por los supuestos:
+
+$$
+cov(X_i^{*},u_i)=0
+$$
+
+$$
+cov(X_i^{*},v_i)=0
+$$
+
+$$
+cov(v_i,u_i)=0
+$$
+
+queda:
+
+$$
+cov(X_i,w_i)
+=
+-\beta var(v_i)
+$$
+
+o sea,
+
+$$
+cov(X_i,w_i)
+=
+-\beta \sigma_v^2
+$$
+
+Por lo tanto:
+
+$$
+cov(X_i,w_i)\neq0
+$$
+
+y el estimador MCO es inconsistente.
+
+** 3. Probabilidad límite del estimador MCO
+
+Sabemos que en muestras grandes:
+
+$$
+plim(\hat{\beta})
+=
+\beta
++
+\frac{cov(X_i,w_i)}
+{var(X_i)}
+$$
+
+Ya obtuvimos:
+
+$$
+cov(X_i,w_i)
+=
+-\beta\sigma_v^2
+$$
+
+Ahora calculamos $var(X_i)$.
+
+Como:
+
+$$
+X_i=X_i^{*}+v_i
+$$
+
+entonces:
+
+$$
+var(X_i)
+=
+var(X_i^{*})+var(v_i)
+$$
+
+porque:
+
+$$
+cov(X_i^{*},v_i)=0
+$$
+
+Así:
+
+$$
+var(X_i)
+=
+\sigma_X^2+\sigma_v^2
+$$
+
+Sustituyendo:
+
+$$
+plim(\hat{\beta})
+=
+\beta
++
+\frac{-\beta\sigma_v^2}
+{\sigma_X^2+\sigma_v^2}
+$$
+
+Factorizando $\beta$:
+
+$$
+=
+\beta
+\left(
+1-
+\frac{\sigma_v^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+$$
+
+Simplificando:
+
+$$
+=
+\beta
+\left(
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+$$
+
+Finalmente:
+
+$$
+\boxed{
+plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+}
+$$
+
+que era lo que se quería demostrar.
+
+* Interpretación económica
+
+El error de medición en la variable explicativa genera una violación
+del supuesto clásico:
+
+$$
+cov(X_i,u_i)=0
+$$
+
+porque el error de medición $v_i$ aparece tanto en el regresor observado
+como en el término de perturbación compuesto.
+
+Esto produce sesgo e inconsistencia en MCO.
+
+* a) Naturaleza del sesgo
+
+El estimador converge a:
+
+$$
+plim(\hat{\beta})
+=
+\beta
+\left(
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+$$
+
+Como:
+
+$$
+0<
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+<1
+$$
+
+entonces:
+
+$$
+|plim(\hat{\beta})|<|\beta|
+$$
+
+Por lo tanto, el estimador está sesgado hacia cero.
+
+Este fenómeno se conoce como:
+
+#+BEGIN_QUOTE
+Sesgo de atenuación (/attenuation bias/)
+#+END_QUOTE
+
+o también:
+
+#+BEGIN_QUOTE
+Regression dilution bias
+#+END_QUOTE
+
+Si $\beta>0$:
+
+$$
+\hat{\beta}<\beta
+$$
+
+Si $\beta<0$:
+
+$$
+\hat{\beta}>\beta
+$$
+
+En ambos casos, el estimador subestima el verdadero efecto.
+
+* b) ¿Desaparece el sesgo cuando $n \to \infty$?
+
+No.
+
+Aunque el tamaño muestral aumente indefinidamente:
+
+$$
+plim(\hat{\beta})
+\neq
+\beta
+$$
+
+porque:
+
+$$
+plim(\hat{\beta})
+=
+\beta
+\left(
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+$$
+
+y este factor es distinto de 1 siempre que:
+
+$$
+\sigma_v^2>0
+$$
+
+Por consiguiente:
+
+#+BEGIN_QUOTE
+El estimador MCO es inconsistente en presencia de errores de medición
+en la variable explicativa.
+#+END_QUOTE
+
+Aumentar el tamaño muestral no elimina el problema.
+
+* Caso especial
+
+Solamente si:
+
+$$
+\sigma_v^2=0
+$$
+
+(no existe error de medición), entonces:
+
+$$
+plim(\hat{\beta})=\beta
+$$
+
+y MCO recupera consistencia.
+
+* Conclusión
+
+#+BEGIN_QUOTE
+Cuando existe error de medición en la variable explicativa,
+el regresor observado queda correlacionado con el término de error,
+violando uno de los supuestos fundamentales de MCO.
+
+Como consecuencia, el estimador de la pendiente presenta sesgo de
+atenuación y es inconsistente: incluso con muestras infinitamente
+grandes, el estimador no converge al verdadero parámetro poblacional.
+#+END_QUOTE
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13.
+
+- Wooldridge, J. M. (2016). /Introductory Econometrics/
+  (6.ª ed.). Cengage.
+
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.).
+  Pearson.
