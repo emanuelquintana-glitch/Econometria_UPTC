@@ -678,3 +678,14 @@ El estimador MCO no converge al verdadero valor de $\beta$, sino a una
 versión atenuada determinada por la razón entre la varianza de la
 variable verdadera y la varianza del error de medición.
 #+END_QUOTE
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 13.
+
+- Wooldridge, J. M. (2016). /Introductory Econometrics/
+  (6.ª ed.). Cengage.
+
+- Greene, W. H. (2018). /Econometric Analysis/ (8.ª ed.).
+  Pearson.
