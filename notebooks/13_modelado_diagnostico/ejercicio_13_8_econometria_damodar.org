@@ -432,16 +432,6 @@ y MCO recupera consistencia.
 
 * Conclusión
 
-#+BEGIN_QUOTE
-Cuando existe error de medición en la variable explicativa,
-el regresor observado queda correlacionado con el término de error,
-violando uno de los supuestos fundamentales de MCO.
-
-Como consecuencia, el estimador de la pendiente presenta sesgo de
-atenuación y es inconsistente: incluso con muestras infinitamente
-grandes, el estimador no converge al verdadero parámetro poblacional.
-#+END_QUOTE
-
 * Referencias
 
 - Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
