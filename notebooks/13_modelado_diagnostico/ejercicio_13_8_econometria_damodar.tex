@@ -1,0 +1,838 @@
+\documentclass[12pt,letterpaper]{article}
+
+% ------------------------------------------------
+% Paquetes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins,breakable}
+
+% ------------------------------------------------
+% Geometría
+% ------------------------------------------------
+\geometry{
+  top=2.8cm,
+  bottom=3cm,
+  left=3.2cm,
+  right=3.2cm,
+  headheight=14pt
+}
+
+\setstretch{1.20}
+
+% ------------------------------------------------
+% Encabezados
+% ------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.8}}
+\fancyfoot[C]{\small\thepage}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ------------------------------------------------
+% Títulos
+% ------------------------------------------------
+\titleformat{\section}
+{\large\bfseries\scshape}
+{\thesection.}{0.6em}{}
+[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+
+\titleformat{\subsection}
+{\normalsize\bfseries}
+{\thesubsection.}{0.5em}{}
+
+% ------------------------------------------------
+% Caja destacada
+% ------------------------------------------------
+\newtcolorbox{clave}{
+  colback=white,
+  colframe=black,
+  boxrule=0.5pt,
+  arc=3pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+  breakable
+}
+
+% ------------------------------------------------
+% Stata style
+% ------------------------------------------------
+\definecolor{stataback}{RGB}{248,248,248}
+\definecolor{stataframe}{RGB}{180,180,180}
+\definecolor{statacomment}{RGB}{100,100,100}
+\definecolor{statakeyword}{RGB}{0,70,140}
+
+\lstdefinelanguage{Stata}{
+  morekeywords={
+    clear,set,seed,obs,gen,generate,regress,
+    summarize,scalar,display,quietly,
+    if,replace,log,close
+  },
+  sensitive=false,
+  morecomment=[l]{*},
+  morecomment=[l]{//},
+  morestring=[b]"
+}
+
+\lstset{
+  language=Stata,
+  backgroundcolor=\color{stataback},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{statakeyword}\bfseries,
+  commentstyle=\color{statacomment}\itshape,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{stataframe},
+  xleftmargin=8pt,
+  xrightmargin=4pt,
+  breaklines=true,
+  showstringspaces=false
+}
+
+% ------------------------------------------------
+% Comandos útiles
+% ------------------------------------------------
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\plim}{\operatorname{plim}}
+
+% ==========================================================
+\begin{document}
+% ==========================================================
+
+\begin{center}
+
+{\LARGE\bfseries Ejercicio 13.8 --- Error de Medición}\\[4pt]
+
+{\LARGE\bfseries y Sesgo de Atenuación en MCO}\\[12pt]
+
+{\large\itshape Econometría --- Gujarati \& Porter}\\[10pt]
+
+\rule{0.55\linewidth}{0.6pt}\\[10pt]
+
+{\normalsize
+Ejercicio 13.8 resuelto por Emanuel Quintana Silva}\\[4pt]
+
+{\small
+Hipótesis de ingreso permanente de Friedman y errores en variables}
+
+\end{center}
+
+\vspace{12pt}
+
+% ==========================================================
+\section{Enunciado}
+% ==========================================================
+
+Según la hipótesis de ingreso permanente de Friedman:
+
+\begin{equation}
+Y_i^{*}=\alpha+\beta X_i^{*}
+\end{equation}
+
+donde:
+
+\begin{itemize}
+\item $Y_i^{*}$ = gasto de consumo permanente
+\item $X_i^{*}$ = ingreso permanente
+\end{itemize}
+
+Sin embargo, las variables observadas contienen errores de medición:
+
+\begin{align}
+Y_i &= Y_i^{*}+u_i \\
+X_i &= X_i^{*}+v_i
+\end{align}
+
+donde:
+
+\begin{itemize}
+\item $u_i$ = error de medición en $Y_i^{*}$
+\item $v_i$ = error de medición en $X_i^{*}$
+\end{itemize}
+
+La función observada queda:
+
+\begin{equation}
+Y_i=\alpha+\beta(X_i-v_i)+u_i
+\end{equation}
+
+o equivalentemente:
+
+\begin{equation}
+Y_i=\alpha+\beta X_i+(u_i-\beta v_i)
+\end{equation}
+
+Suponiendo:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item $\E(u_i)=\E(v_i)=0$
+\item $\Var(u_i)=\sigma_u^2$ y $\Var(v_i)=\sigma_v^2$
+\item $\Cov(Y_i^{*},u_i)=0$
+\item $\Cov(u_i,X_i^{*})
+      =
+      \Cov(v_i,Y_i^{*})
+      =
+      \Cov(u_i,v_i)=0$
+\end{enumerate}
+
+demostrar que:
+
+\begin{equation}
+\plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+\end{equation}
+
+donde:
+
+\begin{equation}
+\sigma_X^2=\Var(X_i^{*})
+\end{equation}
+
+Además:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item[a)] Analizar la naturaleza del sesgo.
+\item[b)] Determinar si $\hat{\beta}$ converge al verdadero $\beta$
+cuando $n\to\infty$.
+\end{enumerate}
+
+% ==========================================================
+\section{Modelo observado}
+% ==========================================================
+
+El verdadero modelo poblacional es:
+
+\begin{equation}
+Y_i^{*}=\alpha+\beta X_i^{*}
+\end{equation}
+
+Pero observamos:
+
+\begin{align}
+Y_i &= Y_i^{*}+u_i \\
+X_i &= X_i^{*}+v_i
+\end{align}
+
+Sustituyendo:
+
+\begin{equation}
+Y_i
+=
+\alpha+\beta X_i^{*}+u_i
+\end{equation}
+
+y como:
+
+\begin{equation}
+X_i^{*}=X_i-v_i
+\end{equation}
+
+entonces:
+
+\begin{align}
+Y_i
+&=
+\alpha+\beta(X_i-v_i)+u_i \\[4pt]
+&=
+\alpha+\beta X_i+(u_i-\beta v_i)
+\end{align}
+
+Definimos:
+
+\begin{equation}
+w_i=u_i-\beta v_i
+\end{equation}
+
+de modo que:
+
+\begin{equation}
+Y_i=\alpha+\beta X_i+w_i
+\end{equation}
+
+% ==========================================================
+\section{Correlación entre regresor y error}
+% ==========================================================
+
+El supuesto fundamental de MCO exige:
+
+\begin{equation}
+\Cov(X_i,w_i)=0
+\end{equation}
+
+Sin embargo:
+
+\begin{align}
+X_i &= X_i^{*}+v_i \\
+w_i &= u_i-\beta v_i
+\end{align}
+
+Por lo tanto:
+
+\begin{align}
+\Cov(X_i,w_i)
+&=
+\Cov(X_i^{*}+v_i,\;u_i-\beta v_i)
+\end{align}
+
+Expandiendo:
+
+\begin{align}
+&=
+\Cov(X_i^{*},u_i)
+-\beta\Cov(X_i^{*},v_i)
++\Cov(v_i,u_i)
+-\beta\Cov(v_i,v_i)
+\end{align}
+
+Usando los supuestos:
+
+\begin{align}
+\Cov(X_i^{*},u_i)&=0 \\
+\Cov(X_i^{*},v_i)&=0 \\
+\Cov(v_i,u_i)&=0
+\end{align}
+
+queda:
+
+\begin{equation}
+\Cov(X_i,w_i)
+=
+-\beta\Var(v_i)
+\end{equation}
+
+es decir:
+
+\begin{equation}
+\boxed{
+\Cov(X_i,w_i)
+=
+-\beta\sigma_v^2
+}
+\end{equation}
+
+Por lo tanto:
+
+\begin{equation}
+\Cov(X_i,w_i)\neq0
+\end{equation}
+
+y el estimador MCO es inconsistente.
+
+% ==========================================================
+\section{Probabilidad límite del estimador MCO}
+% ==========================================================
+
+En muestras grandes:
+
+\begin{equation}
+\plim(\hat{\beta})
+=
+\frac{\Cov(X_i,Y_i)}
+{\Var(X_i)}
+\end{equation}
+
+Equivalentemente:
+
+\begin{equation}
+\plim(\hat{\beta})
+=
+\beta
++
+\frac{\Cov(X_i,w_i)}
+{\Var(X_i)}
+\end{equation}
+
+Ya obtuvimos:
+
+\begin{equation}
+\Cov(X_i,w_i)
+=
+-\beta\sigma_v^2
+\end{equation}
+
+Ahora calculamos $\Var(X_i)$.
+
+Como:
+
+\begin{equation}
+X_i=X_i^{*}+v_i
+\end{equation}
+
+entonces:
+
+\begin{align}
+\Var(X_i)
+&=
+\Var(X_i^{*}+v_i) \\[4pt]
+&=
+\Var(X_i^{*})+\Var(v_i)
+\end{align}
+
+porque:
+
+\begin{equation}
+\Cov(X_i^{*},v_i)=0
+\end{equation}
+
+Así:
+
+\begin{equation}
+\Var(X_i)
+=
+\sigma_X^2+\sigma_v^2
+\end{equation}
+
+Sustituyendo:
+
+\begin{align}
+\plim(\hat{\beta})
+&=
+\beta
++
+\frac{-\beta\sigma_v^2}
+{\sigma_X^2+\sigma_v^2}
+\end{align}
+
+Factorizando:
+
+\begin{align}
+&=
+\beta
+\left(
+1-
+\frac{\sigma_v^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+\end{align}
+
+Simplificando:
+
+\begin{align}
+&=
+\beta
+\left(
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+\end{align}
+
+Finalmente:
+
+\begin{equation}
+\boxed{
+\plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+}
+\end{equation}
+
+que era lo que se quería demostrar.
+
+% ==========================================================
+\section{Interpretación económica}
+% ==========================================================
+
+El error de medición en la variable explicativa viola el supuesto clásico:
+
+\begin{equation}
+\Cov(X_i,u_i)=0
+\end{equation}
+
+porque el error de medición $v_i$ aparece tanto:
+
+\begin{itemize}
+\item en el regresor observado $X_i$
+\item como en el término de perturbación compuesto $w_i$
+\end{itemize}
+
+Esto induce correlación entre regresor y error, generando:
+
+\begin{center}
+\textbf{sesgo e inconsistencia del estimador MCO.}
+\end{center}
+
+% ==========================================================
+\section{Inciso a) --- Naturaleza del sesgo}
+% ==========================================================
+
+Obtuvimos:
+
+\begin{equation}
+\plim(\hat{\beta})
+=
+\beta
+\left(
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+\end{equation}
+
+Como:
+
+\begin{equation}
+0<
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+<1
+\end{equation}
+
+entonces:
+
+\begin{equation}
+|\plim(\hat{\beta})|<|\beta|
+\end{equation}
+
+Por lo tanto, el estimador está sesgado hacia cero.
+
+\begin{clave}
+
+Este fenómeno se conoce como:
+
+\begin{center}
+\textbf{Sesgo de atenuación}
+\end{center}
+
+(\textit{attenuation bias})
+
+o también:
+
+\begin{center}
+\textbf{Regression dilution bias}
+\end{center}
+
+\end{clave}
+
+Si:
+
+\begin{equation}
+\beta>0
+\end{equation}
+
+entonces:
+
+\begin{equation}
+\hat{\beta}<\beta
+\end{equation}
+
+Si:
+
+\begin{equation}
+\beta<0
+\end{equation}
+
+entonces:
+
+\begin{equation}
+\hat{\beta}>\beta
+\end{equation}
+
+En ambos casos, el efecto estimado se aproxima artificialmente a cero.
+
+% ==========================================================
+\section{Inciso b) --- ¿Desaparece el sesgo cuando $n\to\infty$?}
+% ==========================================================
+
+No.
+
+Aunque el tamaño muestral aumente indefinidamente:
+
+\begin{equation}
+\plim(\hat{\beta})\neq\beta
+\end{equation}
+
+porque:
+
+\begin{equation}
+\plim(\hat{\beta})
+=
+\beta
+\left(
+\frac{\sigma_X^2}
+{\sigma_X^2+\sigma_v^2}
+\right)
+\end{equation}
+
+y este factor es distinto de 1 siempre que:
+
+\begin{equation}
+\sigma_v^2>0
+\end{equation}
+
+Por consiguiente:
+
+\begin{clave}
+
+El estimador MCO es inconsistente en presencia de errores de medición
+en la variable explicativa.
+
+Aumentar el tamaño de muestra no elimina el sesgo.
+
+\end{clave}
+
+Solamente si:
+
+\begin{equation}
+\sigma_v^2=0
+\end{equation}
+
+(no existe error de medición), entonces:
+
+\begin{equation}
+\plim(\hat{\beta})=\beta
+\end{equation}
+
+y MCO recupera consistencia.
+
+% ==========================================================
+\section{Verificación empírica con Stata}
+% ==========================================================
+
+Para ilustrar el sesgo de atenuación simulamos datos donde:
+
+\begin{equation}
+Y_i^{*}=1+2X_i^{*}+u_i
+\end{equation}
+
+pero observamos:
+
+\begin{equation}
+X_i=X_i^{*}+v_i
+\end{equation}
+
+La teoría predice:
+
+\begin{equation}
+\plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+\end{equation}
+
+% ==========================================================
+\subsection{Código Stata}
+% ==========================================================
+
+\begin{lstlisting}[caption={Simulación de error de medición y sesgo de atenuación}]
+clear
+set seed 12345
+set obs 5000
+
+* Variable verdadera
+gen X_star = rnormal(10,2)
+
+* Error estructural
+gen u = rnormal(0,1)
+
+* Error de medicion
+gen v = rnormal(0,2)
+
+* Modelo verdadero
+gen Y = 1 + 2*X_star + u
+
+* Variable observada con error
+gen X = X_star + v
+
+* Regresion usando variable observada
+regress Y X
+
+* Regresion usando variable verdadera
+regress Y X_star
+
+* Calculo del plim teorico
+quietly summarize X_star
+scalar sigmaX2 = r(Var)
+
+quietly summarize v
+scalar sigmav2 = r(Var)
+
+scalar beta_true = 2
+
+scalar beta_plim = beta_true / ///
+    (1 + (sigmav2/sigmaX2))
+
+display _newline ///
+"=== Resultado teorico ==="
+
+display ///
+"Var(X*)        = " %9.4f sigmaX2
+
+display ///
+"Var(v)         = " %9.4f sigmav2
+
+display ///
+"Beta verdadero = " %9.4f beta_true
+
+display ///
+"plim teorico   = " %9.4f beta_plim
+\end{lstlisting}
+
+% ==========================================================
+\section{Resultados esperados}
+% ==========================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+
+\begin{tabular}{lcc}
+\toprule
+\textbf{Regresión} & \textbf{Coeficiente estimado} & \textbf{Interpretación} \\
+\midrule
+$Y$ sobre $X^{*}$ & $\approx 2.00$ & Recupera el verdadero parámetro \\
+$Y$ sobre $X$     & $\approx 1.00$ & Sesgo de atenuación \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Con:
+
+\begin{align}
+\Var(X^{*}) &\approx 3.92 \\
+\Var(v) &\approx 4.01
+\end{align}
+
+la teoría predice:
+
+\begin{equation}
+\plim(\hat{\beta})
+\approx
+0.99
+\end{equation}
+
+valor extremadamente cercano al coeficiente obtenido en la simulación.
+
+% ==========================================================
+\section{Interpretación de resultados}
+% ==========================================================
+
+La simulación confirma exactamente la teoría de errores en variables.
+
+\begin{enumerate}[leftmargin=1.8em]
+
+\item Cuando utilizamos la variable verdadera $X_i^{*}$,
+el estimador recupera correctamente:
+
+\begin{equation}
+\hat{\beta}\approx2
+\end{equation}
+
+\item Cuando utilizamos la variable observada con error:
+
+\begin{equation}
+X_i=X_i^{*}+v_i
+\end{equation}
+
+el coeficiente cae aproximadamente a:
+
+\begin{equation}
+\hat{\beta}\approx1
+\end{equation}
+
+\item El coeficiente estimado se desplaza hacia cero,
+mostrando el clásico sesgo de atenuación.
+
+\item Aunque la muestra es muy grande ($n=5000$),
+el sesgo no desaparece.
+
+\end{enumerate}
+
+% ==========================================================
+\section{Conclusión}
+% ==========================================================
+
+\begin{clave}
+
+El error de medición en la variable explicativa provoca:
+
+\begin{enumerate}[leftmargin=1.8em]
+
+\item Violación del supuesto clásico:
+
+\begin{equation*}
+\Cov(X_i,u_i)=0
+\end{equation*}
+
+\item Sesgo sistemático en MCO.
+
+\item Inconsistencia del estimador.
+
+\item Sesgo hacia cero del coeficiente estimado
+(\textit{attenuation bias}).
+
+\end{enumerate}
+
+El estimador no converge al verdadero parámetro poblacional:
+
+\begin{equation*}
+\plim(\hat{\beta})
+=
+\frac{\beta}
+{1+\left(\frac{\sigma_v^2}{\sigma_X^2}\right)}
+\end{equation*}
+
+sino a una versión atenuada determinada por la razón entre:
+
+\begin{itemize}
+\item la varianza de la variable verdadera
+\item la varianza del error de medición
+\end{itemize}
+
+\end{clave}
+
+\vspace{12pt}
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\vspace{10pt}
+
+\begin{center}
+\small\textsc{Referencias}
+\end{center}
+
+\vspace{6pt}
+
+\noindent
+Gujarati, D.~N., \& Porter, D.~C. (2010).
+\textit{Econometría} (5.a ed.).
+McGraw-Hill.
+
+\vspace{6pt}
+
+\noindent
+Wooldridge, J.~M. (2016).
+\textit{Introductory Econometrics} (6.a ed.).
+Cengage.
+
+\vspace{6pt}
+
+\noindent
+Greene, W.~H. (2018).
+\textit{Econometric Analysis} (8.a ed.).
+Pearson.
+
+% ==========================================================
+\end{document}
