@@ -2,3 +2,5 @@
 #+SUBTITLE: Ejercicio tomado de Damodar Gujarati Econometria.
 #+DATE: <2026-05-24 Sun>
 #+AUTHOR: Emanuel Quintana Silva.
+
+** Enunciado:
