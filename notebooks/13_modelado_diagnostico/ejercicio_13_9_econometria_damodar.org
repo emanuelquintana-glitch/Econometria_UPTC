@@ -1,1 +1,2 @@
 #+TITLE: Ejercicio 13.9 Econometria Damodar Gujarati.
+#+SUBTITLE:
