@@ -1,4 +1,4 @@
 #+TITLE: Ejercicio 13.9 Econometria Damodar Gujarati.
 #+SUBTITLE: Ejercicio tomado de Damodar Gujarati Econometria.
 #+DATE: <2026-05-24 Sun>
-#+AUTHOR:
+#+AUTHOR: Emanuel Quintana Silva.
