@@ -6,3 +6,7 @@
 ** Enunciado: /Modelo de asignacion de precios de activos de capital/. El modelo de asignacion de precios de activos de capitañ (CAPM) de la teoria de inversion moderna ppostula la siguiente relacion entre la tasa de rendimiento promedio de un valor (una accion comun), medida durante un determinado periodo, y la volatilidad del  titulo, relacion denominada /coeficiente Beta/ (la volatilidad es una medida del riesgo):
 
 $$\bar{R_{i}} = \alpha_{1}_{} + \alpha_{2}(\beta_{i}) + u_{i}$$
+
+donde $\bar{R_{i}}$ = Tasa de rendimiento promedio del valor i.
+$\beta_{i}$ = coeficiente Beta verdadero del valor i
+$u_{i}$ = Termino de perturbacion estocastico.
