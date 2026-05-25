@@ -1,2 +1,3 @@
 #+TITLE: Ejercicio 13.9 Econometria Damodar Gujarati.
-#+SUBTITLE: Ejercicio tomado de Damodar Gujarati Econometria
+#+SUBTITLE: Ejercicio tomado de Damodar Gujarati Econometria.
+#+DATE:
