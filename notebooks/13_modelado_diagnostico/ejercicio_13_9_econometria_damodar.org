@@ -8,5 +8,5 @@
 $$\bar{R_{i}} = \alpha_{1}_{} + \alpha_{2}(\beta_{i}) + u_{i}$$
 
 donde $\bar{R_{i}}$ = Tasa de rendimiento promedio del valor i.
-$\beta_{i}$ = coeficiente Beta verdadero del valor i
+$\beta_{i}$ = Coeficiente Beta verdadero del valor i
 $u_{i}$ = Termino de perturbacion estocastico.
