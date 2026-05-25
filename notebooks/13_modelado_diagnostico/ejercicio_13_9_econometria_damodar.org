@@ -14,3 +14,5 @@ $u_{i}$ = Termino de perturbacion estocastico.
 La verdadera $\beta_{i}$ no es directamente observable pero se mide de la siguiente manera:
 
 $$r_{it} = \alpha_{1} + \beta^{*}r_{mt} + e_{t}$$
+
+donde $r_{it}$ = Tasa de rendimiento del valor i durante el tiempo t.
