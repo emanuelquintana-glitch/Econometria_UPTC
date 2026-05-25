@@ -16,3 +16,4 @@ La verdadera $\beta_{i}$ no es directamente observable pero se mide de la siguie
 $$r_{it} = \alpha_{1} + \beta^{*}r_{mt} + e_{t}$$
 
 donde $r_{it}$ = Tasa de rendimiento del valor i durante el tiempo t.
+$r_{mt}$ = Tasa de rendimiento de mercado durante el tiempo t (esta tasa es la tasa de rendimiento sobre algun indice general del mercado, como el indice S&P)
