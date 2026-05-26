@@ -36,4 +36,8 @@ b) ¿El $\alpha_{2}$ estimado de $\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta_{i
 
 Este ejercicio se centra en el problema de los *errores de medicion en la variables explicativas,* un caso particular de error de especificacion en el regresor (en este caso, el coeficiente Beta  estimado $\beta_{i}^{*}$) esta  correlacionado con el termino de error del modelo.
 
-a) *Efecto del error de medicion sonre la estimacion de $\alpha_{2}$.
+a) *Efecto del error de medicion sonre la estimacion de $\alpha_{2}$.*
+
+   El efecto principal de este error es que el estimador de Minimos Cuadrados Ordinarios (MCO)  de $\alpha_{2}$ sufrira de lo que se conoce como *sesgo de atenuacion.*
+
+   - *Subestimacion del Parametro:*
