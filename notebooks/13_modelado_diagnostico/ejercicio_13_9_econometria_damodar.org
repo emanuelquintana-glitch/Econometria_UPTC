@@ -35,3 +35,5 @@ b) ¿El $\alpha_{2}$ estimado de $\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta_{i
 ** Solucion
 
 Este ejercicio se centra en el problema de los *errores de medicion en la variables explicativas,* un caso particular de error de especificacion en el regresor (en este caso, el coeficiente Beta  estimado $\beta_{i}^{*}$) esta  correlacionado con el termino de error del modelo.
+
+a) *Efecto del error de medicion sonre la estimacion de $\alpha_{2}$.
