@@ -22,3 +22,5 @@ $e_{t}$ = Termino de residuo.
 y donde $\beta^{*}$ es una estimacion del "verdadero" coeficiente beta. En la practica por consiguiente, en lugar de estimar $\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta_{i}) + u_{i}$, se estima:
 
 $$\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta^{*}_{i}) + u_{i}$$
+
+donde las $\beta_{i}^{*}$ se denominan de la regresion $r_{it} = \alpha_{1} + \beta r_{mt} + e_{t}$
