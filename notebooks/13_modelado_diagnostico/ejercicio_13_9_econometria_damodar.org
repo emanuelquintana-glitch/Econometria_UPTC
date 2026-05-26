@@ -40,4 +40,4 @@ a) *Efecto del error de medicion sonre la estimacion de $\alpha_{2}$.*
 
    El efecto principal de este error es que el estimador de Minimos Cuadrados Ordinarios (MCO)  de $\alpha_{2}$ sufrira de lo que se conoce como *sesgo de atenuacion.*
 
-   - *Subestimacion del Parametro:*
+   - *Subestimacion del Parametro:* Debido a que el regresor observar $\beta_{i}^{*}$ contiene un error de medicion $v_{i}$, la varianza de la variable independiente se ve "inflado" artificialmente. Esto provoca que el valor estimado de $\alpha_{2}_{}$ sea, en valor absoluto, *menor que el valor veradero* de la relacion entre el riesgo y el rendimiento.
