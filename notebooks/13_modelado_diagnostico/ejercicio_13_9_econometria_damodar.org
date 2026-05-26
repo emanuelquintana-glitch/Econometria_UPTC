@@ -18,3 +18,5 @@ $$r_{it} = \alpha_{1} + \beta^{*}r_{mt} + e_{t}$$
 donde $r_{it}$ = Tasa de rendimiento del valor i durante el tiempo t.
 $r_{mt}$ = Tasa de rendimiento de mercado durante el tiempo t (esta tasa es la tasa de rendimiento sobre algun indice general del mercado, como el indice S&P).
 $e_{t}$ = Termino de residuo.
+
+y donde $\beta^{*}$ es una estimacion del "verdadero" coeficiente beta. En la practica por consiguiente, en lugar de estimar $\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta_{i}) + u_{i}$, se estima
