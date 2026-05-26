@@ -23,4 +23,4 @@ y donde $\beta^{*}$ es una estimacion del "verdadero" coeficiente beta. En la pr
 
 $$\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta^{*}_{i}) + u_{i}$$
 
-donde las $\beta_{i}^{*}$ se denominan de la regresion $r_{it} = \alpha_{1} + \beta r_{mt} + e_{t}$
+donde las $\beta_{i}^{*}$ se denominan de la regresion $r_{it} = \alpha_{1} + \beta r_{mt} + e_{t}$, Pero, como las $\beta^{}*_{i}$ son estimadas, la relacion entre la verdadera $\beta$ y $\beta*$ se escribe asi
