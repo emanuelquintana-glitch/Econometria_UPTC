@@ -26,3 +26,8 @@ $$\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta^{*}_{i}) + u_{i}$$
 donde las $\beta_{i}^{*}$ se denominan de la regresion $r_{it} = \alpha_{1} + \beta r_{mt} + e_{t}$, Pero, como las $\beta^{}*_{i}$ son estimadas, la relacion entre la verdadera $\beta$ y $\beta^{*}$ se escribe asi
 
 $$\beta_{i}^{*} = \beta_{i} + v_{i}$$
+doden $v_{i}$ se denomina /error de medicion/.
+
+a) ¿Cual sera el efecto de este error de medicion sobre la estimacion de $\alpha_{2}$?
+
+b) ¿El $\alpha_{2}$ estimado de $\bar{R_{i}} = \alpha_{1} + \alpha_{2}(\beta_{i}) + u_{i}$ proporcionarauna estimacion insesgada del verdadero $\alpha_{2}$? De no ser asi, ¿es esta una estimacion consistente de $\alpha_{2}$? De no ser asi, ¿que medidas correctivas sugiere?
