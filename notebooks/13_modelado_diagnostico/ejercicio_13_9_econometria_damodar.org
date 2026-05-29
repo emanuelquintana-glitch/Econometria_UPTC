@@ -200,6 +200,7 @@ Aumentar la frecuencia de los datos utilizados en la regresión (2)
 estimaciones $\beta_{i}^{*}$ con menor varianza de error, reduciendo
 así $\sigma_{v}^{2}$ y, por ende, el sesgo en $\hat{\alpha}_{2}$.
 
+
 ** Síntesis
 
 #+BEGIN_QUOTE
