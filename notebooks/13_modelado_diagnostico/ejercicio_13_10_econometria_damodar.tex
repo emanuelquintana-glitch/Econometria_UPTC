@@ -1,0 +1,423 @@
+\documentclass[12pt,letterpaper]{article}
+
+% ------------------------------------------------
+% Paquetes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins,breakable}
+
+% ------------------------------------------------
+% Geometría
+% ------------------------------------------------
+\geometry{
+  top=2.8cm,
+  bottom=3cm,
+  left=3.2cm,
+  right=3.2cm,
+  headheight=14pt
+}
+
+\setstretch{1.20}
+
+% ------------------------------------------------
+% Encabezados
+% ------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.10}}
+\fancyfoot[C]{\small\thepage}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ------------------------------------------------
+% Títulos
+% ------------------------------------------------
+\titleformat{\section}
+{\large\bfseries\scshape}
+{\thesection.}{0.6em}{}
+[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+
+\titleformat{\subsection}
+{\normalsize\bfseries}
+{\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}[runin]
+{\normalsize\bfseries}
+{}{0em}{}[.\quad]
+
+% ------------------------------------------------
+% Caja destacada
+% ------------------------------------------------
+\newtcolorbox{clave}{
+  colback=white,
+  colframe=black,
+  boxrule=0.5pt,
+  arc=3pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+  breakable
+}
+
+% ------------------------------------------------
+% Comandos útiles
+% ------------------------------------------------
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\plim}{\operatorname{plim}}
+\newcommand{\RSS}{\operatorname{RSS}}
+
+% ==========================================================
+\begin{document}
+% ==========================================================
+
+\begin{center}
+
+{\LARGE\bfseries Ejercicio 13.10 --- Prueba del Multiplicador}\\[4pt]
+
+{\LARGE\bfseries de Lagrange y Variable Omitida}\\[12pt]
+
+{\large\itshape Econometría --- Gujarati \& Porter}\\[10pt]
+
+\rule{0.55\linewidth}{0.6pt}\\[10pt]
+
+{\normalsize
+Ejercicio 13.10 resuelto por Emanuel Quintana Silva}\\[4pt]
+
+{\small
+Regresión auxiliar, prueba LM y por qué incluir todos los regresores}
+
+\end{center}
+
+\vspace{12pt}
+
+% ==========================================================
+\section{Enunciado}
+% ==========================================================
+
+Considere el modelo:
+
+\begin{equation}
+Y_{i} = \beta_{1} + \beta_{2} X_{2i} + u_{i}
+\end{equation}
+
+Para averiguar si este modelo está mal especificado por omitir la
+variable $X_{3}$, se propone regresar los residuos $\hat{u}_{i}$
+obtenidos de (1) únicamente sobre $X_{3}$ (incluyendo un intercepto).
+
+La prueba del \textbf{Multiplicador de Lagrange (ML)}, sin embargo,
+requiere regresar los residuos de (1) sobre $X_{2}$, $X_{3}$ y una
+constante.
+
+\bigskip
+
+\noindent\textit{¿Por qué es probable que el procedimiento propuesto
+sea inapropiado?}
+
+% ==========================================================
+\section{Contexto: la prueba del Multiplicador de Lagrange}
+% ==========================================================
+
+La prueba LM para detectar variables omitidas sigue el siguiente
+procedimiento estándar:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Estimar el \textbf{modelo restringido} (1) por MCO y obtener los
+      residuos $\hat{u}_{i}$.
+\item Estimar la \textbf{regresión auxiliar}:
+      \begin{equation}
+        \hat{u}_{i} = \gamma_{0} + \gamma_{1} X_{2i} + \gamma_{2} X_{3i}
+                      + \varepsilon_{i}
+      \end{equation}
+      incluyendo \emph{todos} los regresores: tanto los del modelo
+      original como la variable sospechosa de haber sido omitida.
+\item Calcular el estadístico:
+      \begin{equation}
+        LM = n\, R^{2}_{\hat{u}}
+      \end{equation}
+      donde $R^{2}_{\hat{u}}$ es el coeficiente de determinación de la
+      regresión (2) y $n$ es el tamaño de la muestra.
+\item Bajo $H_{0}$: $\beta_{3} = 0$, el estadístico $LM$ sigue
+      asintóticamente una distribución:
+      \begin{equation}
+        LM \xrightarrow{d} \chi^{2}(q)
+      \end{equation}
+      donde $q$ es el número de restricciones impuestas (en este caso,
+      $q = 1$).
+\end{enumerate}
+
+El procedimiento \emph{propuesto} omite $X_{2}$ de la regresión
+auxiliar, estimando en su lugar:
+
+\begin{equation}
+\hat{u}_{i} = \delta_{0} + \delta_{1} X_{3i} + \xi_{i}
+\end{equation}
+
+A continuación se demuestra por qué esta simplificación es inválida.
+
+% ==========================================================
+\section{Razón 1: Correlación entre $X_{2}$ y $X_{3}$}
+% ==========================================================
+
+\subsection{Sesgo por variable omitida en la primera etapa}
+
+Si $X_{3}$ es una variable relevante \emph{y} está correlacionada
+con $X_{2}$, es decir, si:
+
+\begin{equation}
+\Cov(X_{2i},\, X_{3i}) \neq 0
+\end{equation}
+
+entonces el estimador MCO del modelo restringido (1) satisface:
+
+\begin{equation}
+\plim(\hat{\beta}_{2})
+= \beta_{2} + \beta_{3}\,\delta_{32}
+\end{equation}
+
+donde $\delta_{32}$ es el coeficiente de la regresión auxiliar de
+$X_{3}$ sobre $X_{2}$:
+
+\begin{equation}
+\delta_{32}
+= \frac{\Cov(X_{2i},\, X_{3i})}{\Var(X_{2i})}
+\end{equation}
+
+Por lo tanto, $\hat{\beta}_{2}$ es \textbf{sesgado e inconsistente}:
+absorbe parte de la influencia de $X_{3}$ sobre $Y$.
+
+\subsection{Efecto sobre los residuos $\hat{u}_{i}$}
+
+Los residuos del modelo restringido se escriben como:
+
+\begin{equation}
+\hat{u}_{i}
+= Y_{i} - \hat{\beta}_{1} - \hat{\beta}_{2} X_{2i}
+\end{equation}
+
+Por construcción de MCO, estos residuos son \textbf{ortogonales} a
+$X_{2}$:
+
+\begin{equation}
+\sum_{i=1}^{n} X_{2i}\,\hat{u}_{i} = 0
+\end{equation}
+
+Sin embargo, todavía contienen la influencia de $X_{3}$ que no fue
+capturada correctamente, ya que $\hat{\beta}_{2}$ absorbió parte de
+ella. El efecto de $X_{3}$ sobre $\hat{u}_{i}$ no puede separarse
+del efecto de $X_{2}$ sin incluir a $X_{2}$ en la regresión auxiliar.
+
+% ==========================================================
+\section{Razón 2: Requisito de la regresión auxiliar completa}
+% ==========================================================
+
+Al incluir únicamente $X_{3}$ en la regresión auxiliar (ecuación 4),
+el estimador $\hat{\delta}_{1}$ satisface:
+
+\begin{equation}
+\plim(\hat{\delta}_{1})
+= \gamma_{2} + \gamma_{1}\,\frac{\Cov(X_{2i},\, X_{3i})}{\Var(X_{3i})}
+\end{equation}
+
+Es decir, $\hat{\delta}_{1}$ confunde la contribución marginal de
+$X_{3}$ con la influencia que $X_{2}$ tiene sobre los residuos a
+través de su correlación con $X_{3}$.
+
+Solo cuando se incluyen \emph{todos} los regresores en la ecuación
+auxiliar (ecuación 2), los coeficientes $\gamma_{1}$ y $\gamma_{2}$
+estiman correctamente los efectos parciales, y el estadístico $LM$
+queda bien definido.
+
+\begin{clave}
+Wooldridge señala explícitamente que en la regresión auxiliar de la
+prueba LM \textbf{se deben incluir todos los regresores} porque, en
+general, los regresores omitidos en el modelo restringido están
+correlacionados con los que sí aparecen en él. Omitir $X_{2}$ impide
+aislar correctamente la contribución marginal de $X_{3}$.
+\end{clave}
+
+% ==========================================================
+\section{Razón 3: Invalidez del estadístico de prueba}
+% ==========================================================
+
+\subsection{Distribución del estadístico bajo $H_{0}$}
+
+La validez asintótica del estadístico $LM = n R^{2}_{\hat{u}}$ depende
+de que la regresión auxiliar incluya el conjunto completo de regresores.
+Solo en ese caso se puede demostrar que:
+
+\begin{equation}
+LM = n\,R^{2}_{\hat{u}} \xrightarrow{d} \chi^{2}(q)
+\quad \text{bajo } H_{0}
+\end{equation}
+
+\subsection{Qué ocurre con la regresión ``corta''}
+
+Sea $\tilde{R}^{2}$ el coeficiente de determinación de la regresión
+auxiliar incompleta (ecuación 4). En general:
+
+\begin{equation}
+\tilde{R}^{2} \neq R^{2}_{\hat{u}}
+\end{equation}
+
+El estadístico $n\tilde{R}^{2}$ \textbf{no sigue} la distribución
+$\chi^{2}(1)$ bajo $H_{0}$. Por lo tanto, cualquier conclusión
+inferencial basada en él es inválida: podría llevar tanto a
+\emph{rechazar} erróneamente un modelo correctamente especificado
+como a \emph{no rechazar} uno mal especificado.
+
+% ==========================================================
+\section{Demostración algebraica de la invalidez}
+% ==========================================================
+
+Partimos del modelo verdadero:
+
+\begin{equation}
+Y_{i} = \beta_{1} + \beta_{2} X_{2i} + \beta_{3} X_{3i} + \varepsilon_{i}
+\end{equation}
+
+Los residuos del modelo restringido (1) son:
+
+\begin{align}
+\hat{u}_{i}
+&= Y_{i} - \hat{\beta}_{1} - \hat{\beta}_{2} X_{2i} \\[4pt]
+&= \beta_{3} X_{3i} + \varepsilon_{i}
+   + (\beta_{2} - \hat{\beta}_{2}) X_{2i}
+   + (\beta_{1} - \hat{\beta}_{1})
+\end{align}
+
+Si se regresa $\hat{u}_{i}$ únicamente sobre $X_{3}$, el estimador
+$\hat{\delta}_{1}$ recoge tanto el efecto de $\beta_{3}$ como el
+sesgo $(\beta_{2} - \hat{\beta}_{2})$ transmitido a través de
+$\Cov(X_{2i}, X_{3i})$. En cambio, si se incluye $X_{2}$ en la
+regresión auxiliar, la ortogonalidad de los residuos MCO respecto
+a $X_{2}$ garantiza que:
+
+\begin{equation}
+\sum_{i=1}^{n} X_{2i}\,\hat{u}_{i} = 0
+\end{equation}
+
+y el coeficiente de $X_{3}$ en la regresión auxiliar completa
+identifica \emph{exclusivamente} el efecto marginal de $X_{3}$ no
+capturado por el modelo restringido.
+
+% ==========================================================
+\section{Resumen del argumento}
+% ==========================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{4.5cm}p{4.8cm}p{4.8cm}}
+\toprule
+\textbf{Aspecto}
+  & \textbf{Procedimiento propuesto}
+  & \textbf{Prueba LM correcta} \\
+\midrule
+Regresión auxiliar
+  & $\hat{u}_{i}$ sobre $X_{3}$ solo
+  & $\hat{u}_{i}$ sobre $X_{2}$, $X_{3}$ y constante \\
+Efecto de $\Cov(X_{2},X_{3})$
+  & Confunde efectos de $X_{2}$ y $X_{3}$
+  & Aísla el efecto marginal de $X_{3}$ \\
+$R^{2}$ de la auxiliar
+  & $\tilde{R}^{2}$ no tiene distribución conocida
+  & $R^{2}_{\hat{u}}$ sigue $\chi^{2}(q)/n$ bajo $H_{0}$ \\
+Estadístico $n R^{2}$
+  & \textbf{Inválido}: distribución desconocida
+  & \textbf{Válido}: $\chi^{2}(1)$ bajo $H_{0}$ \\
+Conclusión inferencial
+  & Potencialmente errónea
+  & Asintóticamente correcta \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ==========================================================
+\section{Conclusión}
+% ==========================================================
+
+\begin{clave}
+
+El procedimiento propuesto es inapropiado por tres razones
+interdependientes:
+
+\begin{enumerate}[leftmargin=1.8em]
+
+\item \textbf{Sesgo en la primera etapa.} Si $\Cov(X_{2i}, X_{3i})
+      \neq 0$, los residuos $\hat{u}_{i}$ del modelo restringido
+      contienen el efecto de $X_{3}$ mezclado con el sesgo de
+      $\hat{\beta}_{2}$. Solo incluyendo $X_{2}$ en la regresión
+      auxiliar se purga este efecto cruzado.
+
+\item \textbf{Estimación parcial inválida.} Regresar $\hat{u}_{i}$
+      solo sobre $X_{3}$ no aísla la contribución marginal de
+      $X_{3}$: el coeficiente estimado confunde el efecto directo
+      de $X_{3}$ con su correlación con $X_{2}$.
+
+\item \textbf{Estadístico sin distribución conocida.} El estadístico
+      $n\tilde{R}^{2}$ de la regresión ``corta'' no sigue la
+      distribución $\chi^{2}(1)$ bajo $H_{0}$, por lo que cualquier
+      inferencia basada en él carece de sustento asintótico.
+
+\end{enumerate}
+
+La prueba LM es válida únicamente cuando la regresión auxiliar incluye
+el \textbf{conjunto completo de regresores}: los del modelo original
+más la variable cuya omisión se investiga.
+
+\end{clave}
+
+\vspace{12pt}
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\vspace{10pt}
+
+\begin{center}
+\small\textsc{Referencias}
+\end{center}
+
+\vspace{6pt}
+
+\noindent
+Gujarati, D.~N., \& Porter, D.~C. (2010).
+\textit{Econometría} (5.a ed.).
+McGraw-Hill.
+
+\vspace{6pt}
+
+\noindent
+Wooldridge, J.~M. (2016).
+\textit{Introductory Econometrics} (6.a ed.).
+Cengage.
+
+\vspace{6pt}
+
+\noindent
+Engle, R.~F. (1984).
+Wald, likelihood ratio, and Lagrange multiplier tests in econometrics.
+En Z. Griliches \& M.~D. Intriligator (Eds.),
+\textit{Handbook of Econometrics}, Vol.~2 (pp.\ 775--826).
+North-Holland.
+
+% ==========================================================
+\end{document}
