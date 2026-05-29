@@ -5,6 +5,7 @@
 #+LANGUAGE: es
 #+OPTIONS: toc:2 num:t ^:nil
 
+
 * Ejercicio 13.9 -- Modelo de Asignación de Precios de Activos de Capital (CAPM)
 
 ** Enunciado
