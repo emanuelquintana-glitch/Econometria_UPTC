@@ -1,0 +1,9 @@
+#+TITLE: Ejercicio de Econometria del libro de Damodar Gujarai 13.10
+#+AUTHOR: Emanuel Quintana Silva.
+#+DATE: <2026-05-28 Thu>
+
+** Enunciado: 13.10 Considere el modelo
+
+$$Y_{i} = \beta_{1} + \beta_{2} X_{2i} + u_{i}$$
+
+Para averiguar si esto esta mal especificado porque omite la variable $X_{3}$, decide efectuar la regresion de los residuos obtenidos del modelo (1) solo sobre la variable $X_{3}$ (/Nota: Hay un intercepto en esta regresion/) La prueba del multiplicador de Lagrange (ML), sin embargo, requiere la regresion de los residuos de (1) sobre $X_{2}$, $X_{3}$ y una constante. ¿Por que es probavle que su procedimiento sea inapropiado?*
