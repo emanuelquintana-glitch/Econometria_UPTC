@@ -1,9 +1,225 @@
-#+TITLE: Ejercicio de Econometria del libro de Damodar Gujarai 13.10
-#+AUTHOR: Emanuel Quintana Silva.
-#+DATE: <2026-05-28 Thu>
+#+TITLE: Ejercicio 13.9 -- Econometría -- Damodar Gujarati
+#+SUBTITLE: Errores de Medición en las Variables Explicativas: El Modelo CAPM
+#+DATE: <2026-05-24 Sun>
+#+AUTHOR: Emanuel Quintana Silva
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
 
-** Enunciado: 13.10 Considere el modelo
+* Ejercicio 13.9 -- Modelo de Asignación de Precios de Activos de Capital (CAPM)
 
-$$Y_{i} = \beta_{1} + \beta_{2} X_{2i} + u_{i}$$
+** Enunciado
 
-Para averiguar si esto esta mal especificado porque omite la variable $X_{3}$, decide efectuar la regresion de los residuos obtenidos del modelo (1) solo sobre la variable $X_{3}$ (/Nota: Hay un intercepto en esta regresion/) La prueba del multiplicador de Lagrange (ML), sin embargo, requiere la regresion de los residuos de (1) sobre $X_{2}$, $X_{3}$ y una constante. ¿Por que es probavle que su procedimiento sea inapropiado?*
+El modelo de asignación de precios de activos de capital (CAPM) de la
+teoría de inversión moderna postula la siguiente relación entre la tasa
+de rendimiento promedio de un valor (una acción común), medida durante
+un determinado periodo, y la volatilidad del título, relación denominada
+/coeficiente Beta/ (la volatilidad es una medida del riesgo):
+
+$$\bar{R}_{i} = \alpha_{1} + \alpha_{2}(\beta_{i}) + u_{i} \tag{1}$$
+
+donde:
+
+| Símbolo        | Definición                                               |
+|----------------+----------------------------------------------------------|
+| $\bar{R}_{i}$  | Tasa de rendimiento promedio del valor $i$               |
+| $\beta_{i}$    | Coeficiente Beta verdadero del valor $i$                 |
+| $u_{i}$        | Término de perturbación estocástico                      |
+
+La verdadera $\beta_{i}$ no es directamente observable, pero se mide de
+la siguiente manera:
+
+$$r_{it} = \alpha_{1} + \beta^{*} r_{mt} + e_{t} \tag{2}$$
+
+donde:
+
+| Símbolo     | Definición                                                                          |
+|-------------+-------------------------------------------------------------------------------------|
+| $r_{it}$    | Tasa de rendimiento del valor $i$ durante el tiempo $t$                             |
+| $r_{mt}$    | Tasa de rendimiento de mercado durante el tiempo $t$ (p.ej., índice S\&P)          |
+| $e_{t}$     | Término de residuo                                                                  |
+| $\beta^{*}$ | Estimación del coeficiente Beta verdadero                                           |
+
+En la práctica, por consiguiente, en lugar de estimar la ecuación (1),
+se estima:
+
+$$\bar{R}_{i} = \alpha_{1} + \alpha_{2}(\beta_{i}^{*}) + u_{i} \tag{3}$$
+
+donde las $\beta_{i}^{*}$ se obtienen de la regresión (2). Como las
+$\beta_{i}^{*}$ son estimadas, la relación entre la Beta verdadera y la
+estimada se escribe así:
+
+$$\beta_{i}^{*} = \beta_{i} + v_{i} \tag{4}$$
+
+donde $v_{i}$ se denomina *error de medición*.
+
+#+BEGIN_QUOTE
+a) ¿Cuál será el efecto de este error de medición sobre la estimación
+   de $\alpha_{2}$?
+
+b) ¿El $\alpha_{2}$ estimado de la ecuación (3) proporcionará una
+   estimación insesgada del verdadero $\alpha_{2}$? De no ser así,
+   ¿es esta una estimación consistente de $\alpha_{2}$? De no ser así,
+   ¿qué medidas correctivas sugiere?
+#+END_QUOTE
+
+** Solución
+
+Este ejercicio se centra en el problema de los *errores de medición en
+las variables explicativas*, un caso particular de error de
+especificación en el que el regresor (en este caso, el coeficiente Beta
+estimado $\beta_{i}^{*}$) está correlacionado con el término de error
+del modelo.
+
+*** Contexto teórico
+
+En el Modelo Clásico de Regresión Lineal (MCRL), se asume que los
+regresores son no estocásticos o, si lo son, que son independientes del
+término de error. El problema aquí radica en que la variable
+independiente teórica ($\beta_{i}$) no es observable. En su lugar se
+utiliza un *estimador* ($\beta_{i}^{*}$) que, por definición
+estadística, acarrea un *error de medición* ($v_{i}$).
+
+*** Análisis algebraico de la especificación
+
+Para entender el efecto del error de medición, sustituimos la identidad
+(4) en el modelo verdadero (1):
+
+*Paso 1:* De la ecuación (4) despejamos la Beta verdadera:
+
+$$\beta_{i} = \beta_{i}^{*} - v_{i}$$
+
+*Paso 2:* Sustituimos en el modelo verdadero:
+
+$$\bar{R}_{i} = \alpha_{1} + \alpha_{2}(\beta_{i}^{*} - v_{i}) + u_{i}$$
+
+*Paso 3:* Reordenamos para obtener el modelo que efectivamente se
+estima:
+
+$$\bar{R}_{i} = \alpha_{1} + \alpha_{2}\beta_{i}^{*} + \underbrace{(u_{i} - \alpha_{2} v_{i})}_{z_{i}}$$
+
+El término de error compuesto es $z_{i} = u_{i} - \alpha_{2} v_{i}$.
+Este modelo tiene la misma forma que la ecuación (3), pero el término de
+error ya no es $u_{i}$ sino $z_{i}$, que contiene el error de medición
+$v_{i}$.
+
+*** a) Efecto del error de medición sobre la estimación de $\alpha_{2}$
+
+El efecto principal de este error es que el estimador MCO de $\alpha_{2}$
+sufrirá de lo que se conoce como *sesgo de atenuación*.
+
+**** Correlación regresor--error
+
+El regresor observado $\beta_{i}^{*}$ está correlacionado con el nuevo
+término de error $z_{i}$ porque ambos dependen de $v_{i}$.
+Algebraicamente, asumiendo que $u_{i}$ y $v_{i}$ son independientes
+entre sí y con $\beta_{i}$:
+
+$$\text{Cov}(\beta_{i}^{*},\, z_{i})
+  = E\!\left[(\beta_{i} + v_{i})(u_{i} - \alpha_{2} v_{i})\right]
+  = -\alpha_{2}\, E(v_{i}^{2})
+  = -\alpha_{2}\, \sigma_{v}^{2}$$
+
+Esta covarianza es *distinta de cero* siempre que $\sigma_{v}^{2} > 0$,
+lo que viola el supuesto de exogeneidad del regresor y hace que los
+estimadores MCO sean *sesgados e inconsistentes*.
+
+**** Subestimación del parámetro
+
+Debido a la correlación negativa entre regresor y error (cuando
+$\alpha_{2} > 0$), la varianza del regresor observado se ve
+"inflada" artificialmente:
+
+$$\text{Var}(\beta_{i}^{*}) = \text{Var}(\beta_{i}) + \text{Var}(v_{i})
+  = \sigma_{\beta}^{2} + \sigma_{v}^{2}$$
+
+Esto provoca que el valor estimado de $\alpha_{2}$ sea, en valor
+absoluto, *menor que el valor verdadero*: la regresión tenderá a
+*subestimar* la verdadera importancia del riesgo sistemático ($\beta$)
+sobre el rendimiento esperado.
+
+*** b) Insesgadez, consistencia y medidas correctivas
+
+**** 1. ¿Es insesgado el estimador MCO de $\alpha_{2}$?
+
+*No.* Los errores de medición en la variable independiente destruyen la
+propiedad de insesgadez de los estimadores MCO incluso en muestras
+pequeñas, pues la condición $E[z_{i} \mid \beta_{i}^{*}] = 0$ ya no se
+cumple.
+
+**** 2. ¿Es consistente?
+
+*No.* A diferencia de los errores en la variable dependiente (que sólo
+restan eficiencia), el sesgo provocado por errores en los regresores
+*no desaparece al aumentar el tamaño de la muestra*. El límite de
+probabilidad del estimador MCO es:
+
+$$\text{plim}(\hat{\alpha}_{2})
+  = \alpha_{2} \left[\frac{\sigma_{\beta}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}\right]$$
+
+Donde:
+- $\sigma_{\beta}^{2}$ es la varianza de la Beta verdadera.
+- $\sigma_{v}^{2}$ es la varianza del error de medición.
+
+Como el factor $\dfrac{\sigma_{\beta}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}} < 1$,
+el estimador MCO es *inconsistente* y subestima sistemáticamente el
+parámetro real, incluso asintóticamente. Este fenómeno se denomina
+*sesgo de atenuación* (/attenuation bias/).
+
+**** 3. Medidas correctivas
+
+Para obtener estimaciones consistentes de $\alpha_{2}$ se sugieren las
+siguientes alternativas:
+
+***** a) Variables Instrumentales (VI) / Mínimos Cuadrados en Dos Etapas (MC2E)
+
+Es el remedio principal. Se busca una variable instrumental $Z$ que
+satisfaga dos condiciones:
+
+1. *Relevancia:* Alta correlación con la $\beta_{i}$ verdadera:
+   $\text{Cov}(Z, \beta_{i}) \neq 0$.
+2. *Exogeneidad:* Independencia de los errores $v_{i}$ y $u_{i}$:
+   $\text{Cov}(Z, v_{i}) = 0$ y $\text{Cov}(Z, u_{i}) = 0$.
+
+Un instrumento común en el contexto del CAPM podría ser la clasificación
+sectorial del activo o medidas de Beta de períodos anteriores (no
+solapados con el período de estimación).
+
+***** b) Agrupamiento de datos en carteras (/Portfolio Grouping/)
+
+En finanzas empírica es práctica estándar agrupar las acciones en
+*carteras o portafolios* (por ejemplo, deciles ordenados por Beta
+estimada). Al promediar los rendimientos y las Betas dentro de cada
+cartera, los errores de medición individuales $v_{i}$ tienden a
+cancelarse entre sí por la ley de los grandes números, reduciendo
+$\sigma_{v}^{2}$ y mitigando el sesgo de atenuación.
+
+***** c) Mejora de la estimación de la Beta (/Stage I precision/)
+
+Aumentar la frecuencia de los datos utilizados en la regresión (2)
+--- por ejemplo, datos diarios en lugar de mensuales --- produce
+estimaciones $\beta_{i}^{*}$ con menor varianza de error, reduciendo
+así $\sigma_{v}^{2}$ y, por ende, el sesgo en $\hat{\alpha}_{2}$.
+
+** Síntesis
+
+#+BEGIN_QUOTE
+El uso de una Beta estimada $\beta_{i}^{*}$ como proxy de la Beta
+verdadera $\beta_{i}$ introduce una correlación entre el regresor y el
+término de error compuesto $z_{i} = u_{i} - \alpha_{2} v_{i}$. Como
+consecuencia, el estimador MCO de $\alpha_{2}$ es *sesgado* hacia cero
+(*sesgo de atenuación*) e *inconsistente*, ya que el sesgo no
+desaparece con muestras grandes. Las soluciones pasan por el uso de
+Variables Instrumentales, el agrupamiento en carteras, o la mejora
+de la precisión en la estimación de la Beta de la Etapa I.
+#+END_QUOTE
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulos 11 y 13.
+- Davidson, R., & MacKinnon, J. G. (1981). Several tests for model
+  specification in the presence of alternative hypotheses.
+  /Econometrica/, 49(3), 781--793.
+- Black, F., Jensen, M. C., & Scholes, M. (1972). The capital asset
+  pricing model: Some empirical tests. En M. C. Jensen (Ed.),
+  /Studies in the Theory of Capital Markets/ (pp. 79--121). Praeger.
