@@ -1,0 +1,567 @@
+\documentclass[12pt,letterpaper]{article}
+
+% ------------------------------------------------
+% Paquetes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins,breakable}
+
+% ------------------------------------------------
+% Geometría
+% ------------------------------------------------
+\geometry{
+  top=2.8cm,
+  bottom=3cm,
+  left=3.2cm,
+  right=3.2cm,
+  headheight=14pt
+}
+
+\setstretch{1.20}
+
+% ------------------------------------------------
+% Encabezados
+% ------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.9}}
+\fancyfoot[C]{\small\thepage}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ------------------------------------------------
+% Títulos
+% ------------------------------------------------
+\titleformat{\section}
+{\large\bfseries\scshape}
+{\thesection.}{0.6em}{}
+[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+
+\titleformat{\subsection}
+{\normalsize\bfseries}
+{\thesubsection.}{0.5em}{}
+
+% ------------------------------------------------
+% Caja destacada
+% ------------------------------------------------
+\newtcolorbox{clave}{
+  colback=white,
+  colframe=black,
+  boxrule=0.5pt,
+  arc=3pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+  breakable
+}
+
+% ------------------------------------------------
+% Comandos útiles
+% ------------------------------------------------
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\plim}{\operatorname{plim}}
+
+% ==========================================================
+\begin{document}
+% ==========================================================
+
+\begin{center}
+
+{\LARGE\bfseries Ejercicio 13.9 --- Error de Medición}\\[4pt]
+
+{\LARGE\bfseries en el Modelo CAPM}\\[12pt]
+
+{\large\itshape Econometría --- Gujarati \& Porter}\\[10pt]
+
+\rule{0.55\linewidth}{0.6pt}\\[10pt]
+
+{\normalsize
+Ejercicio 13.9 resuelto por Emanuel Quintana Silva}\\[4pt]
+
+{\small
+Modelo de asignación de precios de activos de capital
+y errores de medición en el coeficiente Beta}
+
+\end{center}
+
+\vspace{12pt}
+
+% ==========================================================
+\section{Enunciado}
+% ==========================================================
+
+El modelo de asignación de precios de activos de capital (CAPM) postula
+la siguiente relación entre la tasa de rendimiento promedio de un valor
+y su riesgo sistemático:
+
+\begin{equation}
+\bar{R}_{i} = \alpha_{1} + \alpha_{2}\beta_{i} + u_{i}
+\end{equation}
+
+donde:
+
+\begin{itemize}
+\item $\bar{R}_{i}$ = tasa de rendimiento promedio del valor $i$
+\item $\beta_{i}$ = coeficiente Beta verdadero del valor $i$
+\item $u_{i}$ = término de perturbación estocástico
+\end{itemize}
+
+La verdadera $\beta_{i}$ no es directamente observable. Se estima
+mediante la \emph{línea característica}:
+
+\begin{equation}
+r_{it} = \alpha_{1} + \beta^{*} r_{mt} + e_{t}
+\end{equation}
+
+donde $r_{it}$ es la tasa de rendimiento del valor $i$ en el período
+$t$ y $r_{mt}$ es la tasa de rendimiento del mercado (p.\,ej., índice
+S\&P 500).
+
+En la práctica se estima, por tanto:
+
+\begin{equation}
+\bar{R}_{i} = \alpha_{1} + \alpha_{2}\beta_{i}^{*} + u_{i}
+\end{equation}
+
+donde $\beta_{i}^{*}$ es el estimador de la Beta verdadera, y la
+relación entre ambas es:
+
+\begin{equation}
+\beta_{i}^{*} = \beta_{i} + v_{i}
+\end{equation}
+
+siendo $v_{i}$ el \textbf{error de medición}.
+
+\bigskip
+
+\noindent Las preguntas del ejercicio son:
+
+\begin{enumerate}[leftmargin=1.8em,label=\alph*)]
+\item ¿Cuál será el efecto de este error de medición sobre la
+      estimación de $\alpha_{2}$?
+\item ¿El $\hat{\alpha}_{2}$ estimado de la ecuación (3) es una
+      estimación insesgada del verdadero $\alpha_{2}$? De no ser así,
+      ¿es consistente? De no ser así, ¿qué medidas correctivas sugiere?
+\end{enumerate}
+
+% ==========================================================
+\section{Modelo observado con error de medición}
+% ==========================================================
+
+El modelo verdadero es la ecuación (1). Despejamos $\beta_{i}$ de (4):
+
+\begin{equation}
+\beta_{i} = \beta_{i}^{*} - v_{i}
+\end{equation}
+
+Sustituimos en el modelo verdadero:
+
+\begin{equation}
+\bar{R}_{i}
+= \alpha_{1} + \alpha_{2}(\beta_{i}^{*} - v_{i}) + u_{i}
+\end{equation}
+
+Reordenando:
+
+\begin{equation}
+\bar{R}_{i}
+= \alpha_{1} + \alpha_{2}\beta_{i}^{*}
+  + \underbrace{(u_{i} - \alpha_{2} v_{i})}_{z_{i}}
+\end{equation}
+
+Definimos el \textbf{término de error compuesto}:
+
+\begin{equation}
+z_{i} = u_{i} - \alpha_{2} v_{i}
+\end{equation}
+
+de modo que el modelo estimado efectivamente es:
+
+\begin{equation}
+\bar{R}_{i} = \alpha_{1} + \alpha_{2}\beta_{i}^{*} + z_{i}
+\end{equation}
+
+Este modelo tiene la misma forma que la ecuación (3), pero el error
+ya no es $u_{i}$ sino el compuesto $z_{i}$, que depende de $v_{i}$.
+
+% ==========================================================
+\section{Correlación entre regresor y error compuesto}
+% ==========================================================
+
+El supuesto fundamental de MCO exige:
+
+\begin{equation}
+\Cov(\beta_{i}^{*},\, z_{i}) = 0
+\end{equation}
+
+Calculemos esta covarianza. Como $\beta_{i}^{*} = \beta_{i} + v_{i}$
+y $z_{i} = u_{i} - \alpha_{2} v_{i}$, y asumiendo que $u_{i}$,
+$v_{i}$ y $\beta_{i}$ son mutuamente independientes:
+
+\begin{align}
+\Cov(\beta_{i}^{*},\, z_{i})
+&= \Cov\!\left(\beta_{i} + v_{i},\; u_{i} - \alpha_{2} v_{i}\right)
+\end{align}
+
+Expandiendo:
+
+\begin{align}
+&= \Cov(\beta_{i}, u_{i})
+  - \alpha_{2}\Cov(\beta_{i}, v_{i})
+  + \Cov(v_{i}, u_{i})
+  - \alpha_{2}\Cov(v_{i}, v_{i})
+\end{align}
+
+Usando los supuestos de independencia:
+
+\begin{align}
+\Cov(\beta_{i}, u_{i}) &= 0 \\
+\Cov(\beta_{i}, v_{i}) &= 0 \\
+\Cov(v_{i}, u_{i})     &= 0
+\end{align}
+
+queda únicamente:
+
+\begin{equation}
+\boxed{
+\Cov(\beta_{i}^{*},\, z_{i})
+= -\alpha_{2}\,\Var(v_{i})
+= -\alpha_{2}\,\sigma_{v}^{2}
+}
+\end{equation}
+
+Por lo tanto, siempre que $\sigma_{v}^{2} > 0$:
+
+\begin{equation}
+\Cov(\beta_{i}^{*},\, z_{i}) \neq 0
+\end{equation}
+
+El supuesto de exogeneidad del regresor queda violado y MCO
+produce estimadores \textbf{sesgados e inconsistentes}.
+
+% ==========================================================
+\section{Inciso a) --- Efecto sobre la estimación de $\alpha_{2}$}
+% ==========================================================
+
+\subsection{Sesgo de atenuación}
+
+La probabilidad límite del estimador MCO es:
+
+\begin{equation}
+\plim(\hat{\alpha}_{2})
+= \alpha_{2}
+  + \frac{\Cov(\beta_{i}^{*},\, z_{i})}{\Var(\beta_{i}^{*})}
+\end{equation}
+
+Ya obtuvimos:
+
+\begin{equation}
+\Cov(\beta_{i}^{*},\, z_{i}) = -\alpha_{2}\,\sigma_{v}^{2}
+\end{equation}
+
+Calculamos $\Var(\beta_{i}^{*})$. Como:
+
+\begin{equation}
+\beta_{i}^{*} = \beta_{i} + v_{i}
+\end{equation}
+
+y $\beta_{i}$ y $v_{i}$ son independientes:
+
+\begin{align}
+\Var(\beta_{i}^{*})
+&= \Var(\beta_{i}) + \Var(v_{i}) \\[4pt]
+&= \sigma_{\beta}^{2} + \sigma_{v}^{2}
+\end{align}
+
+Sustituyendo:
+
+\begin{align}
+\plim(\hat{\alpha}_{2})
+&= \alpha_{2}
+   + \frac{-\alpha_{2}\,\sigma_{v}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}
+\end{align}
+
+Factorizando:
+
+\begin{align}
+&= \alpha_{2}
+   \left(
+     1 - \frac{\sigma_{v}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}
+   \right)
+\end{align}
+
+Simplificando:
+
+\begin{equation}
+\boxed{
+\plim(\hat{\alpha}_{2})
+= \alpha_{2}
+  \left(
+    \frac{\sigma_{\beta}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}
+  \right)
+}
+\end{equation}
+
+Como el factor entre paréntesis satisface:
+
+\begin{equation}
+0
+<
+\frac{\sigma_{\beta}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}
+< 1
+\end{equation}
+
+se cumple:
+
+\begin{equation}
+\left|\plim(\hat{\alpha}_{2})\right| < |\alpha_{2}|
+\end{equation}
+
+\begin{clave}
+
+El estimador MCO de $\alpha_{2}$ sufre de \textbf{sesgo de atenuación}
+(\textit{attenuation bias}): el efecto estimado del riesgo sistemático
+($\beta$) sobre el rendimiento esperado se \textbf{subestima
+sistemáticamente} en valor absoluto, desplazándose artificialmente
+hacia cero.
+
+\end{clave}
+
+\subsection{Dirección del sesgo}
+
+Si la prima de riesgo es positiva ($\alpha_{2} > 0$), entonces:
+
+\begin{equation}
+\hat{\alpha}_{2} < \alpha_{2}
+\end{equation}
+
+Esto significa que la regresión \emph{subestima} cuánto aumenta el
+rendimiento esperado por cada unidad adicional de riesgo sistemático.
+
+% ==========================================================
+\section{Inciso b) --- Insesgadez, consistencia y remedios}
+% ==========================================================
+
+\subsection{¿Es insesgado $\hat{\alpha}_{2}$?}
+
+\textbf{No.}
+
+La condición necesaria para la insesgadez es:
+
+\begin{equation}
+\E[z_{i} \mid \beta_{i}^{*}] = 0
+\end{equation}
+
+Pero hemos mostrado que:
+
+\begin{equation}
+\Cov(\beta_{i}^{*},\, z_{i}) = -\alpha_{2}\,\sigma_{v}^{2} \neq 0
+\end{equation}
+
+lo que implica que esta condición no se satisface. El error de medición
+en la variable independiente destruye la insesgadez del estimador MCO
+incluso en muestras pequeñas.
+
+\subsection{¿Es consistente $\hat{\alpha}_{2}$?}
+
+\textbf{No.}
+
+A diferencia de lo que ocurre con errores en la variable dependiente
+(que solo restan eficiencia sin afectar consistencia), el sesgo
+provocado por errores de medición en el \emph{regresor} no desaparece
+al aumentar el tamaño de la muestra. Formalmente:
+
+\begin{equation}
+\plim(\hat{\alpha}_{2})
+= \alpha_{2}
+  \underbrace{
+    \left(
+      \frac{\sigma_{\beta}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}
+    \right)
+  }_{<\,1}
+  \neq \alpha_{2}
+\end{equation}
+
+siempre que $\sigma_{v}^{2} > 0$.
+
+\begin{clave}
+
+El estimador MCO es \textbf{inconsistente} en presencia de errores de
+medición en la variable explicativa. Aumentar el tamaño de la muestra
+no elimina el sesgo: el estimador converge a un valor
+\emph{distinto} del parámetro verdadero.
+
+\end{clave}
+
+\subsection{Medidas correctivas}
+
+\subsubsection*{1. Variables Instrumentales (VI) / MC2E}
+
+Es el remedio principal. Se busca una variable instrumental $Z$ que
+satisfaga dos condiciones:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item \textbf{Relevancia:} alta correlación con la $\beta_{i}$
+      verdadera:
+      \[
+        \Cov(Z,\, \beta_{i}) \neq 0
+      \]
+\item \textbf{Exogeneidad:} independencia de los errores $v_{i}$ y
+      $u_{i}$:
+      \[
+        \Cov(Z,\, v_{i}) = 0
+        \qquad\text{y}\qquad
+        \Cov(Z,\, u_{i}) = 0
+      \]
+\end{enumerate}
+
+Un instrumento común en el contexto del CAPM es la Beta estimada en
+un período no solapado con el de la regresión de la Etapa II, o
+variables de clasificación sectorial del activo.
+
+\subsubsection*{2. Agrupamiento en carteras (\textit{portfolio grouping})}
+
+En finanzas empírica es práctica estándar agrupar los activos en
+\textbf{carteras ordenadas por Beta}. Al promediar rendimientos y
+Betas dentro de cada cartera, los errores de medición individuales
+$v_{i}$ tienden a cancelarse por la ley de los grandes números,
+reduciendo la varianza del error compuesto y mitigando el sesgo de
+atenuación.
+
+\subsubsection*{3. Mejora de la precisión en la Etapa I}
+
+Aumentar la frecuencia de los datos utilizados en la regresión (2)
+--- por ejemplo, datos diarios en lugar de mensuales --- produce
+estimaciones $\beta_{i}^{*}$ con menor varianza de error. Al reducir
+$\sigma_{v}^{2}$, el factor de atenuación se aproxima a 1 y el sesgo
+disminuye.
+
+% ==========================================================
+\section{Síntesis comparativa con el Ejercicio 13.8}
+% ==========================================================
+
+Los Ejercicios 13.8 y 13.9 ilustran el mismo fenómeno en dos contextos
+distintos. La tabla siguiente resume los elementos clave:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Elemento}        & \textbf{Ej.\ 13.8 (Friedman)} & \textbf{Ej.\ 13.9 (CAPM)} \\
+\midrule
+Variable con error       & $X_{i}$ (ingreso)   & $\beta_{i}^{*}$ (riesgo)   \\
+Parámetro afectado       & $\hat{\beta}$       & $\hat{\alpha}_{2}$         \\
+Error compuesto          & $u_{i}-\beta v_{i}$ & $u_{i}-\alpha_{2} v_{i}$   \\
+$\plim$ del estimador    & $\dfrac{\beta}{1+\sigma_{v}^{2}/\sigma_{X}^{2}}$
+                         & $\dfrac{\alpha_{2}\,\sigma_{\beta}^{2}}{\sigma_{\beta}^{2}+\sigma_{v}^{2}}$ \\
+Dirección del sesgo      & Hacia cero          & Hacia cero                 \\
+¿Consistente?            & No                  & No                         \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Nótese que ambas expresiones son algebraicamente equivalentes:
+
+\begin{equation}
+\frac{\beta}{1+\dfrac{\sigma_{v}^{2}}{\sigma_{X}^{2}}}
+=
+\beta \cdot \frac{\sigma_{X}^{2}}{\sigma_{X}^{2}+\sigma_{v}^{2}}
+\end{equation}
+
+la diferencia es solo de notación.
+
+% ==========================================================
+\section{Conclusión}
+% ==========================================================
+
+\begin{clave}
+
+El uso de la Beta estimada $\beta_{i}^{*}$ como proxy de la Beta
+verdadera $\beta_{i}$ introduce una correlación entre el regresor
+y el término de error compuesto $z_{i} = u_{i} - \alpha_{2} v_{i}$:
+
+\begin{equation*}
+\Cov(\beta_{i}^{*},\, z_{i}) = -\alpha_{2}\,\sigma_{v}^{2} \neq 0
+\end{equation*}
+
+Como consecuencia:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item El estimador MCO de $\alpha_{2}$ es \textbf{sesgado} hacia cero
+      (\textit{attenuation bias}).
+\item El estimador es \textbf{inconsistente}: el sesgo persiste
+      incluso cuando $n \to \infty$.
+\item El límite de probabilidad es:
+\end{enumerate}
+
+\begin{equation*}
+\plim(\hat{\alpha}_{2})
+= \alpha_{2}
+  \left(
+    \frac{\sigma_{\beta}^{2}}{\sigma_{\beta}^{2} + \sigma_{v}^{2}}
+  \right)
+< \alpha_{2}
+\end{equation*}
+
+Los remedios principales son: \textbf{Variables Instrumentales},
+\textbf{agrupamiento en carteras} y \textbf{mejora de la precisión}
+en la estimación de Beta de la Etapa I.
+
+\end{clave}
+
+\vspace{12pt}
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\vspace{10pt}
+
+\begin{center}
+\small\textsc{Referencias}
+\end{center}
+
+\vspace{6pt}
+
+\noindent
+Gujarati, D.~N., \& Porter, D.~C. (2010).
+\textit{Econometría} (5.a ed.).
+McGraw-Hill.
+
+\vspace{6pt}
+
+\noindent
+Wooldridge, J.~M. (2016).
+\textit{Introductory Econometrics} (6.a ed.).
+Cengage.
+
+\vspace{6pt}
+
+\noindent
+Black, F., Jensen, M.~C., \& Scholes, M. (1972).
+The capital asset pricing model: Some empirical tests.
+En M.~C. Jensen (Ed.),
+\textit{Studies in the Theory of Capital Markets}
+(pp.\ 79--121). Praeger.
+
+% ==========================================================
+\end{document}
