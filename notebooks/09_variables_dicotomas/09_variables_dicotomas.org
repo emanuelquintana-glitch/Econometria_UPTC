@@ -29,3 +29,5 @@ El debate actual sobre las variables dicotomas se centra en la forma de modelar 
 
 Debemos hace runa aclaracion porque existen algunos puntos criticos que debemos tratar y es que nosotros hacemos un supuesto en el que las varibales dicotomas asumen que la relacion entre la variable dependiente y la variable explicativa es lineal y que la relacion es constante en todo el rango de la variable explicativa.
 Pero encontramos unas series limitaciones dado que las varibales dicotomas pueden no ser adecuadas para modelar relaciones complejas o no lineales entre variables. Ademas, pueden no ser adecuadas para variables que tienen mas de dos categorias, lo que puede requerir la creacion de variables dummy adicionales.
+
+Las varibales dicotomas son un recurso para clasificar datos en categorias mutuamente excluyentes, y pueden ser utilizadas en modelos de regresion para anlizar relaciones entre variables cualitativas y cuantitativas.
