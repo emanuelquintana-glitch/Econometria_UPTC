@@ -5,3 +5,16 @@
 
 
 ** Modelos de regresion con variables dicotomas.
+
+
+*** 9.1 Naturaleza de las variables dicotomas.
+
+Las variables dicotomas son una forma de variable cualitativa que se utiliza para representar la presencia o ausencia de un atributo o calidad, y se cuantifican mediante valores 0 a 1.
+
+En el analisis de regresion, las variables dicotomas se utilizan para modelar la relacion entre una variable dependiente y una o mas varibales explicativas que son cualitativas en naturaleza. Estas variables se pueden representar mediante variables artificiales que toman los valores 0 o 1, donde 1 indica la presencia de un atributo y 0 su ausencia.
+
+Por ejemplo, si se quiere modelar la relacion entre el salario y el sexo de una persona, se puede crear una variable dicotoma $D$ que tome el valor 1 si la persona es mujer y 0 si es hombre. La ecuacion de regresion seria:
+
+$$Y = \beta_{0} + \beta_{1}D + \epsilon$$
+
+donde $Y$ es el salario, $\beta_{0}$ es el termino constante, $\beta_{1}$ es el coeficiente de la variable dicotoma, $D$ es la variable dicotoma y $\epsilon$ es el termino de error.
