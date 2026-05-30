@@ -55,4 +55,8 @@ Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza 
       Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
        (regresada) y variables cualitativas (regresoras).
 
-       Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+       Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente.
+
+       $$Y_{i} = \beta_{1} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i}$$
+
+       donde $Y_{i}$ es el salario promedio de los maestros de escuelas publicas en el estado
