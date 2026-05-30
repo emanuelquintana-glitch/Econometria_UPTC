@@ -60,3 +60,5 @@ Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza 
        $$Y_{i} = \beta_{1} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i}$$
 
        donde $Y_{i}$ es el salario promedio de los maestros de escuelas publicas en el estado $i$, $D_{2i}$ es una variable dicotoma que toma el valor de 1 si el estado se encuentra en el Noreste o Norte-Centro, y 0 en caso contrario, y $D_{3i}$ es una variable dicotomas que toma el valor de 1 si el estado se encuentra en el Sur, y 0 en caso contrario.
+
+       Las variables dicotomas y los modelos ANOVA se utilizab en una variedad de disciplinas, incluyendo la estadistica, la econometria, la psicologia y la sociologia. En particular, los modelos ANOVA se utilizan para comparar las medias de dos o mas grupos de categorias, y para evaluar la significancia estadistica de las diferencias entre estos grupos. Algunos autores clave en este campo incluyen a Ronal Fisher, quien desarrollo el analisi de varianza, y a Frank Yates, quien hizo contribuciones importantes a la teoria y la aplicacion de los modelos ANOVA.
