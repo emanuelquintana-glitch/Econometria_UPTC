@@ -1,3 +1,4 @@
 #+TITLE: Econometria capitulo 9 variables dicotomas.
 #+SUBTITLE: Apuntes del capitulo 9 variables dicotomas.
 #+AUTHOR: Emanuel Quintana Silva, basado en el libro de Econometria de Damodar Gujarati.
+#+DATE: <2026-05-29 Fri>
