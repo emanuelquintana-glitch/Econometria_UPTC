@@ -1,64 +1,335 @@
-#+TITLE: Econometria capitulo 9 variables dicotomas.
-#+SUBTITLE: Apuntes del capitulo 9 variables dicotomas.
-#+AUTHOR: Emanuel Quintana Silva, basado en el libro de Econometria de Damodar Gujarati.
+#+TITLE: Econometría -- Capítulo 9 -- Variables Dicótomas
+#+SUBTITLE: Apuntes del capítulo 9: Variables Dicótomas
+#+AUTHOR: Emanuel Quintana Silva, basado en el libro de Econometría de Damodar Gujarati
 #+DATE: <2026-05-29 Fri>
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:nil
+#+PROPERTY: header-args:stata :results output :exports both
 
+* 9.1 Naturaleza de las variables dicótomas
 
-** Modelos de regresion con variables dicotomas.
+Las variables dicótomas son una forma de variable cualitativa que se
+utiliza para representar la presencia o ausencia de un atributo o
+calidad, y se cuantifican mediante valores 0 y 1.
 
+En el análisis de regresión, las variables dicótomas se utilizan para
+modelar la relación entre una variable dependiente y una o más
+variables explicativas que son cualitativas en naturaleza. Estas
+variables se representan mediante variables artificiales que toman los
+valores 0 o 1, donde 1 indica la presencia de un atributo y 0 su
+ausencia.
 
-*** 9.1 Naturaleza de las variables dicotomas.
-
-Las variables dicotomas son una forma de variable cualitativa que se utiliza para representar la presencia o ausencia de un atributo o calidad, y se cuantifican mediante valores 0 a 1.
-
-En el analisis de regresion, las variables dicotomas se utilizan para modelar la relacion entre una variable dependiente y una o mas varibales explicativas que son cualitativas en naturaleza. Estas variables se pueden representar mediante variables artificiales que toman los valores 0 o 1, donde 1 indica la presencia de un atributo y 0 su ausencia.
-
-Por ejemplo, si se quiere modelar la relacion entre el salario y el sexo de una persona, se puede crear una variable dicotoma $D$ que tome el valor 1 si la persona es mujer y 0 si es hombre. La ecuacion de regresion seria:
+Por ejemplo, si se quiere modelar la relación entre el salario y el
+sexo de una persona, se puede crear una variable dicótoma $D$ que tome
+el valor 1 si la persona es mujer y 0 si es hombre:
 
 $$Y = \beta_{0} + \beta_{1}D + \epsilon$$
 
-donde $Y$ es el salario, $\beta_{0}$ es el termino constante, $\beta_{1}$ es el coeficiente de la variable dicotoma, $D$ es la variable dicotoma y $\epsilon$ es el termino de error.
+donde $Y$ es el salario, $\beta_{0}$ es el término constante,
+$\beta_{1}$ es el coeficiente de la variable dicótoma y $\epsilon$ es
+el término de error. El coeficiente $\beta_{1}$ representa la
+diferencia en el salario entre mujeres y hombres, manteniendo
+constantes los demás factores.
 
-Si se quiere interpretar el resultado, se puede decir que el coeficiente $\beta_{1}$ representa la diferencia en el salario entre las mujeres y los hombres, manteniendo constantes los demas factores.
+** Supuesto y limitaciones
 
-Las variables dicotomas se utilizan en una variedad de campos, incluyendo la economia, la sociologia, la psicologia y la medicina. Estas variables son especialmente utiles para modelar la relacion entre una variable dependiente y una o mas variables explicativas que son cualitativas en naturaleza.
+Las variables dicótomas asumen que la relación entre la variable
+dependiente y la variable explicativa es *lineal* y constante en todo
+el rango de la variable explicativa. Sus principales limitaciones son:
 
-Algunos autores clave que han trabajo con variables dicotomas incluyen a Bruce E. Kaufman y Julie L. Hotchkiss, quienes han escrito sobre la economia del maercado laboral y han utilizado variables deicotomas para modelar la relacion entre el salario y variables como el sexo y la raza.
+- Pueden no ser adecuadas para modelar relaciones complejas o no
+  lineales entre variables.
+- Pueden no ser adecuadas para variables con más de dos categorías, lo
+  que requiere la creación de variables dummy adicionales.
 
-El debate actual sobre las variables dicotomas se centra en la forma de modelar y estimar las relaciones entre estas variables dependientes. ALgunos investigadores argumentan que las variables dicotomas pueden ser limitadas en su capacidad para capturar la complejidad de las relaciones entre las variables, mientras que otros argumentan que son una herramienta valiosa para modelar y analizar las relaciones entre variables cualitativas.
+** Modelos ANOVA con variables dicótomas
 
-Debemos hace runa aclaracion porque existen algunos puntos criticos que debemos tratar y es que nosotros hacemos un supuesto en el que las varibales dicotomas asumen que la relacion entre la variable dependiente y la variable explicativa es lineal y que la relacion es constante en todo el rango de la variable explicativa.
-Pero encontramos unas series limitaciones dado que las varibales dicotomas pueden no ser adecuadas para modelar relaciones complejas o no lineales entre variables. Ademas, pueden no ser adecuadas para variables que tienen mas de dos categorias, lo que puede requerir la creacion de variables dummy adicionales.
+Las variables dicótomas son un recurso para clasificar datos en
+categorías mutuamente excluyentes. Un ejemplo clásico es el *modelo de
+análisis de varianza (ANOVA)*, que evalúa la significancia estadística
+de la relación entre una regresada cuantitativa y regresoras
+cualitativas.
 
-Las varibales dicotomas son un recurso para clasificar datos en categorias mutuamente excluyentes, y pueden ser utilizadas en modelos de regresion para anlizar relaciones entre variables cualitativas y cuantitativas.
+El modelo utilizado para analizar la relación entre el salario promedio
+anual de los maestros de escuelas públicas y la región geográfica es:
 
-Las varibales dicotomas son una forma de varibale cualitativa que toma solo dos valores, generalmente 0 y 1. Esto permite clasificar los datos en categorias mutuamente excluyentes, como masculino o femenino, o en regiones geograficas. En el contexto de los modelos de regresion, las varibables dicotomoas pueden ser utilizadas para analizar la relacion entre una varibale cuantitativa (regresada) y variables cualitativas (regresoras).
+$$Y_{i} = \beta_{1} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i} \tag{9.2.1}$$
 
-Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
- (regresada) y variables cualitativas (regresoras).
+donde:
 
- Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
-  (regresada) y variables cualitativas (regresoras).
+| Símbolo   | Definición                                                                 |
+|-----------+----------------------------------------------------------------------------|
+| $Y_{i}$   | Salario promedio de los maestros de escuelas públicas en el estado $i$     |
+| $D_{2i}$  | 1 si el estado está en el Noreste o Norte-Centro; 0 en caso contrario     |
+| $D_{3i}$  | 1 si el estado está en el Sur; 0 en caso contrario                        |
+| $u_{i}$   | Término de perturbación estocástico                                        |
 
-  Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
-   (regresada) y variables cualitativas (regresoras).
+La categoría de referencia (Oeste) queda recogida en el intercepto
+$\beta_{1}$.
 
-   Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
-    (regresada) y variables cualitativas (regresoras).
+** Esperanzas condicionales del modelo
 
-    Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
-     (regresada) y variables cualitativas (regresoras).
+Al calcular la esperanza del modelo (9.2.1) en ambos lados:
 
-     Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
-      (regresada) y variables cualitativas (regresoras).
+$$E(Y_{i} \mid D_{2i} = 1,\; D_{3i} = 0) = \beta_{1} + \beta_{2} \tag{9.2.2}$$
 
-      Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
-       (regresada) y variables cualitativas (regresoras).
+$$E(Y_{i} \mid D_{2i} = 0,\; D_{3i} = 1) = \beta_{1} + \beta_{3} \tag{9.2.3}$$
 
-       Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente.
+$$E(Y_{i} \mid D_{2i} = 0,\; D_{3i} = 0) = \beta_{1} \tag{9.2.4}$$
 
-       $$Y_{i} = \beta_{1} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i}$$
+Estas ecuaciones permiten calcular el salario promedio de los maestros
+de escuelas públicas en cada región geográfica:
 
-       donde $Y_{i}$ es el salario promedio de los maestros de escuelas publicas en el estado $i$, $D_{2i}$ es una variable dicotoma que toma el valor de 1 si el estado se encuentra en el Noreste o Norte-Centro, y 0 en caso contrario, y $D_{3i}$ es una variable dicotomas que toma el valor de 1 si el estado se encuentra en el Sur, y 0 en caso contrario.
+- (9.2.2) :: salario medio en el Noreste y Norte-Centro.
+- (9.2.3) :: salario medio en el Sur.
+- (9.2.4) :: salario medio en el Oeste (categoría de referencia).
 
-       Las variables dicotomas y los modelos ANOVA se utilizab en una variedad de disciplinas, incluyendo la estadistica, la econometria, la psicologia y la sociologia. En particular, los modelos ANOVA se utilizan para comparar las medias de dos o mas grupos de categorias, y para evaluar la significancia estadistica de las diferencias entre estos grupos. Algunos autores clave en este campo incluyen a Ronal Fisher, quien desarrollo el analisi de varianza, y a Frank Yates, quien hizo contribuciones importantes a la teoria y la aplicacion de los modelos ANOVA.
+* Tabla 9.1 -- Salario promedio de maestros de escuelas públicas, por estado, 2005--2006
+
+** Datos
+
+#+NAME: tabla-9-1
+#+BEGIN_SRC stata
+clear
+input str20 estado salario gasto d2 d3
+"Connecticut"      60822  12436  1  0
+"Illinois"         58246   9275  1  0
+"Indiana"          47831   8935  1  0
+"Iowa"             43130   7807  1  0
+"Kansas"           43334   8373  1  0
+"Maine"            41596  11285  1  0
+"Massachusetts"    58624  12596  1  0
+"Michigan"         54895   9880  1  0
+"Minnesota"        49634   9675  1  0
+"Missouri"         41839   7840  1  0
+"Nebraska"         42044   7900  1  0
+"New Hampshire"    46527  10206  1  0
+"New Jersey"       59920  13781  1  0
+"Nueva York"       58537  13551  1  0
+"Dakota del Norte" 38822   7807  1  0
+"Ohio"             51937  10034  1  0
+"Pennsylvania"     54970  10711  1  0
+"Rhode Island"     55956  11089  1  0
+"Dakota del Sur"   35378   7911  1  0
+"Vermont"          48370  12475  1  0
+"Wisconsin"        47901   9965  1  0
+"Alabama"          43389   7706  0  1
+"Arkansas"         44245   8402  0  1
+"Delaware"         54680  12036  0  1
+"Distrito Col."    59000  15508  0  1
+"Florida"          45308   7762  0  1
+"Georgia"          49905   8534  0  1
+"Kentucky"         43646   8300  0  1
+"Louisiana"        42816   8519  0  1
+"Maryland"         56927   9771  0  1
+"Mississippi"      40182   7215  0  1
+"North Carolina"   46410   7675  0  1
+"Oklahoma"         42379   6944  0  1
+"South Carolina"   44133   8377  0  1
+"Tennessee"        43816   6979  0  1
+"Texas"            44897   7547  0  1
+"Virginia"         44727   9275  0  1
+"West Virginia"    40531   9886  0  1
+"Alaska"           54658  10171  0  0
+"Arizona"          45941   5585  0  0
+"California"       63640   8486  0  0
+"Colorado"         45833   8861  0  0
+"Hawaii"           51922   9879  0  0
+"Idaho"            42798   7042  0  0
+"Montana"          41225   8361  0  0
+"Nevada"           45342   6755  0  0
+"New Mexico"       42780   8622  0  0
+"Oregon"           50911   8649  0  0
+"Utah"             40566   5347  0  0
+"Washington D.C."  47882   7958  0  0
+"Wyoming"          50692  11596  0  0
+end
+
+label variable salario "Salario promedio anual (USD)"
+label variable gasto   "Gasto por alumno (USD)"
+label variable d2      "1=Noreste o Norte-Centro"
+label variable d3      "1=Sur"
+
+save "C:\tmp\tabla91.dta", replace
+
+describe
+summarize salario gasto d2 d3
+#+END_SRC
+
+** Estimación del modelo (9.2.1)
+
+#+BEGIN_SRC stata
+use "C:\tmp\tabla91.dta", clear
+set linesize 120
+
+regress salario d2 d3
+estat ic
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_6708.log
+  log type:  text
+ opened on:  30 May 2026, 12:52:16
+
+. use "C:\tmp\tabla91.dta", clear
+
+. set linesize 120
+
+.
+. regress salario d2 d3
+
+      Source |       SS           df       MS      Number of obs   =        51
+-------------+----------------------------------   F(2, 48)        =      1.05
+       Model |   100313240         2    50156620   Prob > F        =    0.3567
+    Residual |  2.2857e+09        48  47619402.8   R-squared       =    0.0420
+-------------+----------------------------------   Adj R-squared   =    0.0021
+       Total |  2.3860e+09        50  47720891.5   Root MSE        =    6900.7
+
+------------------------------------------------------------------------------
+     salario | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          d2 |   1667.956   2435.287     0.68   0.497    -3228.516    6564.428
+          d3 |  -1592.792   2542.474    -0.63   0.534    -6704.778    3519.194
+       _cons |   48014.62   1913.905    25.09   0.000     44166.45    51862.78
+------------------------------------------------------------------------------
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |          N   ll(null)  ll(model)      df        AIC        BIC
+-------------+---------------------------------------------------------------
+           . |         51  -522.7233  -521.6281       3   1049.256   1055.052
+-----------------------------------------------------------------------------
+Note: BIC uses N = number of observations. See [R] IC note.
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_6708.log
+  log type:  text
+ closed on:  30 May 2026, 12:52:18
+------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
+*** Ecuación estimada (9.2.5) del libro
+
+Con los datos de la Tabla 9.1, Gujarati reporta:
+
+$$\hat{Y}_{i} = 48{,}014.615 + 1{,}524.099\,D_{2i} - 1{,}721.027\,D_{3i} \tag{9.2.5}$$
+
+#+begin_example
+ee  = (1857.204)   (2363.139)   (2467.151)
+t   = (25.853)     (0.645)      (-0.698)
+p   = (0.0000)*    (0.5220)*    (0.4888)*    R² = 0.0440
+#+end_example
+
+donde ~*~ indica los valores $p$.
+
+*** Interpretación
+
+- El *intercepto* $\hat{\beta}_{1} = 48{,}015$ es el salario medio de
+  los maestros del *Oeste* (categoría de referencia).
+- $\hat{\beta}_{2} = +1{,}524$: el salario en el Noreste y Norte-Centro
+  supera al del Oeste en esa cantidad.
+- $\hat{\beta}_{3} = -1{,}721$: el salario en el Sur es inferior al del
+  Oeste en esa cantidad.
+- Ninguno de los coeficientes de pendiente es estadísticamente
+  significativo (valores $p$ de 0.52 y 0.49): los salarios medios de
+  las tres regiones son estadísticamente indistinguibles entre sí.
+- El $R^{2} = 0.044$ confirma que la región geográfica sola explica
+  muy poco de la variación salarial.
+
+** Estimación del modelo extendido con gasto
+
+#+BEGIN_SRC stata
+use "C:\tmp\tabla91.dta", clear
+set linesize 120
+
+regress salario d2 d3 gasto
+estat ic
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_6932.log
+  log type:  text
+ opened on:  30 May 2026, 12:53:19
+
+. use "C:\tmp\tabla91.dta", clear
+
+. set linesize 120
+
+.
+. regress salario d2 d3 gasto
+
+      Source |       SS           df       MS      Number of obs   =        51
+-------------+----------------------------------   F(3, 47)        =     15.80
+       Model |  1.1981e+09         3   399380087   Prob > F        =    0.0000
+    Residual |  1.1879e+09        47  25274559.9   R-squared       =    0.5021
+-------------+----------------------------------   Adj R-squared   =    0.4704
+       Total |  2.3860e+09        50  47720891.5   Root MSE        =    5027.4
+
+------------------------------------------------------------------------------
+     salario | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          d2 |  -2975.548   1908.968    -1.56   0.126    -6815.896    864.8003
+          d3 |   -3050.15   1865.431    -1.64   0.109    -6802.913    702.6133
+       gasto |   2.426807   .3682223     6.59   0.000     1.686039    3.167574
+       _cons |   27981.88   3344.145     8.37   0.000     21254.33    34709.44
+------------------------------------------------------------------------------
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |          N   ll(null)  ll(model)      df        AIC        BIC
+-------------+---------------------------------------------------------------
+           . |         51  -522.7233  -504.9385       4   1017.877   1025.604
+-----------------------------------------------------------------------------
+Note: BIC uses N = number of observations. See [R] IC note.
+
+. clear
+
+. log close
+      name:  <unnamed>
+       log:  C:\tmp\stata_out_6932.log
+  log type:  text
+ closed on:  30 May 2026, 12:53:21
+------------------------------------------------------------------------------------------------------------------------
+#+end_example
+
+
+*** Precaucion con variables dicotomas
+
+1. En el ejemplo 9.1 para diferenciar las tres regiones utilizamos solo dos variables dicotomas, $D_{2}$ y $D_{3}$ ¿Por que no empleamos tres variables dicotomas para distinguir las tres regiones?
+   Supongamos que hacemos precisamente eso y escribimos el modelo como:
+
+   $$Y_{i} = \alpha + \beta_{1}D_{1i} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i}$$
+
+donde $D_{1i}$, toma el valor de 1 para los estados del oeste y 0 para los de otras regiones. Por tanto, ahora tenemos una variable para cada una de las tres regiones geograficas. Con los datos de la tabla 9.1.
+
+La inclusion de variables dicotomas en modelos de regresion requiere precaucion, ya que el uso incorrecto puede generar problemas de colinealidad perfecta, lo que imposibilita la estimacion del modelo.
+
+Para entender por que el uso incorrecto de variables dicotomas puede generar problemas de colinealidad perfecta, consideremos el ejemplo dado. Si intentamos incluir tres variables dicotomas ($D_{1}$, $D_{2}$, $D_{3}$) para representar tres regiones geograficas, el modelo de regresion seria:
+
+$$Y_{i} = \alpha + \beta_{1}D_{1i} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i}$$
+
+donde $D_{1i}$ toma el valor de 1 para los estados del oeste 0 para los de otras regiones. Sin embargo, si sumamos las tres columnas $D$ horizontalmente, obtendremos una columna con 51 numeros 1, lo que coincide con la columna del intercepto $\alpha$. Esto genera colinealidad perfecta, lo que imposibilita la estimacion del modelo.
+
+* Referencias
+
+- Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
+  McGraw-Hill. Capítulo 9.
+- Fisher, R. A. (1925). /Statistical Methods for Research Workers/.
+  Oliver & Boyd.
+- Kaufman, B. E., & Hotchkiss, J. L. (2006). /The Economics of Labor
+  Markets/ (7.ª ed.). Thomson South-Western.
