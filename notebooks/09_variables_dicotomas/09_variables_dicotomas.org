@@ -18,3 +18,7 @@ Por ejemplo, si se quiere modelar la relacion entre el salario y el sexo de una 
 $$Y = \beta_{0} + \beta_{1}D + \epsilon$$
 
 donde $Y$ es el salario, $\beta_{0}$ es el termino constante, $\beta_{1}$ es el coeficiente de la variable dicotoma, $D$ es la variable dicotoma y $\epsilon$ es el termino de error.
+
+Si se quiere interpretar el resultado, se puede decir que el coeficiente $\beta_{1}$ representa la diferencia en el salario entre las mujeres y los hombres, manteniendo constantes los demas factores.
+
+Las variables dicotomas se utilizan en una variedad de campos, incluyendo la economia, la sociologia, la psicologia y la medicina. Estas variables son especialmente utiles para modelar la relacion entre una variable dependiente y una o mas variables explicativas que son cualitativas en naturaleza.
