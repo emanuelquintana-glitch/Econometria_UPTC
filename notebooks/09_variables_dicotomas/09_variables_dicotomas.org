@@ -22,3 +22,5 @@ donde $Y$ es el salario, $\beta_{0}$ es el termino constante, $\beta_{1}$ es el 
 Si se quiere interpretar el resultado, se puede decir que el coeficiente $\beta_{1}$ representa la diferencia en el salario entre las mujeres y los hombres, manteniendo constantes los demas factores.
 
 Las variables dicotomas se utilizan en una variedad de campos, incluyendo la economia, la sociologia, la psicologia y la medicina. Estas variables son especialmente utiles para modelar la relacion entre una variable dependiente y una o mas variables explicativas que son cualitativas en naturaleza.
+
+Algunos autores clave que han trabajo con variables dicotomas incluyen a Bruce E. Kaufman y Julie L. Hotchkiss, quienes han escrito sobre la economia del maercado laboral y han utilizado variables deicotomas para modelar la relacion entre el salario y variables como el sexo y la raza.
