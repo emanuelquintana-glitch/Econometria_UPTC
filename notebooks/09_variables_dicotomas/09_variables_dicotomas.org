@@ -325,6 +325,8 @@ $$Y_{i} = \alpha + \beta_{1}D_{1i} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + u_{i}$$
 
 donde $D_{1i}$ toma el valor de 1 para los estados del oeste 0 para los de otras regiones. Sin embargo, si sumamos las tres columnas $D$ horizontalmente, obtendremos una columna con 51 numeros 1, lo que coincide con la columna del intercepto $\alpha$. Esto genera colinealidad perfecta, lo que imposibilita la estimacion del modelo.
 
+Para evitar este problema, se debe incluir solo $m_-1$ varibales dicotomas para una variable cualitativa con $m$ categorias. En este caso, como la variable cualitatica "region" tiene tres categorias, se deben incluir solo dos variables dicotomas ($D_{2}$ y $D_{3}$).
+
 * Referencias
 
 - Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
