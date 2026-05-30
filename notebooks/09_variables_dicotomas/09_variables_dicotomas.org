@@ -31,3 +31,28 @@ Debemos hace runa aclaracion porque existen algunos puntos criticos que debemos 
 Pero encontramos unas series limitaciones dado que las varibales dicotomas pueden no ser adecuadas para modelar relaciones complejas o no lineales entre variables. Ademas, pueden no ser adecuadas para variables que tienen mas de dos categorias, lo que puede requerir la creacion de variables dummy adicionales.
 
 Las varibales dicotomas son un recurso para clasificar datos en categorias mutuamente excluyentes, y pueden ser utilizadas en modelos de regresion para anlizar relaciones entre variables cualitativas y cuantitativas.
+
+Las varibales dicotomas son una forma de varibale cualitativa que toma solo dos valores, generalmente 0 y 1. Esto permite clasificar los datos en categorias mutuamente excluyentes, como masculino o femenino, o en regiones geograficas. En el contexto de los modelos de regresion, las varibables dicotomoas pueden ser utilizadas para analizar la relacion entre una varibale cuantitativa (regresada) y variables cualitativas (regresoras).
+
+Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+ (regresada) y variables cualitativas (regresoras).
+
+ Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+  (regresada) y variables cualitativas (regresoras).
+
+  Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+   (regresada) y variables cualitativas (regresoras).
+
+   Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+    (regresada) y variables cualitativas (regresoras).
+
+    Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+     (regresada) y variables cualitativas (regresoras).
+
+     Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+      (regresada) y variables cualitativas (regresoras).
+
+      Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
+       (regresada) y variables cualitativas (regresoras).
+
+       Un ejemplo de esto es un modelo de analisis de varianza (ANOVA), que se utiliza para evaluar la significancia estadsistica  de la relacion entre una regresada cuantitativa y regresoras cualitativas o dicotomas. En el ejemplo proporcionado, se analiza la relacion entre el salario promedio anual de los maestros de escuelas publicas y la region geografica en la que se encuentran. EL modelo de regresion utilizado es el siguiente:
