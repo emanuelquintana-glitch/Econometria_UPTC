@@ -1,0 +1,284 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.12}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Sesgo por Variable Omitida en el Intercepto}\\[6pt]
+  {\LARGE\bfseries Demostración de $\E(\hat{\alpha}_1) = \beta_1 + \beta_3(\bar{X}_3 - b_{32}\bar{X}_2)$}\\[12pt]
+  {\large\itshape Especificación incorrecta por omisión de una variable relevante:}\\
+  {\large\itshape efecto sobre el estimador MCO del intercepto}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.12 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Demostración conceptual, teórica y algebraica}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Marco teórico y planteamiento}
+%------------------------------------------------------------------------------
+
+El ejercicio estudia las consecuencias de \textbf{omitir una variable relevante}
+sobre las propiedades del estimador MCO del intercepto. Si bien el sesgo
+del coeficiente de pendiente es el resultado más conocido en la literatura
+sobre errores de especificación, el intercepto también resulta afectado de
+manera sistemática.
+
+\subsection{Modelo verdadero (PRF)}
+
+Supóngase que el proceso generador de datos verdadero es el modelo de
+regresión múltiple:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i,
+  \qquad i = 1, \ldots, n,
+  \label{eq:verdadero}
+\end{equation}
+donde $u_i$ satisface las propiedades clásicas: $\E[u_i] = 0$,
+$\Var(u_i) = \sigma^2$, y los regresores son fijos (no estocásticos) en
+muestreos repetidos. Los parámetros $\beta_2$ y $\beta_3$ son
+\emph{ambos distintos de cero}, por lo que $X_{3i}$ es una
+\textbf{variable relevante}.
+
+\subsection{Modelo estimado (SRF) con variable omitida}
+
+En la práctica, el investigador omite $X_3$ y estima en su lugar el
+modelo restringido:
+\begin{equation}
+  Y_i = \alpha_1 + \alpha_2 X_{2i} + v_i,
+  \label{eq:omitido}
+\end{equation}
+donde el error compuesto $v_i$ recoge tanto la perturbación original como
+la influencia de la variable excluida:
+\[
+  v_i = \beta_3 X_{3i} + u_i.
+\]
+Conceptualmente, $\hat{\alpha}_1$ y $\hat{\alpha}_2$ ya no son estimadores
+del verdadero $\beta_1$ y $\beta_2$, pues el supuesto de exogeneidad
+$\E[v_i \mid X_{2i}] = 0$ se viola siempre que $X_{3i}$ esté correlacionada
+con $X_{2i}$.
+
+%------------------------------------------------------------------------------
+\section{Resultado auxiliar: sesgo del coeficiente de pendiente (ec.\ 13.3.3)}
+%------------------------------------------------------------------------------
+
+Antes de demostrar el resultado pedido, se recuerda el sesgo del estimador
+de la pendiente, derivado en la ecuación (13.3.3) del texto:
+\begin{equation}
+  \E(\hat{\alpha}_2) = \beta_2 + \beta_3\, b_{32},
+  \label{eq:sesgo_pendiente}
+\end{equation}
+donde $b_{32}$ es el coeficiente de pendiente de la \textbf{regresión auxiliar}
+de la variable omitida $X_3$ sobre la variable incluida $X_2$:
+\begin{equation}
+  X_{3i} = a + b_{32}\, X_{2i} + \text{residuo}.
+  \label{eq:reg_auxiliar}
+\end{equation}
+El término $b_{32}$ captura la relación lineal entre $X_3$ y $X_2$;
+si las dos variables son ortogonales, $b_{32} = 0$ y el sesgo en
+$\hat{\alpha}_2$ desaparece. Este resultado auxiliar se utilizará en el
+Paso~4 de la demostración principal.
+
+%------------------------------------------------------------------------------
+\section{Demostración: $\E(\hat{\alpha}_1) = \beta_1 + \beta_3(\bar{X}_3 - b_{32}\bar{X}_2)$}
+%------------------------------------------------------------------------------
+
+La demostración se desarrolla en cinco pasos secuenciales.
+
+\subsection{Paso 1 --- Expresión del estimador MCO del intercepto}
+
+En cualquier regresión simple de la forma~\eqref{eq:omitido}, el estimador
+MCO del intercepto se obtiene de la condición de primer orden que impone
+que la recta de regresión muestral pase por el punto de medias
+$(\bar{X}_2,\, \bar{Y})$:
+\begin{equation}
+  \hat{\alpha}_1 = \bar{Y} - \hat{\alpha}_2\,\bar{X}_2.
+  \label{eq:intercepto_mco}
+\end{equation}
+Esta identidad es exacta en cualquier muestra finita y no depende de
+ningún supuesto distribucional.
+
+\subsection{Paso 2 --- Media muestral de $Y$ a partir del modelo verdadero}
+
+Promediando ambos lados de la ecuación~\eqref{eq:verdadero} sobre las
+$n$ observaciones:
+\begin{equation}
+  \bar{Y} = \beta_1 + \beta_2\,\bar{X}_2 + \beta_3\,\bar{X}_3 + \bar{u},
+  \label{eq:media_Y}
+\end{equation}
+donde $\bar{u} = n^{-1}\sum_{i=1}^n u_i$ es la media muestral de las
+perturbaciones.
+
+\subsection{Paso 3 --- Sustitución y aplicación del operador de esperanza}
+
+Sustituyendo~\eqref{eq:media_Y} en~\eqref{eq:intercepto_mco}:
+\[
+  \hat{\alpha}_1
+  = \bigl(\beta_1 + \beta_2\,\bar{X}_2 + \beta_3\,\bar{X}_3 + \bar{u}\bigr)
+    - \hat{\alpha}_2\,\bar{X}_2.
+\]
+Aplicando el operador de valor esperado a ambos lados, y usando que los
+regresores son fijos (por lo que $\bar{X}_2$ y $\bar{X}_3$ son
+constantes), $\beta_1$, $\beta_2$, $\beta_3$ son parámetros fijos,
+y $\E[\bar{u}] = 0$:
+\begin{align}
+  \E(\hat{\alpha}_1)
+  &= \beta_1 + \beta_2\,\bar{X}_2 + \beta_3\,\bar{X}_3
+     + \underbrace{\E[\bar{u}]}_{=\,0}
+     - \E(\hat{\alpha}_2)\,\bar{X}_2 \notag\\[4pt]
+  &= \beta_1 + \beta_2\,\bar{X}_2 + \beta_3\,\bar{X}_3
+     - \E(\hat{\alpha}_2)\,\bar{X}_2.
+  \label{eq:paso3}
+\end{align}
+
+\subsection{Paso 4 --- Sustitución del sesgo conocido de la pendiente}
+
+Reemplazamos $\E(\hat{\alpha}_2)$ en~\eqref{eq:paso3} usando el
+resultado auxiliar~\eqref{eq:sesgo_pendiente}:
+\begin{align}
+  \E(\hat{\alpha}_1)
+  &= \beta_1 + \beta_2\,\bar{X}_2 + \beta_3\,\bar{X}_3
+     - (\beta_2 + \beta_3\,b_{32})\,\bar{X}_2.
+  \label{eq:paso4}
+\end{align}
+
+\subsection{Paso 5 --- Simplificación algebraica}
+
+Distribuyendo $\bar{X}_2$ en el último término de~\eqref{eq:paso4}:
+\begin{align}
+  \E(\hat{\alpha}_1)
+  &= \beta_1
+     + \beta_2\,\bar{X}_2
+     + \beta_3\,\bar{X}_3
+     - \beta_2\,\bar{X}_2
+     - \beta_3\,b_{32}\,\bar{X}_2.
+  \label{eq:paso5a}
+\end{align}
+Los términos $\beta_2\,\bar{X}_2$ y $-\beta_2\,\bar{X}_2$ se cancelan:
+\begin{align}
+  \E(\hat{\alpha}_1)
+  &= \beta_1 + \beta_3\,\bar{X}_3 - \beta_3\,b_{32}\,\bar{X}_2.
+  \label{eq:paso5b}
+\end{align}
+Finalmente, factorizando $\beta_3$:
+\begin{equation}
+  \boxed{
+    \E(\hat{\alpha}_1) = \beta_1 + \beta_3\,(\bar{X}_3 - b_{32}\,\bar{X}_2)
+  }
+  \label{eq:resultado}
+\end{equation}
+que es exactamente lo que se quería demostrar. \hfill $\blacksquare$
+
+%------------------------------------------------------------------------------
+\section{Interpretación del resultado}
+%------------------------------------------------------------------------------
+
+\subsection{Naturaleza del sesgo}
+
+La ecuación~\eqref{eq:resultado} muestra que el estimador $\hat{\alpha}_1$
+es en general un estimador \textbf{sesgado e inconsistente} de $\beta_1$.
+El sesgo es:
+\begin{equation}
+  \text{Sesgo}(\hat{\alpha}_1)
+  = \E(\hat{\alpha}_1) - \beta_1
+  = \beta_3\,(\bar{X}_3 - b_{32}\,\bar{X}_2).
+  \label{eq:sesgo}
+\end{equation}
+Este sesgo tiene una interpretación geométrica precisa: el intercepto
+estimado absorbe el \emph{efecto promedio} de la variable omitida
+($\beta_3\,\bar{X}_3$), pero descontando la parte de ese efecto que ya
+fue atribuida, de manera espuria, al coeficiente de pendiente a través
+de la correlación entre $X_3$ y $X_2$ (capturada por $b_{32}\,\bar{X}_2$).
+
+\subsection{Condiciones de insesgadez}
+
+El intercepto $\hat{\alpha}_1$ sería un estimador insesgado de $\beta_1$
+únicamente si el sesgo~\eqref{eq:sesgo} se anulara. Esto ocurre en
+alguno de los siguientes casos:
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+  \item $\beta_3 = 0$: la variable $X_3$ no pertenece realmente al
+    modelo, por lo que omitirla no genera sesgo alguno.
+  \item $\bar{X}_3 = b_{32}\,\bar{X}_2$: la media muestral de la
+    variable omitida coincide exactamente con la predicción lineal de
+    $X_3$ a partir de $X_2$, evaluada en la media de $X_2$. Esta
+    condición es algebraicamente posible pero estadísticamente
+    improbable en datos económicos reales.
+  \item $\bar{X}_3 = 0$ y $b_{32} = 0$ simultáneamente: ambas
+    variables tienen media cero y son ortogonales, situación que puede
+    lograrse artificialmente centrando las variables pero que no
+    elimina el sesgo sobre la pendiente.
+\end{enumerate}
+
+\subsection{Relación con el sesgo de la pendiente}
+
+Comparando~\eqref{eq:resultado} con~\eqref{eq:sesgo_pendiente}, se aprecia
+la asimetría del problema: el sesgo de $\hat{\alpha}_2$ depende de
+$b_{32}$ (la \emph{relación} entre las variables), mientras que el sesgo
+de $\hat{\alpha}_1$ depende de $(\bar{X}_3 - b_{32}\,\bar{X}_2)$ (una
+combinación de \emph{niveles} y \emph{relación}). Así, incluso si
+$b_{32} = 0$ (variables ortogonales, lo que elimina el sesgo de la
+pendiente), el intercepto seguirá sesgado siempre que $\bar{X}_3 \neq 0$.
+
+\begin{clave}
+  \textbf{Resumen:} La omisión de una variable relevante $X_3$ produce:
+  \begin{itemize}[leftmargin=1.2cm]
+    \item $\E(\hat{\alpha}_2) = \beta_2 + \beta_3\,b_{32}$ \quad
+      (sesgo en la pendiente, ec.\ 13.3.3).
+    \item $\E(\hat{\alpha}_1) = \beta_1 + \beta_3\,(\bar{X}_3 - b_{32}\,\bar{X}_2)$
+      \quad (sesgo en el intercepto, resultado demostrado).
+  \end{itemize}
+  Ambos estimadores son \textbf{sesgados e inconsistentes}. El
+  intercepto absorbe el efecto medio de la variable omitida corregido por
+  la correlación con el regresor incluido. En general, no existe
+  ningún remedio dentro del MCO: la única solución correcta es
+  \textbf{incluir la variable omitida} en la especificación.
+\end{clave}
+
+\end{document}
