@@ -1,5 +1,5 @@
 #+TITLE: Capítulo 01 — Naturaleza de la Regresión: Ejercicios 1.1 y 1.2
-#+AUTHOR: Emanuel
+#+AUTHOR: Emanuel Quintana Silva
 #+DATE: 2026-04-06
 #+STARTUP: indent
 #+STARTUP: fold
