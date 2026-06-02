@@ -1,0 +1,376 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.21}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\plim}{\operatorname{plim}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Error de Especificación por Variable Omitida}\\[6pt]
+  {\LARGE\bfseries en la Demanda de Pollo: Pruebas RESET y LM}\\[12pt]
+  {\large\itshape Detección, consecuencias de la omisión de $\ln X_{6t}$}\\
+  {\large\itshape e implicaciones sobre la inclusión de precios sustitutos}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.21 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Análisis conceptual, teórico y algebraico}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento del problema}
+%------------------------------------------------------------------------------
+
+Se considera la \textbf{función de demanda verdadera} (modelo irrestricto):
+\begin{equation}
+  \ln Y_t = \beta_1 + \beta_2 \ln X_{2t} + \beta_3 \ln X_{3t}
+            + \beta_6 \ln X_{6t} + u_t,
+  \label{eq:verdadero}
+\end{equation}
+y la \textbf{función de demanda estimada} (modelo restringido, con $X_6$ omitida):
+\begin{equation}
+  \ln Y_t = \alpha_1 + \alpha_2 \ln X_{2t} + \alpha_3 \ln X_{3t} + v_t,
+  \label{eq:omitido}
+\end{equation}
+donde las variables son:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{cl}
+\toprule
+\textbf{Variable} & \textbf{Definición} \\
+\midrule
+$Y_t$    & Consumo per cápita de pollo (libras) \\
+$X_{2t}$ & Ingreso real disponible per cápita \\
+$X_{3t}$ & Precio real al menudeo del pollo \\
+$X_{6t}$ & Precio real compuesto de los sustitutos del pollo \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La especificación log-log garantiza que los coeficientes se interpretan
+directamente como elasticidades. El modelo~\eqref{eq:omitido} es un
+caso de \textbf{error de especificación por omisión de variable relevante}
+si $\beta_6 \neq 0$ en la población.
+
+%------------------------------------------------------------------------------
+\section{Inciso a) Pruebas RESET y LM de errores de especificación}
+%------------------------------------------------------------------------------
+
+\subsection{Prueba RESET de Ramsey}
+
+\subsubsection*{Fundamento conceptual y teórico}
+
+La prueba RESET (\textit{Regression Equation Specification Error Test})
+evalúa si existen no-linealidades omitidas o si la forma funcional del
+modelo es incorrecta. Su lógica es que, si el modelo~\eqref{eq:omitido}
+está bien especificado, las potencias de los valores ajustados
+$\widehat{\ln Y}_t^{(2)}$ no deberían tener poder explicativo adicional
+una vez que $\ln X_{2t}$ y $\ln X_{3t}$ han sido incluidas. En particular,
+dado que la variable omitida $\ln X_{6t}$ está correlacionada con los
+regresores incluidos, sus efectos quedarán parcialmente capturados por
+las potencias de los valores ajustados.
+
+\subsubsection*{Procedimiento algebraico}
+
+\textbf{Paso 1.} Estimar el modelo restringido~\eqref{eq:omitido} por MCO
+para obtener los valores ajustados:
+\begin{equation}
+  \widehat{\ln Y}_t^{(2)}
+  = \hat{\alpha}_1 + \hat{\alpha}_2 \ln X_{2t} + \hat{\alpha}_3 \ln X_{3t}.
+  \label{eq:yhat}
+\end{equation}
+
+\textbf{Paso 2.} Estimar la \textbf{regresión aumentada} añadiendo potencias
+de los valores ajustados como regresores adicionales:
+\begin{equation}
+  \ln Y_t = \gamma_1 + \gamma_2 \ln X_{2t} + \gamma_3 \ln X_{3t}
+            + \gamma_4 \bigl(\widehat{\ln Y}_t^{(2)}\bigr)^2
+            + \gamma_5 \bigl(\widehat{\ln Y}_t^{(2)}\bigr)^3
+            + \text{error}.
+  \label{eq:reset_aumentado}
+\end{equation}
+
+\textbf{Paso 3.} Contrastar la hipótesis nula de correcta especificación:
+\begin{equation}
+  H_0: \gamma_4 = \gamma_5 = 0
+  \qquad \text{vs.} \qquad
+  H_1: \text{al menos uno} \neq 0.
+  \label{eq:h0_reset}
+\end{equation}
+El estadístico $F$ de esta prueba es:
+\begin{equation}
+  F = \frac{(R_{\text{nueva}}^2 - R_{\text{vieja}}^2)\,/\,q}
+           {(1 - R_{\text{nueva}}^2)\,/\,(n - k)},
+  \label{eq:F_reset}
+\end{equation}
+donde $q = 2$ es el número de restricciones (términos añadidos),
+$n$ es el tamaño muestral y $k$ el número de parámetros del modelo
+aumentado. Bajo $H_0$, $F \sim F(q,\, n-k)$.
+
+\textbf{Regla de decisión.} Si $F_{\text{calc}} > F_{\text{crítico}}$
+al nivel $\alpha$ deseado, se rechaza $H_0$ y se concluye que el modelo
+restringido~\eqref{eq:omitido} presenta un error de especificación
+funcional, posiblemente debido a la omisión de $\ln X_{6t}$.
+
+\begin{clave}
+  \textbf{Interpretación de RESET en este contexto:} Si $\hat{\gamma}_4$
+  o $\hat{\gamma}_5$ son significativos, los valores ajustados del
+  modelo corto capturan información sistemática de $\ln X_{6t}$ que
+  no fue recogida por $\ln X_{2t}$ ni $\ln X_{3t}$. Esto es evidencia
+  de mala especificación en~\eqref{eq:omitido}.
+\end{clave}
+
+\subsection{Prueba del Multiplicador de Lagrange (LM)}
+
+\subsubsection*{Fundamento conceptual y teórico}
+
+La prueba LM de Engle (también llamada prueba de variables omitidas de
+Ramsey o prueba del score) permite verificar si una o más variables
+específicas deben incluirse en el modelo, a partir únicamente de los
+residuales del modelo restringido. Es particularmente adecuada cuando
+se conoce cuál es la variable candidata omitida (en este caso,
+$\ln X_{6t}$), lo que la hace más directa que la prueba RESET para
+detectar este tipo de error.
+
+\subsubsection*{Procedimiento algebraico}
+
+\textbf{Paso 1.} Estimar el modelo restringido~\eqref{eq:omitido} y
+obtener los residuales:
+\begin{equation}
+  \hat{v}_t = \ln Y_t
+    - \hat{\alpha}_1 - \hat{\alpha}_2 \ln X_{2t} - \hat{\alpha}_3 \ln X_{3t}.
+  \label{eq:residuales}
+\end{equation}
+
+\textbf{Paso 2.} Estimar la \textbf{regresión auxiliar} de los residuales
+sobre \emph{todos} los regresores del modelo verdadero~\eqref{eq:verdadero}
+(los incluidos más los omitidos):
+\begin{equation}
+  \hat{v}_t = a_1 + a_2 \ln X_{2t} + a_3 \ln X_{3t}
+              + a_4 \ln X_{6t} + e_t.
+  \label{eq:reg_auxiliar}
+\end{equation}
+
+\textbf{Paso 3.} Calcular el \textbf{estadístico LM}:
+\begin{equation}
+  \mathrm{LM} = n \cdot R_{\text{aux}}^2,
+  \label{eq:lm}
+\end{equation}
+donde $R_{\text{aux}}^2$ es el coeficiente de determinación de la
+regresión auxiliar~\eqref{eq:reg_auxiliar} y $n$ es el tamaño muestral.
+
+\textbf{Paso 4.} Bajo la hipótesis nula $H_0: \beta_6 = 0$ (la variable
+omitida no pertenece al modelo verdadero), el estadístico LM sigue
+asintóticamente una distribución ji-cuadrada:
+\begin{equation}
+  \mathrm{LM} \xrightarrow{d} \chi^2(m),
+  \label{eq:dist_lm}
+\end{equation}
+donde $m = 1$ es el número de restricciones impuestas (una variable omitida).
+
+\textbf{Regla de decisión.} Si $\mathrm{LM}_{\text{calc}} > \chi^2_{\text{crítico}}(1)$,
+se rechaza $H_0$ y se concluye que $\ln X_{6t}$ pertenece al modelo
+verdadero y su omisión constituye un error de especificación.
+
+\subsubsection*{Intuición algebraica de la prueba LM}
+
+Si el modelo restringido~\eqref{eq:omitido} fuera la especificación
+correcta, los residuales $\hat{v}_t$ serían ruido blanco ortogonal a
+\emph{todos} los regresores del modelo ampliado, incluyendo $\ln X_{6t}$.
+Un $R_{\text{aux}}^2$ elevado en~\eqref{eq:reg_auxiliar} indica que
+$\ln X_{6t}$ explica una fracción no despreciable de la variación en
+$\hat{v}_t$, lo cual solo es posible si $\beta_6 \neq 0$ en la población
+y la variable fue incorrectamente excluida.
+
+\begin{clave}
+  \textbf{Comparación entre RESET y LM:} La prueba RESET es más general
+  (detecta cualquier mala especificación funcional) pero menos específica
+  (no identifica qué variable fue omitida). La prueba LM es más directa
+  cuando se conoce la variable candidata ($\ln X_{6t}$) y proporciona
+  evidencia directa sobre si esa variable específica debe incluirse.
+  Ambas pruebas son complementarias: si ambas rechazan $H_0$, la
+  evidencia de error de especificación es robusta.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Inciso b) ¿La no significancia de $\hat{\beta}_6$ en (1) implica
+         que no hay error al ajustar (2)?}
+%------------------------------------------------------------------------------
+
+\subsection*{Respuesta: No, no lo implica}
+
+\subsection{Argumento teórico}
+
+La no significancia estadística de $\hat{\beta}_6$ en el modelo
+irrestricto~\eqref{eq:verdadero} refleja que la muestra disponible no
+proporciona evidencia suficiente para estimar con precisión $\beta_6$,
+pero no implica que $\beta_6 = 0$ en la población. Existen al menos
+tres razones por las que $\hat{\beta}_6$ puede resultar insignificante
+aun cuando $\beta_6 \neq 0$:
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+
+  \item \textbf{Multicolinealidad.} Si $\ln X_{6t}$ está fuertemente
+    correlacionada con $\ln X_{2t}$ o $\ln X_{3t}$, los errores estándar
+    de todos los coeficientes se inflan, reduciendo las razones $t$ por
+    debajo del umbral de significancia. La variable sigue siendo relevante
+    pero no puede ser identificada con precisión dada la estructura de
+    los datos.
+
+  \item \textbf{Tamaño muestral reducido.} Con $n = 23$ observaciones
+    anuales, la potencia de las pruebas $t$ individuales es baja.
+    Un efecto de magnitud moderada ($\beta_6$ pequeño pero distinto de
+    cero) puede no detectarse con tan pocos grados de libertad.
+
+  \item \textbf{Distinción entre hipótesis nula y verdad poblacional.}
+    No rechazar $H_0: \beta_6 = 0$ al nivel $\alpha = 0{,}05$ no es
+    equivalente a aceptar que $\beta_6 = 0$. La ausencia de evidencia
+    no es evidencia de ausencia.
+
+\end{enumerate}
+
+\subsection{Consecuencias algebraicas de omitir $\ln X_{6t}$ si $\beta_6 \neq 0$}
+
+Si el verdadero modelo es~\eqref{eq:verdadero} con $\beta_6 \neq 0$ y
+se estima~\eqref{eq:omitido}, el resultado del Ejercicio~13.12 se aplica
+directamente. Definiendo $b_{62}$ y $b_{63}$ como los coeficientes de
+la regresión auxiliar de $\ln X_{6t}$ sobre $\ln X_{2t}$ y $\ln X_{3t}$,
+los estimadores MCO del modelo corto satisfacen:
+\begin{align}
+  \E(\hat{\alpha}_2) &= \beta_2 + \beta_6\, b_{62},
+  \label{eq:sesgo_a2}\\
+  \E(\hat{\alpha}_3) &= \beta_3 + \beta_6\, b_{63}.
+  \label{eq:sesgo_a3}
+\end{align}
+Las elasticidades-ingreso ($\hat{\alpha}_2$) y precio-propio
+($\hat{\alpha}_3$) son \textbf{sesgadas e inconsistentes} si
+$\ln X_{6t}$ está correlacionada con los regresores incluidos, lo que
+es económicamente plausible (el ingreso y los precios sustitutos
+suelen moverse juntos a lo largo del ciclo económico).
+
+\begin{clave}
+  \textbf{Conclusión b):} La no significancia de $\hat{\beta}_6$ en el
+  modelo completo~\eqref{eq:verdadero} no garantiza que omitir
+  $\ln X_{6t}$ en~\eqref{eq:omitido} sea inocuo. Si $\beta_6 \neq 0$
+  en la población pero no se detecta por multicolinealidad o muestra
+  pequeña, las elasticidades estimadas en el modelo corto estarán
+  sesgadas. La inferencia sobre la elasticidad-ingreso y la
+  elasticidad-precio propia, que son los parámetros de mayor interés
+  económico, quedará comprometida.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Inciso c) ¿La no significancia de $\hat{\beta}_6$ implica que no
+         se deben incluir precios sustitutos en la demanda?}
+%------------------------------------------------------------------------------
+
+\subsection*{Respuesta: No}
+
+\subsection{Fundamento en la teoría microeconómica de la demanda}
+
+La teoría de la demanda del consumidor establece que la cantidad demandada
+de un bien depende de su precio, del ingreso del consumidor y de los
+precios de todos los bienes relacionados (sustitutos y complementos).
+Omitir los precios de los sustitutos viola el marco teórico de partida
+y produce un modelo que, por construcción, no puede capturar la
+respuesta de la demanda de pollo ante cambios en los precios de la carne
+de res o de cerdo. Dado que la especificación log-log busca estimar
+elasticidades interpretables, la exclusión de los precios sustitutos
+implica que las elasticidades restantes absorben parte de un efecto
+que en realidad pertenece a otra variable.
+
+\subsection{El problema de la agregación en el índice $X_{6t}$}
+
+La variable $X_{6t}$ es un \textbf{precio compuesto ponderado} que
+agrega los precios de la carne de res y de cerdo. La no significancia
+de su coeficiente puede deberse a que los efectos individuales de los
+dos sustitutos se \emph{cancelan} al promediarlos en el índice:
+\begin{equation}
+  \ln X_{6t} = w_1 \ln P_{\text{res},t} + w_2 \ln P_{\text{cerdo},t},
+  \label{eq:indice}
+\end{equation}
+donde $w_1$ y $w_2$ son los ponderadores del índice compuesto.
+Si el precio de la res tiene una elasticidad cruzada positiva grande
+y el del cerdo tiene una negativa (o viceversa), la combinación
+ponderada puede producir un efecto neto cercano a cero, haciendo que
+$\hat{\beta}_6 \approx 0$ aunque ambos precios individuales sean
+relevantes. En este caso, la solución correcta no es eliminar los
+sustitutos sino \textbf{desagregar el índice} e incluir los precios
+de la res y del cerdo por separado.
+
+\subsection{Procedimiento profesional recomendado}
+
+Antes de concluir que los precios sustitutos no pertenecen al modelo,
+el investigador debe:
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+  \item \textbf{Desagregar el índice $X_{6t}$} e incluir $\ln P_{\text{res},t}$
+    y $\ln P_{\text{cerdo},t}$ por separado para detectar si los efectos
+    individuales son significativos aunque el índice compuesto no lo sea.
+  \item \textbf{Realizar una prueba $F$ conjunta} de la hipótesis
+    $H_0: \beta_{\text{res}} = \beta_{\text{cerdo}} = 0$, en lugar de
+    confiar únicamente en pruebas $t$ individuales que pueden ser
+    débiles bajo multicolinealidad.
+  \item \textbf{Consultar la teoría económica}: la demanda de pollo
+    debe depender de los precios de los sustitutos cercanos; la evidencia
+    contraria requiere una justificación sustantiva, no solo estadística.
+\end{enumerate}
+
+\begin{clave}
+  \textbf{Conclusión c):} La no significancia de $\hat{\beta}_6$
+  no implica que los precios sustitutos deban excluirse del modelo de
+  demanda. Puede reflejar un problema de agregación en el índice compuesto,
+  multicolinealidad o baja potencia de la prueba individual. La solución
+  correcta es desagregar el índice, aplicar una prueba de restricciones
+  conjuntas y respetar el marco teórico microeconómico que predice la
+  relevancia de los precios sustitutos en cualquier función de demanda
+  bien especificada.
+\end{clave}
+
+\end{document}
