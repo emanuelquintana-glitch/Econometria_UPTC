@@ -1,0 +1,337 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.14}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Evaluación de la Advertencia de Henry Theil}\\[6pt]
+  {\LARGE\bfseries sobre la Degradación de la Inferencia Estadística}\\[12pt]
+  {\large\itshape Minería de datos, inflación del error Tipo~I}\\
+  {\large\itshape y colapso de los intervalos de confianza nominales}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.14 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Análisis conceptual, teórico y algebraico}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento: la afirmación de Theil}
+%------------------------------------------------------------------------------
+
+Henry Theil advierte que cuando los intervalos de confianza y los
+estadísticos de prueba se calculan a partir de la \emph{regresión final}
+de una estrategia de búsqueda de especificación, sus propiedades nominales
+ya no son válidas. Concretamente señala que:
+
+\begin{itemize}[leftmargin=1.6cm]
+  \item Un coeficiente reportado con un \textbf{intervalo de confianza del
+    $95\,\%$} puede, en realidad, tener una cobertura de apenas el
+    $\mathbf{80\,\%}$.
+  \item Un nivel de significancia nominal del $\mathbf{1\,\%}$ puede
+    corresponder, en la práctica, a un nivel real del $\mathbf{10\,\%}$.
+\end{itemize}
+
+La afirmación no es una opinión metodológica vaga: tiene un sustento
+probabilístico preciso que se puede derivar algebraicamente a partir de
+la estructura del proceso de selección de modelos. El objetivo de esta
+evaluación es demostrar dicho sustento, identificar sus supuestos y
+discutir sus implicaciones para la práctica econométrica.
+
+%------------------------------------------------------------------------------
+\section{Fundamento conceptual: inferencia clásica y sus supuestos implícitos}
+%------------------------------------------------------------------------------
+
+\subsection{El supuesto de pre-especificación}
+
+La validez de las pruebas $t$, $F$ y de los intervalos de confianza
+estándar descansa en un supuesto que raramente se menciona de forma
+explícita: el modelo fue \textbf{especificado antes de observar los datos},
+o al menos antes de examinar las correlaciones entre las variables de
+interés. Bajo esta condición, la probabilidad de rechazar una hipótesis
+nula verdadera es exactamente $\alpha$ (el nivel de significancia elegido),
+y el intervalo de confianza al $(1-\alpha)\times 100\,\%$ contiene el
+verdadero parámetro con esa misma frecuencia en muestreos repetidos.
+
+\subsection{La estrategia de regresión y el sesgo de selección}
+
+En la práctica, los investigadores suelen seguir una \textbf{estrategia de
+regresión}: se prueban múltiples combinaciones de variables, formas
+funcionales y submuestras hasta que el modelo resultante luce
+``estadísticamente satisfactorio'' (coeficientes significativos, signos
+coherentes con la teoría, $R^2$ elevado). La regresión \emph{final} que
+se publica es la sobreviviente de un proceso de selección.
+
+Este proceso introduce un \textbf{sesgo de selección de modelos}: los
+datos han sido examinados repetidamente y el modelo reportado es,
+por construcción, el que mejor se ajusta a esa muestra particular.
+Los estadísticos de ese modelo están sesgados hacia la significancia,
+no porque el efecto sea real, sino porque el proceso de búsqueda garantiza
+que solo los modelos con resultados ``favorables'' llegan a publicarse.
+En términos coloquiales: los datos han sido ``torturados hasta confesar''.
+
+\subsection{Grados de libertad implícitos no contabilizados}
+
+Cada vez que el investigador examina una especificación alternativa y la
+descarta, consume información de la muestra sin que ello quede reflejado
+en los grados de libertad del modelo final. El resultado es que los
+errores estándar reportados \emph{subestiman} la verdadera variabilidad
+del estimador, y los intervalos de confianza son \emph{más estrechos}
+de lo que deberían ser. Este es el mecanismo por el cual un intervalo
+nominal del $95\,\%$ ofrece cobertura real inferior.
+
+%------------------------------------------------------------------------------
+\section{Fundamento algebraico: la fórmula de Lovell}
+%------------------------------------------------------------------------------
+
+\subsection{Derivación del nivel de significancia real}
+
+Sea $c$ el número total de variables candidatas examinadas durante el
+proceso de búsqueda y $k$ el número de variables retenidas en el modelo
+final, con $k \leq c$. Supóngase que cada prueba individual se realiza
+al nivel nominal $\alpha$, y que las pruebas son aproximadamente
+independientes. La probabilidad de que, bajo la hipótesis nula global,
+\emph{al menos una} de las $c$ pruebas individuales resulte significativa
+es:
+\begin{equation}
+  P(\text{al menos un rechazo erróneo}) = 1 - (1-\alpha)^c.
+  \label{eq:bonferroni_c}
+\end{equation}
+Sin embargo, el investigador no reporta todas las pruebas realizadas,
+sino solo las $k$ variables seleccionadas. El nivel de significancia
+efectivo del modelo final, ajustado por la búsqueda de las mejores $k$
+variables entre $c$ candidatas, es la \textbf{fórmula de Lovell}:
+\begin{equation}
+  \alpha^* = 1 - (1 - \alpha)^{c/k}.
+  \label{eq:lovell_exacta}
+\end{equation}
+Para $\alpha$ pequeño, la expansión de Taylor de primer orden de
+$(1-\alpha)^{c/k} \approx 1 - (c/k)\alpha$ produce la aproximación
+lineal:
+\begin{equation}
+  \alpha^* \approx \frac{c}{k}\,\alpha.
+  \label{eq:lovell_aprox}
+\end{equation}
+
+\subsection{Verificación numérica del ejemplo de Theil: $1\,\% \to 10\,\%$}
+
+Theil afirma que un nivel de significancia nominal del $1\,\%$ puede
+corresponder en realidad a un $10\,\%$. Este resultado se reproduce
+exactamente con $c = 20$ variables candidatas y $k = 2$ variables
+retenidas:
+\begin{equation}
+  \alpha^*
+  \approx \frac{c}{k}\,\alpha
+  = \frac{20}{2} \times 0{,}01
+  = 10 \times 0{,}01
+  = 0{,}10.
+  \label{eq:ejemplo_1pct}
+\end{equation}
+Usando la fórmula exacta~\eqref{eq:lovell_exacta}:
+\begin{equation}
+  \alpha^* = 1 - (1 - 0{,}01)^{20/2}
+           = 1 - (0{,}99)^{10}
+           = 1 - 0{,}9044
+           = 0{,}0956
+           \approx 9{,}6\,\%.
+  \label{eq:ejemplo_1pct_exacto}
+\end{equation}
+Ambas expresiones confirman el orden de magnitud: el nivel real es
+aproximadamente diez veces mayor que el nominal reportado.
+
+\subsection{Verificación numérica del ejemplo de Theil: $95\,\% \to 80\,\%$}
+
+El nivel de confianza nominal es $1 - \alpha = 0{,}95$, es decir,
+$\alpha = 0{,}05$. Supóngase que el proceso de búsqueda involucra
+$c = 4$ variables candidatas con $k = 1$ variable retenida:
+\begin{equation}
+  \alpha^*
+  \approx \frac{c}{k}\,\alpha
+  = \frac{4}{1} \times 0{,}05
+  = 0{,}20.
+  \label{eq:ejemplo_5pct}
+\end{equation}
+El nivel de confianza real es entonces:
+\begin{equation}
+  1 - \alpha^* = 1 - 0{,}20 = 0{,}80 = 80\,\%.
+  \label{eq:confianza_real}
+\end{equation}
+Verificación con la fórmula exacta:
+\begin{equation}
+  \alpha^* = 1 - (1 - 0{,}05)^{4/1}
+           = 1 - (0{,}95)^{4}
+           = 1 - 0{,}8145
+           = 0{,}1855
+           \approx 18{,}6\,\%.
+  \label{eq:ejemplo_5pct_exacto}
+\end{equation}
+El nivel de confianza real es $1 - 0{,}186 \approx 81{,}4\,\%$,
+consistente con la cota del $80\,\%$ señalada por Theil. Las dos
+afirmaciones del enunciado quedan así demostradas algebraicamente.
+
+\subsection{Resumen de los resultados numéricos}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{cccccc}
+\toprule
+\textbf{Nivel nominal} & $c$ & $k$ & $c/k$ & $\alpha^*$ (aprox.) & \textbf{Nivel real} \\
+\midrule
+$\alpha = 0{,}01\;(1\,\%)$  & 20 & 2 & 10 & $0{,}10$  & $\approx 10\,\%$ \\
+$\alpha = 0{,}05\;(5\,\%)$  & 4  & 1 & 4  & $0{,}20$  & $\approx 80\,\%$ de confianza \\
+$\alpha = 0{,}05\;(5\,\%)$  & 3  & 1 & 3  & $0{,}15$  & $\approx 85\,\%$ de confianza \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------
+\section{Evaluación crítica de la afirmación de Theil}
+%------------------------------------------------------------------------------
+
+\subsection{Aspectos en los que la afirmación es correcta}
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+
+  \item \textbf{Validez matemática.} La fórmula de Lovell
+    [\eqref{eq:lovell_exacta}--\eqref{eq:lovell_aprox}] es un resultado
+    probabilístico riguroso, no una intuición. La degradación de los
+    niveles nominales bajo búsqueda de especificación es un hecho
+    demostrable, no una opinión.
+
+  \item \textbf{Prevalencia del problema en la práctica.} La minería
+    de datos no es una anomalía rara: es el procedimiento habitual
+    en econometría aplicada. La mayoría de las publicaciones empíricas
+    no reportan el número de especificaciones exploradas antes del
+    modelo final, lo que hace imposible para el lector calibrar
+    $\alpha^*$.
+
+  \item \textbf{La recomendación de interpretar ``liberalmente'' es
+    operativamente correcta.} En ausencia de información sobre el
+    proceso de búsqueda, la única respuesta racional del lector es
+    aplicar un descuento al nivel de significancia reportado. Theil
+    formaliza este descuento de manera que puede cuantificarse.
+
+\end{enumerate}
+
+\subsection{Limitaciones y matices}
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+
+  \item \textbf{La fórmula supone pruebas independientes.}
+    La derivación de~\eqref{eq:lovell_exacta} asume que las $c$ pruebas
+    son aproximadamente independientes. En la práctica, las variables
+    candidatas suelen estar correlacionadas, lo que hace que la inflación
+    real de $\alpha^*$ sea menor que la predicha por Lovell. La fórmula
+    es por tanto una \emph{cota superior} del nivel real, no una estimación
+    exacta.
+
+  \item \textbf{No toda búsqueda de especificación es invalidante.}
+    Existen procedimientos de selección de variables con propiedades
+    estadísticas controladas: el criterio de información de Akaike (AIC),
+    el criterio bayesiano de Schwarz (BIC) y los métodos LASSO penalizan
+    la complejidad del modelo de forma que la tasa de falsos positivos
+    puede mantenerse bajo control. Theil escribe en un contexto anterior
+    al desarrollo masivo de estos métodos.
+
+  \item \textbf{La solución propuesta (interpretación ``liberal'') es
+    paliativa, no estructural.} Ajustar subjetivamente los niveles de
+    confianza reportados no sustituye la necesidad de transparencia en
+    el proceso de modelado. La solución correcta es reportar todas las
+    especificaciones exploradas, aplicar la corrección de Lovell
+    explícitamente, o utilizar métodos de selección con garantías formales.
+
+\end{enumerate}
+
+%------------------------------------------------------------------------------
+\section{Implicaciones para la práctica econométrica}
+%------------------------------------------------------------------------------
+
+La advertencia de Theil impone cuatro obligaciones metodológicas concretas:
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{P\arabic*.}]
+
+  \item \textbf{Transparencia en el proceso de búsqueda.} El investigador
+    debe reportar $c$ y $k$, de modo que el lector pueda aplicar
+    la corrección~\eqref{eq:lovell_aprox} y obtener $\alpha^*$.
+
+  \item \textbf{Análisis de sensibilidad.} Un resultado solo merece
+    confianza si los coeficientes clave son estables ante variaciones
+    razonables en la especificación (inclusión o exclusión de controles,
+    transformaciones funcionales, submuestras).
+
+  \item \textbf{Uso de criterios de información penalizados.} El AIC y
+    el BIC introducen una penalización por el número de parámetros que
+    mitiga parcialmente el sobreajuste. No eliminan el problema de la
+    minería de datos, pero reducen su severidad.
+
+  \item \textbf{Distinción entre significancia estadística y relevancia
+    económica.} Dado que la significancia nominal es una cota inferior
+    de la significancia real, un coeficiente borderline ($p \approx 0{,}05$)
+    tras búsqueda de especificación puede tener $\alpha^* > 0{,}20$.
+    La pregunta que debe primar es si la magnitud del efecto es
+    sustantiva desde el punto de vista económico o de política pública.
+
+\end{enumerate}
+
+\begin{clave}
+  \textbf{Conclusión:} La afirmación de Theil es técnicamente correcta y
+  empíricamente relevante. La fórmula de Lovell demuestra algebraicamente
+  que la búsqueda de especificación infla el error Tipo~I en un factor de
+  $c/k$, degradando los intervalos de confianza y los niveles de
+  significancia de manera proporcional a la intensidad del proceso de
+  búsqueda. Sus limitaciones son que la fórmula es una cota superior
+  (las pruebas reales no son independientes) y que la recomendación
+  de interpretar ``liberalmente'' es una respuesta paliativa que no
+  reemplaza la transparencia metodológica. El legado de Theil es haber
+  cuantificado el costo estadístico de la minería de datos, convirtiendo
+  una crítica cualitativa en un resultado numérico verificable.
+\end{clave}
+
+\end{document}
