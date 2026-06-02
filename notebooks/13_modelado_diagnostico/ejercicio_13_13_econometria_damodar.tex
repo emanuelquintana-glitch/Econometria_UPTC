@@ -1,0 +1,297 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.13}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Evaluación Crítica del Diagnóstico de Leamer}\\[6pt]
+  {\LARGE\bfseries sobre la Brecha entre Teoría y Práctica Econométrica}\\[12pt]
+  {\large\itshape ``Sacerdotes'' y ``pecadores'': metáfora, fundamento algebraico}\\
+  {\large\itshape y propuesta de reforma metodológica}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.13 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Análisis conceptual, teórico y algebraico}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{El diagnóstico de Leamer: planteamiento y metáfora}
+%------------------------------------------------------------------------------
+
+Edward Leamer describe una división profesional que, a su juicio, neutraliza
+el rigor de la econometría como disciplina científica. A un lado se sitúa el
+\textbf{``sacerdocio célibe de teóricos estadísticos''}: quienes construyen
+el edificio formal del Modelo Clásico de Regresión Lineal (MCRL) bajo
+supuestos que difícilmente se cumplen con datos reales. Al otro, la
+\textbf{``legión de incorregibles pecadores analistas de datos''}: quienes
+violan sistemáticamente esos supuestos, lo saben, y se limitan a
+\emph{confesar} sus infracciones en notas a pie de página sin modificar sus
+conclusiones.
+
+La metáfora religiosa no es ornamental. Leamer apunta a una disfunción
+estructural: el sistema de incentivos de la profesión premia la publicación
+de resultados estadísticamente significativos, no la honestidad metodológica.
+El resultado es que la inferencia econométrica publicada refleja, en gran
+medida, un proceso de ensayo y error no documentado, y que los valores $p$
+reportados no tienen el significado probabilístico que la teoría les atribuye.
+El objetivo de Leamer es reformar esta práctica, no destruir la econometría:
+en sus propias palabras, se trata de
+\emph{``quitarle el engaño a la econometría''}
+(\textit{take the con out of econometrics}).
+
+%------------------------------------------------------------------------------
+\section{Fundamento teórico: por qué la brecha es estructural}
+%------------------------------------------------------------------------------
+
+\subsection{La naturaleza observacional de los datos económicos}
+
+A diferencia de las ciencias experimentales, el economista no controla el
+proceso generador de datos. Los problemas de \textbf{multicolinealidad},
+\textbf{endogeneidad}, \textbf{errores de medición} y
+\textbf{omisión de variables} no son anomalías evitables: son consecuencias
+inevitables de trabajar con registros históricos donde ninguna variable
+fue asignada aleatoriamente. Esta asimetría entre la situación ideal que
+presupone la teoría y la realidad de los datos es la raíz conceptual de
+la brecha denunciada por Leamer.
+
+\subsection{Minería de datos y colapso de la inferencia clásica}
+
+El ``pecado'' más extendido es la \textbf{minería de datos}
+(\textit{data mining}): el analista estima múltiples especificaciones
+del mismo modelo hasta encontrar una con coeficientes significativos
+y signos económicamente ``razonables'', y luego reporta esa
+especificación como si hubiera sido la única estimada. Esta práctica
+colapsa la validez de las pruebas $t$ y $F$ clásicas, que están
+construidas bajo el supuesto de que se estimó exactamente el modelo
+pre-especificado, sin búsqueda previa.
+
+\subsection{Significancia estadística \textit{versus} relevancia económica}
+
+Un tercer pilar de la crítica es la confusión entre significancia
+estadística y relevancia económica. Un coeficiente puede ser
+estadísticamente distinto de cero gracias a un tamaño muestral
+grande, pero su magnitud puede ser económicamente despreciable. La
+obsesión profesional con los valores $p$ inferiores a $0{,}05$ desvía
+la atención de la pregunta sustantiva: ¿es el efecto estimado lo
+suficientemente grande como para importar en términos de política
+económica o decisión empresarial?
+
+%------------------------------------------------------------------------------
+\section{Fundamento algebraico: el costo del ``pecado'' en la inferencia}
+%------------------------------------------------------------------------------
+
+\subsection{Ajuste de Lovell: inflación del error de Tipo I por minería de datos}
+
+Sea $c$ el número total de variables candidatas examinadas y $k$ el número
+de variables finalmente retenidas en el modelo, con $k < c$. Si el nivel
+nominal de significancia es $\alpha$, la probabilidad real de cometer un
+error de Tipo I (rechazar una hipótesis nula verdadera) ya no es $\alpha$
+sino $\alpha^*$, dada por la \textbf{fórmula de Lovell}:
+\begin{equation}
+  \alpha^* = 1 - (1 - \alpha)^{c/k} \approx \frac{c}{k}\,\alpha.
+  \label{eq:lovell}
+\end{equation}
+
+La aproximación de primer orden en~\eqref{eq:lovell} es válida cuando
+$\alpha$ es pequeño. El resultado es contundente: si un analista examina
+$c = 15$ variables para retener $k = 5$ a un nivel nominal de $\alpha = 0{,}05$,
+el nivel real es:
+\[
+  \alpha^* \approx \frac{15}{5} \times 0{,}05 = 0{,}15.
+\]
+Es decir, la probabilidad de concluir erróneamente que una variable es
+significativa es del $15\,\%$, tres veces mayor que el $5\,\%$ reportado.
+La ``confesión'' (reportar el número de especificaciones exploradas) es
+necesaria precisamente porque sin ella el lector no puede calcular $\alpha^*$
+y atribuye a los resultados una fiabilidad que no poseen.
+
+\subsection{Sesgo por omisión de variables: formalización del ``pecado'' de omisión}
+
+Supóngase que el modelo verdadero es:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i,
+  \label{eq:verdadero}
+\end{equation}
+pero el analista, por falta de datos o descuido, estima:
+\begin{equation}
+  Y_i = \alpha_1 + \alpha_2 X_{2i} + v_i, \qquad v_i = \beta_3 X_{3i} + u_i.
+  \label{eq:omitido}
+\end{equation}
+Como fue demostrado en el Ejercicio~13.12, los estimadores MCO del modelo
+mal especificado satisfacen:
+\begin{align}
+  \E(\hat{\alpha}_2) &= \beta_2 + \beta_3\,b_{32}, \label{eq:sesgo_pend}\\
+  \E(\hat{\alpha}_1) &= \beta_1 + \beta_3\,(\bar{X}_3 - b_{32}\,\bar{X}_2),
+  \label{eq:sesgo_int}
+\end{align}
+donde $b_{32}$ es el coeficiente de la regresión auxiliar de $X_3$ sobre
+$X_2$. Ambos estimadores son \textbf{sesgados e inconsistentes}, y el sesgo
+persiste en muestras arbitrariamente grandes. Si el analista reporta
+$\hat{\alpha}_2$ como estimación de $\beta_2$ sin advertir la omisión,
+presenta como parámetro estructural un valor que confunde el efecto
+directo de $X_2$ con la correlación espuria transmitida a través de la
+variable excluida.
+
+\subsection{Interacción entre los dos ``pecados''}
+
+Los efectos de~\eqref{eq:lovell} y \eqref{eq:sesgo_pend}--\eqref{eq:sesgo_int}
+se potencian mutuamente. El analista que minea datos tiende a retener
+las variables cuyo sesgo $\beta_3 b_{32}$ empuja el coeficiente en la
+dirección estadísticamente significativa, mientras descarta las variables
+cuya inclusión haría evidente la magnitud del sesgo. El proceso de
+selección sesgada de variables produce, por tanto, no solo un nivel de
+significancia inflado, sino estimadores con sesgo de signo sistemático.
+
+%------------------------------------------------------------------------------
+\section{Evaluación crítica del diagnóstico de Leamer}
+%------------------------------------------------------------------------------
+
+\subsection{Aspectos en los que el diagnóstico es acertado}
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+
+  \item \textbf{Validez empírica de la metáfora.} La división que describe
+    Leamer es verificable en la literatura: existe una producción abundante
+    de teoría econométrica sofisticada y, simultáneamente, una práctica
+    empírica que raramente aplica más de las pruebas diagnósticas básicas.
+    La asimetría no es accidental; responde a incentivos institucionales
+    concretos (revistas, contrataciones, citaciones).
+
+  \item \textbf{La inflación del error Tipo I es un hecho matemático.}
+    La fórmula de Lovell~\eqref{eq:lovell} no es una opinión: es un
+    resultado probabilístico exacto. Que la profesión lo ignore
+    sistemáticamente no lo hace menos válido.
+
+  \item \textbf{El llamado a la transparencia es metodológicamente correcto.}
+    Reportar el número de especificaciones exploradas, presentar análisis
+    de sensibilidad ante cambios en la selección de variables, y distinguir
+    entre significancia estadística y relevancia económica son prácticas
+    que mejoran objetivamente la calidad de la inferencia.
+
+\end{enumerate}
+
+\subsection{Limitaciones y matices del diagnóstico}
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{\arabic*.}]
+
+  \item \textbf{El diagnóstico no ofrece una solución operativa completa.}
+    Leamer propone el \textbf{análisis de sensibilidad extrema}
+    (\textit{Extreme Bounds Analysis}, EBA) como alternativa: examinar
+    cómo varía el coeficiente de interés al permutar el subconjunto de
+    variables de control. Sin embargo, la EBA ha sido criticada por ser
+    excesivamente conservadora (declara ``frágiles'' resultados que otras
+    metodologías consideran robustos) y por carecer de fundamento
+    probabilístico formal.
+
+  \item \textbf{La metáfora oscurece la heterogeneidad interna de la
+    práctica.} No todo análisis empírico es minería de datos irresponsable.
+    La econometría estructural, los experimentos naturales, los diseños
+    de regresión discontinua y los métodos de variables instrumentales
+    representan avances sustanciales en la credibilidad empírica que
+    Leamer no contemplaba en su diagnóstico original de 1983.
+
+  \item \textbf{El estándar de ``robustez total'' puede ser
+    inalcanzable.} En economía, como en cualquier ciencia social, la
+    especificación del modelo es inevitablemente teoría-dependiente.
+    Exigir que un resultado sea invariante ante \emph{cualquier}
+    combinación de variables de control puede equivaler a exigir que
+    los datos hablen sin teoría, lo cual es epistemológicamente incoherente.
+
+\end{enumerate}
+
+%------------------------------------------------------------------------------
+\section{Propuesta de reforma metodológica}
+%------------------------------------------------------------------------------
+
+La evaluación de Leamer sugiere un cambio de paradigma cuyo contenido
+positivo puede sistematizarse en cuatro principios:
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{P\arabic*.}]
+
+  \item \textbf{Reconocimiento de la subjetividad del modelado.} La
+    especificación econométrica es simultáneamente una hipótesis científica
+    y una decisión de diseño. Tratarla como un procedimiento puramente
+    mecánico oscurece la responsabilidad intelectual del investigador.
+
+  \item \textbf{Transparencia en el proceso de búsqueda.} El investigador
+    debe reportar el número de especificaciones exploradas para permitir
+    al lector aplicar la corrección de Lovell~\eqref{eq:lovell} y evaluar
+    correctamente la fiabilidad de los resultados.
+
+  \item \textbf{Análisis de sensibilidad sistemático.} En lugar de
+    presentar un único modelo como ``el correcto'', se deben reportar
+    los rangos de variación de los coeficientes clave ante cambios razonables
+    en la especificación (inclusión o exclusión de controles, cambios
+    en la forma funcional, submuestras temporales o geográficas).
+
+  \item \textbf{Distinción explícita entre significancia estadística y
+    relevancia económica.} Un resultado válido debe superar ambos umbrales:
+    ser estadísticamente distinguible del ruido \emph{y} tener una
+    magnitud sustantiva desde la perspectiva de la teoría económica o
+    la política pública.
+
+\end{enumerate}
+
+\begin{clave}
+  \textbf{Conclusión:} El diagnóstico de Leamer es esencialmente correcto
+  en su descripción del problema y en su llamado a la honestidad intelectual.
+  La fórmula de Lovell~\eqref{eq:lovell} y el sesgo por variable omitida
+  [\eqref{eq:sesgo_pend}--\eqref{eq:sesgo_int}] demuestran algebraicamente
+  que las ``confesiones'' son necesarias porque los resultados publicados
+  sin ellas son estadística y econométricamente inválidos.
+  La limitación del diagnóstico es que subestima los avances metodológicos
+  posteriores (identificación causal, experimentos naturales, diseños
+  quasi-experimentales) y que su propuesta operativa (EBA) no resolvió
+  de manera satisfactoria el problema que identificó. El legado duradero
+  de Leamer es haber convertido la \emph{fragilidad de la inferencia} en
+  un objeto de estudio legítimo dentro de la econometría aplicada.
+\end{clave}
+
+\end{document}
