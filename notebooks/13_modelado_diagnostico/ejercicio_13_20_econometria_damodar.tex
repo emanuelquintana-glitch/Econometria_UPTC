@@ -1,0 +1,341 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.20}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Observaciones Influyentes, Valores Atípicos,}\\[6pt]
+  {\LARGE\bfseries Jerarquía Polinomial y Variables Centradas}\\[12pt]
+  {\large\itshape Verdadero o Falso: cinco enunciados sobre diagnóstico}\\
+  {\large\itshape y especificación en regresión lineal}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.20 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Análisis conceptual, teórico y algebraico}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Enunciado a) Una observación puede ser influyente pero no atípica}
+%------------------------------------------------------------------------------
+
+\subsection*{\textit{Veredicto: \textbf{Verdadero}}}
+
+\subsection{Distinción conceptual}
+
+En el análisis de regresión se distinguen dos conceptos que habitualmente
+se confunden:
+
+Un \textbf{valor atípico} (\textit{outlier}) es una observación cuyo
+\emph{residual} $\hat{u}_i$ es grande en valor absoluto, es decir, un
+punto que se aleja verticalmente de la línea de regresión estimada.
+
+Una \textbf{observación influyente} es aquella que, al ser eliminada,
+produce un cambio sustancial en los coeficientes estimados
+$\hat{\boldsymbol{\beta}}$. La influencia depende no solo del residual
+sino también de la posición del punto en el espacio de los regresores.
+
+\subsection{Argumento teórico: el papel del apalancamiento}
+
+La medida de \textbf{apalancamiento} (\textit{leverage}) de la
+observación $i$ es el $i$-ésimo elemento diagonal de la matriz sombrero
+(\textit{hat matrix}) $\mathbf{H} = \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'$:
+\begin{equation}
+  h_{ii} = \mathbf{x}_i'(\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_i
+  \in \left[\frac{1}{n},\, 1\right],
+  \label{eq:leverage}
+\end{equation}
+donde $\mathbf{x}_i$ es el vector de regresores de la observación $i$.
+Un valor $h_{ii}$ elevado indica que la observación está muy alejada de
+la media muestral de los regresores $\bar{\mathbf{X}}$, lo que le otorga
+un gran poder para ``atraer'' la recta de regresión hacia sí misma.
+
+\subsection{Mecanismo}
+
+Cuando $h_{ii}$ es muy grande, la línea de regresión MCO se ajusta
+casi perfectamente a esa observación para minimizar la suma de cuadrados,
+produciendo un residual $\hat{u}_i \approx 0$. El punto no se detecta
+como atípico al examinar los residuales, pero al eliminarlo la pendiente
+estimada cambia drásticamente. Se dice entonces que es \emph{influyente
+pero no atípico}.
+
+\subsection{Argumento algebraico}
+
+El cambio en los estimadores MCO al omitir la observación $t$ es:
+\begin{equation}
+  \hat{\boldsymbol{\beta}}_{(t)} - \hat{\boldsymbol{\beta}}
+  = -\frac{1}{1 - h_{tt}}
+    (\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_t\,\hat{u}_t,
+  \label{eq:cambio_coef}
+\end{equation}
+donde $h_{tt}$ es el apalancamiento de la observación $t$. El factor
+$1/(1 - h_{tt})$ actúa como un amplificador: a medida que $h_{tt} \to 1$,
+cualquier residual, por pequeño que sea, genera un cambio enorme en
+los coeficientes. Así, una observación con $h_{tt}$ cercano a 1 y
+$\hat{u}_t \approx 0$ no se detecta como atípica, pero sí resulta
+influyente.
+
+\begin{clave}
+  \textbf{Conclusión a):} Una observación puede tener alto apalancamiento
+  ($h_{ii}$ cercano a 1), residual pequeño (no atípica) y, sin embargo,
+  modificar sustancialmente los coeficientes al ser eliminada (influyente).
+  La influyencia y la condición de atípica son propiedades independientes.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Enunciado b) Una observación puede ser atípica pero no influyente}
+%------------------------------------------------------------------------------
+
+\subsection*{\textit{Veredicto: \textbf{Verdadero}}}
+
+\subsection{Argumento conceptual}
+
+Una observación con residual grande $|\hat{u}_t|$ (atípica) puede tener
+bajo apalancamiento $h_{tt}$ si se ubica cerca de la media de los
+regresores $\bar{\mathbf{X}}$. En ese caso, la observación se aleja
+verticalmente de la línea de regresión, pero su posición ``centrada''
+en el espacio de las $X$ le impide modificar significativamente la
+dirección de esa línea.
+
+\subsection{Argumento algebraico}
+
+Retomando~\eqref{eq:cambio_coef}, si $h_{tt}$ es pequeño (próximo a
+$1/n$), el factor amplificador $1/(1 - h_{tt}) \approx n/(n-1) \approx 1$
+resulta modesto. Incluso con un residual $|\hat{u}_t|$ grande, el cambio
+en los coeficientes $\hat{\boldsymbol{\beta}}_{(t)} - \hat{\boldsymbol{\beta}}$
+será pequeño. La observación es un \emph{outlier de bajo apalancamiento}:
+distorsiona el ajuste local pero no la dirección global de la recta.
+
+\begin{clave}
+  \textbf{Conclusión b):} Una observación puede tener residual grande
+  (atípica) y, a la vez, apalancamiento bajo (no influyente). La
+  condición de valor atípico se define por el residual; la influencia,
+  por la combinación de residual y apalancamiento.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Enunciado c) Una observación puede ser atípica e influyente}
+%------------------------------------------------------------------------------
+
+\subsection*{\textit{Veredicto: \textbf{Verdadero}}}
+
+\subsection{Argumento teórico}
+
+Este caso ocurre cuando una observación combina \emph{simultáneamente}
+alto apalancamiento ($h_{tt}$ grande) y un comportamiento inconsistente
+con el patrón del resto de los datos. El punto está lejos de la media
+de los regresores (alto leverage) y, además, no sigue la relación lineal
+prevaleciente. La línea MCO intenta reducir el residual desplazándose
+hacia el punto, pero no puede eliminarlo por completo, de modo que el
+residual sigue siendo grande.
+
+\subsection{Diagnóstico operativo: la distancia de Cook}
+
+Para detectar este caso se utiliza la \textbf{distancia de Cook}:
+\begin{equation}
+  D_i = \frac{(\hat{\boldsymbol{\beta}}_{(i)} - \hat{\boldsymbol{\beta}})'
+              \mathbf{X}'\mathbf{X}
+              (\hat{\boldsymbol{\beta}}_{(i)} - \hat{\boldsymbol{\beta}})}
+             {k\,\hat{\sigma}^2},
+  \label{eq:cook}
+\end{equation}
+donde $k$ es el número de parámetros. Una $D_i$ grande señala que la
+observación $i$ es \emph{a la vez} influyente y atípica, pues requiere
+tanto un residual sustancial como un apalancamiento elevado para producir
+el desplazamiento $\hat{\boldsymbol{\beta}}_{(i)} - \hat{\boldsymbol{\beta}}$
+notable.
+
+\begin{clave}
+  \textbf{Conclusión c):} Los enunciados a), b) y c) son todos verdaderos
+  y, tomados en conjunto, muestran que atipicidad e influencia son
+  propiedades que pueden coexistir o no. El diagnóstico completo requiere
+  examinar tanto los residuales como el apalancamiento y la distancia
+  de Cook, no solo uno de estos indicadores.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Enunciado d) Si $\hat{\beta}_3$ es significativo en el modelo cuadrático,
+         se conserva $X_i$ aunque $\hat{\beta}_2$ sea insignificante}
+%------------------------------------------------------------------------------
+
+\subsection*{\textit{Veredicto: \textbf{Verdadero}}}
+
+\subsection{El principio de jerarquía en modelos polinomiales}
+
+Considérese el modelo cuadrático:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_i + \beta_3 X_i^2 + u_i.
+  \label{eq:cuadratico}
+\end{equation}
+Si $\hat{\beta}_3$ resulta estadísticamente significativo, el modelo
+contiene un término de \emph{orden superior} validado por los datos.
+El \textbf{principio de jerarquía} establece que, cuando un término
+polinomial de orden $p$ se incluye en el modelo, todos los términos
+de orden inferior ($1, X, X^2, \ldots, X^{p-1}$) deben conservarse,
+independientemente de su significancia individual.
+
+\subsection{Argumento algebraico: el efecto marginal}
+
+El efecto parcial de $X_i$ sobre $Y_i$ en el modelo~\eqref{eq:cuadratico}
+es:
+\begin{equation}
+  \frac{\partial \hat{Y}_i}{\partial X_i}
+  = \hat{\beta}_2 + 2\hat{\beta}_3 X_i.
+  \label{eq:efecto_marginal}
+\end{equation}
+Suprimir $\beta_2$ del modelo equivale a imponer la restricción
+$\beta_2 = 0$, lo que fuerza a que la pendiente sea exactamente cero
+en el punto $X_i = 0$. Esta restricción no tiene justificación
+económica general y distorsiona el efecto marginal para todos los
+valores de $X_i$, incluyendo los del interior de la muestra.
+
+\subsection{Argumento sobre la reparametrización}
+
+El término $\hat{\beta}_2$ siendo individualmente insignificante no
+implica que $X_i$ sea irrelevante; puede reflejar simplemente
+multicolinealidad entre $X_i$ y $X_i^2$. Si se elimina $X_i$ y se
+estima el modelo restringido $Y_i = \beta_1 + \beta_3 X_i^2 + u_i$,
+los estimadores de $\beta_1$ y $\beta_3$ cambian de interpretación y
+absorben parte del efecto lineal de $X_i$, produciendo sesgos en toda
+la especificación.
+
+\begin{clave}
+  \textbf{Conclusión d):} En un modelo polinomial, la significancia de
+  $\hat{\beta}_3$ basta para mantener $X_i$ en el modelo aunque
+  $\hat{\beta}_2$ sea individualmente insignificante. Eliminar el
+  término lineal impone una restricción funcional arbitraria sobre el
+  efecto marginal y sesga los demás coeficientes.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Enunciado e) La línea de regresión es la misma en niveles y en desviaciones}
+%------------------------------------------------------------------------------
+
+\subsection*{\textit{Veredicto: \textbf{Verdadero}}}
+
+\subsection{Planteamiento}
+
+Se comparan dos modelos. El \textbf{modelo en niveles}:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i,
+  \label{eq:niveles}
+\end{equation}
+y el \textbf{modelo en desviaciones respecto a la media}, con
+$x_{2i} = X_{2i} - \bar{X}_2$ y $x_{3i} = X_{3i} - \bar{X}_3$:
+\begin{equation}
+  Y_i = \alpha_1 + \beta_2 x_{2i} + \beta_3 x_{3i} + u_i.
+  \label{eq:desviaciones}
+\end{equation}
+
+\subsection{Demostración algebraica}
+
+En el modelo en desviaciones~\eqref{eq:desviaciones}, los estimadores
+MCO de las pendientes son idénticos a los de~\eqref{eq:niveles}, pues
+centrar los regresores es una transformación lineal que no altera las
+covarianzas ni las varianzas relativas entre variables. Formalmente:
+\begin{equation}
+  \hat{\beta}_j^{\text{desv}}
+  = \frac{\sum_i x_{ji}\,(Y_i - \bar{Y})}{\sum_i x_{ji}^2}
+  = \frac{\sum_i (X_{ji} - \bar{X}_j)(Y_i - \bar{Y})}
+         {\sum_i (X_{ji} - \bar{X}_j)^2}
+  = \hat{\beta}_j^{\text{niv}}, \quad j = 2, 3.
+  \label{eq:igualdad_pendientes}
+\end{equation}
+Para el intercepto, la condición de primer orden del MCO en el modelo
+en desviaciones implica que la recta pasa por $(\bar{x}_2, \bar{x}_3, \bar{Y})
+= (0, 0, \bar{Y})$, de modo que:
+\begin{equation}
+  \hat{\alpha}_1 = \bar{Y}.
+  \label{eq:intercepto_desv}
+\end{equation}
+El intercepto del modelo en niveles se obtiene de la misma condición de
+primer orden:
+\begin{equation}
+  \hat{\beta}_1 = \bar{Y} - \hat{\beta}_2\bar{X}_2 - \hat{\beta}_3\bar{X}_3.
+  \label{eq:intercepto_niv}
+\end{equation}
+Sustituyendo~\eqref{eq:intercepto_niv} y las pendientes iguales en los
+valores ajustados del modelo en niveles:
+\begin{align}
+  \hat{Y}_i^{\text{niv}}
+  &= \hat{\beta}_1 + \hat{\beta}_2 X_{2i} + \hat{\beta}_3 X_{3i} \notag\\
+  &= (\bar{Y} - \hat{\beta}_2\bar{X}_2 - \hat{\beta}_3\bar{X}_3)
+     + \hat{\beta}_2 X_{2i} + \hat{\beta}_3 X_{3i} \notag\\
+  &= \bar{Y} + \hat{\beta}_2(X_{2i} - \bar{X}_2)
+             + \hat{\beta}_3(X_{3i} - \bar{X}_3) \notag\\
+  &= \hat{\alpha}_1 + \hat{\beta}_2 x_{2i} + \hat{\beta}_3 x_{3i}
+   = \hat{Y}_i^{\text{desv}}.
+  \label{eq:igualdad_yhat}
+\end{align}
+Los valores ajustados son numéricamente idénticos en ambas
+especificaciones y, por tanto, los residuales también lo son:
+\begin{equation}
+  \hat{u}_i^{\text{niv}} = Y_i - \hat{Y}_i^{\text{niv}}
+  = Y_i - \hat{Y}_i^{\text{desv}}
+  = \hat{u}_i^{\text{desv}}.
+  \label{eq:igualdad_residuales}
+\end{equation}
+Dado que los valores ajustados y los residuales son idénticos, el
+hiperplano de regresión estimado es exactamente el mismo en ambas
+especificaciones: solo el intercepto toma un valor numérico diferente
+porque mide el nivel de $Y$ en un punto de referencia distinto
+($\mathbf{X} = \mathbf{0}$ en niveles; $\mathbf{x} = \mathbf{0}$,
+es decir, $\mathbf{X} = \bar{\mathbf{X}}$, en desviaciones).
+
+\begin{clave}
+  \textbf{Conclusión e):} Las dos especificaciones producen exactamente
+  la misma línea (hiperplano) de regresión, los mismos valores ajustados
+  y los mismos residuales. La diferencia es únicamente de reparametrización:
+  el intercepto del modelo centrado ($\hat{\alpha}_1 = \bar{Y}$) es el
+  valor ajustado en el punto de las medias, mientras que el intercepto
+  del modelo en niveles es el valor ajustado en $\mathbf{X} = \mathbf{0}$.
+  Las pendientes son numéricamente idénticas en ambos modelos.
+\end{clave}
+
+\end{document}
