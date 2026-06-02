@@ -1,0 +1,303 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.19}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries La Prueba RESET de Ramsey}\\[6pt]
+  {\LARGE\bfseries y su Equivalencia con el Modelo Cuadrático Directo}\\[12pt]
+  {\large\itshape Demostración de que detectar $\hat{\alpha}_3 \neq 0$ en RESET}\\
+  {\large\itshape equivale a estimar $Y_i = \beta_1 + \beta_2 X_i + \beta_3 X_i^2 + u_i$}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.19 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Demostración conceptual, teórica y algebraica}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Marco conceptual y teórico}
+%------------------------------------------------------------------------------
+
+\subsection{La prueba RESET: motivación}
+
+La prueba RESET (\textit{Regression Equation Specification Error Test}),
+propuesta por Ramsey (1969), es una herramienta para detectar
+\textbf{errores de especificación funcional}: en particular, la omisión
+de términos no lineales (potencias o productos cruzados de los regresores)
+en un modelo de regresión.
+
+La idea central es la siguiente. Si el modelo lineal
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_i + u_i
+  \label{eq:original}
+\end{equation}
+está \emph{correctamente especificado}, entonces ninguna transformación
+no lineal de los regresores debería tener poder explicativo adicional
+sobre $Y_i$, una vez que $X_i$ ha sido incluida. En particular, las
+potencias de los valores ajustados $\hat{Y}_i^2$, $\hat{Y}_i^3$, etc.,
+no deberían ser significativas.
+
+\subsection{¿Por qué usar potencias de $\hat{Y}_i$ en lugar de $X_i^2$ directamente?}
+
+Dado que $\hat{Y}_i = \hat{\beta}_1 + \hat{\beta}_2 X_i$ es una
+combinación lineal de los regresores originales, sus potencias son
+combinaciones de términos polinomiales en $X_i$:
+\[
+  \hat{Y}_i^2 = (\hat{\beta}_1 + \hat{\beta}_2 X_i)^2
+  = \hat{\beta}_1^2 + 2\hat{\beta}_1\hat{\beta}_2 X_i
+    + \hat{\beta}_2^2 X_i^2.
+\]
+Así, $\hat{Y}_i^2$ contiene información sobre $X_i^2$; $\hat{Y}_i^3$
+contiene información sobre $X_i^3$; y en general, $\hat{Y}_i^p$ captura
+términos polinomiales hasta el orden $p$. La ventaja operativa es que
+se resume en \emph{una sola} variable adicional la información que en
+principio requeriría añadir múltiples potencias de $X_i$, preservando
+así los grados de libertad.
+
+\subsection{Hipótesis de la prueba}
+
+La prueba RESET contrasta:
+\[
+  H_0: \alpha_3 = 0
+  \qquad \text{(forma funcional correcta)}
+  \qquad \text{vs.} \qquad
+  H_1: \alpha_3 \neq 0
+  \qquad \text{(mala especificación funcional)}.
+\]
+Si $H_0$ se rechaza, el modelo lineal~\eqref{eq:original} es inadecuado
+y se debe explorar una forma funcional más rica, en particular la
+inclusión del término $X_i^2$.
+
+%------------------------------------------------------------------------------
+\section{Planteamiento formal del procedimiento RESET}
+%------------------------------------------------------------------------------
+
+El procedimiento se desarrolla en tres etapas:
+
+\begin{enumerate}[leftmargin=1.8cm, label=\textbf{Etapa \arabic*.}]
+
+  \item \textbf{Estimar el modelo original por MCO.} Se obtienen los
+    estimadores $\hat{\beta}_1$ y $\hat{\beta}_2$, y los valores ajustados:
+    \begin{equation}
+      \hat{Y}_i = \hat{\beta}_1 + \hat{\beta}_2 X_i.
+      \label{eq:yhat}
+    \end{equation}
+
+  \item \textbf{Estimar la regresión aumentada (RESET).} Se agrega el
+    cuadrado de los valores ajustados como regresor adicional:
+    \begin{equation}
+      Y_i = \alpha_1 + \alpha_2 X_i + \alpha_3 \hat{Y}_i^2 + v_i.
+      \label{eq:reset}
+    \end{equation}
+
+  \item \textbf{Contrastar la significancia de $\hat{\alpha}_3$.}
+    Se usa la razón $t$ o la prueba $F$ para evaluar si $\alpha_3 = 0$.
+    Un rechazo indica mala especificación funcional en el modelo original.
+
+\end{enumerate}
+
+%------------------------------------------------------------------------------
+\section{Demostración algebraica de la equivalencia}
+%------------------------------------------------------------------------------
+
+\subsection{Paso 1 --- Expresión explícita de $\hat{Y}_i^2$}
+
+Partiendo de la definición~\eqref{eq:yhat}, elevamos al cuadrado:
+\begin{align}
+  \hat{Y}_i^2
+  &= \bigl(\hat{\beta}_1 + \hat{\beta}_2 X_i\bigr)^2 \notag\\
+  &= \hat{\beta}_1^2
+     + 2\hat{\beta}_1\hat{\beta}_2\, X_i
+     + \hat{\beta}_2^2\, X_i^2.
+  \label{eq:yhat2}
+\end{align}
+Esta expansión es clave: muestra que $\hat{Y}_i^2$ es una
+\emph{función exacta} de $1$, $X_i$ y $X_i^2$, con coeficientes que
+dependen exclusivamente de los estimadores MCO del modelo original.
+
+\subsection{Paso 2 --- Sustitución en la regresión RESET}
+
+Insertamos~\eqref{eq:yhat2} en el modelo aumentado~\eqref{eq:reset}:
+\begin{align}
+  Y_i
+  &= \alpha_1 + \alpha_2 X_i
+     + \alpha_3\Bigl[\hat{\beta}_1^2
+       + 2\hat{\beta}_1\hat{\beta}_2 X_i
+       + \hat{\beta}_2^2 X_i^2\Bigr]
+     + v_i.
+  \label{eq:reset_expandido}
+\end{align}
+
+\subsection{Paso 3 --- Distribución y agrupamiento por potencias de $X_i$}
+
+Distribuimos $\alpha_3$ y agrupamos los términos según su potencia
+en $X_i$:
+\begin{align}
+  Y_i
+  &= \underbrace{\bigl(\alpha_1 + \alpha_3\hat{\beta}_1^2\bigr)}_{\displaystyle\beta_1^*}
+   + \underbrace{\bigl(\alpha_2 + 2\alpha_3\hat{\beta}_1\hat{\beta}_2\bigr)}_{\displaystyle\beta_2^*}
+     X_i
+   + \underbrace{\alpha_3\hat{\beta}_2^2}_{\displaystyle\beta_3^*}
+     X_i^2
+   + v_i.
+  \label{eq:agrupado}
+\end{align}
+
+\subsection{Paso 4 --- Identificación de los nuevos parámetros}
+
+Definimos los coeficientes reparametrizados como:
+\begin{align}
+  \beta_1^* &= \alpha_1 + \alpha_3\hat{\beta}_1^2,
+  \label{eq:beta1star}\\
+  \beta_2^* &= \alpha_2 + 2\alpha_3\hat{\beta}_1\hat{\beta}_2,
+  \label{eq:beta2star}\\
+  \beta_3^* &= \alpha_3\hat{\beta}_2^2.
+  \label{eq:beta3star}
+\end{align}
+Con estas definiciones, la ecuación~\eqref{eq:agrupado} se escribe como:
+\begin{equation}
+  \boxed{Y_i = \beta_1^* + \beta_2^* X_i + \beta_3^* X_i^2 + v_i,}
+  \label{eq:cuadratico}
+\end{equation}
+que es precisamente el modelo cuadrático directo que el ejercicio pide
+demostrar. \hfill $\blacksquare$
+
+%------------------------------------------------------------------------------
+\section{Interpretación de la equivalencia}
+%------------------------------------------------------------------------------
+
+\subsection{Equivalencia entre $\hat{\alpha}_3 \neq 0$ y $\hat{\beta}_3^* \neq 0$}
+
+La relación~\eqref{eq:beta3star} establece:
+\[
+  \beta_3^* = \alpha_3 \cdot \hat{\beta}_2^2.
+\]
+Dado que $\hat{\beta}_2^2 > 0$ siempre que $\hat{\beta}_2 \neq 0$
+(es decir, siempre que $X_i$ sea relevante en el modelo original),
+se cumple la equivalencia:
+\begin{equation}
+  \alpha_3 \neq 0
+  \quad \Longleftrightarrow \quad
+  \beta_3^* \neq 0.
+  \label{eq:equivalencia}
+\end{equation}
+Por tanto, \textbf{rechazar $H_0: \alpha_3 = 0$ en la regresión RESET
+es exactamente equivalente a rechazar $H_0: \beta_3^* = 0$ en el modelo
+cuadrático directo}~\eqref{eq:cuadratico}. La prueba RESET detecta la
+omisión de $X_i^2$ de manera \emph{indirecta} a través del cuadrado
+de los valores ajustados, sin necesidad de especificar \textit{a priori}
+qué término no lineal fue omitido.
+
+\subsection{Lo que la significancia de $\hat{\alpha}_3$ revela}
+
+Si $\hat{\alpha}_3$ es estadísticamente significativa en la regresión
+aumentada~\eqref{eq:reset}, se concluye que:
+
+\begin{enumerate}[leftmargin=1.6cm, label=\textbf{\arabic*.}]
+  \item El modelo lineal~\eqref{eq:original} está \textbf{mal especificado}:
+    omite al menos el término cuadrático $X_i^2$.
+  \item La relación verdadera entre $Y_i$ y $X_i$ es \textbf{no lineal},
+    y puede ser aproximada por el modelo cuadrático~\eqref{eq:cuadratico}.
+  \item Los estimadores MCO del modelo original ($\hat{\beta}_1$,
+    $\hat{\beta}_2$) son \textbf{sesgados e inconsistentes} debido a la
+    omisión del término $X_i^2$.
+\end{enumerate}
+
+\subsection{Lo que la no significancia de $\hat{\alpha}_3$ implica}
+
+Si $\hat{\alpha}_3$ no resulta significativa, no hay evidencia en los
+datos de que el modelo lineal sea inadecuado \emph{frente a la alternativa
+cuadrática}. Sin embargo, es importante notar que la prueba RESET con
+$\hat{Y}_i^2$ únicamente contrasta contra alternativas polinomiales
+de segundo grado; no detecta todas las posibles formas de mala
+especificación (por ejemplo, relaciones logarítmicas o exponenciales
+que no sean bien aproximadas por un polinomio de segundo orden).
+
+\subsection{Comparación entre el procedimiento RESET y la estimación directa}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{4.0cm} p{4.5cm} p{4.5cm}}
+\toprule
+\textbf{Criterio} & \textbf{Modelo RESET} & \textbf{Modelo cuadrático directo} \\
+\midrule
+Variables explicativas
+  & $X_i$ y $\hat{Y}_i^2$
+  & $X_i$ y $X_i^2$ \\
+Hipótesis contrastada
+  & $H_0: \alpha_3 = 0$
+  & $H_0: \beta_3^* = 0$ \\
+Equivalencia
+  & \multicolumn{2}{c}{$\alpha_3 \neq 0 \;\Leftrightarrow\; \beta_3^* \neq 0$
+    (siempre que $\hat{\beta}_2 \neq 0$)} \\
+Ventaja operativa
+  & Una sola variable adicional resume $X_i^2$ sin especificarla \textit{a priori}
+  & Requiere conocer \textit{a priori} que $X_i^2$ es el término omitido \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{clave}
+  \textbf{Conclusión:} La sustitución algebraica de $\hat{Y}_i^2$ en la
+  regresión RESET revela que el término adicional no es más que una
+  combinación lineal de $1$, $X_i$ y $X_i^2$. Al agrupar los coeficientes
+  se obtiene exactamente el modelo cuadrático
+  $Y_i = \beta_1^* + \beta_2^* X_i + \beta_3^* X_i^2 + v_i$,
+  con $\beta_3^* = \alpha_3\hat{\beta}_2^2$.
+  Dado que $\hat{\beta}_2^2 > 0$, la significancia de $\alpha_3$ en el
+  RESET es condición necesaria y suficiente para la significancia de
+  $\beta_3^*$ en el modelo directo. La prueba RESET es, por tanto, una
+  prueba \emph{implícita} de la relevancia de $X_i^2$, con la ventaja
+  de no requerir que el investigador especifique de antemano qué término
+  no lineal ha sido omitido.
+\end{clave}
+
+\end{document}
