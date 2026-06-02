@@ -1,0 +1,339 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins, breakable}
+
+\geometry{top=2.8cm, bottom=3.0cm, left=3.2cm, right=3.2cm, headheight=14pt}
+\setstretch{1.20}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\textsc{Econometría --- Gujarati --- Ejercicio 13.11}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape}{\thesection.}{0.6em}{}
+  [\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
+
+\newtcolorbox{clave}{
+  colback=white, colframe=black,
+  boxrule=0.5pt, arc=3pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable
+}
+
+\newcommand{\plim}{\operatorname{plim}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\E}{\operatorname{E}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Errores de Medición en la Variable Explicativa}\\[6pt]
+  {\LARGE\bfseries y sus Efectos sobre los Estimadores MCO}\\[12pt]
+  {\large\itshape Cambio de origen, cambio de escala y error}\\
+  {\large\itshape clásico de medición (Classical Errors-in-Variables)}\\[14pt]
+  \rule{0.55\linewidth}{0.6pt}\\[8pt]
+  {\normalsize Ejercicio~13.11 --- \textit{Econometría}, Gujarati \& Porter, 5.a ed.}\\[4pt]
+  {\small\textsc{Análisis conceptual, teórico y algebraico}}
+\end{center}
+
+\vspace{10pt}
+
+%------------------------------------------------------------------------------
+\section{Planteamiento del problema}
+%------------------------------------------------------------------------------
+
+Se considera el modelo poblacional \emph{verdadero}:
+\begin{equation}
+  Y_i = \beta_1 + \beta_2 X_i^* + u_i
+  \label{eq:modelo_verdadero}
+\end{equation}
+donde $X_i^*$ es la variable explicativa \textbf{real pero no observable},
+y $u_i$ es el término de perturbación que satisface las propiedades clásicas:
+\[
+  \E[u_i] = 0, \qquad \Cov(X_i^*, u_i) = 0, \qquad \Var(u_i) = \sigma_u^2.
+\]
+En la práctica, $X_i^*$ no se observa directamente. En su lugar se utiliza
+un \emph{sustituto medido} $X_i$ que puede diferir de $X_i^*$ de tres formas.
+El objetivo es determinar cómo cada tipo de error de medición afecta las
+propiedades de los estimadores MCO de $\beta_1$ y $\beta_2$.
+
+%------------------------------------------------------------------------------
+\section{Caso a) Cambio de origen: $X_i = X_i^* + 5$}
+%------------------------------------------------------------------------------
+
+\subsection{Análisis algebraico}
+
+Si la variable medida satisface $X_i = X_i^* + 5$, podemos despejar la
+variable verdadera:
+\[
+  X_i^* = X_i - 5.
+\]
+Sustituyendo en~\eqref{eq:modelo_verdadero}:
+\begin{align}
+  Y_i &= \beta_1 + \beta_2\,(X_i - 5) + u_i \notag\\
+      &= \beta_1 + \beta_2 X_i - 5\beta_2 + u_i \notag\\
+      &= \underbrace{(\beta_1 - 5\beta_2)}_{\beta_1^*} + \beta_2 X_i + u_i.
+  \label{eq:caso_a}
+\end{align}
+El modelo reparametrizado~\eqref{eq:caso_a} es un modelo de regresión
+lineal clásico en la variable \emph{observable} $X_i$ con los supuestos
+del modelo clásico plenamente satisfechos, pues el error compuesto sigue
+siendo $u_i$, independiente de $X_i$.
+
+\subsection{Efectos sobre los estimadores MCO}
+
+\textbf{Sobre $\beta_2$ (pendiente):} El coeficiente que acompaña a $X_i$
+en~\eqref{eq:caso_a} es exactamente $\beta_2$. Por tanto, el estimador
+MCO $\hat{\beta}_2$ es un estimador \textbf{insesgado y consistente} del
+verdadero $\beta_2$. Un cambio de origen en la variable independiente no
+altera la pendiente.
+
+\textbf{Sobre $\beta_1$ (intercepto):} El estimador MCO converge al nuevo
+intercepto $\beta_1^* = \beta_1 - 5\beta_2$, \emph{no} al verdadero
+$\beta_1$. Por tanto:
+\[
+  \E[\hat{\beta}_1] = \beta_1 - 5\beta_2 \neq \beta_1,
+\]
+lo que implica que $\hat{\beta}_1$ es un estimador \textbf{sesgado} de
+$\beta_1$. Sin embargo, si el investigador conoce el desplazamiento (5 en
+este caso), puede recuperar el verdadero intercepto mediante:
+\[
+  \hat{\beta}_1^{\text{corr}} = \hat{\beta}_1 + 5\hat{\beta}_2.
+\]
+
+\begin{clave}
+  \textbf{Resumen del caso a):}\\
+  $\hat{\beta}_2$: \textbf{insesgado y consistente} $\Rightarrow$ ningún
+  problema para la pendiente.\\
+  $\hat{\beta}_1$: \textbf{sesgado} en $-5\beta_2$ $\Rightarrow$ el
+  intercepto original \emph{no} se recupera directamente.\\
+  La relación marginal entre $Y$ y $X^*$ se preserva; solo cambia el nivel
+  del intercepto.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Caso b) Cambio de escala: $X_i = 3X_i^*$}
+%------------------------------------------------------------------------------
+
+\subsection{Análisis algebraico}
+
+Si la variable medida es $X_i = 3X_i^*$, entonces:
+\[
+  X_i^* = \frac{X_i}{3}.
+\]
+Sustituyendo en~\eqref{eq:modelo_verdadero}:
+\begin{align}
+  Y_i &= \beta_1 + \beta_2\,\frac{X_i}{3} + u_i \notag\\
+      &= \beta_1 + \underbrace{\frac{\beta_2}{3}}_{\beta_2^*} X_i + u_i.
+  \label{eq:caso_b}
+\end{align}
+Nuevamente el modelo en términos de $X_i$ cumple todos los supuestos
+clásicos, con $u_i$ independiente de $X_i$.
+
+\subsection{Efectos sobre los estimadores MCO}
+
+\textbf{Sobre $\beta_1$ (intercepto):} El intercepto no se ve afectado
+por el cambio de escala. El estimador MCO satisface
+$\E[\hat{\beta}_1] = \beta_1$, es decir, es \textbf{insesgado y consistente}.
+
+\textbf{Sobre $\beta_2$ (pendiente):} El estimador MCO converge al nuevo
+coeficiente de escala:
+\[
+  \E[\hat{\beta}_2^*] = \frac{\beta_2}{3} \neq \beta_2.
+\]
+El verdadero $\beta_2$ puede recuperarse mediante:
+\[
+  \hat{\beta}_2^{\text{corr}} = 3\,\hat{\beta}_2^*.
+\]
+Intuitivamente, si se mide $X^*$ en unidades tres veces más grandes, el
+efecto de un incremento unitario en $X_i$ sobre $Y_i$ es la tercera parte
+del efecto real sobre $X_i^*$.
+
+\textbf{Sobre la inferencia estadística:} Los estadísticos $t$ y $F$, así
+como el $R^2$ y $\bar{R}^2$, \textbf{no se ven afectados} por el cambio de
+escala. La significancia estadística de los coeficientes se preserva porque
+los errores estándar se escalan de la misma forma que los coeficientes,
+de modo que la razón $t = \hat{\beta}/\text{ee}(\hat{\beta})$ permanece
+inalterada.
+
+\begin{clave}
+  \textbf{Resumen del caso b):}\\
+  $\hat{\beta}_1$: \textbf{insesgado y consistente} $\Rightarrow$ ningún
+  problema para el intercepto.\\
+  $\hat{\beta}_2$: \textbf{sesgado} en un factor de $1/3$ $\Rightarrow$
+  subestima el efecto marginal real.\\
+  Los estadísticos de prueba y el ajuste $R^2$ no cambian; sólo el valor
+  numérico del coeficiente de pendiente se escala.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Caso c) Error clásico de medición (CEV): $X_i = X_i^* + \varepsilon_i$}
+%------------------------------------------------------------------------------
+
+Este es el escenario más grave y econométricamente relevante.
+Se conoce como el \textbf{Modelo Clásico de Errores en las Variables}
+(\textit{Classical Errors-in-Variables}, CEV).
+
+\subsection{Supuestos sobre el error de medición}
+
+El término $\varepsilon_i$ es un error puramente aleatorio con las
+propiedades usuales:
+\[
+  \E[\varepsilon_i] = 0, \qquad
+  \Var(\varepsilon_i) = \sigma_\varepsilon^2, \qquad
+  \Cov(X_i^*, \varepsilon_i) = 0, \qquad
+  \Cov(u_i, \varepsilon_i) = 0.
+\]
+
+\subsection{Análisis algebraico}
+
+Despejando $X_i^* = X_i - \varepsilon_i$ y sustituyendo en~\eqref{eq:modelo_verdadero}:
+\begin{align}
+  Y_i &= \beta_1 + \beta_2\,(X_i - \varepsilon_i) + u_i \notag\\
+      &= \beta_1 + \beta_2 X_i + \underbrace{(u_i - \beta_2\,\varepsilon_i)}_{v_i}.
+  \label{eq:caso_c}
+\end{align}
+El nuevo término de error compuesto es $v_i = u_i - \beta_2\,\varepsilon_i$.
+
+\subsection{Violación del supuesto de exogeneidad}
+
+El problema central surge porque $X_i = X_i^* + \varepsilon_i$ y
+$v_i = u_i - \beta_2\,\varepsilon_i$ comparten el término $\varepsilon_i$.
+Calculamos la covarianza entre el regresor observable y el error compuesto:
+\begin{align}
+  \Cov(X_i, v_i)
+    &= \Cov\!\bigl(X_i^* + \varepsilon_i,\; u_i - \beta_2\,\varepsilon_i\bigr) \notag\\
+    &= \Cov(X_i^*, u_i) - \beta_2\,\Cov(X_i^*, \varepsilon_i)
+       + \Cov(\varepsilon_i, u_i) - \beta_2\,\Var(\varepsilon_i) \notag\\
+    &= 0 - \beta_2 \cdot 0 + 0 - \beta_2\,\sigma_\varepsilon^2 \notag\\
+    &= -\beta_2\,\sigma_\varepsilon^2 \neq 0.
+  \label{eq:cov_no_nula}
+\end{align}
+Esto viola directamente el supuesto MCO de que los regresores son
+ortogonales al error. El estimador MCO es, por tanto, \textbf{sesgado e
+inconsistente}.
+
+\subsection{Sesgo de atenuación y límite de probabilidad}
+
+El límite de probabilidad del estimador MCO de la pendiente se obtiene
+aplicando la ley de los grandes números:
+\begin{align}
+  \plim\,\hat{\beta}_2
+    &= \frac{\Cov(X_i, Y_i)}{\Var(X_i)}
+     = \frac{\Cov(X_i,\; \beta_1 + \beta_2 X_i + v_i)}{\Var(X_i)} \notag\\
+    &= \beta_2 + \frac{\Cov(X_i, v_i)}{\Var(X_i)}
+     = \beta_2 - \frac{\beta_2\,\sigma_\varepsilon^2}{\sigma_{X^*}^2 + \sigma_\varepsilon^2} \notag\\
+    &= \beta_2 \left(\frac{\sigma_{X^*}^2}{\sigma_{X^*}^2 + \sigma_\varepsilon^2}\right).
+  \label{eq:plim}
+\end{align}
+Definiendo el \emph{cociente de confiabilidad} (\textit{reliability ratio})
+como:
+\[
+  \lambda = \frac{\sigma_{X^*}^2}{\sigma_{X^*}^2 + \sigma_\varepsilon^2}
+  \in (0, 1),
+\]
+se obtiene:
+\begin{equation}
+  \plim\,\hat{\beta}_2 = \lambda\,\beta_2.
+  \label{eq:atenuacion}
+\end{equation}
+Como $0 < \lambda < 1$, el estimador MCO converge a un valor con
+\textbf{menor valor absoluto que el verdadero $\beta_2$}. Este fenómeno
+se conoce como \textbf{sesgo de atenuación} (\textit{attenuation bias}):
+la pendiente se «atenúa» o «encoge» hacia cero. El sesgo \emph{no desaparece}
+al aumentar el tamaño muestral (es un problema de consistencia, no solo de
+muestras finitas).
+
+\subsection{Efecto sobre el intercepto}
+
+A partir del resultado~\eqref{eq:atenuacion}, el límite de probabilidad
+del estimador del intercepto es:
+\begin{align}
+  \plim\,\hat{\beta}_1
+    &= \plim\!\bigl(\bar{Y} - \hat{\beta}_2\,\bar{X}\bigr)
+     = \E[Y_i] - \lambda\,\beta_2\,\E[X_i] \notag\\
+    &= (\beta_1 + \beta_2\,\mu_{X^*}) - \lambda\,\beta_2\,\mu_{X^*} \notag\\
+    &= \beta_1 + \beta_2\,\mu_{X^*}\,(1 - \lambda)
+     \neq \beta_1,
+\end{align}
+donde $\mu_{X^*} = \E[X_i^*]$. El intercepto también es \textbf{inconsistente}
+como consecuencia de la inconsistencia del estimador de la pendiente. El
+sesgo en $\hat{\beta}_1$ es de signo opuesto al de $\beta_2\,(1-\lambda)$.
+
+\begin{clave}
+  \textbf{Resumen del caso c):}\\
+  $\hat{\beta}_2$: \textbf{sesgado e inconsistente} con
+  $\plim\,\hat{\beta}_2 = \lambda\,\beta_2$, donde $\lambda \in (0,1)$.
+  El estimador \emph{subestima} (en valor absoluto) el verdadero efecto.\\
+  $\hat{\beta}_1$: \textbf{sesgado e inconsistente} por propagación del
+  error de la pendiente.\\
+  La causa raíz es la correlación no nula $\Cov(X_i, v_i) = -\beta_2\sigma_\varepsilon^2$,
+  que viola el supuesto fundamental de exogeneidad del MCO.
+\end{clave}
+
+%------------------------------------------------------------------------------
+\section{Síntesis comparativa}
+%------------------------------------------------------------------------------
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabular}{p{3.6cm} p{3.5cm} p{3.5cm} p{3.0cm}}
+\toprule
+\textbf{Tipo de error} & \textbf{Efecto sobre $\hat{\beta}_2$} & \textbf{Efecto sobre $\hat{\beta}_1$} & \textbf{Gravedad} \\
+\midrule
+a)\ $X_i = X_i^* + 5$ \newline (cambio de origen)
+  & Insesgado y consistente \newline ($\hat{\beta}_2 \to \beta_2$)
+  & Sesgado en $-5\beta_2$ \newline (recuperable si se conoce el desplazamiento)
+  & Leve \\
+\midrule
+b)\ $X_i = 3X_i^*$ \newline (cambio de escala)
+  & Sesgado en factor $1/3$ \newline (recuperable si se conoce la escala)
+  & Insesgado y consistente \newline ($\hat{\beta}_1 \to \beta_1$)
+  & Leve \\
+\midrule
+c)\ $X_i = X_i^* + \varepsilon_i$ \newline (error aleatorio)
+  & Sesgado e inconsistente; $\plim\,\hat{\beta}_2 = \lambda\beta_2 < |\beta_2|$
+  & Sesgado e inconsistente
+  & \textbf{Grave} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{6pt}
+\begin{clave}
+  \textbf{Conclusión general:} Los casos a) y b) implican errores de
+  medición \emph{sistemáticos y conocidos}; afectan alguno de los parámetros
+  pero los efectos son recuperables. El caso c), en cambio, introduce un
+  error \emph{aleatorio} que genera endogeneidad del regresor observable,
+  produciendo estimadores MCO sesgados e inconsistentes para ambos parámetros.
+  Los remedios habituales incluyen el uso de \textbf{Variables Instrumentales}
+  (VI) o \textbf{Mínimos Cuadrados en Dos Etapas} (MC2E), que requieren
+  instrumentos correlacionados con $X_i^*$ pero ortogonales a $\varepsilon_i$.
+\end{clave}
+
+\end{document}
