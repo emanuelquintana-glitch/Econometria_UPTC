@@ -327,6 +327,45 @@ donde $D_{1i}$ toma el valor de 1 para los estados del oeste 0 para los de otras
 
 Para evitar este problema, se debe incluir solo $m_-1$ varibales dicotomas para una variable cualitativa con $m$ categorias. En este caso, como la variable cualitatica "region" tiene tres categorias, se deben incluir solo dos variables dicotomas ($D_{2}$ y $D_{3}$).
 
+Ademas, es importante destacar que la categoria a la cual no se asigna variable dicotoma se conoce como categoria base, de comparacion, de control, de referencia u omitida.
+El valor del intercepto ($\alpha$) representa el valor medio de la categoria de comparacion.
+Los coeficientes asociados a las variables dicotomas se conocen como coeficientes de intercepto diferencial, ya que indican la medida en que el valor de la categoria que recibe el valor de 1 difiere del coeficiente de intercepto correspondiente a la categoria de comparacion.
+
+El uso correcto de variables dicotomas en modelos de regresion es un tema fundamental en la estadistica y el analisis de datos. Autores como Wooldridge (2016) y Greene (2018) proporcionan una cobertura exhaustiva de este tema en sus libros de texto. El debate actual se centra en la importancia de considerar la multicolinealidad y la colinealidad perfecta al incluir varibales dicotomas en modelos de regresion.
+
+Un modelo ANOVA con dos variables cualitativas es una tecnica estadistica que permite comparar la media de una variable continua en diferentes grupos definidos pr dos variables cualitativas, mientras que controla el efecto de cada variable cualitativa.
+
+** Modelo ANCOVA
+
+Los modelos de analisis de covarianza (ANCOVA) son una generalizacion de los modelos ANOVA que permitten controlar estadisticamente los efectos de variables cunatitativas y cualitativas en un modelo, lo que es util para analizar la relacion entre una variable dependiente y variables independiemtes.
+
+El modleo ANCOVA se puede representar mediante la ecuacion:
+
+$$Y_{i} = \beta_{1} + \beta_{2}D_{2i} + \beta_{3}D_{3i} + \beta_{4}X_{}_{i}$$
+donde $Y_{i}$ es la vaeiable dependiente, $D_{2i}$ y $D_{3i}$ son variables cualitativas (dicotomas), $X_{i}$ es la variable cuantitativa (covariante) y $u_{i}$ es el termino de error.
+
+En el ejemplo proporcionado, el modelo ANCOVA se utiliza para analizar la relacion entre el salario promedio de los maestros de escuelas publicas y la region, teniendo en cuenta el gasto en escuelas publicas por alumno como covariante. Los resultantes del modelo muestran que, ceteris paribus, un aumento de un dolar en el gasto publico por alumno se asocia con un aumento de $2.34 en el salario de los maestros de escuela publica.
+
+La ecuacion de regresion ajustada es:
+
+$$\hat{Y}_{i} = 28694.918 - 2954.127D_{2i} - 3112.194D_{3i} + 2.3404X_{i}$$
+
+donde $D_{2i}$ y $D_{3i}$ son las variables cualitativas que representan la region, y $X_{i}$ es la variable cuantitativa que representa el gasto en escuelas publicas por alumno.
+
+Los modelos ANCOVA son ampliamente utilizados en diversas disciplinas, incluyendo la estadistica, la economia, la psicologia y la medicina. Estos modelos son particularmente utiles cuando se necesita controlar los efectos de variables cuantitativas y cualitativas en un modelo.
+
+Algunos autores clave que han contribuido al desarrollo de los modelos ANCOVA incluyendo a Ronal Fisher, quien introdujo el concepto de analisis de varianza (ANOVA), y a otros investigadores que han extendido y generalizado este enfoque para incluir variables cuantitativas y cualitativas.
+
+EL debate actual en torno a los modelos ANCOVA se centra en la eleccion de la covariante y la forma en que se debe incluir en el modelo. Algunos investigadores argumentan que la covariante debe ser una variable cuantitativa que se relacione con la variable dependiente, mientras que otros argumentan que la covariante puede ser una variable cualitativa o una combinacion de variables cuantitativas y cualitativas.
+
+A esto se unen algunos puntos criticos entre ellos hay supuestos subyacentes, los modelos ANCOVA asumen que la relacion entre la variable dependiente y la covarianza es lineal, y que la covariante no esta relacionada con la variable dependiente a traves de una variable intermediaria.
+
+Los modelos ANCOVA pueden ser sensible a la eleccion de la covariante y la forma en que se incluye en el modelo. Ademas, los modelos no sean lineales o que tengan una relacion compleja entre las variables. En estos casos, se pueden utilizzar modelos alternativos, como los modelos de regresion no lineal o los modelos de efectos mixtos.
+
+*** 9.5 La variable dicotoma alternativa a la prueba de Chow
+
+
+
 * Referencias
 
 - Gujarati, D. N., & Porter, D. C. (2010). /Econometría/ (5.ª ed.).
