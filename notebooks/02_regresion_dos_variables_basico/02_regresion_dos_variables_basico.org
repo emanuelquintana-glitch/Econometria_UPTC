@@ -12,3 +12,5 @@ donde $Y$ es la variable dependiente, $X$ es la variable ecplicativa, $\beta_{0}
 En el ejemplo hipotetico presentado, se tienen 60 familias con ingresos semanales ($X$) y gastos de consumo semanales ($Y$) en dolares.
 
 La ecuacion de regresion se puede estimar mediante el metodo de los minimos cuadrados, que busca minimizar la suma de los cuadrados de los errores:
+
+$$S = \sum_{}_{i=1}^{n }(Y_{i} - \beta_{0} - \beta_{1}X_{i}_{})^{2}$$
