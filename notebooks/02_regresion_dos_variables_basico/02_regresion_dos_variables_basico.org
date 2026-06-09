@@ -14,3 +14,5 @@ En el ejemplo hipotetico presentado, se tienen 60 familias con ingresos semanale
 La ecuacion de regresion se puede estimar mediante el metodo de los minimos cuadrados, que busca minimizar la suma de los cuadrados de los errores:
 
 $$S = \sum_{}_{i=1}^{n }(Y_{i} - \beta_{0} - \beta_{1}X_{i}_{})^{2}$$
+
+donde $n$ es el numero de observaciones. Al tomar las derivadas parciales de $S$ con respecto a $\beta_{0}$ y $\beta_{1}$ y estabñecerlas iguales a cero, se pueden obtener las ecuaciones normales:
