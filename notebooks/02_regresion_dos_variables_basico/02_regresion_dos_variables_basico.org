@@ -10,3 +10,5 @@ $$Y = \beta_{0} + \beta_{1}X + \epsilon$$
 donde $Y$ es la variable dependiente, $X$ es la variable ecplicativa, $\beta_{0}$ es ek intercepto, $\beta_{1}$ es el coeficiente de regresion y $\epsilon$ es el error aleatorio. El objetico es encontrar los valores de $\beta_{0}$ y $\beta_{1}$ que minimicen la suma de los cuadrados de los errores.
 
 En el ejemplo hipotetico presentado, se tienen 60 familias con ingresos semanales ($X$) y gastos de consumo semanales ($Y$) en dolares.
+
+La ecuacion de regresion se puede estimar mediante el metodo de los minimos cuadrados, que busca minimizar la suma de los cuadrados de los errores:
