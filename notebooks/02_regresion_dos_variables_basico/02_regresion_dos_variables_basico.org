@@ -1,1 +1,1 @@
-#+TITLE:
+#+TITLE: Analisis de regresion con dos variables: algunas ideas basicas.
