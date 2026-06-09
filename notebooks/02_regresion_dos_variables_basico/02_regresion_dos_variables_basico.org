@@ -1,2 +1,4 @@
 #+TITLE: Analisis de regresion con dos variables: algunas ideas basicas.
 #+DATE: <2026-06-09 Tue>
+
+El analisis de regresion con dos variables se enfoca en la relacion entre una variable dependiente y una variable explicativa, con el objetivo de estimar o predecir el valor promedio de la variable dependiente en funcion de los valores conocidos de la variable explicativa.
