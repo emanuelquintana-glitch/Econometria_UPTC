@@ -7,4 +7,4 @@ El analisis de regresion bivariable se puede representar mediante la ecuacion:
 
 $$Y = \beta_{0} + \beta_{1}X + \epsilon$$
 
-donde $Y$ es la variable dependiente, $X$ es la variable ecplicativa, $\beta_{0}$ es ek intercepto, $\beta_{1}$ es el coeficiente de regresion y $\epsilon$ es el error aleatorio.
+donde $Y$ es la variable dependiente, $X$ es la variable ecplicativa, $\beta_{0}$ es ek intercepto, $\beta_{1}$ es el coeficiente de regresion y $\epsilon$ es el error aleatorio. El objetico es encontrar los valores de $\beta_{0}$ y $\beta_{1}$ que minimicen la suma de los cuadrados de los errores.
