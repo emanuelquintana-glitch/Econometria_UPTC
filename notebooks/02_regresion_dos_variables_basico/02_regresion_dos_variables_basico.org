@@ -16,3 +16,5 @@ La ecuacion de regresion se puede estimar mediante el metodo de los minimos cuad
 $$S = \sum_{}_{i=1}^{n }(Y_{i} - \beta_{0} - \beta_{1}X_{i}_{})^{2}$$
 
 donde $n$ es el numero de observaciones. Al tomar las derivadas parciales de $S$ con respecto a $\beta_{0}$ y $\beta_{1}$ y estabñecerlas iguales a cero, se pueden obtener las ecuaciones normales:
+
+$$\sum_{i=1}^{n} Y_i = n\beta_0 + \beta_1 \sum_{i=1}^{n} X_i$$
