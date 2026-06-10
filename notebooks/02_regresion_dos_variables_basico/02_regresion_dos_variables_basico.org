@@ -28,4 +28,4 @@ El analisis de regresion es una tecnica estadistica ampliamente utilizada en div
 
 
 
-** Concepto de funcion de regresion (FRP)
+* Concepto de funcion de regresion (FRP)
