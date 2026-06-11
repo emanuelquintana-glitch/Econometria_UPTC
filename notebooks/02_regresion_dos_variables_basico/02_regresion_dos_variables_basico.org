@@ -30,3 +30,5 @@ El analisis de regresion es una tecnica estadistica ampliamente utilizada en div
 La funcion de regresion poblacional (FRP) describe la relacion funcional entre la media condicional de una variable dependiente Y yna variable explicativa X, y se puede representar mediante la ecuacion $E(Y | X_{i}) = f(x_{i})$
 
 La funcion de regresion poblacional se define como la esperanza condicional de la varivale dependiente Y dado un valor especifico de la variable explicativa X, es decir $E(Y | X_{i})$. Esta funcion se puede representar de la siguiente manera:
+
+$$E(Y | X_{i}) = f(X_{i})$$
