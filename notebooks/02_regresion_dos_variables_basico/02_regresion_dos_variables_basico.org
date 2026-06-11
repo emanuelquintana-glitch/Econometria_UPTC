@@ -41,3 +41,5 @@ donde  $\beta_{1}$ y $\beta_{2}$ son parametros no conocidos pero fijos decir, d
 
 $$E(Y | X_{i}) \beta_{1} + \beta_{2}X_{i}$$
 donde $Y$ es el consumo y $X_{i}$ es el ingreso.
+
+La funcion de regresion poblacional es un concepto fundamental en la estadistica y la econometria. La idea de modelar la relacion entre variables fue introducida por primera vez por Carl Friedrich Gauss y Pierre-Simon Laplace en el siglo XIX. Sin embargo, no fue hasta el siglo XX que la funcion de regresion poblacional se convirtio en un tema de estudio importante en la estadistica y la econometria.
