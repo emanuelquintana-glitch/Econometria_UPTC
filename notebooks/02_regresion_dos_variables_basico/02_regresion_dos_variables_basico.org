@@ -32,3 +32,5 @@ La funcion de regresion poblacional (FRP) describe la relacion funcional entre l
 La funcion de regresion poblacional se define como la esperanza condicional de la varivale dependiente Y dado un valor especifico de la variable explicativa X, es decir $E(Y | X_{i})$. Esta funcion se puede representar de la siguiente manera:
 
 $$E(Y | X_{i}) = f(X_{i})$$
+
+donde $f(X_{i})$ denota una funcion de la variable explicativa X. Un ejemplo comun es la funcion lineal donde la relacion entre la media condicional y la variable explicativa se puede representar mediante la ecuacion:
