@@ -51,3 +51,6 @@ Algunos autores clave en el desarrollo de la teoria de regresion incluyen:
 - Jan Tinbergen: quien aplico la regresion lineal en la economia y desarrollo la teoria de la regresion multiple.
 
 EL debate actual en la literatura se centra en la seleccion de modleos, la validacion de supuestos y la interpretacion de los resultados. Ademas, la creciente disponibilidad de datos y la capacidad de procesamineto han llevado al desarrollo de nuevos metodos y tecnicas para la regresion, como la regresion no lineal y la regresion conrestricciones.
+
+
+** Significado del termino lineal
