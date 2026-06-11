@@ -48,3 +48,4 @@ Algunos autores clave en el desarrollo de la teoria de regresion incluyen:
 
 - Carl Friedrich Gauss: quien introdujo el concepto de regresion lineal.
 - Pierre-Simon Laplace: quien trabajo en la teoria de la regresion lineal.
+- Jan Tinbergen: quien aplico la regresion lineal en la economia y desarrollo la teoria de la regresion multiple.
