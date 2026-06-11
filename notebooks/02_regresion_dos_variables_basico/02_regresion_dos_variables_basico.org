@@ -34,3 +34,5 @@ La funcion de regresion poblacional se define como la esperanza condicional de l
 $$E(Y | X_{i}) = f(X_{i})$$
 
 donde $f(X_{i})$ denota una funcion de la variable explicativa X. Un ejemplo comun es la funcion lineal donde la relacion entre la media condicional y la variable explicativa se puede representar mediante la ecuacion:
+
+$$E(Y | X_{i}) = \beta_{1} + \beta_{2}X_{i}$$
