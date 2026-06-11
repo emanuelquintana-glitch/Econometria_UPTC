@@ -26,3 +26,7 @@ Resolviendo este tema de ecuaciones, se pueden obtener los estimadores de $\beta
 El analisis de regresion es una tecnica estadistica ampliamente utilizada en diversas disciplinas, como la economia, la sociologia, la psicologia y la medicina. Algunos autores clave en el desarrollo de la regresion lineal son Karl Pearson, Francis Galton y Ronald Fisher. En la actualidad, el analisis de regresion se utiliza en una variedad de aplicaciones, desde la prediccion de resultados en la medicina hasta la evaluacion de politicas economicas.
 
 * Concepto de funcion de regresion (FRP)
+
+La funcion de regresion poblacional (FRP) describe la relacion funcional entre la media condicional de una variable dependiente Y yna variable explicativa X, y se puede representar mediante la ecuacion $E(Y | X_{i}) = f(x_{i})$
+
+La funcion de regresion poblacional se define como la esperanza condicional de la varivale dependiente
