@@ -38,3 +38,6 @@ donde $f(X_{i})$ denota una funcion de la variable explicativa X. Un ejemplo com
 $$E(Y | X_{i}) = \beta_{1} + \beta_{2}X_{i}$$
 
 donde  $\beta_{1}$ y $\beta_{2}$ son parametros no conocidos pero fijos decir, depende de la naturaleza de los datos y no se puede determinar a priori. Sin embargo en algunos casos, la teoria puede proporcionar alguna guia sobre la forma que puede adoptar la funcion. Por ejemplo, en economia, se puede supone que el consumo tiene una relacion lineal con el ingreso, lo que lleva a la ecuacion:
+
+$$E(Y | X_{i}) \beta_{1} + \beta_{2}X_{i}$$
+donde $Y$ es el consumo y $X_{i}$ es el ingreso.
