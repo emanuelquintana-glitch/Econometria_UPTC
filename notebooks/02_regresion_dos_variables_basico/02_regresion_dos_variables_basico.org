@@ -76,3 +76,5 @@ Esta se presenta cuando la esperanza condicional de /Y/, $E(Y|X_{i})$, es una fu
 
 
 En concepto de linealidad en los parametros es fundamental en la teoria de regresion lineal, ya que permite el desarrollo de tecnicas estadisticas y economicas para analizar predecir relaciones entre variables. Los autores clave en este campo incluyen a Carl Friedrich Gauss y Pierre-Simon Laplace, quienes sentaron las bases para la teoria de regresion lineal. El debate actual se centra en la aplicacion de tecnicas de regresion no lineal y la importancia de considerar la linealidad en los parametros en modelos de regresion.
+
+** Especidficacion estocastica de la FRP.
