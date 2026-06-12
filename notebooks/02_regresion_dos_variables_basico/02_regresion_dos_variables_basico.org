@@ -56,3 +56,5 @@ EL debate actual en la literatura se centra en la seleccion de modleos, la valid
 ** Significado del termino lineal
 
 *** Linealidad en las variables
+
+Linealidad es aquel en que la esperanza condicional de /Y/ es una funcion lineal /$X_{n}$/
