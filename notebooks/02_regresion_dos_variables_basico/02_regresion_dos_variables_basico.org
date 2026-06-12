@@ -54,3 +54,5 @@ EL debate actual en la literatura se centra en la seleccion de modleos, la valid
 
 
 ** Significado del termino lineal
+
+*** Linealidad en las variables
