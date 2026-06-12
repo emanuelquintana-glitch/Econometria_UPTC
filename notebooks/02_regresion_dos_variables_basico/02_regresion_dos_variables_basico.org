@@ -60,3 +60,5 @@ EL debate actual en la literatura se centra en la seleccion de modleos, la valid
 Linealidad es aquel en que la esperanza condicional de /Y/ es una funcion lineal /$X_{n}$/. Geometricamente la curva de regresion en este caso es una recta. En esta interpretacion, una funcion de regresion como $E(Y | X_{i}) = \beta_{1} + \beta_{2}X_{i}^{2}$ no es una funcion lineal porque la variable X aparece elevada a una potencia o indice de 2.
 
 *** Linealidad en los parametros
+
+Esta se presenta cuando la esperanza condicional de /Y/, $E(Y|X_{i})$, es una funcion lineal de los parametros, los \beta; puede ser o no lineal en la variable /X/. De acuerdo con la interpretacion, /$E(Y|X_{i}) = \beta_{1} + \beta_{2}X_{i}^{2}$/ es un modelode regresion lineal (en el parametro). Para ver lo anterior supongamos que /X/ tiene un valor de 3. Por tanto, /E(Y|X = 3) = \beta_{1} + 9\beta_{2}/, ecuacion a todas luces lineal en $\beta_{1}$ y $\beta_{2}$.
