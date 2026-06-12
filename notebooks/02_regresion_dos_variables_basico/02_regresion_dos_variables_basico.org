@@ -57,4 +57,6 @@ EL debate actual en la literatura se centra en la seleccion de modleos, la valid
 
 *** Linealidad en las variables
 
-Linealidad es aquel en que la esperanza condicional de /Y/ es una funcion lineal /$X_{n}$/
+Linealidad es aquel en que la esperanza condicional de /Y/ es una funcion lineal /$X_{n}$/. Geometricamente la curva de regresion en este caso es una recta. En esta interpretacion, una funcion de regresion como $E(Y | X_{i}) = \beta_{1} + \beta_{2}X_{i}^{2}$ no es una funcion lineal porque la variable X aparece elevada a una potencia o indice de 2.
+
+*** Linealidad en los parametros
