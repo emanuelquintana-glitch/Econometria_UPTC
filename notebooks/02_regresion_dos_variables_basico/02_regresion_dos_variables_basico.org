@@ -55,6 +55,8 @@ EL debate actual en la literatura se centra en la seleccion de modleos, la valid
 
 ** Significado del termino lineal
 
+El termino "lineal" en modelos de regresion se interpreta de dos formas: linealidad en las variables explicativas y linealidad en los parametros, siendo esta ultima la pertinente para el desarrollo de la teoria de regresion.
+
 *** Linealidad en las variables
 
 Linealidad es aquel en que la esperanza condicional de /Y/ es una funcion lineal /$X_{n}$/. Geometricamente la curva de regresion en este caso es una recta. En esta interpretacion, una funcion de regresion como $E(Y | X_{i}) = \beta_{1} + \beta_{2}X_{i}^{2}$ no es una funcion lineal porque la variable X aparece elevada a una potencia o indice de 2.
