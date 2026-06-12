@@ -68,8 +68,6 @@ En resumen, La linealidad en los parametros es una condicion necesaria para que 
 - $E(Y|X_i) = \beta_1 + \beta_2 X_i$: lineal en los parámetros y en las variables
 - $E(Y|X_i) = \beta_1 + \beta_2 X_i^2$: lineal en los parámetros, pero no lineal en las variables
 
-
-
 *** Linealidad en los parametros
 
 Esta se presenta cuando la esperanza condicional de /Y/, $E(Y|X_{i})$, es una funcion lineal de los parametros, los \beta; puede ser o no lineal en la variable /X/. De acuerdo con la interpretacion, /$E(Y|X_{i}) = \beta_{1} + \beta_{2}X_{i}^{2}$/ es un modelode regresion lineal (en el parametro). Para ver lo anterior supongamos que /X/ tiene un valor de 3. Por tanto, /E(Y|X = 3) = \beta_{1} + 9\beta_{2}/, ecuacion a todas luces lineal en $\beta_{1}$ y $\beta_{2}$.
