@@ -133,3 +133,7 @@ El debate actual en torno al término de perturbación estocástica se centra en
       4. Aleatoriedad intrínseca en el comportamiento humano: Aunque se logre introducir en el modelo todas las variables pertinentes, es posible que se presente alguna aleatoriedad “intrínseca” en $Y$ que no se explique, a pesar de todos los esfuerzos que se inviertan. Las perturbaciones, $u$, pueden reflejar muy bien esta aleatoriedad intrínseca.
 
         5. Variables representantes (proxy) inadecuadas: A pesar de que el modelo clásico de regresión (que veremos en el capítulo 3) supone que las variables $Y$ y $X$ se miden con precisión, en la práctica, los datos pueden estar plagados de errores de medición. Consideremos, por ejemplo
+
+
+
+** Funcion de regresion muestral (FRM)
