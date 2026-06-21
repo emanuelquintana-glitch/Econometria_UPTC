@@ -139,3 +139,5 @@ El debate actual en torno al término de perturbación estocástica se centra en
 ** Funcion de regresion muestral (FRM)
 
 Hasta el momento, nos hemos limitado a la población de valores Y que corresponden a valores fijos de X. Con toda deliberación evitamos consideraciones muestrales (observe que los datos de la tabla 2.1 representan la población, no una muestra). No obstante, es momento de enfrentar los problemas muestrales, porque en la práctica lo que se tiene al alcance no es más que una muestra de valores de Y que corresponden a algunos valores fijos de X. Por tanto, la labor ahora es estimar la función de regresión poblacional (FRP) con base en información muestral.
+
+A manera de ilustración, supongamos que no se conocía la población de la tabla 2.1 y que la única información que se tenía era una muestra de valores de Y seleccionada al azar para valores dados de X como se presentan en la tabla 2.4. A diferencia de la tabla 2.1, ahora se tiene sólo un valor de Y correspondiente a los valores dados de X; cada Y (dada $X_i$) en la tabla 2.4 se selecciona aleatoriamente de las Y similares que corresponden a la misma $X_i$ de la población de la tabla 2.1.
