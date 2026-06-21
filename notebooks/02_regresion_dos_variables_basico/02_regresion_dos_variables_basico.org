@@ -105,3 +105,7 @@ En el contexto de la regresión lineal, el modelo se puede representar como:
 $$Y = \beta_0 + \beta_1 X + u$$
 
 donde $Y$ es la variable dependiente, $X$ es la variable independiente, $\beta_0$ y $\beta_1$ son los parámetros del modelo y $u$ es el término de perturbación estocástica. El término $u$ se puede descomponer en:
+
+$$u = \sum_{i=2}^k \beta_i X_i + \varepsilon$$
+
+donde $\varepsilon$ es un error aleatorio y $X_i$ son variables omisiones o no explicadas en el modelo.
