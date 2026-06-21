@@ -121,3 +121,5 @@ donde $u$ podría ser:
 $$u = \beta_2 \text{riqueza} + \beta_3 \text{número de hijos} + \beta_4 \text{educación} + \varepsilon$$
 
 El término de perturbación estocástica es un concepto fundamental en la econometría y la estadística, y se utiliza en una variedad de campos, incluyendo la economía, la finanza, la medicina y la ciencia social.
+
+El debate actual en torno al término de perturbación estocástica se centra en la importancia de considerar la estructura de la variabilidad residual en el modelo, y en la necesidad de desarrollar métodos estadísticos que permitan capturar la complejidad de la relación entre las variables.
