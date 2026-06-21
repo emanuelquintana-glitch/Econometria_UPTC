@@ -111,3 +111,5 @@ $$u = \sum_{i=2}^k \beta_i X_i + \varepsilon$$
 donde $\varepsilon$ es un error aleatorio y $X_i$ son variables omisiones o no explicadas en el modelo.
 
 El término de perturbación estocástica $u$ es importante porque permite capturar la variabilidad residual que no se puede atribuir a las variables incluidas en el modelo. Esto se debe a que, en la práctica, es común que no se disponga de información completa sobre todas las variables que afectan a la variable dependiente.
+
+Por ejemplo, si se quiere modelar el consumo familiar $Y$ en función del ingreso familiar $X$, el término de perturbación estocástica $u$ podría incluir variables como la riqueza familiar, el número de hijos, la educación, etc.
