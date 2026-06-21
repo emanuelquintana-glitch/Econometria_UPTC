@@ -86,3 +86,10 @@ La ecuación (2.4.1) expresa que el gasto de una familia se puede descomponer en
 La ecuación (2.4.1) se puede escribir como:
 $$Y_i = E(Y | X_i) + u_i$$
 donde $Y_i$ es el gasto de la familia $i$, $E(Y | X_i)$ es la media del consumo de todas las familias con el mismo nivel de ingreso $X_i$, y $u_i$ es el término de perturbación estocástica.
+
+Si suponemos que $E(Y | X_i)$ es lineal en $X_i$, como en la ecuación (2.2.2), entonces la ecuación (2.4.1) se puede escribir como:
+$$Y_i = \beta_1 + \beta_2 X_i + u_i$$
+donde $\beta_1$ y $\beta_2$ son parámetros que se deben estimar.
+
+La ecuación (2.4.2) plantea que el consumo de una familia se relaciona linealmente con su ingreso más el término de perturbación. Por ejemplo, si el ingreso de una familia es $X_i = 80$, entonces el consumo se puede expresar como:
+$$Y_i = \beta_1 + \beta_2 (80) + u_i$$
