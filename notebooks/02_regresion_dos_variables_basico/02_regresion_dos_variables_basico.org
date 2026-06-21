@@ -93,3 +93,7 @@ donde $\beta_1$ y $\beta_2$ son parámetros que se deben estimar.
 
 La ecuación (2.4.2) plantea que el consumo de una familia se relaciona linealmente con su ingreso más el término de perturbación. Por ejemplo, si el ingreso de una familia es $X_i = 80$, entonces el consumo se puede expresar como:
 $$Y_i = \beta_1 + \beta_2 (80) + u_i$$
+
+Tomando el valor esperado de la ecuación (2.4.1) en ambos lados, obtenemos:
+$$E(Y_i | X_i) = E[E(Y | X_i)] + E(u_i | X_i)$$
+donde se aprovecha que el valor esperado de una constante es la constante misma.
