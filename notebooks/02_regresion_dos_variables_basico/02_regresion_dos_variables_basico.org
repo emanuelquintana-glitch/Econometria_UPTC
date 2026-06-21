@@ -97,3 +97,5 @@ $$Y_i = \beta_1 + \beta_2 (80) + u_i$$
 Tomando el valor esperado de la ecuación (2.4.1) en ambos lados, obtenemos:
 $$E(Y_i | X_i) = E[E(Y | X_i)] + E(u_i | X_i)$$
 donde se aprovecha que el valor esperado de una constante es la constante misma.
+
+La ecuación (2.4.1) es un modelo de regresión lineal que se utiliza comúnmente en econometría y estadística para analizar la relación entre una variable dependiente (en este caso, el gasto de una familia) y una variable independiente (en este caso, el ingreso de la familia). Autores clave en este campo incluyen a Gauss, Legendre y Galton, quienes desarrollaron los fundamentos de la regresión lineal.
