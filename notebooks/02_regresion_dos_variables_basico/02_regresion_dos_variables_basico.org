@@ -119,3 +119,5 @@ $$Y = \beta_0 + \beta_1 X + u$$
 donde $u$ podría ser:
 
 $$u = \beta_2 \text{riqueza} + \beta_3 \text{número de hijos} + \beta_4 \text{educación} + \varepsilon$$
+
+El término de perturbación estocástica es un concepto fundamental en la econometría y la estadística, y se utiliza en una variedad de campos, incluyendo la economía, la finanza, la medicina y la ciencia social.
