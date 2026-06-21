@@ -82,3 +82,7 @@ En concepto de linealidad en los parametros es fundamental en la teoria de regre
 La relación entre el consumo familiar y el ingreso no es determinística, sino que presenta una variabilidad estocástica, lo que implica que el consumo de una familia no aumenta necesariamente con el aumento del ingreso.
 
 La ecuación (2.4.1) expresa que el gasto de una familia se puede descomponer en dos componentes: uno sistemático, que es la media del consumo de todas las familias con el mismo nivel de ingreso, y otro aleatorio, que es el término de perturbación estocástica.
+
+La ecuación (2.4.1) se puede escribir como:
+$$Y_i = E(Y | X_i) + u_i$$
+donde $Y_i$ es el gasto de la familia $i$, $E(Y | X_i)$ es la media del consumo de todas las familias con el mismo nivel de ingreso $X_i$, y $u_i$ es el término de perturbación estocástica.
