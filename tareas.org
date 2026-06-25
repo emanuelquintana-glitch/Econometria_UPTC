@@ -1,5 +1,5 @@
 #+TITLE: Tareas y Entregables — Econometría UPTC
-#+AUTHOR: Emanuel
+#+AUTHOR: Emanuel Quintana
 #+STARTUP: indent
 #+STARTUP: logdone
 #+TODO: TODO IN-PROGRESS WAITING | DONE CANCELLED
