@@ -32,7 +32,7 @@
    - [X] Cap 05 — Pruebas de hipótesis
    - [X] Cap 06 — Extensiones regresión simple
    - [X] Cap 07 — Regresión múltiple: estimación
-   - [X] Cap 08 — Regresión múltiple: inferencia
+   - [ ] Cap 08 — Regresión múltiple: inferencia
    - [X] Cap 09 — Variables dicótomas
    - [X] Cap 10 — Multicolinealidad
    - [X] Cap 11 — Heteroscedasticidad
