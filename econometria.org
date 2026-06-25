@@ -27,7 +27,7 @@
 ** Capítulos cubiertos
    - [X] Cap 01 — Naturaleza de la regresión
    - [X] Cap 02 — Regresión dos variables (básico)
-   - [X] Cap 03 — Estimación dos variables
+   - [ ] Cap 03 — Estimación dos variables
    - [ ] Cap 04 — Regresión normal
    - [ ] Cap 05 — Pruebas de hipótesis
    - [ ] Cap 06 — Extensiones regresión simple
