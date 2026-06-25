@@ -28,7 +28,7 @@
    - [X] Cap 01 — Naturaleza de la regresión
    - [X] Cap 02 — Regresión dos variables (básico)
    - [X] Cap 03 — Estimación dos variables
-   - [X] Cap 04 — Regresión normal
+   - [ ] Cap 04 — Regresión normal
    - [ ] Cap 05 — Pruebas de hipótesis
    - [ ] Cap 06 — Extensiones regresión simple
    - [ ] Cap 07 — Regresión múltiple: estimación
