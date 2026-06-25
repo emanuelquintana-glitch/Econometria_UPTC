@@ -37,7 +37,7 @@
    - [X] Cap 10 — Multicolinealidad
    - [X] Cap 11 — Heteroscedasticidad
    - [X] Cap 12 — Autocorrelación
-   - [ ] Cap 13 — Modelado y diagnóstico
+   - [X] Cap 13 — Modelado y diagnóstico
    - [ ] Cap 14 — Regresión no lineal
    - [ ] Cap 15 — Respuesta cualitativa
    - [ ] Cap 16 — Datos de panel
