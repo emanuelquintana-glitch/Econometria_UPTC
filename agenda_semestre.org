@@ -1,5 +1,5 @@
 #+TITLE: Agenda del Semestre — Econometría UPTC 2026
-#+AUTHOR: Emanuel
+#+AUTHOR: Emanuel Quintana Silva
 #+STARTUP: indent
 #+STARTUP: fold
 
