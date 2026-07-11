@@ -173,6 +173,10 @@ Asi, para resumir, concluimos que le objetico principal del analisis de regresio
 
 $$Y_{i} = \beta_{1} + \beta_{2}X_{i} + u_{i}$$
 
+Con base en la FRM
+
+$$Y_{i} = \hat{\beta_{1}} + \hat{\beta_{2}_{}}x_{i }+ \hat{u_{i}}$$
+
 ---
 
 * Navega al siguiente capitulo
