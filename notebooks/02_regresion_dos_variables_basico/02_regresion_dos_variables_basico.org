@@ -169,6 +169,9 @@ $$Y_{i} = \hat{\beta_{1}} + \hat{\beta_{2}}X_{i} + \hat{u_{i}}$$
 
 donde, ademas de los simbolos ya definidos, $\hat{u_{i}_{}}$ denota el termino *residual* (muestral). Conceptualmmente, $\hat{u_{i}}$ es analogo a $u_{i}$ y se Conceptualmmente, $\hat{u_{i}} es analogo a $u_i$ y se considera una /estimacion/ de $u_i$, que introduce en la FRP.
 
+Asi, para resumir, concluimos que le objetico principal del analisis de regresion es estimar la FRP
+
+$$Y_{i} = \beta_{1} + \beta_{2}X_{i} + u_{i}$$
 
 ---
 
