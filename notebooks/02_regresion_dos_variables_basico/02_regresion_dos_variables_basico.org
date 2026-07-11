@@ -149,7 +149,15 @@ A manera de ilustración, supongamos que no se conocía la población de la tabl
 
 La figura se conoce como *lineas de regresion muestral*. Ya suponemos que representan la linea de regresion poblacional, pero, debido a fluctuaciones muestrales, son, en el mejor de los casos, solo una aproximacion del averdadera *RP*.
 
+Esto desarrollara el concepto de *funcion de regresion muestras* (FRM) para representar la linea de regresion muestral.
 
+$$\hat{Y_{i}} = \hat{\beta_{1}} + \hat{\beta_{2}}X_{i}$$
+
+donde $\hat{Y}$ se lee "/Y de sombrero/" o "/Y gorra/"
+
+- $\hat{Y_{i}}$: estimador de $E(Y|X_{i})$
+- $\hat{\beta_{1}}$: estimador de $\beta_{}_{i}$
+- $\hat{\beta_{2}}$: estimador de $\beta_{2}$
 
 ---
 
