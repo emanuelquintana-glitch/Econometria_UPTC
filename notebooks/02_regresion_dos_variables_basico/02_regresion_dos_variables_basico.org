@@ -161,8 +161,13 @@ donde $\hat{Y}$ se lee "/Y de sombrero/" o "/Y gorra/"
 
 Recordar que un *estimador*, conocido tambien concido como *estadistico* (muestral), no es mas que una regla.
 
-Cabe señalar que un estimador es aleatorio, pero una estimacion no.º
+Cabe señalar que un estimador es aleatorio, pero una estimacion no.
 
+Para entenderlo veamos como se expresa en su forma estocastica:
+
+$$Y_{i} = \hat{\beta_{1}} + \hat{\beta_{2}}X_{i} + \hat{u_{i}}$$
+
+donde, ademas de los simbolos ya definidos, $\hat{u_{i}_{}}$ denota el termino *residual* (muestral).
 ---
 
 * Navega al siguiente capitulo
