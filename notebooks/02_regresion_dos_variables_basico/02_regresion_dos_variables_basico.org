@@ -181,7 +181,7 @@ porque son mas frecuentes los casos en que el analisis se basa en una sola muest
 
 
 #+CAPTION: Figura 2.5 Lineas de regresion muestral y poblacional
-[[file:../Figura-2_5.png]]
+[[file:graficos/Figura-2_5.png]]
 ---
 
 * Navega al siguiente capitulo
