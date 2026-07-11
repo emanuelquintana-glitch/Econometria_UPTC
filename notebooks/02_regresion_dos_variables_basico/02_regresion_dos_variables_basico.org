@@ -147,6 +147,10 @@ A manera de ilustración, supongamos que no se conocía la población de la tabl
 #+CAPTION: Figura 2.4 Lineas de regresion basadas en dos muestras diferentes
 [[file:graficos/Figura-2_4.png]]
 
+La figura se conoce como *lineas de regresion muestral*. Ya suponemos que representan la linea de regresion poblacional, pero, debido a fluctuaciones muestrales, son, en el mejor de los casos, solo una aproximacion del averdadera *RP*.
+
+
+
 ---
 
 * Navega al siguiente capitulo
