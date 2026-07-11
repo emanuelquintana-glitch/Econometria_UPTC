@@ -180,6 +180,8 @@ $$Y_{i} = \hat{\beta_{1}} + \hat{\beta_{2}_{}}x_{i }+ \hat{u_{i}}$$
 porque son mas frecuentes los casos en que el analisis se basa en una sola muestra tomada de una poblacion. Pero debido a fluctuaciones muestrales, la estimacion de la FRP basada en la FRM es, en el mejor de los caso, una aproximacion.
 
 
+#+CAPTION: Figura 2.5 Lineas de regresion muestral y poblacional
+[[file:../Figura-2_5.png]]
 ---
 
 * Navega al siguiente capitulo
