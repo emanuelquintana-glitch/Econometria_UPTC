@@ -159,6 +159,10 @@ donde $\hat{Y}$ se lee "/Y de sombrero/" o "/Y gorra/"
 - $\hat{\beta_{1}}$: estimador de $\beta_{}_{i}$
 - $\hat{\beta_{2}}$: estimador de $\beta_{2}$
 
+Recordar que un *estimador*, conocido tambien concido como *estadistico* (muestral), no es mas que una regla.
+
+Cabe señalar que un estimador es aleatorio, pero una estimacion no.º
+
 ---
 
 * Navega al siguiente capitulo
