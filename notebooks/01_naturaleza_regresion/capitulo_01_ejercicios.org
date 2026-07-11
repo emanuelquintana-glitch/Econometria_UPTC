@@ -246,3 +246,6 @@
    - Ver resultado inline:   =C-c C-c= sobre el bloque =#+RESULTS=
    - La sesión =*R-cap01*= persiste entre bloques del mismo archivo.
    - Los PNG se guardan en el mismo directorio que el =.org=.
+
+
+[[file:../02_regresion_dos_variables_basico/ ]
