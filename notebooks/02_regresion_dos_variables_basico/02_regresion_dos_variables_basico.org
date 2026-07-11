@@ -152,3 +152,4 @@ A manera de ilustración, supongamos que no se conocía la población de la tabl
 ---
 
 * Navega al siguiente capitulo
+[[file:../03_estimacion_dos_variables/03_estimacion_dos_variables.org][]
