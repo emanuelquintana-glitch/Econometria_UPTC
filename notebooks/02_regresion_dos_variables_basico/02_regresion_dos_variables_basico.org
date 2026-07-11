@@ -146,7 +146,7 @@ A manera de ilustración, supongamos que no se conocía la población de la tabl
 
 
 
-
+[[file:graficos
 
 
 ---
