@@ -1,4 +1,4 @@
-# Naturaleza de la regresion 
+# Naturaleza de la regresion.
 ### NOtas del libro de damodar gujaratii emanuel quintana silva importancia de la econometria 
 emanuel quintana silva 
 
