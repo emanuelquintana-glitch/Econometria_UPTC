@@ -11,6 +11,7 @@ En este libro, Galton formaliza sus ideas previas. Es fundamental porque explica
 Stigler dedica una sección fundamental a explicar la paradoja semántica: ¿Por qué usamos una palabra que significa "retroceder" (regression) para algo que hoy usamos para "predecir" hacia adelante?
 
 La Mediocridad como Destino: Stigler detalla que Galton estaba obsesionado con la herencia. Al estudiar a padres altos y sus hijos, notó que el "extra" de altura de los padres no se heredaba por completo; los hijos "retrocedían" hacia la media de la población.
+
 De lo Biológico a lo Universal: Stigler argumenta que el genio de Galton (y el error común de sus contemporáneos) fue entender que este "retroceso" no era una fuerza misteriosa de la naturaleza, sino una propiedad matemática de cualquier distribución normal donde las variables no están perfectamente correlacionadas.
     La Conclusión de Stigler: El término sobrevivió por inercia histórica, pero perdió su significado biológico ("volver a ser mediocre") para convertirse en un nombre técnico para la pendiente de una línea.
 
