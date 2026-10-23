@@ -1,6 +1,6 @@
 # Notas Detalladas sobre Heteroscedasticidad (Damodar Gujarati)
 
--
+
 
 ## 1. Naturaleza de la Heteroscedasticidad
 
