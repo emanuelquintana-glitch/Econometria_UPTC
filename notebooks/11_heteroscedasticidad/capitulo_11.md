@@ -1,5 +1,5 @@
 # Notas Detalladas sobre Heteroscedasticidad (Damodar Gujarati)
---
+---
 ## 1. Naturaleza de la Heteroscedasticidad
 
 La **heteroscedasticidad** constituye una violación directa de uno de los supuestos fundamentales del Modelo Lineal Clásico (MLC): el supuesto de **homoscedasticidad**, que implica una varianza constante de las perturbaciones.
