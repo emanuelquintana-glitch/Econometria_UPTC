@@ -220,7 +220,7 @@ En las publicaciones especializadas, los términos **variable dependiente** y **
     
    
    
-  Aquí tienes la información organizada para que la puedas copiar directamente en un editor de Markdown. He estructurado los datos de la **Encuesta Nacional Agropecuaria (ENA) 2023** y el procedimiento de regresión lineal simple mediante matrice
+  Aquí tienes la información organizada para que la puedas copiar directamente en un editor de Markdown. He estructurado los datos de la **Encuesta Nacional Agropecuaria (ENA) 2023** y el procedimiento de regresión lineal simple mediante matric
 
 ---
 
