@@ -2,6 +2,7 @@
 
 ### Notas del libro de damodar gujarati emanuel quintana silva importancia de la econometria 
 emanuel quintana sil
+
 Del latin regression que significa "volver atras" Galton observo que la naturaleza parece "frenar" los extremos para mantener la estabilidad de la especie.
 Una paradoja es que aunque hoy la "regresion" suena a prediccion de futuro originalmente se referia al "retroceso" de los hijos hacia la estatura promedio de la poblacion 
 El temino **regresion** tiene su origen historico en los estudios de **Francis Galton,** un cientifico britanico del siglo XIX. En un famoso articulo, Galton observo que, aunque existia una tendencia de padres altos a tner hijos altos y de padres bajos a tener hijos bajos, la estatura promedio de los hijos nacidos de padres con una estatura determinada tendia a desplazarse o **"regresar" hacia la estatura promedio** de la poblacion total. (Regression Towards Mediocrity in Hereditary Stature" (1886) – Francis Galton:
