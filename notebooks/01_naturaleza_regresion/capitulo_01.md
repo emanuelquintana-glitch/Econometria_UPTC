@@ -219,7 +219,7 @@ En las publicaciones especializadas, los términos **variable dependiente** y **
     
    
    
-Aquí tienes la información organizada para que la puedas copiar directamente en un editor de Markdown. He estructurado los datos de la **Encuesta Nacional Agropecuaria (ENA) 2023** y el procedimi
+Aquí tienes la información organizada para que la puedas copiar directamente en un editor de Markdown. He estructurado los datos de la **Encuesta Nacional Agropecuaria (ENA) 2023** y el procedim
 ---
 
 # Ejercicio de Regresión Lineal: Sector Agropecuario Colombia
