@@ -1,5 +1,4 @@
 # Naturaleza de la regresion
-
 ### Notas del libro de damodar gujarati emanuel quintana silva importancia de la econometria 
 
 Del latin regression que significa "volver atras" Galton observo que la naturaleza parece "frenar" los extremos para mantener la estabilidad de la especie.
