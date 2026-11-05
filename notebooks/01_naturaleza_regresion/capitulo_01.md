@@ -1,6 +1,6 @@
 # Naturaleza de la regresion
 
-### Notas del libro de d
+### Notas del libro de 
 
 Del latin regression que significa "volver atras" Galton observo que la naturaleza parece "frenar" los extremos para mantener la estabilidad de la especie.
 Una paradoja es que aunque hoy la "regresion" suena a prediccion de futuro originalmente se referia al "retroceso" de los hijos hacia la estatura promedio de la poblacion 
