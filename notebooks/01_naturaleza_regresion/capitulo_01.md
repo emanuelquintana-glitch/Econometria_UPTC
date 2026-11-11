@@ -1,4 +1,4 @@
-# Naturaleza de la regresion
+# Naturaleza de la regresión
 
 ###
 
