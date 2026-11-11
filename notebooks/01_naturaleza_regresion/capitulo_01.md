@@ -7,7 +7,8 @@ Una paradoja es que aunque hoy la "regresion" suena a prediccion de futuro origi
 El temino **regresion** tiene su origen historico en los estudios de **Francis Galton,** un cientifico britanico del siglo XIX. En un famoso articulo, Galton observo que, aunque existia una tendencia de padres altos a tner hijos altos y de padres bajos a tener hijos bajos, la estatura promedio de los hijos nacidos de padres con una estatura determinada tendia a desplazarse o **"regresar" hacia la estatura promedio** de la poblacion total. (Regression Towards Mediocrity in Hereditary Stature" (1886) – Francis Galton:
 Este es el artículo fundacional publicado en el Journal of the Anthropological Institute ( "Natural Inheritance" (1889) – Francis Galton:
 En este libro, Galton formaliza sus ideas previas. Es fundamental porque explica la transición de una observación biológica a una ley estadística general.))
-1. El análisis en The History of Statistics (1986)
+
+#### El análisis en The History of Statistics (1986)
 Stigler dedica una sección fundamental a explicar la paradoja semántica: ¿Por qué usamos una palabra que significa "retroceder" (regression) para algo que hoy usamos para "predecir" hacia adelante?
 
 La Mediocridad como Destino: Stigler detalla que Galton estaba obsesionado con la herencia. Al estudiar a padres altos y sus hijos, notó que el "extra" de altura de los padres no se heredaba por completo; los hijos "retrocedían" hacia la media de la población.
