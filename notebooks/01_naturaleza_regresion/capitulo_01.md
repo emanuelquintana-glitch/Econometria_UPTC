@@ -20,7 +20,7 @@ El análisis en Galton’s Two Papers on Regression (1989)
 Este artículo en Statistical Science es más técnico y se enfoca en la evolución del pensamiento de Galton entre 1877 y 1885:
 
 El Primer Paper (1877): Galton usa semillas de guisantes. Aquí, la "regresión" es puramente descriptiva y biológica. Stigler muestra cómo Galton aún no entendía la relación matemática completa; solo veía que las semillas extremas producían descendencia menos extrema.
-    El Segundo Paper (1885): Aquí ocurre el "salto mortal". Galton analiza la altura humana y descubre la elipse de correlación. Stigler explica cómo Galton se dio cuenta de que la regresión de y sobre x era la misma que la de x sobre y.
+El Segundo Paper (1885): Aquí ocurre el "salto mortal". Galton analiza la altura humana y descubre la elipse de correlación. Stigler explica cómo Galton se dio cuenta de que la regresión de y sobre x era la misma que la de x sobre y.
     La Maduración: Stigler demuestra que en este segundo artículo, Galton deja de ver la regresión como un fenómeno de "padre a hijo" (unidireccional) y empieza a verla como una relación geométrica simétrica. Fue el momento en que nació la estadística multivariante.
 
 La Gran Revelación de Stigler
