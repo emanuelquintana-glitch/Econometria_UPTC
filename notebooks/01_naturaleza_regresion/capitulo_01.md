@@ -23,7 +23,7 @@ El Primer Paper (1877): Galton usa semillas de guisantes. Aquí, la "regresión"
 El Segundo Paper (1885): Aquí ocurre el "salto mortal". Galton analiza la altura humana y descubre la elipse de correlación. Stigler explica cómo Galton se dio cuenta de que la regresión de y sobre x era la misma que la de x sobre y.
 La Maduración: Stigler demuestra que en este segundo artículo, Galton deja de ver la regresión como un fenómeno de "padre a hijo" (unidireccional) y empieza a verla como una relación geométrica simétrica. Fue el momento en que nació la estadística multivariante.
 
-/La Gran Revelación de Stigler/
+/*La Gran Revelación de Stigler*/
 Lo que Stigler aclara magistralmente es que Galton estuvo a punto de no descubrir la regresión porque estaba buscando "leyes de la herencia", y terminó encontrando una ley de la probabilidad. Stigler llama a esto la "victoria de la estadística sobre la biometría".
 
 
