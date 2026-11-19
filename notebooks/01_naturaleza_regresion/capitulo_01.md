@@ -27,7 +27,7 @@ La Gran Revelación de Stigler
 Lo que Stigler aclara magistralmente es que Galton estuvo a punto de no descubrir la regresión porque estaba buscando "leyes de la herencia", y terminó encontrando una ley de la probabilidad. Stigler llama a esto la "victoria de la estadística sobre la biometría".
 
 
-##El origen Historico: Estaturas de Galton
+### El origen Historico: Estaturas de Galton
 
 El ejemplo fundacional de la regresion proviene de **Francis galton**, quien estudio la relacion entre la estatura de los padres y sus hijos.
 
