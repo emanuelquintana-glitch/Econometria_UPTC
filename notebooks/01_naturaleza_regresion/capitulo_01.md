@@ -38,7 +38,7 @@ El ejemplo fundacional de la regresion proviene de **Francis galton**, quien est
 
 Existen casos famosos donde las variables estan tan correlacionadas que es dificil aislar sus efectos:
 
-- **Datos de Longley:** Este es un ejmplo clasico de series de tiempo (1947-1962) donde variables como el **GNP (Producto Nacional Bruto)**, el **tiempo** y la **poblacion** tienen una correlacion altisima superio a 0.99. El resultado es un modleo con un $R2$ casi perfecto (0.98), pero donde varios coeficientes inds individuales parecen no ser significativos o tienen signos erráticos.
+**Datos de Longley:** Este es un ejmplo clasico de series de tiempo (1947-1962) donde variables como el **GNP (Producto Nacional Bruto)**, el **tiempo** y la **poblacion** tienen una correlacion altisima superio a 0.99. El resultado es un modleo con un $R2$ casi perfecto (0.98), pero donde varios coeficientes inds individuales parecen no ser significativos o tienen signos erráticos.
 • Mortalidad Infantil (CM): Al intentar explicar la mortalidad infantil basándose en el GNP per cápita y la tasa de alfabetismo femenino (FLR), se observa que ambas variables están relacionadas entre sí. Si se omite la alfabetización, el efecto del ingreso parece ser mucho mayor de lo que realmente es, ya que "absorbe" el impacto de la educación omitida (sesgo de especificación).
 3. Escalamiento y Unidades: Peso al Nacer
 Este ejemplo ilustra cómo cambiar las unidades de medida afecta a los coeficientes pero no a la esencia del modelo:
