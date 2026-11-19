@@ -61,7 +61,7 @@ En un estudio sobre una Central de Riesgos, se evaluó si la viabilidad, sosteni
 
 En el estudio de la econometria y la estadistica, la distincion entre **relaciones estadisticas** y **relaciones deterministas** es fundamental para entender como se modelan los fenomenos del mundo real.
 
-1. Relaciones Deterministas (o Funcionales)
+#### Relaciones Deterministas (o Funcionales)
 
 Una relacion determinista es quella en la que el valor de una variable dependiente queda determinado de manera **univoca y exacta**  una vez que se conocen los valores de la svariables independientes.
 
