@@ -74,6 +74,7 @@ Una relacion determinista es quella en la que el valor de una variable dependien
     ◦ Ley de Boyle: La relación entre presión y volumen de los gases (PV=k).
     ◦ Ley de Ohm: La relación en electricidad definida por la ley de Kirchhoff.
 • Nota sobre el error de medición: Si en estas leyes físicas se introducen errores al medir las variables, la relación, que es inherentemente determinista, se convierte en una relación estadística para el investigador, ya que la predicción dejaría de ser exacta.
+
 2. Relaciones Estadísticas
 A diferencia de las anteriores, una relación estadística trata con la dependencia de variables aleatorias o estocásticas, las cuales poseen distribuciones de probabilidad.
 • Inexactitud intrínseca: En una relación estadística, las variables independientes no permiten predecir el valor de la variable dependiente de forma exacta. Existe una "variabilidad intrínseca" que no puede ser explicada totalmente, sin importar cuántas variables se incluyan en el modelo.
