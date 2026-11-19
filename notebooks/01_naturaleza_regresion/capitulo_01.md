@@ -16,7 +16,7 @@ La Mediocridad como Destino: Stigler detalla que Galton estaba obsesionado con l
 De lo Biológico a lo Universal: Stigler argumenta que el genio de Galton (y el error común de sus contemporáneos) fue entender que este "retroceso" no era una fuerza misteriosa de la naturaleza, sino una propiedad matemática de cualquier distribución normal donde las variables no están perfectamente correlacionadas.
     La Conclusión de Stigler: El término sobrevivió por inercia histórica, pero perdió su significado biológico ("volver a ser mediocre") para convertirse en un nombre técnico para la pendiente de una línea.
 
-2. El análisis en Galton’s Two Papers on Regression (1989)
+El análisis en Galton’s Two Papers on Regression (1989)
 Este artículo en Statistical Science es más técnico y se enfoca en la evolución del pensamiento de Galton entre 1877 y 1885:
 
     El Primer Paper (1877): Galton usa semillas de guisantes. Aquí, la "regresión" es puramente descriptiva y biológica. Stigler muestra cómo Galton aún no entendía la relación matemática completa; solo veía que las semillas extremas producían descendencia menos extrema.
