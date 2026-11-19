@@ -34,7 +34,7 @@ El ejemplo fundacional de la regresion proviene de **Francis galton**, quien est
 
 - **La linea de regresion:** Al conectar las estaturas promedio de los hijos para cada nivel de estatura del padre, se obtiene una linea con pendiente positiva pero menor a 1, lo que Galton denomino **"regresion a la mediocrdad"** 
 
-2. Multicolinealidad: Los datos de Longley y Mortalidad infantil 
+### Multicolinealidad: Los datos de Longley y Mortalidad infantil 
 
 Existen casos famosos donde las variables estan tan correlacionadas que es dificil aislar sus efectos:
 
