@@ -70,7 +70,8 @@ Una relacion determinista es quella en la que el valor de una variable dependien
 - **Ambito de aplicacion:** Son tipicas de las ciencias exactas o la fisica clasica.
 
  Ejemplos clásicos:
-    ◦ Ley de Newton: La fuerza (F) es exactamente el producto de la masa (m) por la aceleración (a), es decir, F=ma.
+
+	◦ Ley de Newton: La fuerza (F) es exactamente el producto de la masa (m) por la aceleración (a), es decir, F=ma.
     ◦ Ley de Boyle: La relación entre presión y volumen de los gases (PV=k).
     ◦ Ley de Ohm: La relación en electricidad definida por la ley de Kirchhoff.
 • Nota sobre el error de medición: Si en estas leyes físicas se introducen errores al medir las variables, la relación, que es inherentemente determinista, se convierte en una relación estadística para el investigador, ya que la predicción dejaría de ser exacta.
