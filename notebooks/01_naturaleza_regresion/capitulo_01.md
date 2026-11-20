@@ -86,7 +86,7 @@ A diferencia de las anteriores, una relación estadística trata con la dependen
 • Ejemplos típicos:
     ◦ Rendimiento agrícola: El rendimiento de una cosecha depende de la temperatura, la lluvia y el fertilizante. Sin embargo, estos factores no permiten predecir el rendimiento exacto debido a errores de medición y otros factores difíciles de identificar individualmente.
     ◦ Consumo e ingreso: Aunque la teoría económica dice que el consumo depende del ingreso, esta relación no es exacta y está sujeta a variaciones individuales (dos personas con el mismo ingreso consumen cantidades diferentes).
-3. Diferencias Clave y el Papel de la Econometría
+ Diferencias Clave y el Papel de la Econometría
 Característica
 	
 Relación Determinista
