@@ -86,6 +86,7 @@ A diferencia de las anteriores, una relación estadística trata con la dependen
     ◦ Consumo e ingreso: Aunque la teoría económica dice que el consumo depende del ingreso, esta relación no es exacta y está sujeta a variaciones individuales (dos personas con el mismo ingreso consumen cantidades diferentes).
 
 #### Diferencias Clave y el Papel de la Econometría
+
 Característica
 	
 Relación Determinista
