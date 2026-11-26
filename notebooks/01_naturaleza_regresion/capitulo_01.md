@@ -79,7 +79,8 @@ Una relacion determinista es quella en la que el valor de una variable dependien
 A diferencia de las anteriores, una relación estadística trata con la dependencia de variables aleatorias o estocásticas, las cuales poseen distribuciones de probabilidad.
 • Inexactitud intrínseca: En una relación estadística, las variables independientes no permiten predecir el valor de la variable dependiente de forma exacta. Existe una "variabilidad intrínseca" que no puede ser explicada totalmente, sin importar cuántas variables se incluyan en el modelo.
 • Componentes del modelo: En estas relaciones, la variable dependiente (Y) se descompone en dos partes:
-    1. Componente sistemático (o determinista): Representado por la función de regresión (por ejemplo, β1​+β2​X), que describe el valor promedio o esperado de Y dado X.
+    
+	1. Componente sistemático (o determinista): Representado por la función de regresión (por ejemplo, β1​+β2​X), que describe el valor promedio o esperado de Y dado X.
     2. Componente aleatorio (o error estocástico): Representado por el término de error o perturbación (u). Este término captura nuestra ignorancia sobre los detalles de los mecanismos económicos y otros factores omitidos.
 • Ejemplos típicos:
     ◦ Rendimiento agrícola: El rendimiento de una cosecha depende de la temperatura, la lluvia y el fertilizante. Sin embargo, estos factores no permiten predecir el rendimiento exacto debido a errores de medición y otros factores difíciles de identificar individualmente.
